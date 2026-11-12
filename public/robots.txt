@@ -1,2 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /c/
+Disallow: /api/
+
+Sitemap: https://editlegends.fr/sitemap.xml

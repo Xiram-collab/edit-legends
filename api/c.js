@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     if (!d) { res.status(404).send('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Lien introuvable</title><body style="font-family:system-ui;background:#0c0a1a;color:#f1eefc;text-align:center;padding:60px 16px"><h1>Lien introuvable</h1><p><a style="color:#27e0ff" href="/">Retour à Edit Legends</a></p>'); return; }
     res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
-    res.status(200).send(page(d, 'https://' + (req.headers.host || 'edit-legends.vercel.app'), sid));
+    res.status(200).send(page(d, 'https://' + (req.headers.host || 'editlegends.fr'), sid));
   } catch (e) {
     console.error(e);
     res.status(500).send('Erreur serveur');
