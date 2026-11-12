@@ -18,6 +18,11 @@ Site de cartes à collectionner sur la scène Fortnite edit.
 Supabase > Table Editor > `cards` > Insert row : `id` (suivant le dernier), `name`, `cat` (0 Éditeur, 1 Influenceur, 2 Map edit, 3 Structure), `rarity` (0 Commun … 5 Mythique), `descr`, `img` (nom du fichier dans `public/img`, ou vide). Ne jamais supprimer une carte ni changer un `id`.
 
 ## Sauvegarde automatique (GitHub Actions)
-Le workflow `.github/workflows/backup.yml` exporte chaque jour les tables Supabase (profiles, saves, cards, codes) dans une archive conservée 90 jours (onglet Actions > dernière exécution > Artifacts). Il refuse de s'exécuter si le dépôt est public.
-Réglages : dépôt en Privé + secrets `SUPABASE_URL` et `SUPABASE_SECRET_KEY` (Settings > Secrets and variables > Actions).
-Restauration : décompresser l'archive, puis `SUPABASE_URL=... SUPABASE_SECRET_KEY=... node scripts/restore.js backup`.
+Le workflow `.github/workflows/backup.yml` exporte chaque jour les tables Supabase (profiles, saves, cards, codes) dans une archive **chiffrée** conservée 90 jours (onglet Actions > dernière exécution > Artifacts).
+Secrets à créer (Settings > Secrets and variables > Actions) : `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `BACKUP_PASSPHRASE` (phrase de 12 caractères ou plus, à garder précieusement : sans elle, la sauvegarde est illisible).
+Restauration :
+```
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in sauvegarde-AAAA-MM-JJ.tar.gz.enc -out sauvegarde.tar.gz   # demande le mot de passe
+tar -xzf sauvegarde.tar.gz
+SUPABASE_URL=... SUPABASE_SECRET_KEY=... node scripts/restore.js backup
+```
