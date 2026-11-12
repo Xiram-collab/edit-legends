@@ -304,6 +304,9 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .jc .ji img{width:100%;height:100%;object-fit:cover;display:block}
 .jc .jn{font-size:10px;font-weight:700;text-align:center;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .jc.nw{border-style:dashed}.jc.sel{transform:scale(1.1);box-shadow:0 0 0 3px #fff,0 0 18px var(--rc)}
+.lbhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 10px;font-size:15px}
+.pickbox>.bkr{position:sticky;top:-16px;z-index:5;display:flex;margin:-16px -16px 10px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.pickbox>.bkr button{font-weight:800}
 .ov2{outline:2px dashed var(--acc2);outline-offset:-3px}
 .chip{display:flex;flex-direction:column;align-items:center;gap:3px;width:64px;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
 .chip .ci{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid var(--rc);box-shadow:0 0 10px color-mix(in srgb,var(--rc) 55%,transparent);display:grid;place-items:center;background:#15123a;font-weight:800;font-size:1.3em}
@@ -864,10 +867,10 @@ function rBoard(){
  function paint(d){if(!comAlive('board'))return;
   var val=function(r){return boardSort==='score'?fmt(r.score)+' pts':boardSort==='owned'?r.owned+' / '+CARDS.length:boardSort==='mythics'?r.mythics+(r.mythics>1?' Mythiques':' Mythique'):fmt(r.opened)+' packs'};
   var h='<span class="mut sm sortlbl">Trier par</span><div class="fl sorts">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
-  var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b>'+(me.rank&&d.total?'<span class="mut sm">sur '+d.total+' joueurs</span>':'')+'</div><div><span class="mut sm">Score</span><b>'+fmt(me.score)+'</b></div><div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+CARDS.length+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>'+
+  var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b>'+(me.rank&&d.total?'<span class="mut sm">sur <b>'+d.total+'</b> joueurs · Top '+Math.max(1,Math.ceil(me.rank/d.total*100))+' %</span>':'')+'</div><div><span class="mut sm">Score</span><b>'+fmt(me.score)+'</b></div><div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+CARDS.length+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>'+
    (me.hidden?'<p class="mut sm" style="flex-basis:100%;margin:0">Tu es caché du classement (réglage dans l\'onglet Partage).</p>':(!me.owned?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre un pack pour entrer au classement.</p>':''))+'</div>';
   var row=function(r){return '<button class="lbr'+(r.rank<=3?' top'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk">'+r.rank+'</span>'+uav(r)+'<span class="nm">'+esc(r.name)+'</span><span class="lv">'+val(r)+'</span><span class="lsub mut">'+(boardSort==='score'?r.owned+' cartes · '+r.mythics+' M':'score '+fmt(r.score))+'</span></button>'};
-  h+='<div class="panel lbx">'+(d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap">• • •<span class="mut sm">ta position</span></div>'+d.near.map(row).join(''):''):'<p class="mut center">Personne au classement pour l\'instant.</p>')+'</div>'+
+  h+='<div class="panel lbx">'+(d.total?'<div class="lbhead"><b>Top '+d.rows.length+'</b><span class="mut sm">sur <b>'+d.total+'</b> joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':'')+'</span></div>':'')+(d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap">• • •<span class="mut sm">ta position</span></div>'+d.near.map(row).join(''):''):'<p class="mut center">Personne au classement pour l\'instant.</p>')+'</div>'+
    '<p class="mut sm">Score : chaque carte obtenue rapporte des points selon sa rareté ('+RAR.map(function(r,i){return r.n+' '+SCORE[i]}).join(', ')+'). Les doublons comptent, même revendus : plus tu ouvres de packs, plus ton score monte. Le haut du classement montre les 20 premiers, puis ta position avec le joueur juste au-dessus et juste en dessous. Touche un joueur pour voir son profil.</p>';
   $('cbody').innerHTML=h;
   bindNav('data-bs',function(v){boardSort=v;boardData=null;render()});
@@ -1112,7 +1115,7 @@ function adCardsPanel(){
   var opt=function(list,sel){return list.map(function(x,i){return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+esc(x)+'</option>'}).join('')};
   var rn=RAR.map(function(r){return r.n}),cnt=RAR.map(function(r,i){return CARDS.filter(function(c){return c&&c[2]===i}).length});
   var h='<div class="panel"><h3>'+CARDS.length+' cartes publiées</h3><p class="mut sm" style="margin:0">'+RAR.map(function(r,i){return r.n+' <b>'+cnt[i]+'</b>'}).join(' · ')+'</p><p class="mut sm">Une carte publiée apparaît tout de suite dans les packs de tout le monde et les compteurs s\'adaptent (ex. Légendaire 0/'+(cnt[4]+1)+'). Une carte privée reste ici, en attente du vote du jury.</p></div>';
-  h+='<div class="panel"><h3>'+(ed?'Modifier « '+esc(ed[0])+' »':'Créer une carte')+'</h3><div class="cform">'+
+  h+='<div class="panel">'+(ed?'<div class="bar" style="margin:0 0 8px"><button class="btn sm" id="cno2">← Retour</button></div>':'')+'<h3>'+(ed?'Modifier « '+esc(ed[0])+' »':'Créer une carte')+'</h3><div class="cform">'+
    '<label>Nom<input class="inp" id="cn" maxlength="40" value="'+(ed?esc(ed[0]):'')+'" placeholder="Pseudo de l\'éditeur"></label>'+
    '<div class="two"><label>Catégorie<select class="inp" id="cc">'+opt(CATS,ed?ed[1]:0)+'</select></label><label>Rareté<select class="inp" id="cr">'+opt(rn,ed?ed[2]:0)+'</select></label></div>'+(ed?'<p class="mut sm" style="margin:0">Changer la rareté modifie le score des joueurs qui possèdent la carte, à leur prochaine action.</p>':'')+
    '<label>Description (facultatif)<input class="inp" id="cd" maxlength="140" value="'+(ed?esc(ed[3]):'')+'"></label>'+
@@ -1128,7 +1131,7 @@ function adCardsPanel(){
   $('cok').onclick=function(){var b=this;b.disabled=true;var name=$('cn').value.trim();
    var req=ed?api('acardedit',{id:cardEdit,name:name,cat:+$('cc').value,rarity:+$('cr').value,descr:$('cd').value,image:cardImg||undefined}):api('acardnew',{name:name,cat:+$('cc').value,rarity:+$('cr').value,descr:$('cd').value,image:cardImg||undefined,status:ISOWNER?document.querySelector('input[name=cv]:checked').value:'private'});
    req.then(function(r){cardEdit=null;toast(ed?'Carte modifiée':r.public?'Carte publiée : elle est dans les packs':'Carte envoyée au jury');again()}).catch(function(e){b.disabled=false;toast(e.message)})};
-  if($('cno'))$('cno').onclick=function(){cardEdit=null;again()};
+  if($('cno'))$('cno').onclick=function(){cardEdit=null;again()};if($('cno2'))$('cno2').onclick=function(){cardEdit=null;again()};
   [].forEach.call(document.querySelectorAll('[data-ret]'),function(b){var go=function(){api('acardretire',{id:+b.dataset.ret,retired:b.dataset.v==='1'}).then(function(){toast(b.dataset.v==='1'?'Carte retirée des packs (les joueurs qui l\'ont la gardent)':'Carte remise dans les packs');again()}).catch(function(e){toast(e.message)})};if(b.dataset.v==='1')twice(b,go);else b.onclick=go});
   [].forEach.call(document.querySelectorAll('[data-rm]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer';return}api('acardremove',{id:+b.dataset.rm}).then(function(){toast('Carte supprimée');again()}).catch(function(e){toast(e.message);again()})}});
   [].forEach.call(document.querySelectorAll('[data-ce]'),function(b){b.onclick=function(){cardEdit=+b.dataset.ce;again();scrollTo(0,0)}})
@@ -1364,6 +1367,14 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)doPi
 setInterval(function(){if(!S||$('ov').hidden===false)return;var old=S.stock;regen();if(S.stock!==old){render();return}
  var el=$('cd');if(el&&S.stock<MAXSTOCK){el.textContent=cd();var rf=$('rf');if(rf){var C=2*Math.PI*44;rf.setAttribute('stroke-dashoffset',C*(1-Math.min(1,(Date.now()-S.last)/HOUR)))}}},1000);
 })();
+
+/* flèche retour en haut de chaque fenêtre (plus besoin de descendre pour fermer) */
+try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(n){
+ if(n.nodeType!==1||!n.classList||!n.classList.contains('pickov'))return;
+ var bx=n.querySelector('.pickbox');if(!bx||bx.querySelector(':scope>.bkr'))return;
+ var f=bx.firstElementChild;if(f&&(f.id==='pkx'||(f.querySelector&&f.querySelector('#pkx'))))return;
+ var r=document.createElement('div');r.className='bkr';r.innerHTML='<button class="btn sm" type="button">← Retour</button>';
+ r.firstChild.onclick=function(){closePick();n.remove()};bx.insertBefore(r,bx.firstChild)})})}).observe(document.body,{childList:true})}catch(e){}
 </script>
 </body>
 </html>
