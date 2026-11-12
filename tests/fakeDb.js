@@ -54,6 +54,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async setFriendStatus(a, b, status) { const f = friends.find((r) => r.a === a && r.b === b); if (f) f.status = status; },
     async deleteFriend(x, y) { const f = frow(x, y); if (f) friends.splice(friends.indexOf(f), 1); },
     async ensureShareId(uid) { const p = profiles.get(uid); if (!p.share_id) p.share_id = 'share' + uid.toLowerCase() + 'xyz'; return p.share_id; },
+    async getProfileByDiscord(did) { const p = [...profiles.values()].find((q) => q.discord_id === String(did)); return p ? { user_id: p.user_id, name: p.name, avatar: '' } : null; },
     async getProfileByShare(sid) { const p = [...profiles.values()].find((q) => q.share_id === sid); return p ? { user_id: p.user_id, name: p.name, avatar: '' } : null; },
 
     async recentSeen(n) { return [...profiles.values()].filter((p) => p.last_seen).sort((x, y) => Date.parse(y.last_seen) - Date.parse(x.last_seen)).slice(0, n); },
