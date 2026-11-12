@@ -485,7 +485,7 @@ function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;re
 function save(){if(!SESSION)return;clearTimeout(prefT);prefT=setTimeout(function(){var p={};PREFK.forEach(function(k){p[k]=S[k]});api('prefs',{prefs:p}).catch(function(){})},700)}
 function api(action,body){body=Object.assign({action:action,nc:CARDS.length},body||{});
  return fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(SESSION?SESSION.access_token:'')},body:JSON.stringify(body)})
- .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.cards&&action!=='me'){CARDS.length=0;j.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
+ .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.catalog&&action!=='me'){CARDS.length=0;j.catalog.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
 function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]})}
