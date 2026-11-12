@@ -13,6 +13,9 @@ const call = async (tok, body) => h(tok, body);
 let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
 
 (async () => {
+  let r0;
+  // aperçu public des cartes : sans connexion, aucune donnée de joueur
+  r0 = await call('', { action: 'preview' }); assert.strictEqual(r0.status, 200); assert.strictEqual(r0.json.cards.length, cards.length); assert.ok(!r0.json.state); ok('aperçu public des cartes sans connexion');
   // connexion obligatoire
   assert.strictEqual((await call('', { action: 'me' })).status, 401); ok('refus sans connexion');
   assert.strictEqual((await call('mauvais', { action: 'me' })).status, 401); ok('refus avec faux jeton');
