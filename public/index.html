@@ -307,6 +307,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .lbhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 10px;font-size:15px}
 .pickbox>.bkr{position:sticky;top:-16px;z-index:5;display:flex;margin:-16px -16px 10px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
 .pickbox>.bkr button{font-weight:800}
+.mapcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border:1px solid var(--gold);border-radius:12px;background:#ffb02012}.mapcode b{font-size:1.5em;letter-spacing:.06em;color:var(--gold)}
 .ov2{outline:2px dashed var(--acc2);outline-offset:-3px}
 .chip{display:flex;flex-direction:column;align-items:center;gap:3px;width:64px;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
 .chip .ci{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid var(--rc);box-shadow:0 0 10px color-mix(in srgb,var(--rc) 55%,transparent);display:grid;place-items:center;background:#15123a;font-weight:800;font-size:1.3em}
@@ -1281,10 +1282,11 @@ function rCode(){
   '<li><span>Le bot te donne un code de 8 caractères : entre-le ici.</span></li></ol>'+
   '<a class="dbtn" href="https://discord.gg/hCr73tGAHk" target="_blank" rel="noopener">'+ICO+' Rejoindre le Discord</a>'+
   '<p class="mut dnote">Un code de la map ne donne qu\'un seul code du site, et personne d\'autre ne peut le récupérer.</p></aside>';
- $('main').innerHTML='<div class="panel"><h2>Code de la map</h2><p class="mut" style="color:var(--gold);font-weight:700">La map Fortnite sort bientôt !</p><p class="mut">Finis la map Fortnite, échange le code de fin sur Discord contre un code du site, puis entre-le ici. Chaque code ne marche qu\'une fois : la roue décide de ta récompense.</p>'+
+ $('main').innerHTML='<div class="panel"><h2>Code de la map</h2><div class="mapcode"><span class="mut sm">La map Fortnite est disponible ! Code île</span><b id="mapc">0952-3205-0166</b><button class="btn sm gold" id="mapcp">Copier</button></div><p class="mut">Finis la map Fortnite, échange le code de fin sur Discord contre un code du site, puis entre-le ici. Chaque code ne marche qu\'une fois : la roue décide de ta récompense.</p>'+
  '<div class="cgrid"><div class="wheelw"><div class="wheel"><div class="ptr"></div>'+wheelSvg()+'</div><div class="wleg">'+leg+'</div>'+
  '<div class="cform"><input id="cin" maxlength="9" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn" id="cgo">Tourner la roue</button></div>'+
  '<div class="cmsg" id="cmsg"></div>'+pend+'</div>'+dbox+'</div></div>';
+ $('mapcp').onclick=function(){var b=this,t='0952-3205-0166';var ok=function(){b.textContent='Copié !';setTimeout(function(){b.textContent='Copier'},1500)};try{navigator.clipboard.writeText(t).then(ok,function(){})}catch(e){}};
  var msg=function(t,ok){var m=$('cmsg');m.textContent=t;m.style.color=ok?'var(--gold)':'#ff7a8a'};
  
  var go=function(){if(spinning||busy||netBusy)return;var c=($('cin').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
