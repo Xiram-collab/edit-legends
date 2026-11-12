@@ -9,3 +9,6 @@ create table if not exists notifications (
 );
 create index if not exists notifications_user on notifications(user_id);
 alter table notifications enable row level security;
+
+-- Membres du jury (accès à l'onglet Jury de l'admin)
+alter table profiles add column if not exists is_jury boolean not null default false;

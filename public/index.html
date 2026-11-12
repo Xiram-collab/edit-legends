@@ -298,6 +298,12 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .tz{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:8px;padding:8px;align-content:flex-start}
 .tpool{margin-top:14px;border-radius:12px;border:1px dashed var(--line);padding:12px;background:#ffffff06}
 .tpool h3{margin:0 0 8px}.tpool .tz{padding:0}
+.jtiers .tl b{font-size:13px;color:#fff;text-shadow:0 1px 2px #0008;text-align:center}
+.jc{display:flex;flex-direction:column;align-items:center;gap:4px;width:78px;padding:6px 4px;border-radius:12px;border:2px solid var(--rc);background:color-mix(in srgb,var(--rc) 10%,#15123a);box-shadow:0 0 10px color-mix(in srgb,var(--rc) 40%,transparent);cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
+.jc .ji{width:44px;height:44px;border-radius:10px;overflow:hidden;display:grid;place-items:center;background:#0006;font-weight:800;font-size:1.2em}
+.jc .ji img{width:100%;height:100%;object-fit:cover;display:block}
+.jc .jn{font-size:10px;font-weight:700;text-align:center;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jc.nw{border-style:dashed}.jc.sel{transform:scale(1.1);box-shadow:0 0 0 3px #fff,0 0 18px var(--rc)}
 .ov2{outline:2px dashed var(--acc2);outline-offset:-3px}
 .chip{display:flex;flex-direction:column;align-items:center;gap:3px;width:64px;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
 .chip .ci{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid var(--rc);box-shadow:0 0 10px color-mix(in srgb,var(--rc) 55%,transparent);display:grid;place-items:center;background:#15123a;font-weight:800;font-size:1.3em}
@@ -494,7 +500,7 @@ var PACKS=[
  {n:'Pack Épique+',g:3,price:1000,c:'var(--r3)',t:'1 carte Épique ou mieux garantie'},
  {n:'Pack Légendaire+',g:4,price:3500,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
 var HOUR=3600000,MAXSTOCK=10,CUR='V-Bucks';
-var S=null,SB=null,SESSION=null,ISADMIN=false,PROFILE=null,prefT=0,netBusy=false;
+var S=null,SB=null,SESSION=null,ISADMIN=false,ISJURY=false,PROFILE=null,prefT=0,netBusy=false;
 var PREFK=['vitrine','team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
@@ -598,10 +604,10 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
  d.onclick=function(e){if(e.target===d)closePick()};$('nx').onclick=closePick;
  var f=$('nfr');if(f)f.onclick=function(){closePick();tab='com';comSub='friends';render();scrollTo(0,0)};
  try{if(m)localStorage.setItem('el_ann',m)}catch(e){}var ids=NOTIF.notes.map(function(x){return x.id});if(ids.length){NOTIF.notes=[];api('notread',{ids:ids}).catch(function(){})}paintBell()}
-function tabs(){var T=[['home','Accueil'],['open','Ouvrir'],['col','Collection'],['com','Communauté'],['shop','Boutique'],['code','Code'],['prob','Probabilités']];if(ISADMIN)T.push(['admin','Admin']);
+function tabs(){var T=[['home','Accueil'],['open','Ouvrir'],['col','Collection'],['com','Communauté'],['shop','Boutique'],['code','Code'],['prob','Probabilités']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
  $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
-function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN)tab='home';setPurse();tabs();wpBadge();
+function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
  ({home:rHome,open:rOpen,col:rCol,shop:rShop,code:rCode,com:rCom,prob:rProb,admin:rAdmin})[tab]()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
@@ -952,10 +958,11 @@ function rShare(){
 
 /* ================= ADMINISTRATION ================= */
 var adminSub='live',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
-var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['cards','Cartes'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
+var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['cards','Cartes'],['jury','Jury'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
 function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
 function rAdmin(){
- var nav=subnavH(ADS,adminSub,'data-as');
+ if(!ISADMIN)adminSub='jury';
+ var nav=ISADMIN?subnavH(ADS,adminSub,'data-as'):'';
  var bind=function(){bindNav('data-as',function(v){adminSub=v;adminTarget=null;render();scrollTo(0,0)})};
  if(adminSub==='tools'){rTest();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
  $('main').innerHTML=nav+'<div id="abody"><div class="panel center mut">Chargement…</div></div>';bind();
@@ -965,6 +972,7 @@ function rAdmin(){
  if(adminSub==='stats')return adStats();
  if(adminSub==='ann')return adAnn();
  if(adminSub==='cards')return adCardsPanel();
+ if(adminSub==='jury')return adJury();
  adLog()}
 function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (V-Bucks, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (V-Bucks, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
 
@@ -1099,7 +1107,7 @@ function openDraftEdit(x,done){closePick();var opt=function(list,sel){return lis
  $('deok').onclick=function(){var b=this;b.disabled=true;var body={id:x.id,name:$('den').value,cat:+$('dec').value,rarity:+$('der').value,descr:$('ded').value};if(img)body.image=img;
   api('acarddraftedit',body).then(function(){closePick();toast('Proposition modifiée');done()}).catch(function(e){b.disabled=false;toast(e.message)})}}
 function adCardsPanel(){
- api('acards').then(function(d){if(!adAlive('cards'))return;
+ Promise.resolve().then(function(){if(!adAlive('cards'))return;
   var ed=cardEdit!=null?CARDS[cardEdit]:null;if(cardEdit!=null&&!ed)cardEdit=null;
   var opt=function(list,sel){return list.map(function(x,i){return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+esc(x)+'</option>'}).join('')};
   var rn=RAR.map(function(r){return r.n}),cnt=RAR.map(function(r,i){return CARDS.filter(function(c){return c&&c[2]===i}).length});
@@ -1111,16 +1119,6 @@ function adCardsPanel(){
    '<label>Logo (image carrée de préférence)<input type="file" id="cf" accept="image/*"></label><div id="cpv">'+(ed&&ed[4]?'<img class="cprev" src="'+esc(imgUrl(ed[4]))+'" alt="">':'')+'</div>'+
    (ed?'':(ISOWNER?'<div class="radios"><label><input type="radio" name="cv" value="public" checked> Public : dans les packs tout de suite</label><label><input type="radio" name="cv" value="private"> Privé : en attente du jury</label></div>':'<p class="mut sm" style="margin:0">Ta carte sera privée, en attente du jury.</p>'))+
    '<div class="bar"><button class="btn gold" id="cok">'+(ed?'Enregistrer':'Créer la carte')+'</button>'+(ed?'<button class="btn ghost" id="cno">Annuler</button>':'')+'</div></div></div>';
-  var dnew=d.drafts.filter(function(z){return z.status==='new'}),djur=d.drafts.filter(function(z){return z.status!=='new'});
-  var draftRow=function(x,isNew){
-    var tally={};x.votes.forEach(function(v){tally[v.rarity]=(tally[v.rarity]||0)+1});var best=x.rarity,bn=0;Object.keys(tally).forEach(function(k){if(tally[k]>bn){bn=tally[k];best=+k}});
-    return '<div class="dr"><div style="display:flex;gap:10px;align-items:center">'+(ISOWNER&&!isNew?'<input type="checkbox" class="dsel" data-sel="'+x.id+'" checked>':'')+cthumb(x.img,x.name)+'<div style="flex:1;min-width:0"><b>'+esc(x.name)+'</b><div class="mut sm">'+(x.player?'<span class="tag">JOUEUR</span> ':'')+CATS[x.cat]+' · proposée '+rn[x.rarity]+' · par '+esc(x.by)+'</div>'+(x.descr?'<div class="mut sm">'+esc(x.descr)+'</div>':'')+'</div></div>'+
-     (isNew?'':'<p class="mut sm" style="margin:8px 0 0">'+(x.votes.length?'Jury : '+x.votes.map(function(v){return esc(v.name)+' → '+rn[v.rarity]}).join(', '):'Aucun vote pour l\'instant.')+'</p>'+
-     '<div class="ctl"><select class="inp" data-vr="'+x.id+'">'+opt(rn,x.mine!=null?x.mine:x.rarity)+'</select><button class="btn sm" data-vote="'+x.id+'">'+(x.mine!=null?'Changer mon vote':'Voter')+'</button></div>')+
-     (ISOWNER?'<div class="ctl">'+(isNew?'<button class="btn sm gold" data-acc="'+x.id+'">Accepter (envoyer au jury)</button>':'')+'<select class="inp" data-pr="'+x.id+'">'+opt(rn,isNew?x.rarity:best)+'</select><button class="btn sm '+(isNew?'':'gold')+'" data-pub="'+x.id+'">Publier'+(isNew?' direct':'')+'</button></div>':'')+
-     ((ISOWNER||x.by===(PROFILE&&PROFILE.name))?'<div class="ctl">'+(ISOWNER?'<button class="btn sm" data-de="'+x.id+'">Modifier</button>':'')+(x.player&&ISOWNER?'<button class="btn sm ghost" data-ref="'+x.id+'">Refuser</button>':'<button class="btn sm ghost" data-dd="'+x.id+'">Supprimer</button>')+'</div>':'')+'</div>'};
-  if(dnew.length)h+='<div class="panel"><h3>Nouvelles propositions de joueurs ('+dnew.length+')</h3><p class="mut sm" style="margin:0 0 10px">Accepter = la carte passe devant le jury (toujours privée) et le joueur est prévenu. Refuser = tu écris une raison, le joueur la reçoit dans ses notifications. Publier direct = dans les packs tout de suite.</p>'+dnew.map(function(x){return draftRow(x,true)}).join('')+'</div>';
-  h+='<div class="panel"><h3>En attente du jury ('+djur.length+')</h3>'+(ISOWNER&&djur.length?'<div class="bar"><button class="btn gold" id="pubsel">Publier la sélection (<span id="nsel">'+djur.length+'</span>)</button><button class="btn sm ghost" id="selall">Tout décocher</button></div><p class="mut sm" style="margin:0 0 10px">Chaque carte est publiée avec la rareté choisie dans son menu « Publier » (par défaut : la plus votée par le jury).</p>':'')+(djur.length?djur.map(function(x){return draftRow(x,false)}).join(''):'<p class="mut sm" style="margin:0">Aucune carte en attente.</p>')+'</div>';
   var order=CARDS.map(function(c,i){return i}).filter(function(i){return CARDS[i]}).sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
   h+='<div class="panel"><h3>Cartes publiées</h3><p class="mut sm">Retirer = la carte ne sort plus des packs mais les joueurs qui l\'ont la gardent (réversible). Supprimer pour de bon = seulement la dernière carte ajoutée, et seulement si personne ne l\'a.</p><div class="tw"><table class="at"><tr><th></th><th>Nom</th><th>Catégorie</th><th>Rareté</th>'+(ISOWNER?'<th></th>':'')+'</tr>'+order.map(function(i){var c=CARDS[i];return '<tr><td>'+cthumb(c[4],c[0])+'</td><td>'+esc(c[0])+'</td><td>'+CATS[c[1]]+'</td><td>'+rn[c[2]]+(c[5]?' <span class="mut sm">(retirée)</span>':'')+'</td>'+(ISOWNER?'<td style="white-space:nowrap"><button class="btn sm" data-ce="'+i+'">Modifier</button> <button class="btn sm ghost" data-ret="'+i+'" data-v="'+(c[5]?0:1)+'">'+(c[5]?'Remettre':'Retirer')+'</button> <button class="btn sm ghost" data-rm="'+i+'">Supprimer</button></td>':'')+'</tr>'}).join('')+'</table></div></div>';
   $('abody').innerHTML=h;
@@ -1131,22 +1129,95 @@ function adCardsPanel(){
    var req=ed?api('acardedit',{id:cardEdit,name:name,cat:+$('cc').value,rarity:+$('cr').value,descr:$('cd').value,image:cardImg||undefined}):api('acardnew',{name:name,cat:+$('cc').value,rarity:+$('cr').value,descr:$('cd').value,image:cardImg||undefined,status:ISOWNER?document.querySelector('input[name=cv]:checked').value:'private'});
    req.then(function(r){cardEdit=null;toast(ed?'Carte modifiée':r.public?'Carte publiée : elle est dans les packs':'Carte envoyée au jury');again()}).catch(function(e){b.disabled=false;toast(e.message)})};
   if($('cno'))$('cno').onclick=function(){cardEdit=null;again()};
-  var cnt=function(){var n=document.querySelectorAll('[data-sel]:checked').length;if($('nsel'))$('nsel').textContent=n;if($('pubsel'))$('pubsel').disabled=!n};
-  [].forEach.call(document.querySelectorAll('[data-sel]'),function(c){c.onchange=cnt});
-  if($('selall'))$('selall').onclick=function(){var all=document.querySelectorAll('[data-sel]'),on=this.dataset.off==='1';[].forEach.call(all,function(c){c.checked=on});this.dataset.off=on?'0':'1';this.textContent=on?'Tout décocher':'Tout cocher';cnt()};
-  if($('pubsel'))$('pubsel').onclick=function(){var b=this,items=[].map.call(document.querySelectorAll('[data-sel]:checked'),function(c){return {id:+c.dataset.sel,rarity:+document.querySelector('[data-pr="'+c.dataset.sel+'"]').value}});if(!items.length)return;
-   if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer : publier '+items.length+' carte'+(items.length>1?'s':'')+' maintenant';return}
-   b.disabled=true;api('acardpubmany',{items:items}).then(function(r){toast(r.done+' carte'+(r.done>1?'s':'')+' publiée'+(r.done>1?'s':'')+(r.skipped.length?' · ignorées : '+r.skipped.join(', '):''));again()}).catch(function(e){b.disabled=false;toast(e.message)})};
-  [].forEach.call(document.querySelectorAll('[data-vote]'),function(b){b.onclick=function(){api('acardvote',{id:+b.dataset.vote,rarity:+document.querySelector('[data-vr="'+b.dataset.vote+'"]').value}).then(function(){toast('Vote enregistré');again()}).catch(function(e){toast(e.message)})}});
-  [].forEach.call(document.querySelectorAll('[data-pub]'),function(b){b.onclick=function(){b.disabled=true;api('acardpub',{id:+b.dataset.pub,rarity:+document.querySelector('[data-pr="'+b.dataset.pub+'"]').value}).then(function(){toast('Carte publiée : elle est dans les packs');again()}).catch(function(e){b.disabled=false;toast(e.message)})}});
-  [].forEach.call(document.querySelectorAll('[data-acc]'),function(b){b.onclick=function(){b.disabled=true;api('acardaccept',{id:+b.dataset.acc}).then(function(){toast('Acceptée : elle passe devant le jury');again()}).catch(function(e){b.disabled=false;toast(e.message)})}});
-  [].forEach.call(document.querySelectorAll('[data-ref]'),function(b){b.onclick=function(){var x=d.drafts.filter(function(z){return z.id===+b.dataset.ref})[0];if(x)openRefuse(x,again)}});
-  [].forEach.call(document.querySelectorAll('[data-de]'),function(b){b.onclick=function(){var x=d.drafts.filter(function(z){return z.id===+b.dataset.de})[0];if(x)openDraftEdit(x,again)}});
-  [].forEach.call(document.querySelectorAll('[data-dd]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer';return}api('acarddel',{id:+b.dataset.dd}).then(function(){again()}).catch(function(e){toast(e.message)})}});
   [].forEach.call(document.querySelectorAll('[data-ret]'),function(b){var go=function(){api('acardretire',{id:+b.dataset.ret,retired:b.dataset.v==='1'}).then(function(){toast(b.dataset.v==='1'?'Carte retirée des packs (les joueurs qui l\'ont la gardent)':'Carte remise dans les packs');again()}).catch(function(e){toast(e.message)})};if(b.dataset.v==='1')twice(b,go);else b.onclick=go});
   [].forEach.call(document.querySelectorAll('[data-rm]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer';return}api('acardremove',{id:+b.dataset.rm}).then(function(){toast('Carte supprimée');again()}).catch(function(e){toast(e.message);again()})}});
   [].forEach.call(document.querySelectorAll('[data-ce]'),function(b){b.onclick=function(){cardEdit=+b.dataset.ce;again();scrollTo(0,0)}})
  }).catch(function(e){if(adAlive('cards'))$('abody').innerHTML=errBox(e)})}
+/* ---------- jury : propositions, tier list, membres ---------- */
+var jurySub='tier',JY={items:[],t:{},o:[],sent:0,sel:null,sv:null,onlyNew:false};
+function jyKey(i){return JY.items[i]}
+function adJury(){
+ if(!ISOWNER)jurySub='tier';
+ var nav=ISOWNER?subnavH([['props','Propositions'],['tier','Tier list'],['mem','Membres et avis']],jurySub,'data-js'):'';
+ var put=function(h){if(!adAlive('jury'))return false;$('abody').innerHTML=nav+h;bindNav('data-js',function(v){jurySub=v;adJury()});return true};
+ if(jurySub==='props')return jyProps(put);
+ if(jurySub==='mem')return jyMem(put);
+ jyTier(put)}
+function jyProps(put){
+ Promise.all([api('acards'),api('ajury')]).then(function(r){
+  var d=r[0],aj=r[1],rn=RAR.map(function(x){return x.n}),opt=function(list,sel){return list.map(function(x,i){return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+esc(x)+'</option>'}).join('')};
+  var dnew=d.drafts.filter(function(z){return z.status==='new'}),djur=d.drafts.filter(function(z){return z.status!=='new'});
+  var row=function(x,isNew){var a=aj.avg['d'+x.id],best=a?Math.max(0,Math.min(5,Math.round(a.avg))):x.rarity;
+   return '<div class="dr"><div style="display:flex;gap:10px;align-items:center">'+(!isNew?'<input type="checkbox" class="dsel" data-sel="'+x.id+'" checked>':'')+cthumb(x.img,x.name)+'<div style="flex:1;min-width:0"><b>'+esc(x.name)+'</b><div class="mut sm">'+(x.player?'<span class="tag">JOUEUR</span> ':'')+CATS[x.cat]+' · rareté demandée : <b style="color:'+HEX[x.rarity]+'">'+rn[x.rarity]+'</b> · par '+esc(x.by)+'</div>'+(x.descr?'<div class="mut sm">'+esc(x.descr)+'</div>':'')+(!isNew?'<div class="mut sm">'+(a?'Avis du jury : moyenne '+rn[best]+' ('+a.avg.toFixed(1)+', '+a.n+' avis)':'Pas encore d\'avis du jury')+'</div>':'')+'</div></div>'+
+    '<div class="ctl">'+(isNew?'<button class="btn sm gold" data-acc="'+x.id+'">Accepter</button><button class="btn sm ghost" data-ref="'+x.id+'">Refuser</button>':'')+'<select class="inp" data-pr="'+x.id+'">'+opt(rn,isNew?x.rarity:best)+'</select><button class="btn sm '+(isNew?'':'gold')+'" data-pub="'+x.id+'">Publier'+(isNew?' direct':'')+'</button></div>'+
+    '<div class="ctl"><button class="btn sm" data-de="'+x.id+'">Modifier</button>'+(isNew&&x.player?'':'<button class="btn sm ghost" data-dd="'+x.id+'">Supprimer</button>')+'</div></div>'};
+  var h='<div class="panel"><h3>Propositions des joueurs ('+dnew.length+')</h3><p class="mut sm" style="margin:0 0 10px">Accepter = la carte passe en examen du jury et le joueur est prévenu (il peut alors en proposer de nouvelles). Refuser = tu écris une raison, le joueur la reçoit.</p>'+(dnew.length?dnew.map(function(x){return row(x,true)}).join(''):'<p class="mut sm" style="margin:0">Aucune nouvelle proposition.</p>')+'</div>';
+  h+='<div class="panel"><h3>En examen du jury ('+djur.length+')</h3>'+(djur.length?'<div class="bar"><button class="btn gold" id="pubsel">Publier la sélection (<span id="nsel">'+djur.length+'</span>)</button><button class="btn sm ghost" id="selall">Tout décocher</button></div><p class="mut sm" style="margin:0 0 10px">Rareté proposée par défaut dans le menu : la moyenne des tier lists du jury, sinon celle demandée par le joueur.</p>'+djur.map(function(x){return row(x,false)}).join(''):'<p class="mut sm" style="margin:0">Aucune carte en examen.</p>')+'</div>';
+  if(!put(h))return;
+  var again=function(){adJury()};
+  var cnt=function(){var n=document.querySelectorAll('[data-sel]:checked').length;if($('nsel'))$('nsel').textContent=n;if($('pubsel'))$('pubsel').disabled=!n};
+  [].forEach.call(document.querySelectorAll('[data-sel]'),function(c){c.onchange=cnt});
+  if($('selall'))$('selall').onclick=function(){var on=this.dataset.off==='1';[].forEach.call(document.querySelectorAll('[data-sel]'),function(c){c.checked=on});this.dataset.off=on?'0':'1';this.textContent=on?'Tout décocher':'Tout cocher';cnt()};
+  if($('pubsel'))$('pubsel').onclick=function(){var b=this,items=[].map.call(document.querySelectorAll('[data-sel]:checked'),function(c){return {id:+c.dataset.sel,rarity:+document.querySelector('[data-pr="'+c.dataset.sel+'"]').value}});if(!items.length)return;
+   if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer : publier '+items.length+' carte'+(items.length>1?'s':'')+' maintenant';return}
+   b.disabled=true;api('acardpubmany',{items:items}).then(function(r){toast(r.done+' carte'+(r.done>1?'s':'')+' publiée'+(r.done>1?'s':'')+(r.skipped.length?' · ignorées : '+r.skipped.join(', '):''));again()}).catch(function(e){b.disabled=false;toast(e.message)})};
+  [].forEach.call(document.querySelectorAll('[data-pub]'),function(b){b.onclick=function(){b.disabled=true;api('acardpub',{id:+b.dataset.pub,rarity:+document.querySelector('[data-pr="'+b.dataset.pub+'"]').value}).then(function(){toast('Carte publiée : elle est dans les packs');again()}).catch(function(e){b.disabled=false;toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-acc]'),function(b){b.onclick=function(){b.disabled=true;api('acardaccept',{id:+b.dataset.acc}).then(function(){toast('Acceptée : elle passe en examen du jury');again()}).catch(function(e){b.disabled=false;toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-ref]'),function(b){b.onclick=function(){var x=d.drafts.filter(function(z){return z.id===+b.dataset.ref})[0];if(x)openRefuse(x,again)}});
+  [].forEach.call(document.querySelectorAll('[data-de]'),function(b){b.onclick=function(){var x=d.drafts.filter(function(z){return z.id===+b.dataset.de})[0];if(x)openDraftEdit(x,again)}});
+  [].forEach.call(document.querySelectorAll('[data-dd]'),function(b){twice(b,function(){api('acarddel',{id:+b.dataset.dd}).then(again).catch(function(e){toast(e.message)})})})
+ }).catch(function(e){if(adAlive('jury'))$('abody').innerHTML=errBox(e)})}
+function jyChip(it){var c=it.cat===1?' hex':'';return '<div class="jc'+(it.draft?' nw':'')+(JY.sel===it.k?' sel':'')+'" draggable="true" data-k="'+it.k+'" style="--rc:'+HEX[it.rarity]+'" title="'+esc(it.name)+' · '+RAR[it.rarity].n+(it.draft?' (demandée)':'')+'"><span class="ji">'+(it.img?'<img src="'+esc(imgUrl(it.img))+'" alt="" draggable="false">':'<b>'+esc(it.name.charAt(0).toUpperCase())+'</b>')+'</span><span class="jn">'+esc(it.name)+'</span></div>'}
+function jySet(k,lvl,before){
+ JY.o=JY.o.filter(function(x){return x!==k});
+ if(lvl===''||lvl==null){delete JY.t[k]}else{JY.t[k]=lvl;var at=before?JY.o.indexOf(before):-1;if(at<0)JY.o.push(k);else JY.o.splice(at,0,k)}
+ JY.sel=null;jyDraw();jySave()}
+function jySave(){clearTimeout(JY.sv);var st=$('jst');if(st)st.textContent='Enregistrement…';JY.sv=setTimeout(function(){jyFlush().then(function(){var s=$('jst');if(s)s.textContent='Enregistré'}).catch(function(e){toast(e.message)})},500)}
+function jyFlush(){clearTimeout(JY.sv);return api('jlsave',{t:JY.t,o:JY.o})}
+function jyTier(put){
+ api('jlcards').then(function(r){var jl=r.jl||{},ok={};r.items.forEach(function(x){ok[x.k]=1});
+  JY.items=r.items;JY.t={};Object.keys(jl.t||{}).forEach(function(k){if(ok[k])JY.t[k]=jl.t[k]});JY.o=(jl.o||[]).filter(function(k){return JY.t[k]!==undefined});JY.sent=jl.sent||0;JY.sel=null;JY.put=put;jyDraw()
+ }).catch(function(e){if(adAlive('jury'))$('abody').innerHTML=errBox(e)})}
+function jyDraw(){
+ var IM={};JY.items.forEach(function(x){IM[x.k]=x});
+ var shown=JY.items.filter(function(x){return !JY.onlyNew||x.draft}),nd=JY.items.filter(function(x){return x.draft}).length;
+ var h='<div class="panel"><h3>Tier list du jury</h3><p class="mut sm" style="margin:0 0 10px">Classe les cartes proposées ('+nd+' en examen) et celles du site. Le contour de chaque carte est la rareté demandée par le joueur (ou la rareté actuelle si elle est publiée). Touche une carte puis une ligne pour la placer, ou glisse-la.</p>'+
+  '<div class="bar"><label class="mut sm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="jonly"'+(JY.onlyNew?' checked':'')+'> Seulement les cartes proposées</label><span class="mut sm" id="jst" style="margin-left:auto">Enregistré</span></div>'+
+  '<div class="bar"><button class="btn gold" id="jsend">'+(ISOWNER?'Compter ma tier list dans les avis':'Envoyer ma tier list')+'</button><span class="mut sm">'+(JY.sent?'Dernier envoi : '+new Date(JY.sent).toLocaleString('fr-FR'):'Pas encore envoyée')+'</span></div></div><div class="tiers jtiers">';
+ TL.forEach(function(r){var L=r[0],m=shown.filter(function(x){return JY.t[x.k]===L});m.sort(function(a,b){return JY.o.indexOf(a.k)-JY.o.indexOf(b.k)});
+  h+='<div class="trow" data-jz="'+L+'" style="--tc:'+r[2]+'"><div class="tl"><b>'+r[1]+'</b></div><div class="tz">'+m.map(jyChip).join('')+'</div></div>'});
+ var un=shown.filter(function(x){return JY.t[x.k]===undefined});un.sort(function(a,b){return (b.draft?1:0)-(a.draft?1:0)||b.rarity-a.rarity||a.name.localeCompare(b.name)});
+ h+='</div><div class="tpool" data-jz=""><h3>Non classés ('+un.length+')</h3><div class="tz">'+(un.map(jyChip).join('')||'<span class="mut sm">Tout est classé.</span>')+'</div></div>';
+ if(!JY.put(h))return;
+ $('jonly').onchange=function(){JY.onlyNew=this.checked;jyDraw()};
+ $('jsend').onclick=function(){var b=this;b.disabled=true;jyFlush().then(function(){return api('jlsend')}).then(function(){JY.sent=Date.now();toast(ISOWNER?'Ta tier list est comptée':'Tier list envoyée');jyDraw()}).catch(function(e){b.disabled=false;toast(e.message)})};
+ [].forEach.call(document.querySelectorAll('[data-jz]'),function(z){
+  z.onclick=function(){if(JY.sel)jySet(JY.sel,z.dataset.jz)};
+  z.ondragover=function(e){e.preventDefault();z.classList.add('ov2')};
+  z.ondragleave=function(){z.classList.remove('ov2')};
+  z.ondrop=function(e){e.preventDefault();z.classList.remove('ov2');var k=e.dataTransfer.getData('text/plain');if(IM[k])jySet(k,z.dataset.jz)}});
+ [].forEach.call(document.querySelectorAll('[data-k]'),function(c){var k=c.dataset.k,cl=JY.t[k]!==undefined?JY.t[k]:'';
+  c.ondragstart=function(e){e.dataTransfer.setData('text/plain',k);e.dataTransfer.effectAllowed='move'};
+  c.ondragover=function(e){e.preventDefault();e.stopPropagation()};
+  c.ondrop=function(e){e.preventDefault();e.stopPropagation();var d=e.dataTransfer.getData('text/plain');if(d!==k&&IM[d])jySet(d,cl,cl?k:null)};
+  c.onclick=function(e){e.stopPropagation();if(JY.sel&&JY.sel!==k)jySet(JY.sel,cl,cl?k:null);else{JY.sel=JY.sel===k?null:k;jyDraw()}}})}
+function jyMem(put){
+ Promise.all([api('ajury'),api('jlcards')]).then(function(r){
+  var aj=r[0],IM={};r[1].items.forEach(function(x){IM[x.k]=x});
+  var h='<div class="panel"><h3>Membres du jury ('+aj.jurors.length+')</h3><p class="mut sm" style="margin:0 0 10px">Ils voient uniquement l\'onglet Jury (tier list), rien d\'autre de l\'admin. Ils t\'envoient leur tier list en privé.</p>'+
+   (aj.jurors.length?aj.jurors.map(function(j){return '<div class="nrow"><div style="flex:1">'+esc(j.name)+'</div><button class="btn sm ghost" data-jrm="'+j.id+'">Retirer</button></div>'}).join(''):'<p class="mut sm" style="margin:0 0 8px">Personne pour l\'instant.</p>')+
+   '<div class="bar" style="margin-top:10px"><input id="jq" class="inp" style="max-width:260px" placeholder="Chercher un joueur à ajouter" maxlength="40"><button class="btn sm" id="jqb">Chercher</button></div><div id="jres"></div></div>';
+  h+='<div class="panel"><h3>Tier lists reçues ('+aj.lists.length+')</h3>'+(aj.lists.length?aj.lists.map(function(l){
+    var rows=TL.map(function(t){var m=Object.keys(l.t).filter(function(k){return l.t[k]===t[0]&&IM[k]}).sort(function(a,b){return l.o.indexOf(a)-l.o.indexOf(b)});return '<div class="mut sm"><b style="color:'+t[2]+'">'+t[1]+'</b> : '+(m.map(function(k){return esc(IM[k].name)}).join(', ')||'-')+'</div>'}).join('');
+    return '<details class="dr"><summary><b>'+esc(l.name)+'</b> <span class="mut sm">· envoyée le '+new Date(l.sent).toLocaleString('fr-FR')+' · '+Object.keys(l.t).length+' cartes</span></summary><div style="margin-top:8px">'+rows+'</div></details>'}).join(''):'<p class="mut sm" style="margin:0">Aucune tier list reçue.</p>')+'</div>';
+  var ks=Object.keys(aj.avg).filter(function(k){return IM[k]}).sort(function(a,b){return aj.avg[b].avg-aj.avg[a].avg});
+  h+='<div class="panel"><h3>Moyenne des avis</h3>'+(ks.length?'<div class="tw"><table class="at"><tr><th></th><th>Carte</th><th>Demandée</th><th>Avis du jury</th><th>Nb</th></tr>'+ks.map(function(k){var x=IM[k],a=aj.avg[k],lv=Math.max(0,Math.min(5,Math.round(a.avg)));return '<tr><td>'+cthumb(x.img,x.name)+'</td><td>'+esc(x.name)+(x.draft?'':' <span class="mut sm">(publiée)</span>')+'</td><td style="color:'+HEX[x.rarity]+'">'+RAR[x.rarity].n+'</td><td style="color:'+HEX[lv]+'"><b>'+RAR[lv].n+'</b> <span class="mut sm">'+a.avg.toFixed(1)+'</span></td><td>'+a.n+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm" style="margin:0">Pas encore d\'avis.</p>')+'</div>';
+  if(!put(h))return;
+  [].forEach.call(document.querySelectorAll('[data-jrm]'),function(b){twice(b,function(){api('asetjury',{id:b.dataset.jrm,on:false}).then(function(){toast('Retiré du jury');adJury()}).catch(function(e){toast(e.message)})})});
+  var srch=function(){var q=$('jq').value.trim();if(!q)return;api('aplayers',{q:q}).then(function(d){var rows=(d.rows||[]).slice(0,8);$('jres').innerHTML=rows.length?rows.map(function(p){return '<div class="nrow"><div style="flex:1">'+esc(p.name)+'</div><button class="btn sm gold" data-jad="'+p.id+'">Ajouter au jury</button></div>'}).join(''):'<p class="mut sm">Aucun joueur trouvé.</p>';
+   [].forEach.call(document.querySelectorAll('[data-jad]'),function(b){b.onclick=function(){b.disabled=true;api('asetjury',{id:b.dataset.jad,on:true}).then(function(){toast('Ajouté au jury');adJury()}).catch(function(e){b.disabled=false;toast(e.message)})}})}).catch(function(e){toast(e.message)})};
+  $('jqb').onclick=srch;$('jq').onkeydown=function(e){if(e.key==='Enter')srch()}
+ }).catch(function(e){if(adAlive('jury'))$('abody').innerHTML=errBox(e)})}
 function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;
   $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
@@ -1252,7 +1323,7 @@ function lpStart(){if(lpOn)return;lpOn=true;
 function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
 function applyConfig(cfg){if(cfg.SCORE)SCORE=cfg.SCORE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){if(cfg.WH[i])w.p=cfg.WH[i].p})}
-function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
+function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;ISJURY=!!r.isJury;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
  SB=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);

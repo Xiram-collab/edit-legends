@@ -72,7 +72,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   assert.strictEqual(p2.status, 'new'); ok('une proposition de joueur arrive avec le statut « nouvelle »');
   r = await call('tokA', { action: 'acardaccept', id: p2.id }); assert.strictEqual(r.status, 200);
   r = await call('tokA', { action: 'acards' }); assert.strictEqual(r.json.drafts.find((x) => x.id === p2.id).status, 'jury'); ok('accepter : la carte passe au jury (toujours privée)');
-  r = await call('tokC', { action: 'ping' }); assert.ok(r.json.notes.some((n) => /acceptée/.test(n.text) && /Prop 2/.test(n.text))); ok('le joueur est prévenu de l\'acceptation');
+  r = await call('tokC', { action: 'ping' }); assert.ok(r.json.notes.some((n) => /validée/.test(n.text) && /Prop 2/.test(n.text))); ok('le joueur est prévenu de l\'acceptation');
   r = await call('tokB', { action: 'acardaccept', id: p3.id }); assert.strictEqual(r.status, 403); ok('seul le propriétaire accepte');
   r = await call('tokA', { action: 'acarddel', id: p3.id, reason: 'Déjà dans la liste sous un autre nom' }); assert.strictEqual(r.status, 200);
   r = await call('tokC', { action: 'ping' }); const nref = r.json.notes.find((n) => /refusée/.test(n.text)); assert.ok(nref && /Raison : Déjà dans la liste/.test(nref.text)); ok('refus : le joueur reçoit la raison');
@@ -204,6 +204,33 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokA', { action: 'acardremove', id: n0 + 1 }); assert.strictEqual(cards.length, n0 + 1); ok('dernière carte supprimée pour de bon');
   r = await call('tokA', { action: 'acardremove', id: n0 }); assert.strictEqual(cards.length, n0); ok('puis la précédente');
   r = await call('tokB', { action: 'ping' });
+  // ---------- jury ----------
+  for (const d of (await call('tokA', { action: 'acards' })).json.drafts) await call('tokA', { action: 'acarddel', id: d.id });
+  r = await call('tokB', { action: 'jlcards' }); assert.strictEqual(r.status, 403); ok('jury : refusé à un joueur normal');
+  r = await call('tokB', { action: 'ajury' }); assert.strictEqual(r.status, 403); ok('jury : ajury refusé');
+  r = await call('tokA', { action: 'asetjury', id: 'B', on: true }); assert.strictEqual(r.status, 200);
+  r = await call('tokB', { action: 'me' }); assert.strictEqual(r.json.isJury, true); assert.strictEqual(r.json.isAdmin, false); ok('jury : le membre est reconnu, sans droits admin');
+  r = await call('tokB', { action: 'asetjury', id: 'C', on: true }); assert.strictEqual(r.status, 403); ok('jury : un membre ne nomme personne');
+  r = await call('tokB', { action: 'aplayers' }); assert.strictEqual(r.status, 403); r = await call('tokB', { action: 'acards' }); assert.strictEqual(r.status, 403); ok('jury : aucun accès au reste de l\'admin');
+  for (let k = 0; k < 10; k++) await call('tokE', { action: 'cardsubmit', name: 'Jur ' + k, cat: 0, rarity: k % 6 });
+  r = await call('tokE', { action: 'cardsubmit', name: 'Jur trop', cat: 0, rarity: 1 }); assert.strictEqual(r.status, 400);
+  const dr = (await call('tokA', { action: 'acards' })).json.drafts.filter((x) => x.status === 'new');
+  r = await call('tokB', { action: 'jlcards' }); assert.ok(!r.json.items.some((x) => x.draft)); ok('jury : propositions non acceptées invisibles');
+  await call('tokA', { action: 'acardaccept', id: dr[0].id }); await call('tokA', { action: 'acardaccept', id: dr[1].id });
+  r = await call('tokE', { action: 'cardsubmit', name: 'Jur libre', cat: 0, rarity: 1 }); assert.strictEqual(r.status, 200); ok('acceptée = place libérée pour proposer d\'autres cartes');
+  r = await call('tokB', { action: 'jlcards' }); const dk = r.json.items.filter((x) => x.draft); assert.strictEqual(dk.length, 2); assert.ok(r.json.items.some((x) => !x.draft)); ok('jury : voit les cartes acceptées + celles du site');
+  const k0 = dk[0].k, k1 = dk[1].k, kc = r.json.items.find((x) => !x.draft).k;
+  r = await call('tokB', { action: 'jlsave', t: { [k0]: '5', [k1]: '1', [kc]: '3', zzz: '2', [k0 + 'x']: '4' }, o: [k1, k0, 'nope'] }); assert.strictEqual(r.status, 200);
+  r = await call('tokB', { action: 'jlcards' }); assert.deepStrictEqual(r.json.jl.t, { [k0]: '5', [k1]: '1', [kc]: '3' }); assert.deepStrictEqual(r.json.jl.o, [k1, k0]); ok('jury : tier list enregistrée (clés invalides ignorées)');
+  r = await call('tokB', { action: 'jlsave', t: { [k0]: '9' }, o: [] }); r = await call('tokB', { action: 'jlcards' }); assert.deepStrictEqual(r.json.jl.t, {}); ok('jury : niveau invalide ignoré');
+  await call('tokB', { action: 'jlsave', t: { [k0]: '5', [k1]: '1' }, o: [k0, k1] });
+  r = await call('tokA', { action: 'ajury' }); assert.strictEqual(r.json.lists.length, 0); ok('jury : rien reçu avant l\'envoi');
+  r = await call('tokB', { action: 'jlsend' }); assert.strictEqual(r.status, 200);
+  await call('tokB', { action: 'jlsave', t: { [k0]: '0' }, o: [k0] });
+  r = await call('tokA', { action: 'ajury' }); assert.strictEqual(r.json.lists.length, 1); assert.strictEqual(r.json.lists[0].t[k0], '5'); assert.strictEqual(r.json.avg[k0].avg, 5); assert.strictEqual(r.json.jurors.length, 1); ok('jury : le propriétaire reçoit la liste envoyée (pas les modifs non envoyées)');
+  r = await call('tokA', { action: 'ping' }); assert.ok(r.json.notes.some((x) => /tier list jury/.test(x.text))); ok('jury : le propriétaire est prévenu de l\'envoi');
+  r = await call('tokA', { action: 'asetjury', id: 'B', on: false }); r = await call('tokB', { action: 'jlcards' }); assert.strictEqual(r.status, 403); ok('jury : retrait du rôle');
+  for (const d of (await call('tokA', { action: 'acards' })).json.drafts) await call('tokA', { action: 'acarddel', id: d.id });
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 V-Bucks, 10 packs)');

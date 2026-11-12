@@ -25,6 +25,9 @@ module.exports = function fakeDb(cards, validCodes) {
     },
     async nameTaken(name, uid) { return [...profiles.values()].some((q) => q.user_id !== uid && String(q.name).toLowerCase() === name.toLowerCase()); },
     async isAdmin(uid) { return !!(profiles.get(uid) || {}).is_admin; },
+    async isJury(uid) { return !!(profiles.get(uid) || {}).is_jury; },
+    async setJury(uid, on) { const p = profiles.get(uid); if (p) p.is_jury = !!on; },
+    async listJurors() { return [...profiles.values()].filter((p) => p.is_jury).map((p) => ({ id: p.user_id, name: p.name, avatar: p.avatar || '' })); },
     async loadSave(uid) { await Promise.resolve(); const r = saves.get(uid); return r ? { data: JSON.parse(JSON.stringify(r.data)), version: r.version } : null; },
     async saveSave(uid, S, version, sum) {
       await new Promise((r) => setImmediate(r)); // laisse d'autres requêtes s'intercaler, comme en vrai
