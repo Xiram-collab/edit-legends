@@ -80,8 +80,13 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
 
   // ouverture des packs en attente
   r = await call('tokA', { action: 'admin', a: 'wpa' });
-  for (const g of [0, 2, 3, 5]) { r = await call('tokA', { action: 'openwp', g }); assert.strictEqual(r.status, 200); }
-  assert.strictEqual(r.json.cards.length, 1); assert.strictEqual(cards[r.json.cards[0]][2], 5); ok('packs en attente : Mythique = 1 carte Mythique');
+  for (const g of [0, 2, 3]) { r = await call('tokA', { action: 'openwp', g }); assert.strictEqual(r.status, 200); }
+  const mids = []; cards.forEach((c, i) => { if (c && !c[5] && c[2] === 5) mids.push(i); });
+  const nonM = cards.findIndex((c) => c && c[2] !== 5);
+  r = await call('tokA', { action: 'openwp', g: 5 }); assert.strictEqual(r.status, 400); ok('Mythique au choix : refusé sans choix');
+  r = await call('tokA', { action: 'openwp', g: 5, card: nonM }); assert.strictEqual(r.status, 400); ok('Mythique au choix : une carte non Mythique est refusée');
+  r = await call('tokA', { action: 'openwp', g: 5, card: mids[mids.length - 1] }); assert.strictEqual(r.status, 200);
+  assert.deepStrictEqual(r.json.cards, [mids[mids.length - 1]]); ok('Mythique au choix : le joueur reçoit exactement la carte choisie');
   r = await call('tokA', { action: 'openwp', g: 4 }); assert.strictEqual(r.status, 400); ok('pack en attente inexistant refusé');
 
   // préférences : validées
