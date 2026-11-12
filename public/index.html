@@ -379,6 +379,19 @@ main#main{min-height:60vh}
 .cfx{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:4}
 .cfx i{position:absolute;width:8px;height:14px;border-radius:2px;animation:cf 1.5s cubic-bezier(.1,.7,.3,1) forwards}
 @keyframes cf{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+.acct{max-width:520px;width:100%;text-align:left;max-height:92vh;overflow-y:auto}
+.achead{display:flex;align-items:center;gap:14px;margin-bottom:6px}.achead .atx{flex:1;min-width:0}.achead h2{margin:0;font-size:22px;overflow-wrap:anywhere}
+.acs{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:6px 14px 10px;margin:12px 0}
+.acs h3{margin:8px 0 4px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.setrow{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 0;border:0;border-top:1px solid var(--line);border-radius:0;background:none;box-shadow:none;cursor:pointer}
+.acs h3+.setrow,.acs h3+.setf{border-top:0}
+.setrow .atx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.setf{display:flex;gap:8px;align-items:center;padding:8px 0 2px}.setf .inp{flex:1;min-width:0;text-transform:none;letter-spacing:normal;font-family:inherit}
+.ahint{margin:4px 0 6px}.lnk{background:none;border:0;color:var(--cy,#27e0ff);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+.sw{flex:none}.sw input{appearance:none;-webkit-appearance:none;width:46px;height:26px;border-radius:13px;background:#2a2560;position:relative;cursor:pointer;margin:0;border:1px solid var(--line);transition:background .2s}
+.sw input::after{content:"";position:absolute;left:3px;top:2px;width:20px;height:20px;border-radius:50%;background:#fff!important;transition:left .2s}
+.sw input:checked{background:linear-gradient(135deg,#7c5cff,#27e0ff)}.sw input:checked::after{left:22px}
+.dng{border-color:#ff5c7a!important;color:#ff8da0!important}.alinks{text-align:center;margin:8px 0 2px}
 .cform.plain input{text-transform:none;letter-spacing:normal;font-family:inherit;text-align:left;font-size:15px}
 .cform{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .cform input{background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:10px 12px;font:700 1.1em ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;width:11em;text-align:center}
@@ -1250,11 +1263,17 @@ function boot(){var cfg=window.EL_CONFIG||{},started=false;
  $('logout').onclick=doLogout;
  $('acct').onclick=openAcct;$('bell').onclick=openNotifs}
 function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
- d.innerHTML='<div class="pickbox wpbox"><h2>Mon compte</h2><div class="pf-head">'+uav(PROFILE||{},true)+'<div><h3 style="margin:0">'+esc(PROFILE&&PROFILE.name||'')+'</h3><span class="mut sm">Connecté avec Discord</span></div></div><div class="bar"><button class="btn sm" id="alo">Se déconnecter</button></div>'+
-  '<h3 style="margin:14px 0 6px">Profil</h3><div class="bar"><input id="anm" class="inp" maxlength="20" placeholder="Pseudo dans le jeu" value="'+esc(PROFILE&&PROFILE.custom||'')+'" style="max-width:220px"><button class="btn sm gold" id="ansv">Enregistrer</button>'+(PROFILE&&PROFILE.custom?'<button class="btn sm ghost" id="ards">Pseudo Discord ('+esc(PROFILE.discordName||'')+')</button>':'')+'</div><p class="mut sm" style="margin:4px 0 8px">2 à 20 caractères. Laisse vide pour reprendre ton pseudo Discord.</p><label class="chk"><input type="checkbox" id="aav"'+(PROFILE&&PROFILE.noAvatar?'':' checked')+'> Afficher mon avatar Discord</label>'+
-  '<h3 style="margin:14px 0 6px">Confidentialité</h3><label class="chk"><input type="checkbox" id="ahide"'+(S&&S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:6px 0 10px">Décoché, seuls tes amis peuvent voir ton profil. Ton pseudo et ton avatar sont visibles des autres joueurs.</p><label class="chk"><input type="checkbox" id="apres"'+(S&&S.hidep?'':' checked')+'> Montrer à mes amis quand je suis en ligne (pastille)</label><p class="mut sm" style="margin:6px 0 12px">Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.</p>'+
-  '<p class="mut sm">Supprimer ton compte efface définitivement ta collection, tes V-Bucks et tes packs. Les codes déjà utilisés restent utilisés.</p><div class="bar"><button class="btn sm ghost" id="adel">Supprimer mon compte</button></div>'+
-  '<p class="mut sm"><a href="/confidentialite.html">Confidentialité</a> · <a href="/mentions.html">Mentions légales</a> · <a href="/cgu.html">CGU</a></p><button class="btn ghost sm" id="pkx">Fermer</button></div>';
+ var sw=function(id,on,t,sub){return '<label class="setrow"><span class="atx"><b>'+t+'</b><span class="mut sm">'+sub+'</span></span><span class="sw"><input type="checkbox" id="'+id+'"'+(on?' checked':'')+'></span></label>'};
+ d.innerHTML='<div class="pickbox acct"><div class="achead">'+uav(PROFILE||{},true)+'<div class="atx"><h2>'+esc(PROFILE&&PROFILE.name||'')+'</h2><span class="mut sm">Connecté avec Discord</span></div><button class="btn sm ghost" id="pkx" aria-label="Fermer">✕</button></div>'+
+  '<section class="acs"><h3>Profil</h3><div class="setf"><input id="anm" class="inp" maxlength="20" placeholder="Pseudo dans le jeu" value="'+esc(PROFILE&&PROFILE.custom||'')+'"><button class="btn sm gold" id="ansv">Enregistrer</button></div>'+
+  '<p class="mut sm ahint">2 à 20 caractères. Vide = ton pseudo Discord'+(PROFILE&&PROFILE.discordName?' ('+esc(PROFILE.discordName)+')':'')+'.'+(PROFILE&&PROFILE.custom?' <button class="lnk" id="ards">Revenir au pseudo Discord</button>':'')+'</p>'+
+  sw('aav',!(PROFILE&&PROFILE.noAvatar),'Afficher mon avatar Discord','Décoché, une lettre est affichée à la place.')+'</section>'+
+  '<section class="acs"><h3>Confidentialité</h3>'+
+  sw('ahide',!(S&&S.hide),'Apparaître dans le classement','Décoché, seuls tes amis voient ton profil et tu n\'es plus trouvable dans la recherche.')+
+  sw('apres',!(S&&S.hidep),'Montrer quand je suis en ligne','Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.')+'</section>'+
+  '<section class="acs danger"><h3>Compte</h3><div class="setrow"><span class="atx"><b>Se déconnecter</b><span class="mut sm">Tu pourras te reconnecter avec Discord.</span></span><button class="btn sm" id="alo">Déconnexion</button></div>'+
+  '<div class="setrow"><span class="atx"><b>Supprimer mon compte</b><span class="mut sm">Efface ta collection, tes V-Bucks et tes packs. Les codes déjà utilisés restent utilisés.</span></span><button class="btn sm ghost dng" id="adel">Supprimer</button></div></section>'+
+  '<p class="mut sm alinks"><a href="/confidentialite.html">Confidentialité</a> · <a href="/mentions.html">Mentions légales</a> · <a href="/cgu.html">CGU</a></p></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  $('alo').onclick=doLogout;
  var identSave=function(body){api('setident',body).then(function(r){PROFILE=Object.assign(PROFILE||{},r.profile);boardData=null;friendsData=null;toast('Profil mis à jour');openAcct()}).catch(function(e){toast(e.message)})};
