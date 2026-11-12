@@ -613,13 +613,18 @@ function rOpen(){
  '<p class="mut">'+S.stock+' / '+MAXSTOCK+' packs en stock · 5 cartes par pack'+(S.stock<MAXSTOCK?' · prochain dans <b id="cd">'+cd()+'</b>':'')+'</p>'+
  '<button class="btn big-b" id="go"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack</button></div>';
  $('go').onclick=function(){openVia({action:'open',kind:'free'})}}
-function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col);act(body).then(function(r){setState(r.state);reveal(r.cards,prev)}).catch(function(){})}
+function packIntro(){busy=true;var ov=$('ov');ov.hidden=false;ov.className='over';
+ ov.innerHTML='<div class="aura" style="--a:#7c5cff"></div><div class="pk3d" id="pk3d"><div class="pkface ha">'+LOGO+'<b class="disp">PACK</b></div><div class="pkface hb">'+LOGO+'<b class="disp">PACK</b></div><div class="beam"></div></div><div class="hint">Ouverture…</div>';sfx('tear');return Date.now()}
+function packAbort(){busy=false;var ov=$('ov');ov.hidden=true;ov.className='';ov.innerHTML=''}
+function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),t0=packIntro();act(body).then(function(r){setState(r.state);reveal(r.cards,prev,t0)}).catch(function(){packAbort()})}
 /* ---------- cérémonie d'ouverture ---------- */
-function reveal(list,prev){prev=prev||{};busy=true;list=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]}).map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
+function reveal(list,prev,t0){prev=prev||{};busy=true;list=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]}).map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
  list.forEach(function(i){isNew.push(!prev[i]&&!tmp[i]);tmp[i]=1;best=Math.max(best,CARDS[i][2])});
- var ov=$('ov');ov.hidden=false;ov.className='over';
- ov.innerHTML='<div class="aura" style="--a:#7c5cff"></div><div class="pk3d" id="pk3d"><div class="pkface ha">'+LOGO+'<b class="disp">PACK</b></div><div class="pkface hb">'+LOGO+'<b class="disp">PACK</b></div><div class="beam"></div></div><div class="hint">Ouverture…</div>';
- sfx('tear');timer=setTimeout(burst,1900);
+ var ov=$('ov');
+ if(!t0){ov.hidden=false;ov.className='over';
+  ov.innerHTML='<div class="aura" style="--a:#7c5cff"></div><div class="pk3d" id="pk3d"><div class="pkface ha">'+LOGO+'<b class="disp">PACK</b></div><div class="pkface hb">'+LOGO+'<b class="disp">PACK</b></div><div class="beam"></div></div><div class="hint">Ouverture…</div>';
+  sfx('tear')}
+ timer=setTimeout(burst,t0?Math.max(250,1900-(Date.now()-t0)):1900);
  function flash(col){var f=document.createElement('div');f.className='flash';f.style.setProperty('--a',col);ov.appendChild(f);setTimeout(function(){f.remove()},900)}
  function burst(){if(phase!=='pack')return;phase='cards';clearTimeout(timer);sfx('boom');var pk=$('pk3d');if(pk)pk.classList.add('split');flash('#fff');burstFx(innerWidth/2,innerHeight/2,'#27e0ff',90,16);setTimeout(show,650)}
  function show(){flipped=false;var c=CARDS[list[step]],r=c[2];
@@ -1160,7 +1165,7 @@ function openWaiting(){if(busy)return;closePick();var d=document.createElement('
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  [].forEach.call(d.querySelectorAll('[data-ow]'),function(b){b.onclick=function(){openWaitingPack(+b.dataset.ow)}})}
 function openWaitingPack(g){if(busy||netBusy||!(S.wp[g]>0))return;closePick();var prev=Object.assign({},S.col);
- act({action:'openwp',g:g}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev)}).catch(function(){})}
+ var t0=packIntro();act({action:'openwp',g:g}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,t0)}).catch(function(){packAbort()})}
 /* ---------- événements ---------- */
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('button'))sfx('click');var b=e.target.closest&&e.target.closest('[data-t]');if(b&&$('ov').hidden){tab=b.dataset.t;render();scrollTo(0,0)}});
 $('mute').onclick=function(){S.mute=!S.mute;save();tabs();if(!S.mute)sfx('flip')};
