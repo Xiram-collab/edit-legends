@@ -1329,7 +1329,9 @@ function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(fu
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
  SB=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);
  var start=function(sess){if(started)return;started=true;SESSION=sess;loadMe().catch(function(e){started=false;showLogin(e.message||'Connexion impossible')})};
- SB.auth.getSession().then(function(r){if(r.data&&r.data.session)start(r.data.session);else showLogin()});
+ var aerr='';try{var qp=new URLSearchParams((location.hash||'').replace(/^#/,'')+'&'+(location.search||'').replace(/^\?/,''));aerr=qp.get('error_description')||qp.get('error')||''}catch(e){}
+ if(aerr){try{history.replaceState(null,'',location.pathname)}catch(e){}if(/email/i.test(aerr))aerr='Ton compte Discord n\'a pas d\'email vérifié. Vérifie ton email dans Discord (Paramètres > Mon compte) puis réessaie. ('+aerr+')';else aerr='Connexion refusée : '+aerr.replace(/\+/g,' ')}
+ SB.auth.getSession().then(function(r){if(r.data&&r.data.session)start(r.data.session);else showLogin(aerr)});
  SB.auth.onAuthStateChange(function(ev,sess){if(sess){SESSION=sess;start(sess)}else if(ev==='SIGNED_OUT'&&started)location.href='/'});
  [].forEach.call(document.querySelectorAll('.ldiscord'),function(b){b.onclick=function(){$('lmsg').textContent='';SB.auth.signInWithOAuth({provider:'discord',options:{redirectTo:location.origin+'/'}})}});
  $('logout').onclick=doLogout;
