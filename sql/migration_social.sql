@@ -47,23 +47,16 @@ alter table public.admin_log enable row level security;
 revoke all on public.friends, public.admin_log from anon, authenticated;
 grant all on public.friends, public.admin_log to service_role;
 
--- 6) Remplit le classement avec les collections déjà existantes
---    (points par carte différente : Commun 1, Atypique 2, Rare 4, Épique 10, Légendaire 25, Mythique 60)
+-- 6) Remplit le classement avec les collections déjà existantes.
+--    Score = points x exemplaires obtenus (doublons compris, même revendus) :
+--    Commun 1, Atypique 2, Rare 4, Épique 10, Légendaire 25, Mythique 60.
 update public.saves s set
-  owned   = x.o,
-  mythics = x.m,
-  score   = x.sc,
-  opened  = coalesce((s.data::jsonb ->> 'opened')::int, 0)
-from (
-  select s2.user_id,
-         count(*) filter (where e.value::int > 0) as o,
-         count(*) filter (where e.value::int > 0 and c.rarity = 5) as m,
-         coalesce(sum(case c.rarity when 0 then 1 when 1 then 2 when 2 then 4 when 3 then 10 when 4 then 25 else 60 end)
-                  filter (where e.value::int > 0), 0) as sc
-  from public.saves s2
-  cross join lateral jsonb_each_text(coalesce(s2.data::jsonb -> 'col', '{}'::jsonb)) e
-  join public.cards c on c.id = e.key::int
-  group by s2.user_id
-) x
-where x.user_id = s.user_id;
-update public.saves set hidden = coalesce((data::jsonb ->> 'hide')::boolean, false);
+  owned   = (select count(*) from jsonb_each_text(coalesce(s.data::jsonb -> 'col', '{}'::jsonb)) e where e.value::int > 0),
+  mythics = (select count(*) from jsonb_each_text(coalesce(s.data::jsonb -> 'col', '{}'::jsonb)) e
+             join public.cards c on c.id = e.key::int where e.value::int > 0 and c.rarity = 5),
+  score   = (select coalesce(sum(
+               (case c.rarity when 0 then 1 when 1 then 2 when 2 then 4 when 3 then 10 when 4 then 25 else 60 end)
+               * greatest(coalesce((s.data::jsonb -> 'col' ->> c.id::text)::int, 0), coalesce((s.data::jsonb -> 'pulled' ->> c.id::text)::int, 0))
+             ), 0) from public.cards c),
+  opened  = coalesce((s.data::jsonb ->> 'opened')::int, 0),
+  hidden  = coalesce((s.data::jsonb ->> 'hide')::boolean, false);
