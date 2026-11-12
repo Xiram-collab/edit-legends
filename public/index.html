@@ -1134,7 +1134,7 @@ function adCardsPanel(){
   [].forEach.call(document.querySelectorAll('[data-ce]'),function(b){b.onclick=function(){cardEdit=+b.dataset.ce;again();scrollTo(0,0)}})
  }).catch(function(e){if(adAlive('cards'))$('abody').innerHTML=errBox(e)})}
 /* ---------- jury : propositions, tier list, membres ---------- */
-var jurySub='tier',JY={items:[],t:{},o:[],sent:0,sel:null,sv:null,onlyNew:false};
+var jurySub='tier',JY={items:[],t:{},o:[],sent:0,sel:null,sv:null,all:false};
 function jyKey(i){return JY.items[i]}
 function adJury(){
  if(!ISOWNER)jurySub='tier';
@@ -1180,16 +1180,16 @@ function jyTier(put){
  }).catch(function(e){if(adAlive('jury'))$('abody').innerHTML=errBox(e)})}
 function jyDraw(){
  var IM={};JY.items.forEach(function(x){IM[x.k]=x});
- var shown=JY.items.filter(function(x){return !JY.onlyNew||x.draft}),nd=JY.items.filter(function(x){return x.draft}).length;
- var h='<div class="panel"><h3>Tier list du jury</h3><p class="mut sm" style="margin:0 0 10px">Classe les cartes proposées ('+nd+' en examen) et celles du site. Le contour de chaque carte est la rareté demandée par le joueur (ou la rareté actuelle si elle est publiée). Touche une carte puis une ligne pour la placer, ou glisse-la.</p>'+
-  '<div class="bar"><label class="mut sm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="jonly"'+(JY.onlyNew?' checked':'')+'> Seulement les cartes proposées</label><span class="mut sm" id="jst" style="margin-left:auto">Enregistré</span></div>'+
+ var shown=JY.items.filter(function(x){return JY.all||x.draft}),nd=JY.items.filter(function(x){return x.draft}).length;
+ var h='<div class="panel"><h3>Tier list du jury</h3><p class="mut sm" style="margin:0 0 10px">Classe les cartes proposées ('+nd+' en examen). Coche la case pour afficher aussi celles du site. Le contour de chaque carte est la rareté demandée par le joueur (ou la rareté actuelle si elle est publiée). Touche une carte puis une ligne pour la placer, ou glisse-la.</p>'+
+  '<div class="bar"><label class="mut sm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="jonly"'+(JY.all?' checked':'')+'> Afficher aussi toutes les cartes du site</label><span class="mut sm" id="jst" style="margin-left:auto">Enregistré</span></div>'+
   '<div class="bar"><button class="btn gold" id="jsend">'+(ISOWNER?'Compter ma tier list dans les avis':'Envoyer ma tier list')+'</button><span class="mut sm">'+(JY.sent?'Dernier envoi : '+new Date(JY.sent).toLocaleString('fr-FR'):'Pas encore envoyée')+'</span></div></div><div class="tiers jtiers">';
  TL.forEach(function(r){var L=r[0],m=shown.filter(function(x){return JY.t[x.k]===L});m.sort(function(a,b){return JY.o.indexOf(a.k)-JY.o.indexOf(b.k)});
   h+='<div class="trow" data-jz="'+L+'" style="--tc:'+r[2]+'"><div class="tl"><b>'+r[1]+'</b></div><div class="tz">'+m.map(jyChip).join('')+'</div></div>'});
  var un=shown.filter(function(x){return JY.t[x.k]===undefined});un.sort(function(a,b){return (b.draft?1:0)-(a.draft?1:0)||b.rarity-a.rarity||a.name.localeCompare(b.name)});
  h+='</div><div class="tpool" data-jz=""><h3>Non classés ('+un.length+')</h3><div class="tz">'+(un.map(jyChip).join('')||'<span class="mut sm">Tout est classé.</span>')+'</div></div>';
  if(!JY.put(h))return;
- $('jonly').onchange=function(){JY.onlyNew=this.checked;jyDraw()};
+ $('jonly').onchange=function(){JY.all=this.checked;jyDraw()};
  $('jsend').onclick=function(){var b=this;b.disabled=true;jyFlush().then(function(){return api('jlsend')}).then(function(){JY.sent=Date.now();toast(ISOWNER?'Ta tier list est comptée':'Tier list envoyée');jyDraw()}).catch(function(e){b.disabled=false;toast(e.message)})};
  [].forEach.call(document.querySelectorAll('[data-jz]'),function(z){
   z.onclick=function(){if(JY.sel)jySet(JY.sel,z.dataset.jz)};
@@ -1209,10 +1209,11 @@ function jyMem(put){
    '<div class="bar" style="margin-top:10px"><input id="jq" class="inp" style="max-width:260px" placeholder="Tape un pseudo pour ajouter un joueur" maxlength="40"><button class="btn sm" id="jqb">Chercher</button></div><div id="jres"></div></div>';
   h+='<div class="panel"><h3>Tier lists reçues ('+aj.lists.length+')</h3>'+(aj.lists.length?aj.lists.map(function(l){
     var rows=TL.map(function(t){var m=Object.keys(l.t).filter(function(k){return l.t[k]===t[0]&&IM[k]}).sort(function(a,b){return l.o.indexOf(a)-l.o.indexOf(b)});return '<div class="mut sm"><b style="color:'+t[2]+'">'+t[1]+'</b> : '+(m.map(function(k){return esc(IM[k].name)}).join(', ')||'-')+'</div>'}).join('');
-    return '<details class="dr"><summary><b>'+esc(l.name)+'</b> <span class="mut sm">· envoyée le '+new Date(l.sent).toLocaleString('fr-FR')+' · '+Object.keys(l.t).length+' cartes</span></summary><div style="margin-top:8px">'+rows+'</div></details>'}).join(''):'<p class="mut sm" style="margin:0">Aucune tier list reçue.</p>')+'</div>';
+    return '<details class="dr"><summary><b>'+esc(l.name)+'</b> <span class="mut sm">· envoyée le '+new Date(l.sent).toLocaleString('fr-FR')+' · '+Object.keys(l.t).length+' cartes</span></summary><div style="margin-top:8px">'+rows+'<div class="bar"><button class="btn sm ghost" data-ldel="'+l.id+'">Supprimer cette tier list</button></div></div></details>'}).join(''):'<p class="mut sm" style="margin:0">Aucune tier list reçue.</p>')+'</div>';
   var ks=Object.keys(aj.avg).filter(function(k){return IM[k]}).sort(function(a,b){return aj.avg[b].avg-aj.avg[a].avg});
   h+='<div class="panel"><h3>Moyenne des avis</h3>'+(ks.length?'<div class="tw"><table class="at"><tr><th></th><th>Carte</th><th>Demandée</th><th>Avis du jury</th><th>Nb</th></tr>'+ks.map(function(k){var x=IM[k],a=aj.avg[k],lv=Math.max(0,Math.min(5,Math.round(a.avg)));return '<tr><td>'+cthumb(x.img,x.name)+'</td><td>'+esc(x.name)+(x.draft?'':' <span class="mut sm">(publiée)</span>')+'</td><td style="color:'+HEX[x.rarity]+'">'+RAR[x.rarity].n+'</td><td style="color:'+HEX[lv]+'"><b>'+RAR[lv].n+'</b> <span class="mut sm">'+a.avg.toFixed(1)+'</span></td><td>'+a.n+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm" style="margin:0">Pas encore d\'avis.</p>')+'</div>';
   if(!put(h))return;
+  [].forEach.call(document.querySelectorAll('[data-ldel]'),function(b){twice(b,function(){api('ajurydel',{id:b.dataset.ldel}).then(function(){toast('Tier list supprimée');adJury()}).catch(function(e){toast(e.message)})})});
   [].forEach.call(document.querySelectorAll('[data-jrm]'),function(b){twice(b,function(){api('asetjury',{id:b.dataset.jrm,on:false}).then(function(){toast('Retiré du jury');adJury()}).catch(function(e){toast(e.message)})})});
   var srch=function(){var q=$('jq').value.trim();if(!q){$('jres').innerHTML='';return}api('aplayers',{q:q}).then(function(d){if($('jq').value.trim()!==q)return;var rows=(d.rows||[]).slice(0,8);$('jres').innerHTML=rows.length?rows.map(function(p){return '<div class="nrow"><div style="flex:1">'+esc(p.name)+'</div><button class="btn sm gold" data-jad="'+p.id+'">Ajouter au jury</button></div>'}).join(''):'<p class="mut sm">Aucun joueur trouvé.</p>';
    [].forEach.call(document.querySelectorAll('[data-jad]'),function(b){b.onclick=function(){b.disabled=true;api('asetjury',{id:b.dataset.jad,on:true}).then(function(){toast('Ajouté au jury');adJury()}).catch(function(e){b.disabled=false;toast(e.message)})}})}).catch(function(e){toast(e.message)})};

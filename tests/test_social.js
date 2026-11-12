@@ -228,6 +228,9 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'jlsend' }); assert.strictEqual(r.status, 200);
   await call('tokB', { action: 'jlsave', t: { [k0]: '0' }, o: [k0] });
   r = await call('tokA', { action: 'ajury' }); assert.strictEqual(r.json.lists.length, 1); assert.strictEqual(r.json.lists[0].t[k0], '5'); assert.strictEqual(r.json.avg[k0].avg, 5); assert.strictEqual(r.json.jurors.length, 1); ok('jury : le propriétaire reçoit la liste envoyée (pas les modifs non envoyées)');
+  r = await call('tokB', { action: 'ajurydel', id: 'B' }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'ajurydel', id: 'B' }); assert.strictEqual(r.status, 200); r = await call('tokA', { action: 'ajury' }); assert.strictEqual(r.json.lists.length, 0); assert.deepStrictEqual(r.json.avg, {}); ok('jury : le propriétaire supprime une tier list reçue');
+  await call('tokB', { action: 'jlsend' });
   r = await call('tokA', { action: 'ping' }); assert.ok(r.json.notes.some((x) => /tier list jury/.test(x.text))); ok('jury : le propriétaire est prévenu de l\'envoi');
   r = await call('tokA', { action: 'asetjury', id: 'B', on: false }); r = await call('tokB', { action: 'jlcards' }); assert.strictEqual(r.status, 403); ok('jury : retrait du rôle');
   for (const d of (await call('tokA', { action: 'acards' })).json.drafts) await call('tokA', { action: 'acarddel', id: d.id });
