@@ -387,7 +387,12 @@ main#main{min-height:60vh}
 .wpl{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.wpl .pk{width:132px;padding:12px;gap:6px}
 .sum .sw{cursor:pointer}
 /* communauté + admin */
-.subnav{margin:0 0 12px}
+.fl.subnav{gap:0;margin:0 0 16px;border-bottom:2px solid var(--line);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.fl.subnav button{background:none;border:0;border-bottom:3px solid transparent;border-radius:0;margin-bottom:-2px;padding:10px 14px;font-size:14px;font-weight:800;white-space:nowrap;color:var(--mut)}
+.fl.subnav button.on{background:none;color:#fff;border-bottom-color:#ff3d81}
+.fl.sorts{gap:6px}
+a.btn{display:inline-block;text-decoration:none;text-align:center}
+.sortlbl{display:block;margin:0 0 6px}
 .uav{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel2);border:1px solid var(--line)}.uav.big{width:64px;height:64px}
 .ph2{display:inline-grid;place-items:center;font-weight:800;color:var(--acc2)}
 .inp{width:100%;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit}
@@ -776,7 +781,7 @@ function rTest(){
 /* ================= COMMUNAUTÉ ================= */
 var SCORE=[1,2,4,10,25,60],ISOWNER=false;
 var comSub='board',boardSort='score',boardData=null,friendsData=null,searchT=0,searchSeq=0;
-var COMS=[['board','Classement'],['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Partage']];
+var COMS=[['board','Classement'],['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Partage'],['add','Ajouter une carte']];
 function uav(u,big){var c='uav'+(big?' big':'');return u&&u.avatar?'<img class="'+c+'" src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;'+c+' ph2&quot;>?</span>\'">':'<span class="'+c+' ph2">'+esc(((u&&u.name)||'?').charAt(0).toUpperCase())+'</span>'}
 function ago(iso){if(!iso)return 'jamais';var s=Math.max(0,(Date.now()-Date.parse(iso))/1000);if(s<90)return 'à l\'instant';if(s<3600)return 'il y a '+Math.round(s/60)+' min';if(s<86400)return 'il y a '+Math.round(s/3600)+' h';return 'il y a '+Math.round(s/86400)+' j'}
 function dfr(iso){return iso?new Date(iso).toLocaleDateString('fr-FR'):'?'}
@@ -788,7 +793,7 @@ function rCom(){
  var bind=function(){bindNav('data-cs',function(v){comSub=v;render();scrollTo(0,0)})};
  if(comSub==='team'||comSub==='tier'){(comSub==='team'?rTeam:rTier)();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
  $('main').innerHTML=nav+'<div id="cbody"></div>';bind();
- ({board:rBoard,friends:rFriends,share:rShare})[comSub]()}
+ ({board:rBoard,friends:rFriends,share:rShare,add:rAdd})[comSub]()}
 function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Erreur')+'</div>'}
 
 /* ----- classement ----- */
@@ -796,7 +801,7 @@ function rBoard(){
  var sorts=[['score','Score'],['owned','Cartes'],['mythics','Mythiques'],['opened','Packs ouverts']];
  function paint(d){if(!comAlive('board'))return;
   var val=function(r){return boardSort==='score'?fmt(r.score)+' pts':boardSort==='owned'?r.owned+' / '+CARDS.length:boardSort==='mythics'?r.mythics+(r.mythics>1?' Mythiques':' Mythique'):fmt(r.opened)+' packs'};
-  var h='<div class="fl">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
+  var h='<span class="mut sm sortlbl">Trier par</span><div class="fl sorts">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
   var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b>'+(me.rank&&d.total?'<span class="mut sm">sur '+d.total+' joueurs</span>':'')+'</div><div><span class="mut sm">Score</span><b>'+fmt(me.score)+'</b></div><div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+CARDS.length+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>'+
    (me.hidden?'<p class="mut sm" style="flex-basis:100%;margin:0">Tu es caché du classement (réglage dans l\'onglet Partage).</p>':(!me.owned?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre un pack pour entrer au classement.</p>':''))+'</div>';
   var row=function(r){return '<button class="lbr'+(r.rank<=3?' top'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk">'+r.rank+'</span>'+uav(r)+'<span class="nm">'+esc(r.name)+'</span><span class="lv">'+val(r)+'</span><span class="lsub mut">'+(boardSort==='score'?r.owned+' cartes · '+r.mythics+' M':'score '+fmt(r.score))+'</span></button>'};
@@ -860,6 +865,10 @@ function shareCollection(){
   var fb=function(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox wpbox"><h2>Mon lien de partage</h2><input class="inp" id="shu" readonly value="'+esc(url)+'"><div class="bar"><button class="btn sm" id="pkx">Fermer</button></div></div>';document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;$('shu').focus();$('shu').select()};
   var copy=function(){try{navigator.clipboard.writeText(url).then(function(){toast('Lien copié : colle-le où tu veux')},fb)}catch(e){fb()}};
   if(navigator.share){navigator.share({title:'Ma collection Edit Legends',text:tx,url:url}).catch(function(e){if(e&&e.name!=='AbortError')copy()})}else copy()}).catch(function(e){toast(e.message||'Erreur')})}
+function rAdd(){
+ $('cbody').innerHTML='<div class="panel"><h2>Ajouter une carte</h2><p class="mut">Il manque un éditeur, un influenceur ou un créateur ? Propose-le via le formulaire : nom, pseudo, réseaux, pourquoi il mérite une carte.</p>'+
+  '<p class="mut">Chaque mois, un jury est convoqué pour juger de la rareté finale des personnes ajoutées. La rareté que tu proposes n\'est donc qu\'une suggestion.</p>'+
+  '<div class="bar"><a class="btn gold" href="https://tally.so/r/q5agE5" target="_blank" rel="noopener">Ouvrir le formulaire</a></div></div>'}
 function rShare(){
  var owned=0,my=0;CARDS.forEach(function(c,i){if(S.col[i]){owned++;if(c[2]===5)my++}});
  $('cbody').innerHTML='<div class="panel"><h2>Partager ma collection</h2><p class="mut">Un lien public vers ta collection : tes cartes, ton score et tes Mythiques. Tes V-Bucks et tes packs ne sont jamais montrés.</p>'+
