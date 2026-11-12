@@ -1,23 +1,64 @@
-// Base de données en mémoire pour tester l'API sans Supabase.
+// Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
-  const users = { tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' }, tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' } };
+  const friends = [], logs = [];
+  const users = {
+    tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
+    tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
+    tokC: { id: 'C', discordId: '333', name: 'Carl', avatar: '' },
+  };
+  const sumOf = (uid) => { const r = saves.get(uid); return r && r.sum ? r.sum : null; };
+  const frow = (x, y) => friends.find((f) => (f.a === x && f.b === y) || (f.a === y && f.b === x)) || null;
   return {
-    saves, codes, profiles,
+    saves, codes, profiles, friends, logs,
     async getUser(t) { return users[t] || null; },
-    async upsertProfile(u, isAdmin) { const p = profiles.get(u.id) || {}; profiles.set(u.id, Object.assign(p, { name: u.name }, isAdmin ? { is_admin: true } : {})); },
+    async upsertProfile(u, isAdmin) {
+      const p = profiles.get(u.id) || { user_id: u.id, created_at: new Date(1e12).toISOString() };
+      profiles.set(u.id, Object.assign(p, { name: u.name, avatar: u.avatar, discord_id: u.discordId, last_seen: new Date(1e12).toISOString() }, isAdmin ? { is_admin: true } : {}));
+    },
     async isAdmin(uid) { return !!(profiles.get(uid) || {}).is_admin; },
     async loadSave(uid) { await Promise.resolve(); const r = saves.get(uid); return r ? { data: JSON.parse(JSON.stringify(r.data)), version: r.version } : null; },
-    async saveSave(uid, S, version) {
+    async saveSave(uid, S, version, sum) {
       await new Promise((r) => setImmediate(r)); // laisse d'autres requêtes s'intercaler, comme en vrai
       const r = saves.get(uid);
-      if (version < 0) { if (r) return false; saves.set(uid, { data: JSON.parse(JSON.stringify(S)), version: 0 }); return true; }
+      if (version < 0) { if (r) return false; saves.set(uid, { data: JSON.parse(JSON.stringify(S)), version: 0, sum }); return true; }
       if (!r || r.version !== version) return false;
-      saves.set(uid, { data: JSON.parse(JSON.stringify(S)), version: version + 1 }); return true;
+      saves.set(uid, { data: JSON.parse(JSON.stringify(S)), version: version + 1, sum }); return true;
     },
     async getCards() { return cards; },
     async useCode(code, uid) { const c = codes.get(code); if (!c || c.used) return false; c.used = true; c.by = uid; return true; },
     async unuseCode(code) { const c = codes.get(code); if (c) c.used = false; },
-    async deleteUser(uid) { saves.delete(uid); profiles.delete(uid); },
+    async deleteUser(uid) { saves.delete(uid); profiles.delete(uid); for (let i = friends.length - 1; i >= 0; i--) if (friends[i].a === uid || friends[i].b === uid) friends.splice(i, 1); },
+
+    async getProfile(id) { return profiles.get(id) || null; },
+    async getProfiles(ids) { const m = {}; ids.forEach((i) => { if (profiles.has(i)) m[i] = profiles.get(i); }); return m; },
+    async getSummaries(ids) { const m = {}; ids.forEach((i) => { const s = sumOf(i); if (s) m[i] = s; }); return m; },
+    async leaderboard(sort, limit) {
+      return [...saves.keys()].filter((id) => { const s = sumOf(id); return s && !s.hidden && s.owned > 0 && profiles.has(id); })
+        .map((id) => Object.assign({ id, name: profiles.get(id).name, avatar: '' }, sumOf(id)))
+        .sort((x, y) => y[sort] - x[sort]).slice(0, limit);
+    },
+    async rankOf(sort, v) { return 1 + [...saves.keys()].filter((id) => { const s = sumOf(id); return s && !s.hidden && s.owned > 0 && s[sort] > v; }).length; },
+    async searchProfiles(q, uid) {
+      return [...profiles.values()].filter((p) => p.user_id !== uid && p.name.toLowerCase().includes(q.toLowerCase()) && !(sumOf(p.user_id) || {}).hidden)
+        .map((p) => ({ id: p.user_id, name: p.name, avatar: '', owned: (sumOf(p.user_id) || {}).owned || 0, score: (sumOf(p.user_id) || {}).score || 0 }));
+    },
+    async listFriends(uid) { return friends.filter((f) => f.a === uid || f.b === uid).map((f) => ({ a: f.a, b: f.b, status: f.status })); },
+    async getFriendRow(x, y) { const f = frow(x, y); return f ? { a: f.a, b: f.b, status: f.status } : null; },
+    async addFriendRow(a, b) { friends.push({ a, b, status: 'pending' }); },
+    async setFriendStatus(a, b, status) { const f = friends.find((r) => r.a === a && r.b === b); if (f) f.status = status; },
+    async deleteFriend(x, y) { const f = frow(x, y); if (f) friends.splice(friends.indexOf(f), 1); },
+    async ensureShareId(uid) { const p = profiles.get(uid); if (!p.share_id) p.share_id = 'share' + uid.toLowerCase() + 'xyz'; return p.share_id; },
+    async getProfileByShare(sid) { const p = [...profiles.values()].find((q) => q.share_id === sid); return p ? { user_id: p.user_id, name: p.name, avatar: '' } : null; },
+
+    async allProfiles() { return [...profiles.values()]; },
+    async allSaves() { return [...saves.entries()].map(([user_id, r]) => ({ user_id, data: JSON.parse(JSON.stringify(r.data)) })); },
+    async listPlayers() {
+      return [...profiles.values()].map((p) => { const s = sumOf(p.user_id) || {}; return { id: p.user_id, name: p.name, avatar: '', discordId: p.discord_id || '', createdAt: p.created_at, lastSeen: p.last_seen, isAdmin: !!p.is_admin, owned: s.owned || 0, mythics: s.mythics || 0, score: s.score || 0, opened: s.opened || 0 }; });
+    },
+    async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
+    async setAdminFlag(uid, v) { const p = profiles.get(uid); if (p) p.is_admin = !!v; },
+    async logAdmin(e) { logs.push(Object.assign({ at: new Date(1e12).toISOString() }, e)); },
+    async recentLogs(n) { return logs.slice().reverse().slice(0, n); },
   };
 };

@@ -391,6 +391,37 @@ main#main{min-height:60vh}
 .wpbox{width:min(560px,100%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 .wpl{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.wpl .pk{width:132px;padding:12px;gap:6px}
 .sum .sw{cursor:pointer}
+/* communauté + admin */
+.subnav{margin:0 0 12px}
+.uav{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel2);border:1px solid var(--line)}.uav.big{width:64px;height:64px}
+.ph2{display:inline-grid;place-items:center;font-weight:800;color:var(--acc2)}
+.inp{width:100%;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit}
+.chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.panel+.panel,.tiles+.panel,.panel+.tiles{margin-top:12px}
+.panel h3{margin:0 0 10px}
+.mine{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-end;margin:0 0 12px}.mine div{display:flex;flex-direction:column}.mine b{font-size:1.35em}.mine .big{font-size:2em;color:var(--gold)}
+.lbx{padding:6px}.lbr{display:grid;grid-template-columns:34px 38px 1fr auto;grid-template-areas:"rk av nm lv" "rk av nm ls";align-items:center;gap:0 10px;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid #ffffff10;padding:8px 6px;border-radius:8px}
+.lbr:last-child{border-bottom:0}.lbr:hover{background:#ffffff0d}.lbr.me{background:#7c5cff22;outline:1px solid var(--acc)}
+.lbr .rk{grid-area:rk;font-weight:800;font-size:1.2em;color:var(--mut);text-align:center}.lbr .uav{grid-area:av}.lbr .nm{grid-area:nm;font-weight:700;font-size:1.05em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbr .lv{grid-area:lv;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}.lbr .lsub{grid-area:ls;text-align:right;font-size:.8em}
+.lbr.top1 .rk{color:#ffd24a}.lbr.top2 .rk{color:#d5dbe6}.lbr.top3 .rk{color:#e0985a}.lbr.top1{background:linear-gradient(90deg,#ffd24a18,transparent)}
+.frow{display:flex;align-items:center;gap:8px;border-bottom:1px solid #ffffff10;padding:6px 0}.frow:last-child{border-bottom:0}
+.fmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:transparent;border:0;text-align:left;padding:2px}.fmain .nm{font-weight:700}.fmain .mut{margin-left:auto;text-align:right}
+.fbtn{display:flex;gap:6px;flex:none}
+.profbox{width:min(900px,100%)}.pf-head{display:flex;align-items:center;gap:14px;margin:4px 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:10px 0}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column}.tile b{font-size:1.4em;font-variant-numeric:tabular-nums}.tile span{color:var(--mut);font-size:.85em}
+.xi{margin:10px 0}.xr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}.xr b{width:34px;color:var(--mut);font-size:.8em}.tn2{border:1px solid var(--rc,var(--line));border-radius:999px;padding:1px 10px;font-size:.85em}
+.tw{overflow-x:auto}.at{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.at th{text-align:left;color:var(--mut);font-size:.8em;text-transform:uppercase;letter-spacing:.05em;padding:6px 10px;white-space:nowrap}.at td{padding:7px 10px;border-top:1px solid #ffffff10;white-space:nowrap}
+.at tr.clk{cursor:pointer}.at tr.clk:hover td{background:#ffffff0a}.at .who{display:flex;align-items:center;gap:10px}.at .who .uav{width:26px;height:26px}
+.tag{background:var(--acc);color:#fff;border-radius:6px;padding:1px 7px;font-size:.65em;font-weight:800;letter-spacing:.06em;vertical-align:middle}
+.tag2{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.9em;margin:3px 6px 3px 0}.tag2:hover{border-color:var(--acc2)}
+.own{display:flex;flex-wrap:wrap}.myth{padding:8px 0;border-top:1px solid #ffffff10}.myth:first-of-type{border-top:0}
+.role{border-color:var(--acc)}.role b{color:var(--gold);margin-right:6px}
+.wpa{display:grid;gap:8px}.wpr{display:flex;align-items:center;gap:10px;border-left:4px solid var(--c);background:var(--panel2);border-radius:8px;padding:6px 10px}.wpr span{flex:1}.wpr b{min-width:30px;text-align:right;font-size:1.2em}
+.arows{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px}.arow{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 8px;opacity:.65}.arow.has{opacity:1;border-color:var(--c)}
+.arow .an{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.arow .ac{min-width:26px;text-align:right;font-weight:800}
+@media(max-width:520px){.lbr{grid-template-columns:28px 34px 1fr auto}.lbr .lsub{display:none}.lbr{grid-template-areas:"rk av nm lv"}}
 </style>
 </head>
 <body>
@@ -443,7 +474,7 @@ var PACKS=[
  {n:'Pack Légendaire+',g:4,price:3500,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
 var HOUR=3600000,MAXSTOCK=10,CUR='V-Bucks';
 var S=null,SB=null,SESSION=null,ISADMIN=false,PROFILE=null,prefT=0,netBusy=false;
-var PREFK=['team','tier','tord','tnames','jtier','jord','mute'];
+var PREFK=['team','tier','tord','tnames','jtier','jord','mute','hide'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
@@ -527,13 +558,14 @@ function setPurse(){var from=shown,to=S.money,t0=performance.now();
  (function f(t){var k=Math.min(1,(t-t0)/600),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));$('purse').innerHTML=''+fmt(v)+' '+CUR;if(k<1)requestAnimationFrame(f);else shown=to})(t0);
  $('purse').classList.remove('pulse');void $('purse').offsetWidth;$('purse').classList.add('pulse')}
 var IC={code:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',"home": "<path d=\"M3 11l9-8 9 8\"/><path d=\"M5 10v10h5v-6h4v6h5V10\"/>", "open": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2.5\"/><path d=\"M12 8l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8L8 10.9l2.8-.3z\"/>", "col": "<rect x=\"3\" y=\"4\" width=\"9\" height=\"13\" rx=\"2\"/><rect x=\"9\" y=\"7\" width=\"9\" height=\"13\" rx=\"2\"/><path d=\"M21 9v8\"/>", "shop": "<path d=\"M4 8h16l-1.5 11a2 2 0 01-2 1.7H7.5a2 2 0 01-2-1.7z\"/><path d=\"M8.5 8V6.5a3.5 3.5 0 017 0V8\"/>", "prob": "<path d=\"M5 20V11M12 20V4M19 20v-7\"/>", "test": "<path d=\"M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4A2 2 0 0019 18l-5-9V3\"/><path d=\"M7.5 15h9\"/>"};
+IC.com='<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.3c3 .2 5 2.5 5 5.7"/>';IC.admin='<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>';
 function ico(k){return '<svg class="ti" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'}
-function tabs(){var T=[['home','Accueil'],['open','Ouvrir'],['col','Collection'],['team','Équipe'],['tier','Tier list'],['shop','Boutique'],['code','Code'],['prob','Probabilités']];if(ISADMIN)T.push(['test','Test']);
+function tabs(){var T=[['home','Accueil'],['open','Ouvrir'],['col','Collection'],['shop','Boutique'],['code','Code'],['com','Communauté'],['prob','Probabilités']];if(ISADMIN)T.push(['admin','Admin']);
  $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
-function render(){if(!S)return;regen();if(tab==='test'&&!ISADMIN)tab='home';setPurse();tabs();wpBadge();
+function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
- ({home:rHome,open:rOpen,col:rCol,team:rTeam,tier:rTier,shop:rShop,code:rCode,prob:rProb,test:rTest})[tab]()}
+ ({home:rHome,open:rOpen,col:rCol,shop:rShop,code:rCode,com:rCom,prob:rProb,admin:rAdmin})[tab]()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
 function ring(){var f=S.stock>=MAXSTOCK?1:Math.min(1,(Date.now()-S.last)/HOUR),C=2*Math.PI*44;
  return '<div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="rb"/><circle cx="50" cy="50" r="44" class="rf" id="rf" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-f))+'"/></svg><div class="rt"><b id="cd">'+(S.stock>=MAXSTOCK?'PLEIN':cd())+'</b><small>prochain pack</small></div></div>'}
@@ -619,7 +651,7 @@ function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||
 function dupValue(){var t=0;CARDS.forEach(function(c,i){var n=S.col[i]||0;if(n>1)t+=(n-1)*RAR[c[2]].v});return t}
 function rCol(){var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  var h='<div class="bar"><b>'+owned+' / '+CARDS.length+' cartes</b><div class="prog"><i style="width:'+(owned/CARDS.length*100)+'%"></i></div><label><input type="checkbox" id="dup"'+(dupOnly?' checked':'')+'> Voir seulement les doublons</label>'+
- '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button></div>';
+ '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn sm" id="shcol">Partager ma collection</button></div>';
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&n&&(!dupOnly||n>1))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
@@ -630,6 +662,7 @@ function rCol(){var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('main').innerHTML=h;
  $('dup').onchange=function(){dupOnly=this.checked;render()};
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
+ $('shcol').onclick=shareCollection;
  $('sellall').onclick=function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})};
  [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>1)act({action:'sell',i:i}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})}})}
 function rShop(){$('main').innerHTML='<p class="mut">Les packs payants n\'utilisent pas ton stock gratuit. Vends tes doublons pour gagner des '+CUR+'.</p><div class="shop">'+
@@ -724,7 +757,7 @@ var rstArm=false;
 function rTest(){
  var opts=CARDS.map(function(c,i){return '<option value="'+i+'">'+c[0]+' ('+RAR[c[2]].n+')</option>'}).join('');
  var b=function(l,a,v,cls){return '<button class="btn sm '+(cls||'')+'" data-g="'+a+'" data-v="'+v+'">'+l+'</button>'};
- $('main').innerHTML='<div class="panel"><h2>Mode test</h2><p class="mut">Réservé à ton compte administrateur. Ces actions sont exécutées et vérifiées par le serveur.</p>'+
+ $('main').innerHTML='<div class="panel"><h2>Mes outils</h2><p class="mut">Actions sur ton propre compte (pour tester le jeu). Pour agir sur un autre joueur, va dans l\'onglet Joueurs. Tout est exécuté et vérifié par le serveur.</p>'+
  '<h3 style="margin-top:14px">V-Bucks</h3><div class="bar">'+[100,1000,10000,100000].map(function(n){return b('+'+fmt(n),'m',n,'gold')}).join('')+b('Remettre à 0','m0',0,'ghost')+'</div>'+
  '<h3>Packs gratuits en stock</h3><div class="bar">'+[1,5,10,50].map(function(n){return b('+'+n,'s',n)}).join('')+b('Stock à 0','s0',0,'ghost')+'</div>'+
  '<h3>Ouvrir un pack directement</h3><div class="bar">'+b('Pack normal','p',0)+b('Rare+','p',2)+b('Épique+','p',3)+b('Légendaire+','p',4)+b('Ouvrir 10 packs','p10',0,'gold')+'</div>'+
@@ -733,7 +766,7 @@ function rTest(){
  '<h3>Roue</h3><div class="bar">'+b('Tester la roue (sans code)','wt',0,'gold')+b('+1 pack en attente de chaque','wpa',0)+'</div>'+
   '<h3>Temps</h3><div class="bar">'+b('Remplir le stock à 10','sfull',10)+'</div></div>';
  [].forEach.call(document.querySelectorAll('[data-g]'),function(el){el.onclick=function(){var a=el.dataset.g,v=+el.dataset.v;
-  if(a==='rst'&&!rstArm){rstArm=true;setTimeout(function(){if(rstArm){rstArm=false;if(tab==='test')rTest()}},4000);rTest();return}
+  if(a==='rst'&&!rstArm){rstArm=true;setTimeout(function(){if(rstArm){rstArm=false;if(tab==='admin')render()}},4000);render();return}
   if(a==='rst')rstArm=false;
   if((a==='wt'||a==='p'||a==='p10')&&(busy||spinning))return;
   var prev=Object.assign({},S.col);if(a==='wt'){tab='code';render()}
@@ -742,6 +775,207 @@ function rTest(){
    if(r.cards){reveal(r.cards,prev);return}
    var M={m:'+'+fmt(v)+' '+CUR,m0:'V-Bucks remis à 0',s:'+'+v+' pack'+(v>1?'s':''),s0:'Stock vidé',sfull:'Stock plein',c:'+1 carte',call:'+1 de chaque carte',creset:'Collection vidée',rst:'Obtenues et packs ouverts remis à 0',wpa:'Packs en attente ajoutés'};
    if(M[a])toast(M[a]);render()}).catch(function(){})}})}
+
+/* ================= COMMUNAUTÉ ================= */
+var SCORE=[1,2,4,10,25,60],ISOWNER=false;
+var comSub='board',boardSort='score',boardData=null,friendsData=null,searchT=0,searchSeq=0;
+var COMS=[['board','Classement'],['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Partage']];
+function uav(u,big){var c='uav'+(big?' big':'');return u&&u.avatar?'<img class="'+c+'" src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;'+c+' ph2&quot;>?</span>\'">':'<span class="'+c+' ph2">'+esc(((u&&u.name)||'?').charAt(0).toUpperCase())+'</span>'}
+function ago(iso){if(!iso)return 'jamais';var s=Math.max(0,(Date.now()-Date.parse(iso))/1000);if(s<90)return 'à l\'instant';if(s<3600)return 'il y a '+Math.round(s/60)+' min';if(s<86400)return 'il y a '+Math.round(s/3600)+' h';return 'il y a '+Math.round(s/86400)+' j'}
+function dfr(iso){return iso?new Date(iso).toLocaleDateString('fr-FR'):'?'}
+function subnavH(list,cur,attr){return '<div class="fl subnav">'+list.map(function(s){return '<button '+attr+'="'+s[0]+'"'+(cur===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>'}
+function bindNav(attr,fn){[].forEach.call(document.querySelectorAll('['+attr+']'),function(b){b.onclick=function(){fn(b.getAttribute(attr))}})}
+function comAlive(sub){return tab==='com'&&comSub===sub&&$('cbody')}
+function rCom(){
+ var nav=subnavH(COMS,comSub,'data-cs');
+ var bind=function(){bindNav('data-cs',function(v){comSub=v;render();scrollTo(0,0)})};
+ if(comSub==='team'||comSub==='tier'){(comSub==='team'?rTeam:rTier)();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
+ $('main').innerHTML=nav+'<div id="cbody"></div>';bind();
+ ({board:rBoard,friends:rFriends,share:rShare})[comSub]()}
+function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Erreur')+'</div>'}
+
+/* ----- classement ----- */
+function rBoard(){
+ var sorts=[['score','Score'],['owned','Cartes'],['mythics','Mythiques'],['opened','Packs ouverts']];
+ function paint(d){if(!comAlive('board'))return;
+  var val=function(r){return boardSort==='score'?fmt(r.score)+' pts':boardSort==='owned'?r.owned+' / '+CARDS.length:boardSort==='mythics'?r.mythics+(r.mythics>1?' Mythiques':' Mythique'):fmt(r.opened)+' packs'};
+  var h='<div class="fl">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
+  var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b></div><div><span class="mut sm">Score</span><b>'+fmt(me.score)+'</b></div><div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+CARDS.length+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>'+
+   (me.hidden?'<p class="mut sm" style="flex-basis:100%;margin:0">Tu es caché du classement (réglage dans l\'onglet Partage).</p>':(!me.owned?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre un pack pour entrer au classement.</p>':''))+'</div>';
+  h+='<div class="panel lbx">'+(d.rows.length?d.rows.map(function(r,k){return '<button class="lbr'+(k<3?' top'+(k+1):'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk">'+(k+1)+'</span>'+uav(r)+'<span class="nm">'+esc(r.name)+'</span><span class="lv">'+val(r)+'</span><span class="lsub mut">'+(boardSort==='score'?r.owned+' cartes · '+r.mythics+' M':'score '+fmt(r.score))+'</span></button>'}).join(''):'<p class="mut center">Personne au classement pour l\'instant.</p>')+'</div>'+
+   '<p class="mut sm">Score : chaque carte <b>différente</b> rapporte des points selon sa rareté ('+RAR.map(function(r,i){return r.n+' '+SCORE[i]}).join(', ')+'). Les doublons ne comptent pas. Touche un joueur pour voir son profil.</p>';
+  $('cbody').innerHTML=h;
+  bindNav('data-bs',function(v){boardSort=v;boardData=null;render()});
+  [].forEach.call(document.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}})}
+ if(boardData&&boardData.sort===boardSort)paint(boardData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
+ api('board',{sort:boardSort}).then(function(r){boardData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
+
+/* ----- profil d'un joueur ----- */
+function openProfile(id){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox profbox"><p class="mut center">Chargement…</p></div>';
+ document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};
+ api('profile',{id:id}).then(function(r){if($('pk')===d)paintProfile(d,r.profile)}).catch(function(e){if($('pk')!==d)return;d.firstChild.innerHTML='<p class="center">'+esc(e.message)+'</p><div class="center"><button class="btn sm" id="pkx">Fermer</button></div>';$('pkx').onclick=closePick})}
+function paintProfile(d,p){
+ var relB={none:'<button class="btn sm" data-fr="fadd">Ajouter en ami</button>',sent:'<button class="btn sm ghost" disabled>Demande envoyée</button><button class="btn sm ghost" data-fr="fremove">Annuler</button>',received:'<button class="btn sm gold" data-fr="faccept">Accepter la demande</button><button class="btn sm ghost" data-fr="fremove">Refuser</button>',friend:'<button class="btn sm ghost" data-fr="fremove">Retirer des amis</button>',self:''}[p.rel]||'';
+ var h='<div class="pickhd"><h3>Profil</h3><button class="btn sm" id="pkx">Fermer</button></div><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+'</h2><span class="mut sm">'+(p.rank?'#'+p.rank+' au classement · ':'')+'inscrit le '+dfr(p.since)+'</span></div></div>'+
+  '<div class="tiles"><div class="tile"><b>'+fmt(p.score)+'</b><span>score</span></div><div class="tile"><b>'+p.owned+' / '+CARDS.length+'</b><span>cartes</span></div><div class="tile"><b>'+p.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(p.opened)+'</b><span>packs ouverts</span></div></div>'+
+  '<div class="bar">'+relB+(ISADMIN&&p.rel!=='self'?'<button class="btn sm gold" id="pfadm">Gérer ce joueur</button>':'')+'</div>';
+ if(p.col){
+  var t=p.team||[],names=function(a){return a.map(function(i){var c=t[i]!=null&&CARDS[t[i]];return c?'<span class="tn2" style="--rc:'+HEX[c[2]]+'">'+esc(c[0])+'</span>':'<span class="tn2 mut">—</span>'}).join('')};
+  var any=t.some(function(x){return x!=null});
+  if(any)h+='<div class="panel xi"><h3>Son 11</h3><div class="xr"><b>ATT</b>'+names([9,10])+'</div><div class="xr"><b>MIL</b>'+names([5,6,7,8])+'</div><div class="xr"><b>DÉF</b>'+names([1,2,3,4])+'</div><div class="xr"><b>GB</b>'+names([0])+'</div></div>';
+  var shown=0;
+  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){if(c[2]===r&&p.col[i]>0)items.push(i)});if(!items.length)continue;shown+=items.length;
+   items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
+   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+items.length+' / '+CARDS.filter(function(c){return c[2]===r}).length+'</span></h3><div class="grid">'+items.map(function(i){return '<div class="item">'+cardHTML(i,{count:p.col[i]})+'</div>'}).join('')+'</div></div>'}
+  if(!shown)h+='<p class="mut center">Collection vide.</p>'}
+ else h+='<div class="panel center mut">'+(p.rel==='self'?'':'Ajoute '+esc(p.name)+' en ami (et attends qu\'il accepte) pour voir sa collection complète.')+'</div>';
+ d.firstChild.innerHTML=h;$('pkx').onclick=closePick;
+ [].forEach.call(d.querySelectorAll('[data-fr]'),function(b){b.onclick=function(){api(b.dataset.fr,{id:p.id}).then(function(r){friendsData=null;toast({fadd:'Demande envoyée',faccept:'Vous êtes amis',fremove:'Fait'}[b.dataset.fr]);openProfile(p.id);if(tab==='com'&&comSub==='friends')render()}).catch(function(e){toast(e.message)})}});
+ if($('pfadm'))$('pfadm').onclick=function(){closePick();tab='admin';adminSub='players';adminTarget=p.id;render();scrollTo(0,0)}}
+
+/* ----- amis ----- */
+function rFriends(){
+ function row(u,btns){return '<div class="frow"><button class="fmain" data-pf="'+esc(u.id)+'">'+uav(u)+'<span class="nm">'+esc(u.name)+'</span><span class="mut sm">'+(u.owned!=null?u.owned+' cartes · score '+fmt(u.score||0):'')+'</span></button><div class="fbtn">'+(btns||'')+'</div></div>'}
+ function listH(d){var h='';
+  if(d.incoming.length)h+='<div class="panel"><h3>Demandes reçues</h3>'+d.incoming.map(function(u){return row(u,'<button class="btn sm gold" data-fa="'+esc(u.id)+'">Accepter</button><button class="btn sm ghost" data-fx="'+esc(u.id)+'">Refuser</button>')}).join('')+'</div>';
+  h+='<div class="panel"><h3>Mes amis ('+d.friends.length+')</h3>'+(d.friends.length?d.friends.map(function(u){return row(u)}).join(''):'<p class="mut sm" style="margin:0">Pas encore d\'amis. Cherche un pseudo ci-dessus.</p>')+'</div>';
+  if(d.outgoing.length)h+='<div class="panel"><h3>Demandes envoyées</h3>'+d.outgoing.map(function(u){return row(u,'<button class="btn sm ghost" data-fx="'+esc(u.id)+'">Annuler</button>')}).join('')+'</div>';
+  return h}
+ function bindList(root){
+  [].forEach.call(root.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}});
+  [].forEach.call(root.querySelectorAll('[data-fa]'),function(b){b.onclick=function(){api('faccept',{id:b.dataset.fa}).then(function(){toast('Vous êtes amis');friendsData=null;render()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(root.querySelectorAll('[data-fx]'),function(b){b.onclick=function(){api('fremove',{id:b.dataset.fx}).then(function(){friendsData=null;render()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(root.querySelectorAll('[data-fadd]'),function(b){b.onclick=function(){b.disabled=true;api('fadd',{id:b.dataset.fadd}).then(function(r){b.textContent=r.rel==='friend'?'Amis':'Envoyée';friendsData=null;toast(r.rel==='friend'?'Vous êtes amis':'Demande envoyée');loadList()}).catch(function(e){b.disabled=false;toast(e.message)})}})}
+ $('cbody').innerHTML='<div class="panel"><h3>Ajouter un ami</h3><input id="fsr" class="inp" placeholder="Pseudo Discord du joueur (2 lettres minimum)" maxlength="40" autocomplete="off"><div id="fres"></div></div><div id="flist"></div>';
+ $('fsr').oninput=function(){clearTimeout(searchT);var q=this.value.trim(),seq=++searchSeq;
+  if(q.length<2){$('fres').innerHTML='';return}
+  searchT=setTimeout(function(){api('search',{q:q}).then(function(r){if(seq!==searchSeq||!$('fres'))return;
+   $('fres').innerHTML=r.rows.length?r.rows.map(function(u){return row(u,'<button class="btn sm" data-fadd="'+esc(u.id)+'">Ajouter</button>')}).join(''):'<p class="mut sm">Aucun joueur trouvé (le pseudo doit correspondre à son nom Discord affiché sur le site).</p>';bindList($('fres'))}).catch(function(){})},350)};
+ function loadList(){api('friends').then(function(d){friendsData=d;if(!comAlive('friends'))return;$('flist').innerHTML=listH(d);bindList($('flist'))}).catch(function(e){if(comAlive('friends'))$('flist').innerHTML=errBox(e)})}
+ if(friendsData){$('flist').innerHTML=listH(friendsData);bindList($('flist'))}
+ loadList()}
+
+/* ----- partage ----- */
+function shareCollection(){
+ api('share').then(function(r){var url=location.origin+'/c/'+r.sid,owned=0,my=0;CARDS.forEach(function(c,i){if(S.col[i]){owned++;if(c[2]===5)my++}});
+  var tx='Ma collection Edit Legends : '+owned+' / '+CARDS.length+' cartes'+(my?' dont '+my+' Mythique'+(my>1?'s':''):'')+'.';
+  var fb=function(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox wpbox"><h2>Mon lien de partage</h2><input class="inp" id="shu" readonly value="'+esc(url)+'"><div class="bar"><button class="btn sm" id="pkx">Fermer</button></div></div>';document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;$('shu').focus();$('shu').select()};
+  var copy=function(){try{navigator.clipboard.writeText(url).then(function(){toast('Lien copié : colle-le où tu veux')},fb)}catch(e){fb()}};
+  if(navigator.share){navigator.share({title:'Ma collection Edit Legends',text:tx,url:url}).catch(function(e){if(e&&e.name!=='AbortError')copy()})}else copy()}).catch(function(e){toast(e.message||'Erreur')})}
+function rShare(){
+ var owned=0,my=0;CARDS.forEach(function(c,i){if(S.col[i]){owned++;if(c[2]===5)my++}});
+ $('cbody').innerHTML='<div class="panel"><h2>Partager ma collection</h2><p class="mut">Un lien public vers ta collection : tes cartes, ton score et tes Mythiques. Tes V-Bucks et tes packs ne sont jamais montrés.</p>'+
+  '<div class="tiles"><div class="tile"><b>'+owned+' / '+CARDS.length+'</b><span>cartes</span></div><div class="tile"><b>'+my+'</b><span>Mythiques</span></div></div>'+
+  '<div class="bar"><button class="btn gold" id="shb">Partager ma collection</button></div></div>'+
+  '<div class="panel"><h3>Confidentialité</h3><label class="chk"><input type="checkbox" id="shh"'+(S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:8px 0 0">Ton pseudo et ton avatar Discord sont visibles des autres joueurs connectés. Décoché, seuls tes amis (et l\'administrateur) peuvent voir ton profil. Le lien de partage reste actif tant que tu ne supprimes pas ton compte.</p></div>';
+ $('shb').onclick=shareCollection;
+ $('shh').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')}}
+
+/* ================= ADMINISTRATION ================= */
+var adminSub='players',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
+var ADS=[['players','Joueurs'],['stats','Statistiques'],['tools','Mes outils'],['log','Journal']];
+function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
+function rAdmin(){
+ var nav=subnavH(ADS,adminSub,'data-as');
+ var bind=function(){bindNav('data-as',function(v){adminSub=v;adminTarget=null;render();scrollTo(0,0)})};
+ if(adminSub==='tools'){rTest();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
+ $('main').innerHTML=nav+'<div id="abody"><div class="panel center mut">Chargement…</div></div>';bind();
+ if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
+ if(adminSub==='stats')return adStats();
+ adLog()}
+function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (V-Bucks, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (V-Bucks, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
+
+/* ----- liste des joueurs ----- */
+function adPlayers(){
+ function paint(d){if(!adAlive('players')||adminTarget)return;
+  var rows=adminList.adm?d.rows.filter(function(r){return r.isAdmin}):d.rows;
+  $('abody').innerHTML=role()+'<div class="panel"><div class="bar"><input id="apq" class="inp" style="max-width:260px" placeholder="Chercher un pseudo ou un ID Discord" value="'+esc(adminList.q)+'">'+
+   '<select id="aps" class="sel">'+[['lastSeen','Dernière visite'],['score','Score'],['opened','Packs ouverts'],['createdAt','Inscription'],['name','Nom']].map(function(o){return '<option value="'+o[0]+'"'+(adminList.sort===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select>'+
+   '<label class="chk"><input type="checkbox" id="apa"'+(adminList.adm?' checked':'')+'> Admins seulement</label><span class="mut sm">'+d.total+' inscrit'+(d.total>1?'s':'')+'</span></div>'+
+   '<div class="tw"><table class="at"><tr><th>Joueur</th><th>Score</th><th>Cartes</th><th>Myth.</th><th>Packs ouverts</th><th>Vu</th><th>Inscrit</th></tr>'+
+   rows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'"><td><div class="who">'+uav(r)+esc(r.name)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td>'+fmt(r.score)+'</td><td>'+r.owned+' / '+CARDS.length+'</td><td>'+r.mythics+'</td><td>'+fmt(r.opened)+'</td><td>'+ago(r.lastSeen)+'</td><td>'+dfr(r.createdAt)+'</td></tr>'}).join('')+
+   '</table></div>'+(rows.length?'':'<p class="mut center">Aucun résultat.</p>')+(d.total>100?'<p class="mut sm">Les 100 premiers sont affichés : utilise la recherche.</p>':'')+'</div>';
+  var q=$('apq');q.oninput=function(){adminList.q=q.value;clearTimeout(adPlayers.t);adPlayers.t=setTimeout(function(){var pos=q.selectionStart;adPlayers.load(true)},300)};
+  $('aps').onchange=function(){adminList.sort=this.value;adPlayers.load()};
+  $('apa').onchange=function(){adminList.adm=this.checked;paint(adminData)};
+  [].forEach.call(document.querySelectorAll('[data-ap]'),function(tr){tr.onclick=function(){adminTarget=tr.dataset.ap;render();scrollTo(0,0)}})}
+ adPlayers.load=function(keepFocus){api('aplayers',{q:adminList.q,sort:adminList.sort}).then(function(d){adminData=d;paint(d);if(keepFocus&&$('apq')){var q=$('apq');q.focus();q.setSelectionRange(q.value.length,q.value.length)}}).catch(function(e){if(adAlive('players'))$('abody').innerHTML=errBox(e)})};
+ adPlayers.load()}
+
+/* ----- fiche d'un joueur ----- */
+var adP=null,adF={q:'',own:false},adArm='';
+function adPlayer(){
+ api('aplayer',{id:adminTarget}).then(function(d){adP=d;adPaint()}).catch(function(e){if(adAlive('players'))$('abody').innerHTML='<div class="bar"><button class="btn sm" id="abk">← Joueurs</button></div>'+errBox(e);if($('abk'))$('abk').onclick=function(){adminTarget=null;render()}})}
+function adDo(a,v,i){var y=scrollY;return api('apact',{id:adminTarget,a:a,v:v,i:i}).then(function(r){adP.state=r.state;adP.player.summary=r.summary;
+  if(PROFILE&&adminTarget===PROFILE.id)api('me').then(function(m){setState(m.state);setPurse()}).catch(function(){});
+  adPaint();scrollTo(0,y)}).catch(function(e){toast(e.message||'Erreur')})}
+function adPaint(){if(!adAlive('players')||!adP)return;
+ var p=adP.player,st=adP.state,sm=p.summary,y=scrollY;
+ var WP=WPT.concat([]);if(!WP.some(function(x){return x.g===4}))WP.splice(3,0,{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'});
+ var h='<div class="bar"><button class="btn sm" id="abk">← Joueurs</button></div>'+
+  '<div class="panel"><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+(p.isOwner?' <span class="tag">PROPRIÉTAIRE</span>':p.isAdmin?' <span class="tag">ADMIN</span>':'')+'</h2><span class="mut sm">ID Discord '+esc(p.discordId||'?')+' · inscrit le '+dfr(p.createdAt)+' · vu '+ago(p.lastSeen)+'</span></div></div>'+
+  '<div class="bar" style="margin-top:12px"><button class="btn sm" id="apv">Voir son profil public</button>'+(ISOWNER&&!p.isOwner?'<button class="btn sm '+(p.isAdmin?'ghost':'gold')+'" id="apadm">'+(p.isAdmin?'Retirer les droits admin':'Nommer admin')+'</button>':'')+'</div></div>'+
+  '<div class="tiles"><div class="tile"><b>'+fmt(st.money)+'</b><span>'+CUR+'</span></div><div class="tile"><b>'+st.stock+'</b><span>packs gratuits</span></div><div class="tile"><b>'+fmt(st.opened)+'</b><span>packs ouverts</span></div><div class="tile"><b>'+sm.owned+' / '+CARDS.length+'</b><span>cartes</span></div><div class="tile"><b>'+sm.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(sm.score)+'</b><span>score</span></div></div>'+
+  '<div class="panel"><h3>'+CUR+'</h3><div class="bar">'+[-10000,-1000,-100,100,1000,10000].map(function(n){return '<button class="btn sm '+(n<0?'ghost':'gold')+'" data-am="'+n+'">'+(n>0?'+':'')+fmt(n)+'</button>'}).join('')+'</div>'+
+  '<div class="bar"><input id="amv" class="inp" type="number" min="0" placeholder="Montant" style="max-width:150px"><button class="btn sm gold" id="amadd">Ajouter</button><button class="btn sm ghost" id="amsub">Retirer</button><button class="btn sm" id="amset">Définir à ce montant</button></div></div>'+
+  '<div class="panel"><h3>Packs gratuits en stock : '+st.stock+'</h3><div class="bar">'+[-5,-1,1,5,10].map(function(n){return '<button class="btn sm '+(n<0?'ghost':'')+'" data-as2="'+n+'">'+(n>0?'+':'')+n+'</button>'}).join('')+'</div></div>'+
+  '<div class="panel"><h3>Packs en attente (il les ouvre lui-même)</h3><div class="wpa">'+WP.map(function(x){return '<div class="wpr" style="--c:'+x.c+'"><span>'+x.n+'</span><b>'+(st.wp[x.g]||0)+'</b><button class="btn sm ghost" data-aw="'+x.g+'" data-d="-1">−</button><button class="btn sm" data-aw="'+x.g+'" data-d="1">+</button></div>'}).join('')+'</div></div>';
+ // cartes
+ h+='<div class="panel"><h3>Cartes ('+sm.owned+' / '+CARDS.length+')</h3><div class="bar"><input id="acq" class="inp" style="max-width:220px" placeholder="Chercher une carte" value="'+esc(adF.q)+'"><label class="chk"><input type="checkbox" id="aco"'+(adF.own?' checked':'')+'> Possédées seulement</label>'+
+  '<button class="btn sm ghost" id="acclr">'+(adArm==='cclear'?'Confirmer : vider la collection':'Vider la collection')+'</button><button class="btn sm ghost" id="acrst">'+(adArm==='rst'?'Confirmer : tout remettre à zéro':'Reset collection + stats')+'</button></div>';
+ var q=adF.q.toLowerCase();
+ for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){if(c[2]!==r)return;if(adF.own&&!st.col[i])return;if(q&&c[0].toLowerCase().indexOf(q)<0)return;items.push(i)});if(!items.length)continue;
+  items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
+  h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+'</h3><div class="arows">'+items.map(function(i){var n=st.col[i]||0;return '<div class="arow'+(n?' has':'')+'"><span class="an">'+esc(CARDS[i][0])+'</span><span class="ac">'+n+'</span><button class="btn sm ghost" data-ac="'+i+'" data-d="-1">−</button><button class="btn sm" data-ac="'+i+'" data-d="1">+</button></div>'}).join('')+'</div></div>'}
+ h+='</div>';
+ $('abody').innerHTML=h;
+ $('abk').onclick=function(){adminTarget=null;adP=null;adArm='';render();scrollTo(0,0)};
+ $('apv').onclick=function(){openProfile(p.id)};
+ if($('apadm'))$('apadm').onclick=function(){api('asetadmin',{id:p.id,v:!p.isAdmin}).then(function(r){p.isAdmin=r.isAdmin;toast(r.isAdmin?'Admin nommé':'Droits admin retirés');adPaint()}).catch(function(e){toast(e.message)})};
+ [].forEach.call(document.querySelectorAll('[data-am]'),function(b){b.onclick=function(){adDo('m',+b.dataset.am)}});
+ var amt=function(){return Math.max(0,Math.floor(+$('amv').value||0))};
+ $('amadd').onclick=function(){if(amt())adDo('m',amt())};$('amsub').onclick=function(){if(amt())adDo('m',-amt())};$('amset').onclick=function(){if($('amv').value!=='')adDo('mset',amt())};
+ [].forEach.call(document.querySelectorAll('[data-as2]'),function(b){b.onclick=function(){adDo('s',+b.dataset.as2)}});
+ [].forEach.call(document.querySelectorAll('[data-aw]'),function(b){b.onclick=function(){adDo('wp',+b.dataset.d,+b.dataset.aw)}});
+ [].forEach.call(document.querySelectorAll('[data-ac]'),function(b){b.onclick=function(){adDo('c',+b.dataset.d,+b.dataset.ac)}});
+ $('acq').oninput=function(){adF.q=this.value;var pos=this.selectionStart;adPaint();var e=$('acq');e.focus();e.setSelectionRange(pos,pos)};
+ $('aco').onchange=function(){adF.own=this.checked;adPaint()};
+ var arm=function(k){return function(){if(adArm!==k){adArm=k;adPaint();setTimeout(function(){if(adArm===k){adArm='';if(adAlive('players')&&adP)adPaint()}},4000);return}adArm='';adDo(k)}};
+ $('acclr').onclick=arm('cclear');$('acrst').onclick=arm('rst')}
+
+/* ----- statistiques globales ----- */
+function adStats(){
+ api('aover').then(function(d){if(!adAlive('stats'))return;
+  var T=d.totals,U=d.users,tile=function(b,s){return '<div class="tile"><b>'+b+'</b><span>'+s+'</span></div>'};
+  var h=role()+'<div class="panel"><h3>Joueurs</h3><div class="tiles">'+tile(fmt(U.total),'inscrits')+tile('+'+U.new24h,'nouveaux (24 h)')+tile('+'+U.new7d,'nouveaux (7 j)')+tile(U.active24h,'actifs (24 h)')+tile(U.active7d,'actifs (7 j)')+tile(U.admins,'admins')+'</div></div>'+
+   '<div class="panel"><h3>Activité du jeu</h3><div class="tiles">'+tile(fmt(T.opened),'packs ouverts')+tile(fmt(T.pulled),'cartes tirées')+tile(fmt(T.copies),'cartes en circulation')+tile(fmt(T.money),CUR+' détenus')+tile(fmt(T.stock),'packs gratuits en stock')+tile(fmt(d.codes.used)+' / '+fmt(d.codes.total),'codes de la roue utilisés')+'</div>'+
+   '<p class="mut sm" style="margin:10px 0 0">Packs en attente : '+WPT.map(function(x){return x.n+' '+fmt(T.wp[x.g]||0)}).join(' · ')+'</p></div>';
+  var pt=Math.max(1,T.pulled);
+  h+='<div class="panel"><h3>Tirages par rareté (réel contre théorique)</h3><div class="tw"><table class="at"><tr><th>Rareté</th><th>Cartes</th><th>Tirées</th><th>Part réelle</th><th>Part théorique</th><th>Exemplaires</th></tr>'+d.byRarity.slice().reverse().map(function(r){return '<tr><td style="color:'+HEX[r.r]+';font-weight:700">'+RAR[r.r].n+'</td><td>'+r.cards+'</td><td>'+fmt(r.pulled)+'</td><td>'+(r.pulled/pt*100).toFixed(2).replace('.',',')+' %</td><td>'+pctF(RAR[r.r].p)+'</td><td>'+fmt(r.copies)+'</td></tr>'}).join('')+'</table></div></div>';
+  h+='<div class="panel"><h3>Mythiques : qui les possède</h3>'+(d.mythics.length?d.mythics.map(function(m){return '<div class="myth"><b style="color:'+HEX[5]+'">'+esc(CARDS[m.id][0])+'</b> <span class="mut sm">'+m.owners.length+' propriétaire'+(m.owners.length>1?'s':'')+'</span><div class="own">'+(m.owners.length?m.owners.map(function(o){return '<button class="tag2" data-ap2="'+esc(o.id)+'">'+esc(o.name)+(o.count>1?' x'+o.count:'')+'</button>'}).join(''):'<span class="mut sm">Personne</span>')+'</div></div>'}).join(''):'<p class="mut">Aucune carte Mythique.</p>')+'</div>';
+  h+='<div class="panel"><h3>Toutes les cartes</h3><div class="bar"><input id="scq" class="inp" style="max-width:200px" placeholder="Chercher une carte"><select id="scr" class="sel"><option value="-1">Toutes raretés</option>'+RAR.map(function(r,i){return '<option value="'+i+'">'+r.n+'</option>'}).join('')+'</select><select id="scs" class="sel"><option value="pulled">Plus tirées</option><option value="owners">Plus de propriétaires</option><option value="rare">Moins tirées</option><option value="name">Nom</option></select></div><div id="sct"></div><p class="mut sm">Touche une carte pour voir qui l\'a tirée.</p></div>';
+  h+='<div class="panel"><h3>Dernières inscriptions</h3><div class="own">'+d.recent.map(function(u){return '<button class="tag2" data-ap2="'+esc(u.id)+'">'+esc(u.name)+' · '+dfr(u.createdAt)+'</button>'}).join('')+'</div></div>';
+  $('abody').innerHTML=h;
+  var toP=function(id){adminTarget=id;adminSub='players';render();scrollTo(0,0)};
+  [].forEach.call(document.querySelectorAll('[data-ap2]'),function(b){b.onclick=function(){toP(b.dataset.ap2)}});
+  function table(){var q=$('scq').value.toLowerCase(),rr=+$('scr').value,so=$('scs').value;
+   var rows=d.cards.filter(function(c){var k=CARDS[c.id];return (rr<0||k[2]===rr)&&(!q||k[0].toLowerCase().indexOf(q)>=0)});
+   rows.sort(function(a,b){return so==='name'?CARDS[a.id][0].localeCompare(CARDS[b.id][0],'fr'):so==='owners'?b.owners-a.owners:so==='rare'?a.pulled-b.pulled:b.pulled-a.pulled});
+   $('sct').innerHTML='<div class="tw"><table class="at"><tr><th>Carte</th><th>Rareté</th><th>Propriétaires</th><th>Tirée</th><th>Exemplaires</th></tr>'+rows.map(function(c){var k=CARDS[c.id];return '<tr class="clk" data-co="'+c.id+'"><td>'+esc(k[0])+'</td><td style="color:'+HEX[k[2]]+'">'+RAR[k[2]].n+'</td><td>'+c.owners+'</td><td>'+fmt(c.pulled)+' fois</td><td>'+fmt(c.copies)+'</td></tr>'}).join('')+'</table></div>';
+   [].forEach.call(document.querySelectorAll('[data-co]'),function(tr){tr.onclick=function(){adOwners(+tr.dataset.co)}})}
+  ['scq','scr','scs'].forEach(function(id){$(id).oninput=table;$(id).onchange=table});table()}).catch(function(e){if(adAlive('stats'))$('abody').innerHTML=errBox(e)})}
+function adOwners(card){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox profbox"><p class="mut center">Chargement…</p></div>';document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};
+ api('aowners',{card:card}).then(function(r){if($('pk')!==d)return;var c=CARDS[card];
+  d.firstChild.innerHTML='<div class="pickhd"><h3 style="color:'+HEX[c[2]]+'">'+esc(c[0])+'</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm">'+r.rows.length+' joueur'+(r.rows.length>1?'s':'')+' l\'ont tirée ou la possèdent.</p>'+
+   (r.rows.length?'<div class="tw"><table class="at"><tr><th>Joueur</th><th>Possède</th><th>Tirée</th></tr>'+r.rows.map(function(o){return '<tr class="clk" data-ow2="'+esc(o.id)+'"><td><div class="who">'+uav(o)+esc(o.name)+'</div></td><td>x'+o.count+'</td><td>'+o.pulled+' fois</td></tr>'}).join('')+'</table></div>':'')
+  ;$('pkx').onclick=closePick;
+  [].forEach.call(d.querySelectorAll('[data-ow2]'),function(tr){tr.onclick=function(){closePick();adminTarget=tr.dataset.ow2;adminSub='players';render();scrollTo(0,0)}})}).catch(function(e){if($('pk')===d){d.firstChild.innerHTML='<p class="center">'+esc(e.message)+'</p>'}})}
+
+/* ----- journal ----- */
+function adLog(){
+ api('alog').then(function(d){if(!adAlive('log'))return;
+  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Collection et stats remises à zéro','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
+  $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(d.rows.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr><td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+'</div>'}).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
 
 /* ---------- code / roue ---------- */
 var WH=[{n:'Rien',p:50,g:-1,c:'#5a6080',c2:'#2c3050'},{n:'Pack Normal',p:30,g:0,c:'#c3ccd9',c2:'#7d8799'},{n:'Pack Rare+',p:15,g:2,c:'#5aaeff',c2:'#1e63c9'},{n:'Pack Épique+',p:4,g:3,c:'#c77dff',c2:'#7a2fd1'},{n:'Carte Mythique',p:1,g:5,c:'#ff5c96',c2:'#c4124f'}];
@@ -809,7 +1043,7 @@ function rCode(){
  $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);this.value=v.replace(/(.{4})(?=.)/g,'$1-')}}
 
 /* ---------- packs en attente ---------- */
-var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:5,n:'Carte Mythique',l:'M',c:'#ff3d81'}];
+var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique',l:'M',c:'#ff3d81'}];
 function wpTotal(){var t=0;WPT.forEach(function(x){t+=S.wp[x.g]||0});return t}
 function wpBadge(){var b=$('pkb');if(!b){b=document.createElement('button');b.id='pkb';b.className='pkb';b.setAttribute('aria-label','Packs en attente');b.onclick=openWaiting;document.body.appendChild(b)}
  var n=wpTotal();b.hidden=n<1||!$('ov').hidden;
@@ -837,8 +1071,8 @@ function lpStart(){if(lpOn)return;lpOn=true;
    show();setTimeout(function(){lpT.push(setInterval(show,1000))},k*330)})}).catch(function(){})}
 function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
-function applyConfig(cfg){RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){if(cfg.WH[i])w.p=cfg.WH[i].p})}
-function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('logout').hidden=false;render()})}
+function applyConfig(cfg){if(cfg.SCORE)SCORE=cfg.SCORE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){if(cfg.WH[i])w.p=cfg.WH[i].p})}
+function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('logout').hidden=false;render()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
  SB=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);

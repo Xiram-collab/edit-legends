@@ -4,6 +4,6 @@
   "private": true,
   "description": "Edit Legends - cartes a collectionner de la scene Fortnite edit",
   "engines": { "node": ">=18" },
-  "scripts": { "test": "node tests/test.js" },
+  "scripts": { "test": "node tests/test.js && node tests/test_social.js" },
   "dependencies": { "@supabase/supabase-js": "2.45.4" }
 }

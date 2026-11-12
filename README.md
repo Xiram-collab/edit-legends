@@ -26,3 +26,9 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in sauvegarde-AAAA-MM-JJ.tar.g
 tar -xzf sauvegarde.tar.gz
 SUPABASE_URL=... SUPABASE_SECRET_KEY=... node scripts/restore.js backup
 ```
+
+## Communauté et administration
+
+- **Migration à lancer une fois** : `sql/migration_social.sql` (Supabase > SQL Editor > Run). Elle ajoute le classement, les amis, le lien de partage et le journal admin, et remplit le classement avec les collections existantes.
+- Onglet **Communauté** : classement (score, cartes, Mythiques, packs), amis (demande + acceptation, collection visible entre amis), Mon 11, tier list, partage de collection (`/c/<id>`, page publique sans V-Bucks).
+- Onglet **Admin** (propriétaire = `ADMIN_DISCORD_IDS`, admins nommés depuis la fiche d'un joueur) : liste des joueurs, fiche joueur (V-Bucks, packs gratuits, packs en attente, cartes +/-), statistiques globales, journal de toutes les actions.
