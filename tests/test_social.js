@@ -122,5 +122,17 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = { json: by[4] }; assert.deepStrictEqual(r.json.near.map((x) => x.rank), [3, 4]); ok('dernier : voisin du dessus seulement');
   r = { json: by[2] }; assert.deepStrictEqual(r.json.near.map((x) => x.rank), [2, 3]); ok('rang 2 : pas de doublon avec le top');
   r = { json: by[1] }; assert.strictEqual(r.json.near, null); ok('premier : pas de bloc voisins');
+  // notifications, annonces, présence cachée
+  await call('tokA', { action: 'fadd', id: 'E' });
+  r = await call('tokE', { action: 'ping' }); assert.strictEqual(r.json.reqs, 1); ok('ping : 1 demande d\'ami en attente');
+  r = await call('tokA', { action: 'ping' }); assert.strictEqual(r.json.reqs, 0); ok('ping : 0 demande pour l\'expéditeur');
+  await call('tokE', { action: 'faccept', id: 'A' });
+  r = await call('tokA', { action: 'friends' }); assert.ok(r.json.friends.some((f) => f.id === 'E' && f.lastSeen)); ok('présence visible par défaut');
+  await call('tokE', { action: 'prefs', prefs: { hidep: true } });
+  r = await call('tokA', { action: 'friends' }); assert.ok(r.json.friends.some((f) => f.id === 'E' && f.lastSeen === undefined)); ok('présence cachée si l\'ami la désactive');
+  r = await call('tokB', { action: 'apost', text: 'x' }); assert.strictEqual(r.status, 403); ok('annonce : refusée aux non-admins');
+  r = await call('tokA', { action: 'apost', text: 'Nouvelles cartes !' }); assert.strictEqual(r.status, 200);
+  r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.ann[0].text, 'Nouvelles cartes !'); ok('annonce publiée, vue par les joueurs');
+  r = await call('tokA', { action: 'adelann', id: r.json.ann[0].id }); r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.ann.length, 0); ok('annonce supprimée');
   console.log('\n' + n + ' vérifications réussies (social/admin)');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });

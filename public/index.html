@@ -408,7 +408,7 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 .lbr .lv{grid-area:lv;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}.lbr .lsub{grid-area:ls;text-align:right;font-size:.8em}
 .lbr.top1 .rk{color:#ffd24a}.lbr.top2 .rk{color:#d5dbe6}.lbr.top3 .rk{color:#e0985a}.lbr.top1{background:linear-gradient(90deg,#ffd24a18,transparent)}
 .frow{display:flex;align-items:center;gap:8px;border-bottom:1px solid #ffffff10;padding:6px 0}.frow:last-child{border-bottom:0}
-.fmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:transparent;border:0;text-align:left;padding:2px}.fmain .nm{font-weight:700}.fmain .mut{margin-left:auto;text-align:right}
+.fmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:transparent;border:0;text-align:left;padding:2px}.fmain .nm{font-weight:700}.fwho{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}.fwho .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.req{border:1px solid #ff3d8155;background:linear-gradient(135deg,#ff3d8118,#7b5cff12);border-radius:14px;padding:10px;margin-bottom:8px}.req .fmain{width:100%;padding:0}.rbtns{display:flex;gap:8px;margin-top:10px}.rbtns .btn{flex:1}.nb{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;border-radius:9px;background:#ff2d4a;color:#fff;font:800 10px/17px sans-serif;text-align:center;padding:0 4px;box-shadow:0 0 0 2px #0b0820,0 0 10px #ff2d4a99;pointer-events:none}.nb.inl{position:static;display:inline-block;vertical-align:middle;margin-left:6px;box-shadow:none}.mute.bell{position:relative}nav button{position:relative}.fl.subnav button{position:relative}.fl.subnav .nb{top:2px;right:-2px}.nrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #ffffff10}.nrow:last-child{border-bottom:0}.nrow .ni{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#ffffff14}.nrow p{margin:0}
 .fbtn{display:flex;gap:6px;flex:none}
 .profbox{width:min(900px,100%)}.pf-head{display:flex;align-items:center;gap:14px;margin:4px 0 12px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:10px 0}
@@ -431,7 +431,7 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 <body>
 <header>
   <h1 class="logo disp"><img src="img/logo.png" class="lg" alt="" width="44" height="44">Edit Legends</h1>
-  <div class="hr"><button class="mute" id="mute" aria-label="Son"></button><button class="mute" id="logout" aria-label="Se déconnecter" title="Se déconnecter" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button><button class="mute" id="acct" aria-label="Mon compte" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></button><div class="purse" id="purse"></div></div>
+  <div class="hr"><button class="mute bell" id="bell" aria-label="Notifications" title="Notifications" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 003.4 0"/></svg><span class="nb" id="nb" hidden></span></button><button class="mute" id="mute" aria-label="Son"></button><button class="mute" id="logout" aria-label="Se déconnecter" title="Se déconnecter" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button><button class="mute" id="acct" aria-label="Mon compte" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></button><div class="purse" id="purse"></div></div>
 </header>
 <nav role="tablist" id="tabs"></nav>
 <main id="main"></main>
@@ -478,7 +478,7 @@ var PACKS=[
  {n:'Pack Légendaire+',g:4,price:3500,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
 var HOUR=3600000,MAXSTOCK=10,CUR='V-Bucks';
 var S=null,SB=null,SESSION=null,ISADMIN=false,PROFILE=null,prefT=0,netBusy=false;
-var PREFK=['team','tier','tord','tnames','jtier','jord','mute','hide'];
+var PREFK=['team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
@@ -564,8 +564,23 @@ function setPurse(){var from=shown,to=S.money,t0=performance.now();
 var IC={code:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',"home": "<path d=\"M3 11l9-8 9 8\"/><path d=\"M5 10v10h5v-6h4v6h5V10\"/>", "open": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2.5\"/><path d=\"M12 8l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8L8 10.9l2.8-.3z\"/>", "col": "<rect x=\"3\" y=\"4\" width=\"9\" height=\"13\" rx=\"2\"/><rect x=\"9\" y=\"7\" width=\"9\" height=\"13\" rx=\"2\"/><path d=\"M21 9v8\"/>", "shop": "<path d=\"M4 8h16l-1.5 11a2 2 0 01-2 1.7H7.5a2 2 0 01-2-1.7z\"/><path d=\"M8.5 8V6.5a3.5 3.5 0 017 0V8\"/>", "prob": "<path d=\"M5 20V11M12 20V4M19 20v-7\"/>", "test": "<path d=\"M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4A2 2 0 0019 18l-5-9V3\"/><path d=\"M7.5 15h9\"/>"};
 IC.com='<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.3c3 .2 5 2.5 5 5.7"/>';IC.admin='<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>';
 function ico(k){return '<svg class="ti" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'}
+var NOTIF={reqs:0,ann:[]};
+function annSeen(){try{return +localStorage.getItem('el_ann')||0}catch(e){return 0}}
+function annUnread(){var m=annSeen();return NOTIF.ann.filter(function(a){return a.id>m}).length}
+function paintBell(){var b=$('nb');if(!b)return;var n=NOTIF.reqs+annUnread();b.hidden=!n;b.textContent=n>9?'9+':n}
+function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs;NOTIF.reqs=r.reqs||0;NOTIF.ann=r.ann||[];paintBell();if(old!==NOTIF.reqs&&S)tabs()}).catch(function(){})}
+function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>m)m=a.id});var un=annSeen();
+ var d=document.createElement('div');d.id='pk';d.className='pickov';
+ var h='<div class="pickbox wpbox"><h2>Notifications</h2>';
+ if(NOTIF.reqs)h+='<div class="nrow"><span class="ni">+</span><div><p><b>'+NOTIF.reqs+' demande'+(NOTIF.reqs>1?'s':'')+' d\'ami en attente</b></p><button class="btn sm gold" id="nfr" style="margin-top:6px">Voir les demandes</button></div></div>';
+ h+=NOTIF.ann.map(function(a){return '<div class="nrow"><span class="ni">!</span><div><p>'+(a.id>un?'<span class="nb inl">nouveau</span>':'')+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div></div>'}).join('');
+ if(!NOTIF.reqs&&!NOTIF.ann.length)h+='<p class="mut center">Rien de nouveau pour l\'instant.</p>';
+ h+='<div class="bar"><button class="btn sm ghost" id="nx">Fermer</button></div></div>';d.innerHTML=h;document.body.appendChild(d);
+ d.onclick=function(e){if(e.target===d)closePick()};$('nx').onclick=closePick;
+ var f=$('nfr');if(f)f.onclick=function(){closePick();tab='com';comSub='friends';render();scrollTo(0,0)};
+ try{if(m)localStorage.setItem('el_ann',m)}catch(e){}paintBell()}
 function tabs(){var T=[['home','Accueil'],['open','Ouvrir'],['col','Collection'],['com','Communauté'],['shop','Boutique'],['code','Code'],['prob','Probabilités']];if(ISADMIN)T.push(['admin','Admin']);
- $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+'</button>'}).join('');
+ $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
 function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
@@ -787,7 +802,7 @@ var COMS=[['board','Classement'],['friends','Amis'],['team','Mon 11'],['tier','T
 function uav(u,big){var c='uav'+(big?' big':'');return u&&u.avatar?'<img class="'+c+'" src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;'+c+' ph2&quot;>?</span>\'">':'<span class="'+c+' ph2">'+esc(((u&&u.name)||'?').charAt(0).toUpperCase())+'</span>'}
 function ago(iso){if(!iso)return 'jamais';var s=Math.max(0,(Date.now()-Date.parse(iso))/1000);if(s<90)return 'à l\'instant';if(s<3600)return 'il y a '+Math.round(s/60)+' min';if(s<86400)return 'il y a '+Math.round(s/3600)+' h';return 'il y a '+Math.round(s/86400)+' j'}
 function dfr(iso){return iso?new Date(iso).toLocaleDateString('fr-FR'):'?'}
-function subnavH(list,cur,attr){return '<div class="fl subnav">'+list.map(function(s){return '<button '+attr+'="'+s[0]+'"'+(cur===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>'}
+function subnavH(list,cur,attr){return '<div class="fl subnav">'+list.map(function(s){return '<button '+attr+'="'+s[0]+'"'+(cur===s[0]?' class="on"':'')+'>'+s[1]+(attr==='data-cs'&&s[0]==='friends'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+'</button>'}).join('')+'</div>'}
 function bindNav(attr,fn){[].forEach.call(document.querySelectorAll('['+attr+']'),function(b){b.onclick=function(){fn(b.getAttribute(attr))}})}
 function comAlive(sub){return tab==='com'&&comSub===sub&&$('cbody')}
 function rCom(){
@@ -840,9 +855,11 @@ function paintProfile(d,p){
 
 /* ----- amis ----- */
 function rFriends(){
- function row(u,btns){return '<div class="frow"><button class="fmain" data-pf="'+esc(u.id)+'">'+uav(u)+'<span class="nm">'+(u.lastSeen!==undefined?'<i class="dot '+dotC(u.lastSeen)+'"></i> ':'')+esc(u.name)+'</span><span class="mut sm">'+(u.lastSeen!==undefined?(dotC(u.lastSeen)==='gn'?'En ligne · ':'Vu '+ago(u.lastSeen)+' · '):'')+(u.owned!=null?u.owned+' cartes · score '+fmt(u.score||0):'')+'</span></button><div class="fbtn">'+(btns||'')+'</div></div>'}
+ function who(u){return '<span class="fwho"><span class="nm">'+(u.lastSeen!==undefined?'<i class="dot '+dotC(u.lastSeen)+'"></i> ':'')+esc(u.name)+'</span><span class="mut sm">'+(u.lastSeen!==undefined?(dotC(u.lastSeen)==='gn'?'En ligne':'Vu '+ago(u.lastSeen))+(u.owned!=null?' · ':''):'')+(u.owned!=null?u.owned+' cartes · score '+fmt(u.score||0):'')+'</span></span>'}
+ function row(u,btns){return '<div class="frow"><button class="fmain" data-pf="'+esc(u.id)+'">'+uav(u)+who(u)+'</button><div class="fbtn">'+(btns||'')+'</div></div>'}
+ function reqRow(u){return '<div class="req"><button class="fmain" data-pf="'+esc(u.id)+'">'+uav(u,true)+'<span class="fwho"><span class="nm">'+esc(u.name)+'</span><span class="mut sm">veut devenir ton ami</span><span class="mut sm">'+(u.owned!=null?u.owned+' cartes · score '+fmt(u.score||0):'')+'</span></span></button><div class="rbtns"><button class="btn gold" data-fa="'+esc(u.id)+'">Accepter</button><button class="btn ghost" data-fx="'+esc(u.id)+'">Refuser</button></div></div>'}
  function listH(d){var h='';
-  if(d.incoming.length)h+='<div class="panel"><h3>Demandes reçues</h3>'+d.incoming.map(function(u){return row(u,'<button class="btn sm gold" data-fa="'+esc(u.id)+'">Accepter</button><button class="btn sm ghost" data-fx="'+esc(u.id)+'">Refuser</button>')}).join('')+'</div>';
+  if(d.incoming.length)h+='<div class="panel"><h3>Demandes reçues <span class="nb inl">'+d.incoming.length+'</span></h3>'+d.incoming.map(reqRow).join('')+'</div>';
   h+='<div class="panel"><h3>Mes amis ('+d.friends.length+')</h3>'+(d.friends.length?d.friends.map(function(u){return row(u)}).join(''):'<p class="mut sm" style="margin:0">Pas encore d\'amis. Cherche un pseudo ci-dessus.</p>')+'</div>';
   if(d.outgoing.length)h+='<div class="panel"><h3>Demandes envoyées</h3>'+d.outgoing.map(function(u){return row(u,'<button class="btn sm ghost" data-fx="'+esc(u.id)+'">Annuler</button>')}).join('')+'</div>';
   return h}
@@ -856,7 +873,7 @@ function rFriends(){
   if(q.length<2){$('fres').innerHTML='';return}
   searchT=setTimeout(function(){api('search',{q:q}).then(function(r){if(seq!==searchSeq||!$('fres'))return;
    $('fres').innerHTML=r.rows.length?r.rows.map(function(u){return row(u,'<button class="btn sm" data-fadd="'+esc(u.id)+'">Ajouter</button>')}).join(''):'<p class="mut sm">Aucun joueur trouvé (le pseudo doit correspondre à son nom Discord affiché sur le site).</p>';bindList($('fres'))}).catch(function(){})},350)};
- function loadList(){clearTimeout(frT);api('friends').then(function(d){friendsData=d;if(d.now)SKEW=d.now-Date.now();if(!comAlive('friends'))return;$('flist').innerHTML=listH(d);bindList($('flist'));frT=setTimeout(function(){if(comAlive('friends'))loadList()},30000)}).catch(function(e){if(comAlive('friends'))$('flist').innerHTML=errBox(e)})}
+ function loadList(){clearTimeout(frT);api('friends').then(function(d){friendsData=d;if(d.now)SKEW=d.now-Date.now();if(NOTIF.reqs!==d.incoming.length){NOTIF.reqs=d.incoming.length;paintBell();tabs()}if(!comAlive('friends'))return;$('flist').innerHTML=listH(d);bindList($('flist'));frT=setTimeout(function(){if(comAlive('friends'))loadList()},30000)}).catch(function(e){if(comAlive('friends'))$('flist').innerHTML=errBox(e)})}
  if(friendsData){$('flist').innerHTML=listH(friendsData);bindList($('flist'))}
  loadList()}
 
@@ -882,7 +899,7 @@ function rShare(){
 
 /* ================= ADMINISTRATION ================= */
 var adminSub='live',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
-var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['tools','Mes outils'],['log','Journal']];
+var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
 function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
 function rAdmin(){
  var nav=subnavH(ADS,adminSub,'data-as');
@@ -893,6 +910,7 @@ function rAdmin(){
  if(adminSub==='live')return adLive();
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
+ if(adminSub==='ann')return adAnn();
  adLog()}
 function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (V-Bucks, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (V-Bucks, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
 
@@ -1004,6 +1022,11 @@ function adOwners(card){closePick();var d=document.createElement('div');d.id='pk
   [].forEach.call(d.querySelectorAll('[data-ow2]'),function(tr){tr.onclick=function(){closePick();adminTarget=tr.dataset.ow2;adminSub='players';render();scrollTo(0,0)}})}).catch(function(e){if($('pk')===d){d.firstChild.innerHTML='<p class="center">'+esc(e.message)+'</p>'}})}
 
 /* ----- journal ----- */
+function adAnn(){
+ api('ping').then(function(r){if(!adAlive('ann'))return;
+  $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
+  $('anb').onclick=function(){var t=$('anx').value.trim();if(!t)return;api('apost',{text:t}).then(function(){toast('Annonce publiée');adAnn()}).catch(function(e){toast(e.message)})};
+  [].forEach.call(document.querySelectorAll('[data-ad]'),function(b){b.onclick=function(){api('adelann',{id:+b.dataset.ad}).then(function(){adAnn()}).catch(function(e){toast(e.message)})}})}).catch(function(e){if(adAlive('ann'))$('abody').innerHTML=errBox(e)})}
 function adLog(){
  api('alog').then(function(d){if(!adAlive('log'))return;
   var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Collection et stats remises à zéro','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
@@ -1104,7 +1127,7 @@ function lpStart(){if(lpOn)return;lpOn=true;
 function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
 function applyConfig(cfg){if(cfg.SCORE)SCORE=cfg.SCORE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){if(cfg.WH[i])w.p=cfg.WH[i].p})}
-function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('logout').hidden=false;render()})}
+function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
  SB=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);
@@ -1113,20 +1136,21 @@ function boot(){var cfg=window.EL_CONFIG||{},started=false;
  SB.auth.onAuthStateChange(function(ev,sess){if(sess){SESSION=sess;start(sess)}else if(ev==='SIGNED_OUT'&&started)location.href='/'});
  [].forEach.call(document.querySelectorAll('.ldiscord'),function(b){b.onclick=function(){$('lmsg').textContent='';SB.auth.signInWithOAuth({provider:'discord',options:{redirectTo:location.origin+'/'}})}});
  $('logout').onclick=doLogout;
- $('acct').onclick=openAcct}
+ $('acct').onclick=openAcct;$('bell').onclick=openNotifs}
 function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox wpbox"><h2>Mon compte</h2><p class="mut">Connecté avec Discord : <b>'+esc(PROFILE&&PROFILE.name||'')+'</b></p><div class="bar"><button class="btn sm" id="alo">Se déconnecter</button></div>'+
-  '<h3 style="margin:14px 0 6px">Confidentialité</h3><label class="chk"><input type="checkbox" id="ahide"'+(S&&S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:6px 0 12px">Décoché, seuls tes amis peuvent voir ton profil. Ton pseudo et ton avatar Discord sont visibles des autres joueurs.</p>'+
+  '<h3 style="margin:14px 0 6px">Confidentialité</h3><label class="chk"><input type="checkbox" id="ahide"'+(S&&S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:6px 0 10px">Décoché, seuls tes amis peuvent voir ton profil. Ton pseudo et ton avatar Discord sont visibles des autres joueurs.</p><label class="chk"><input type="checkbox" id="apres"'+(S&&S.hidep?'':' checked')+'> Montrer à mes amis quand je suis en ligne (pastille)</label><p class="mut sm" style="margin:6px 0 12px">Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.</p>'+
   '<p class="mut sm">Supprimer ton compte efface définitivement ta collection, tes V-Bucks et tes packs. Les codes déjà utilisés restent utilisés.</p><div class="bar"><button class="btn sm ghost" id="adel">Supprimer mon compte</button></div>'+
   '<p class="mut sm"><a href="/confidentialite.html">Confidentialité</a> · <a href="/mentions.html">Mentions légales</a> · <a href="/cgu.html">CGU</a></p><button class="btn ghost sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  $('alo').onclick=doLogout;
+ $('apres').onchange=function(){S.hidep=!this.checked;save();toast(S.hidep?'Ta présence est cachée à tes amis':'Tes amis voient ta présence')};
  $('ahide').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')};
  var armed=false;$('adel').onclick=function(){if(!armed){armed=true;this.textContent='Confirmer la suppression définitive';return}
   act({action:'delete'}).then(doLogout).catch(function(){})}}
 boot();
-setInterval(function(){if(SESSION&&S&&!document.hidden)api('ping').catch(function(){})},60000);
-document.addEventListener('visibilitychange',function(){if(SESSION&&S&&!document.hidden)api('ping').catch(function(){})});
+setInterval(function(){if(!document.hidden)doPing()},60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)doPing()});
 setInterval(function(){if(!S||$('ov').hidden===false)return;var old=S.stock;regen();if(S.stock!==old){render();return}
  var el=$('cd');if(el&&S.stock<MAXSTOCK){el.textContent=cd();var rf=$('rf');if(rf){var C=2*Math.PI*44;rf.setAttribute('stroke-dashoffset',C*(1-Math.min(1,(Date.now()-S.last)/HOUR)))}}},1000);
 })();

@@ -1,7 +1,7 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
-  const friends = [], logs = [];
+  const friends = [], logs = [], anns = [];
   const users = {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
     tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
@@ -64,6 +64,9 @@ module.exports = function fakeDb(cards, validCodes) {
     },
     async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
     async setAdminFlag(uid, v) { const p = profiles.get(uid); if (p) p.is_admin = !!v; },
+    async listAnnouncements(n) { return anns.slice().reverse().slice(0, n).map((a) => ({ id: a.id, text: a.text, created_at: a.created_at })); },
+    async addAnnouncement(text) { anns.push({ id: anns.length + 1, text, created_at: new Date(1e12).toISOString() }); },
+    async deleteAnnouncement(id) { const i = anns.findIndex((a) => a.id === id); if (i >= 0) anns.splice(i, 1); },
     async logAdmin(e) { logs.push(Object.assign({ at: new Date(1e12).toISOString() }, e)); },
     async recentLogs(n) { return logs.slice().reverse().slice(0, n); },
   };
