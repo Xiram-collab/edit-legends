@@ -946,8 +946,10 @@ function adPlayers(){
    '<label class="chk"><input type="checkbox" id="apa"'+(adminList.adm?' checked':'')+'> Admins seulement</label><span class="mut sm">'+d.total+' inscrit'+(d.total>1?'s':'')+'</span></div>'+
    '<div class="tw"><table class="at"><tr><th>Joueur</th><th>Score</th><th>Cartes</th><th>Myth.</th><th>Packs ouverts</th><th>Dernière connexion</th><th>Inscrit</th></tr>'+
    rows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'"><td><div class="who">'+uav(r)+esc(r.name)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td>'+fmt(r.score)+'</td><td>'+r.owned+' / '+CARDS.length+'</td><td>'+r.mythics+'</td><td>'+fmt(r.opened)+'</td><td>'+dotH(r.lastSeen)+' '+exact(r.lastSeen)+(dotC(r.lastSeen)==='gn'?' <b class="on">en ligne</b>':'')+'</td><td>'+dfr(r.createdAt)+'</td></tr>'}).join('')+
-   '</table></div>'+(rows.length?'':'<p class="mut center">Aucun résultat.</p>')+(d.total>100?'<p class="mut sm">Les 100 premiers sont affichés : utilise la recherche.</p>':'')+'</div>';
+   '</table></div>'+(rows.length?'':'<p class="mut center">Aucun résultat.</p>')+(d.total>100?'<p class="mut sm">Les 100 premiers sont affichés : utilise la recherche.</p>':'')+'</div>'+
+   (ISOWNER?'<div class="panel" style="border-color:#ff2d4a66"><h3>Zone dangereuse : reset général</h3><p class="mut sm">Remet <b>tous les joueurs</b> à zéro, comme des nouveaux joueurs : collection, V-Bucks, packs (10/10), tier lists, équipe, stats. Leurs amis et leurs réglages de confidentialité sont conservés. <b>Irréversible</b> (la sauvegarde chiffrée quotidienne est la seule récupération).</p><div class="bar"><input id="rall" class="inp" style="max-width:220px" placeholder="Tape RESET pour confirmer" autocomplete="off"><button class="btn sm ghost" id="rallb" disabled>Reset tout le monde</button></div></div>':'');
   var q=$('apq');q.oninput=function(){adminList.q=q.value;clearTimeout(adPlayers.t);adPlayers.t=setTimeout(function(){var pos=q.selectionStart;adPlayers.load(true)},300)};
+  if($('rall')){$('rall').oninput=function(){$('rallb').disabled=this.value.trim()!=='RESET'};twice($('rallb'),function(){var b=$('rallb');b.disabled=true;api('aresetall',{confirm:'RESET'}).then(function(r){toast(r.done+' joueur'+(r.done>1?'s':'')+' remis à zéro');api('me').then(function(m){setState(m.state);setPurse()}).catch(function(){});adPlayers.load()}).catch(function(e){b.disabled=false;toast(e.message)})},'Dernière confirmation : tout effacer')}
   $('aps').onchange=function(){adminList.sort=this.value;adPlayers.load()};
   $('apa').onchange=function(){adminList.adm=this.checked;paint(adminData)};
   [].forEach.call(document.querySelectorAll('[data-ap]'),function(tr){tr.onclick=function(){adminTarget=tr.dataset.ap;render();scrollTo(0,0)}})}
@@ -958,6 +960,7 @@ function adPlayers(){
 var adP=null,adF={q:'',own:false},adArm='';
 function adPlayer(){
  api('aplayer',{id:adminTarget}).then(function(d){adP=d;adPaint()}).catch(function(e){if(adAlive('players'))$('abody').innerHTML='<div class="bar"><button class="btn sm" id="abk">← Joueurs</button></div>'+errBox(e);if($('abk'))$('abk').onclick=function(){adminTarget=null;render()}})}
+function twice(b,fn,label){b.onclick=function(){if(b.dataset.sure==='1'){b.dataset.sure='0';fn();return}b.dataset.sure='1';b.dataset.o=b.textContent;b.textContent=label||'Confirmer ?';setTimeout(function(){if(b.isConnected&&b.dataset.sure==='1'){b.dataset.sure='0';b.textContent=b.dataset.o}},4000)}}
 function adDo(a,v,i){var y=scrollY;return api('apact',{id:adminTarget,a:a,v:v,i:i}).then(function(r){adP.state=r.state;adP.player.summary=r.summary;
   if(PROFILE&&adminTarget===PROFILE.id)api('me').then(function(m){setState(m.state);setPurse()}).catch(function(){});
   adPaint();scrollTo(0,y)}).catch(function(e){toast(e.message||'Erreur')})}
@@ -974,7 +977,7 @@ function adPaint(){if(!adAlive('players')||!adP)return;
   '<div class="panel"><h3>Packs en attente (il les ouvre lui-même)</h3><div class="wpa">'+WP.map(function(x){return '<div class="wpr" style="--c:'+x.c+'"><span>'+x.n+'</span><b>'+(st.wp[x.g]||0)+'</b><button class="btn sm ghost" data-aw="'+x.g+'" data-d="-1">−</button><button class="btn sm" data-aw="'+x.g+'" data-d="1">+</button></div>'}).join('')+'</div></div>';
  // cartes
  h+='<div class="panel"><h3>Cartes ('+sm.owned+' / '+CARDS.length+')</h3><div class="bar"><input id="acq" class="inp" style="max-width:220px" placeholder="Chercher une carte" value="'+esc(adF.q)+'"><label class="chk"><input type="checkbox" id="aco"'+(adF.own?' checked':'')+'> Possédées seulement</label>'+
-  '<button class="btn sm ghost" id="acclr">'+(adArm==='cclear'?'Confirmer : vider la collection':'Vider la collection')+'</button><button class="btn sm ghost" id="acrst">'+(adArm==='rst'?'Confirmer : tout remettre à zéro':'Reset collection + stats')+'</button></div>';
+  '<button class="btn sm ghost" id="acclr">'+(adArm==='cclear'?'Confirmer : vider la collection':'Vider la collection')+'</button><button class="btn sm ghost" id="acrst">'+(adArm==='rst'?'Confirmer : remettre ce joueur à zéro':'Tout remettre à zéro (nouveau joueur)')+'</button></div>';
  var q=adF.q.toLowerCase();
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){if(c[2]!==r)return;if(adF.own&&!st.col[i])return;if(q&&c[0].toLowerCase().indexOf(q)<0)return;items.push(i)});if(!items.length)continue;
   items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
@@ -983,11 +986,11 @@ function adPaint(){if(!adAlive('players')||!adP)return;
  $('abody').innerHTML=h;
  $('abk').onclick=function(){adminTarget=null;adP=null;adArm='';render();scrollTo(0,0)};
  $('apv').onclick=function(){openProfile(p.id)};
- if($('apadm'))$('apadm').onclick=function(){api('asetadmin',{id:p.id,v:!p.isAdmin}).then(function(r){p.isAdmin=r.isAdmin;toast(r.isAdmin?'Admin nommé':'Droits admin retirés');adPaint()}).catch(function(e){toast(e.message)})};
- [].forEach.call(document.querySelectorAll('[data-am]'),function(b){b.onclick=function(){adDo('m',+b.dataset.am)}});
+ if($('apadm')){var doAdm=function(){api('asetadmin',{id:p.id,v:!p.isAdmin}).then(function(r){p.isAdmin=r.isAdmin;toast(r.isAdmin?'Admin nommé':'Droits admin retirés');adPaint()}).catch(function(e){toast(e.message)})};if(p.isAdmin)twice($('apadm'),doAdm);else $('apadm').onclick=doAdm}
+ [].forEach.call(document.querySelectorAll('[data-am]'),function(b){var n=+b.dataset.am;if(n<0)twice(b,function(){adDo('m',n)});else b.onclick=function(){adDo('m',n)}});
  var amt=function(){return Math.max(0,Math.floor(+$('amv').value||0))};
- $('amadd').onclick=function(){if(amt())adDo('m',amt())};$('amsub').onclick=function(){if(amt())adDo('m',-amt())};$('amset').onclick=function(){if($('amv').value!=='')adDo('mset',amt())};
- [].forEach.call(document.querySelectorAll('[data-as2]'),function(b){b.onclick=function(){adDo('s',+b.dataset.as2)}});
+ $('amadd').onclick=function(){if(amt())adDo('m',amt())};twice($('amsub'),function(){if(amt())adDo('m',-amt())});$('amset').onclick=function(){if($('amv').value!=='')adDo('mset',amt())};
+ [].forEach.call(document.querySelectorAll('[data-as2]'),function(b){var n=+b.dataset.as2;if(n<0)twice(b,function(){adDo('s',n)});else b.onclick=function(){adDo('s',n)}});
  [].forEach.call(document.querySelectorAll('[data-aw]'),function(b){b.onclick=function(){adDo('wp',+b.dataset.d,+b.dataset.aw)}});
  [].forEach.call(document.querySelectorAll('[data-ac]'),function(b){b.onclick=function(){adDo('c',+b.dataset.d,+b.dataset.ac)}});
  $('acq').oninput=function(){adF.q=this.value;var pos=this.selectionStart;adPaint();var e=$('acq');e.focus();e.setSelectionRange(pos,pos)};
@@ -1066,7 +1069,7 @@ function adCardsPanel(){
   [].forEach.call(document.querySelectorAll('[data-vote]'),function(b){b.onclick=function(){api('acardvote',{id:+b.dataset.vote,rarity:+document.querySelector('[data-vr="'+b.dataset.vote+'"]').value}).then(function(){toast('Vote enregistré');again()}).catch(function(e){toast(e.message)})}});
   [].forEach.call(document.querySelectorAll('[data-pub]'),function(b){b.onclick=function(){b.disabled=true;api('acardpub',{id:+b.dataset.pub,rarity:+document.querySelector('[data-pr="'+b.dataset.pub+'"]').value}).then(function(){toast('Carte publiée : elle est dans les packs');again()}).catch(function(e){b.disabled=false;toast(e.message)})}});
   [].forEach.call(document.querySelectorAll('[data-dd]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer la suppression';return}api('acarddel',{id:+b.dataset.dd}).then(function(){again()}).catch(function(e){toast(e.message)})}});
-  [].forEach.call(document.querySelectorAll('[data-ret]'),function(b){b.onclick=function(){api('acardretire',{id:+b.dataset.ret,retired:b.dataset.v==='1'}).then(function(){toast(b.dataset.v==='1'?'Carte retirée des packs (les joueurs qui l\'ont la gardent)':'Carte remise dans les packs');again()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-ret]'),function(b){var go=function(){api('acardretire',{id:+b.dataset.ret,retired:b.dataset.v==='1'}).then(function(){toast(b.dataset.v==='1'?'Carte retirée des packs (les joueurs qui l\'ont la gardent)':'Carte remise dans les packs');again()}).catch(function(e){toast(e.message)})};if(b.dataset.v==='1')twice(b,go);else b.onclick=go});
   [].forEach.call(document.querySelectorAll('[data-rm]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer';return}api('acardremove',{id:+b.dataset.rm}).then(function(){toast('Carte supprimée');again()}).catch(function(e){toast(e.message);again()})}});
   [].forEach.call(document.querySelectorAll('[data-ce]'),function(b){b.onclick=function(){cardEdit=+b.dataset.ce;again();scrollTo(0,0)}})
  }).catch(function(e){if(adAlive('cards'))$('abody').innerHTML=errBox(e)})}
@@ -1074,10 +1077,10 @@ function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;
   $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
   $('anb').onclick=function(){var t=$('anx').value.trim();if(!t)return;api('apost',{text:t}).then(function(){toast('Annonce publiée');adAnn()}).catch(function(e){toast(e.message)})};
-  [].forEach.call(document.querySelectorAll('[data-ad]'),function(b){b.onclick=function(){api('adelann',{id:+b.dataset.ad}).then(function(){adAnn()}).catch(function(e){toast(e.message)})}})}).catch(function(e){if(adAlive('ann'))$('abody').innerHTML=errBox(e)})}
+  [].forEach.call(document.querySelectorAll('[data-ad]'),function(b){twice(b,function(){api('adelann',{id:+b.dataset.ad}).then(function(){adAnn()}).catch(function(e){toast(e.message)})})})}).catch(function(e){if(adAlive('ann'))$('abody').innerHTML=errBox(e)})}
 function adLog(){
  api('alog').then(function(d){if(!adAlive('log'))return;
-  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Collection et stats remises à zéro','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
+  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Joueur remis à zéro (nouveau joueur)',resetall:'RESET GÉNÉRAL de tous les joueurs','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
   $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(d.rows.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr><td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+'</div>'}).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
 
 /* ---------- code / roue ---------- */

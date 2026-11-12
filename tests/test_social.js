@@ -153,6 +153,15 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokA', { action: 'acardremove', id: n0 + 1 }); assert.strictEqual(cards.length, n0 + 1); ok('dernière carte supprimée pour de bon');
   r = await call('tokA', { action: 'acardremove', id: n0 }); assert.strictEqual(cards.length, n0); ok('puis la précédente');
   r = await call('tokB', { action: 'ping' });
+  // reset d'un joueur et reset général
+  await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
+  r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 V-Bucks, 10 packs)');
+  r = await call('tokB', { action: 'aresetall', confirm: 'RESET' }); assert.strictEqual(r.status, 403); ok('reset général refusé aux non-propriétaires');
+  r = await call('tokA', { action: 'aresetall' }); assert.strictEqual(r.status, 400); ok('reset général sans confirmation refusé');
+  await call('tokB', { action: 'prefs', prefs: { hide: true } });
+  r = await call('tokA', { action: 'aresetall', confirm: 'RESET' }); assert.ok(r.json.done >= 2);
+  r = await call('tokB', { action: 'me' }); assert.deepStrictEqual(r.json.state.col, {}); assert.strictEqual(r.json.state.stock, 10); assert.strictEqual(r.json.state.hide, true); ok('reset général : tout le monde à zéro, confidentialité conservée');
+  r = await call('tokB', { action: 'ping' });
   r = await call('tokA', { action: 'adelann', id: r.json.ann[0].id }); r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.ann.length, 0); ok('annonce supprimée');
   console.log('\n' + n + ' vérifications réussies (social/admin)');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });
