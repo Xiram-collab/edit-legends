@@ -1,7 +1,7 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
-  const friends = [], logs = [], anns = [], drafts = [];
+  const friends = [], logs = [], anns = [], drafts = [], notes = [];
   const users = {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
     tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
@@ -74,6 +74,9 @@ module.exports = function fakeDb(cards, validCodes) {
     async listDrafts() { return drafts.slice().reverse(); },
     async getDraft(id) { return drafts.find((d) => d.id === id) || null; },
     async addDraft(row) { drafts.push(Object.assign({ id: drafts.length + 100, votes: {}, created_at: new Date(1e12).toISOString() }, row)); },
+    async notify(uid, text) { notes.push({ id: notes.length + 1, user_id: uid, text, created_at: new Date().toISOString() }); },
+    async listNotes(uid) { return notes.filter((n) => n.user_id === uid).reverse(); },
+    async readNotes(uid, ids) { for (let i = notes.length - 1; i >= 0; i--) if (notes[i].user_id === uid && ids.includes(notes[i].id)) notes.splice(i, 1); },
     async updateDraft(id, f) { const d = drafts.find((x) => x.id === id); if (d) Object.assign(d, f); },
     async deleteDraft(id) { const i = drafts.findIndex((d) => d.id === id); if (i >= 0) drafts.splice(i, 1); },
     async setDraftVotes(id, votes) { const d = drafts.find((x) => x.id === id); if (d) d.votes = votes; },
