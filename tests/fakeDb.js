@@ -74,6 +74,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async listDrafts() { return drafts.slice().reverse(); },
     async getDraft(id) { return drafts.find((d) => d.id === id) || null; },
     async addDraft(row) { drafts.push(Object.assign({ id: drafts.length + 100, votes: {}, created_at: new Date(1e12).toISOString() }, row)); },
+    async updateDraft(id, f) { const d = drafts.find((x) => x.id === id); if (d) Object.assign(d, f); },
     async deleteDraft(id) { const i = drafts.findIndex((d) => d.id === id); if (i >= 0) drafts.splice(i, 1); },
     async setDraftVotes(id, votes) { const d = drafts.find((x) => x.id === id); if (d) d.votes = votes; },
     async addCard(row) { const id = cards.length; cards[id] = [row.name, row.cat, row.rarity, row.descr || '', row.img || '']; return id; },

@@ -49,6 +49,26 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   await call('tokC', { action: 'prefs', prefs: { hide: true } });
   r = await call('tokB', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); ok('profil caché : toujours visible par ses amis');
   r = await call('tokA', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); assert.ok(!r.json.profile.col); ok('profil caché : l\'admin le voit comme un joueur (sans la collection)');
+  // Propositions de cartes par les joueurs
+  r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 0, rarity: 5 }); assert.strictEqual(r.status, 400); ok('un joueur ne peut pas proposer Mythique');
+  r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 9, rarity: 1 }); assert.strictEqual(r.status, 400); ok('catégorie invalide refusée');
+  r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 0, rarity: 1, descr: 'Un éditeur' }); assert.strictEqual(r.status, 200); ok('un joueur propose une carte');
+  r = await call('tokB', { action: 'cardsubmit', name: 'nouveau joueur', cat: 1, rarity: 1 }); assert.strictEqual(r.status, 400); ok('doublon de proposition refusé');
+  const exist = (await call('tokC', { action: 'me' })).json.cards[0][0];
+  r = await call('tokC', { action: 'cardsubmit', name: exist, cat: 0, rarity: 1 }); assert.strictEqual(r.status, 400); ok('carte déjà publiée refusée');
+  for (let k = 0; k < 4; k++) await call('tokC', { action: 'cardsubmit', name: 'Prop ' + k, cat: 0, rarity: 0 });
+  r = await call('tokC', { action: 'cardsubmit', name: 'Prop trop', cat: 0, rarity: 0 }); assert.strictEqual(r.status, 400); ok('5 propositions en attente maximum');
+  r = await call('tokC', { action: 'cardmine' }); assert.strictEqual(r.json.rows.length, 5);
+  r = await call('tokB', { action: 'acards' }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'acards' }); const pd = r.json.drafts.find((x) => x.name === 'Nouveau Joueur'); assert.ok(pd && pd.player === true && pd.by); ok('admin voit la proposition (marquée joueur)');
+  r = await call('tokA', { action: 'acarddraftedit', id: pd.id, name: 'Nouveau Joueur 2', rarity: 2, descr: 'modifié' }); assert.strictEqual(r.status, 200);
+  r = await call('tokA', { action: 'acards' }); const pd2 = r.json.drafts.find((x) => x.id === pd.id); assert.strictEqual(pd2.name, 'Nouveau Joueur 2'); assert.strictEqual(pd2.rarity, 2); ok('admin modifie la proposition');
+  r = await call('tokC', { action: 'cardmydel', id: r.json.drafts.find((x) => x.name === 'Prop 0').id }); assert.strictEqual(r.status, 200);
+  r = await call('tokB', { action: 'cardmydel', id: pd.id }); assert.strictEqual(r.status, 404); ok('un joueur ne peut annuler que ses propositions');
+  r = await call('tokA', { action: 'acardpub', id: pd.id, rarity: 2 }); assert.strictEqual(r.status, 200); ok('admin publie la proposition');
+  r = await call('tokC', { action: 'me' }); assert.ok(r.json.cards.some((c) => c && c[0] === 'Nouveau Joueur 2' && c[2] === 2)); ok('la carte publiée apparaît dans le catalogue');
+  r = await call('tokA', { action: 'acards' }); const rf = r.json.drafts.find((x) => x.name === 'Prop 1'); r = await call('tokA', { action: 'acarddel', id: rf.id }); assert.strictEqual(r.status, 200); ok('admin refuse une proposition');
+  r = await call('tokA', { action: 'acards' }); for (const x of r.json.drafts) await call('tokA', { action: 'acarddel', id: x.id });
   // Pseudo et avatar
   r = await call('tokC', { action: 'setident', name: 'X' }); assert.strictEqual(r.status, 400); ok('pseudo trop court refusé');
   r = await call('tokC', { action: 'setident', name: '<b>hack</b>' }); assert.strictEqual(r.status, 400); ok('pseudo avec caractères interdits refusé');
