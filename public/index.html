@@ -204,6 +204,8 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 @keyframes flipn{0%{transform:translateZ(0) scale(1) rotateZ(0deg) rotateY(0deg)}50%{transform:translateZ(110px) scale(1.1) rotateZ(-4deg) rotateY(calc(var(--ry,180deg) / 2))}100%{transform:translateZ(0) scale(1) rotateZ(0deg) rotateY(var(--ry,180deg))}}
 .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .face.front{transform:rotateY(180deg)}
+.face.back.gone{visibility:hidden}
+.fc.flipped .back *{animation-play-state:paused}
 .fc .face .card,.fc .face .card.m{width:100%;height:100%;aspect-ratio:auto;font-size:16px;animation:none}
 .fc .face .card.m{animation:glow 2.4s ease-in-out infinite}
 .back .bk{position:relative;width:100%;height:100%;padding:5px;background:linear-gradient(135deg,color-mix(in srgb,var(--a,#ff3d81) 55%,#fff),var(--a,#ff3d81) 45%,color-mix(in srgb,var(--a,#ff3d81) 55%,#000));clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);filter:drop-shadow(0 0 14px color-mix(in srgb,var(--a,#ff3d81) 55%,transparent))}
@@ -611,7 +613,7 @@ function reveal(list,prev){prev=prev||{};busy=true;list=list.map(function(i,k){r
   var h0=$('hint');if(h0)h0.textContent='';
   function alive(){return phase==='cards'&&step===my&&ov.querySelector('.fc')===fc}
   function go(){if(!alive())return;if(g){g.className='chgfx out';var gg=g;setTimeout(function(){gg.remove()},700)}
-   fc.classList.add('flipped');var fi=fc.querySelector('.fi');fi.style.setProperty('--ry','180deg');if(big){var eb=document.createElement('div');eb.className='edgebeam';eb.style.cssText='--a:'+col+';animation-duration:'+(dur/1000)+'s';st.appendChild(eb);setTimeout(function(){eb.remove()},dur+200)}fi.style.animationDuration=((big?dur:800)/1000)+'s';if(big)fc.classList.add('slowflip');fc.classList.remove('charge');sfx('flip');
+   fc.classList.add('flipped');var fi=fc.querySelector('.fi');fi.style.setProperty('--ry','180deg');if(big){var eb=document.createElement('div');eb.className='edgebeam';eb.style.cssText='--a:'+col+';animation-duration:'+(dur/1000)+'s';st.appendChild(eb);setTimeout(function(){eb.remove()},dur+200)}fi.style.animationDuration=((big?dur:800)/1000)+'s';if(big)fc.classList.add('slowflip');fc.classList.remove('charge');var bkf=fc.querySelector('.face.back');if(bkf)setTimeout(function(){bkf.classList.add('gone')},(big?dur*.6:800*.5));sfx('flip');
    setTimeout(function(){if(!alive())return;var b=fc.getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2;function climax(){st.classList.add('lit');sfx('rar',r);
     for(var q=0;q<(r>=5?5:r>=4?4:r>=3?3:r>=1?1:0);q++){(function(q){setTimeout(function(){if(!alive())return;var d=document.createElement('div');d.className='shock';d.style.setProperty('--a',col);st.appendChild(d);setTimeout(function(){d.remove()},1100)},q*170)})(q)}
     burstFx(cx,cy,col,[14,22,30,90,170,320][r],[6,7,8,12,15,19][r]);
