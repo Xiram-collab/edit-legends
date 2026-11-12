@@ -14,7 +14,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async getUser(t) { return users[t] || null; },
     async upsertProfile(u, isAdmin) {
       const p = profiles.get(u.id) || { user_id: u.id, created_at: new Date(1e12).toISOString() };
-      profiles.set(u.id, Object.assign(p, { name: u.name, avatar: u.avatar, discord_id: u.discordId, last_seen: new Date(1e12).toISOString() }, isAdmin ? { is_admin: true } : {}));
+      profiles.set(u.id, Object.assign(p, { name: u.name, avatar: u.avatar, discord_id: u.discordId, last_seen: new Date().toISOString() }, isAdmin ? { is_admin: true } : {}));
     },
     async isAdmin(uid) { return !!(profiles.get(uid) || {}).is_admin; },
     async loadSave(uid) { await Promise.resolve(); const r = saves.get(uid); return r ? { data: JSON.parse(JSON.stringify(r.data)), version: r.version } : null; },
@@ -51,6 +51,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async ensureShareId(uid) { const p = profiles.get(uid); if (!p.share_id) p.share_id = 'share' + uid.toLowerCase() + 'xyz'; return p.share_id; },
     async getProfileByShare(sid) { const p = [...profiles.values()].find((q) => q.share_id === sid); return p ? { user_id: p.user_id, name: p.name, avatar: '' } : null; },
 
+    async recentSeen(n) { return [...profiles.values()].filter((p) => p.last_seen).sort((x, y) => Date.parse(y.last_seen) - Date.parse(x.last_seen)).slice(0, n); },
     async allProfiles() { return [...profiles.values()]; },
     async allSaves() { return [...saves.entries()].map(([user_id, r]) => ({ user_id, data: JSON.parse(JSON.stringify(r.data)) })); },
     async listPlayers() {

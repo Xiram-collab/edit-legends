@@ -422,6 +422,8 @@ main#main{min-height:60vh}
 .arows{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px}.arow{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 8px;opacity:.65}.arow.has{opacity:1;border-color:var(--c)}
 .arow .an{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.arow .ac{min-width:26px;text-align:right;font-weight:800}
 @media(max-width:520px){.lbr{grid-template-columns:28px 34px 1fr auto}.lbr .lsub{display:none}.lbr{grid-template-areas:"rk av nm lv"}}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;background:#6b7280}.dot.gn{background:#22e36b;box-shadow:0 0 8px #22e36b}.dot.yl{background:#ffd24a;box-shadow:0 0 6px #ffd24a88}.dot.rd{background:#ff4d5e}.dot.gy{background:#6b7280}
+.leg{display:inline-flex;align-items:center;gap:6px;font-size:.85em;color:var(--mut)}.on{color:#22e36b}
 </style>
 </head>
 <body>
@@ -872,18 +874,41 @@ function rShare(){
  $('shh').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')}}
 
 /* ================= ADMINISTRATION ================= */
-var adminSub='players',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
-var ADS=[['players','Joueurs'],['stats','Statistiques'],['tools','Mes outils'],['log','Journal']];
+var adminSub='live',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
+var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['tools','Mes outils'],['log','Journal']];
 function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
 function rAdmin(){
  var nav=subnavH(ADS,adminSub,'data-as');
  var bind=function(){bindNav('data-as',function(v){adminSub=v;adminTarget=null;render();scrollTo(0,0)})};
  if(adminSub==='tools'){rTest();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
  $('main').innerHTML=nav+'<div id="abody"><div class="panel center mut">Chargement…</div></div>';bind();
+ clearInterval(adLiveT);
+ if(adminSub==='live')return adLive();
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
  adLog()}
 function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (V-Bucks, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (V-Bucks, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
+
+
+/* ----- connectés en direct ----- */
+var adLiveT=0,adLiveRows=[],SKEW=0;
+function nowMs(){return Date.now()+SKEW}
+function dotC(iso){var t=iso?Date.parse(iso):0;if(!t)return 'gy';var a=nowMs()-t;return a<300000?'gn':a<3600000?'yl':a>259200000?'gy':'rd'}
+function dotH(iso){return '<i class="dot '+dotC(iso)+'"></i>'}
+function exact(iso){return iso?new Date(iso).toLocaleString('fr-FR',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'jamais'}
+function seenTxt(iso){var t=iso?Date.parse(iso):0;if(!t)return 'jamais';var a=nowMs()-t;if(a<300000)return 'En ligne';var m=Math.floor(a/60000);return m<60?'il y a '+m+' min':a<86400000?'il y a '+Math.floor(a/3600000)+' h '+('0'+(m%60)).slice(-2)+' min':'il y a '+Math.floor(a/86400000)+' j'}
+function adLive(){
+ function build(){if(!adAlive('live'))return;
+  $('abody').innerHTML='<div class="tiles" id="lvt"></div><div class="panel"><div class="bar"><b>Dernières connexions</b><span class="leg"><i class="dot gn"></i>en ligne (moins de 5 min)</span><span class="leg"><i class="dot yl"></i>moins de 1 h</span><span class="leg"><i class="dot rd"></i>plus de 1 h</span><span class="leg"><i class="dot gy"></i>plus de 3 jours</span></div>'+
+   '<div class="tw"><table class="at"><tr><th></th><th>Joueur</th><th>Statut</th><th>Dernière connexion (heure exacte)</th></tr>'+
+   adLiveRows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'" data-ls="'+esc(r.lastSeen||'')+'"><td>'+dotH(r.lastSeen)+'</td><td><div class="who">'+uav(r)+esc(r.name)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td class="lst">'+seenTxt(r.lastSeen)+'</td><td>'+exact(r.lastSeen)+'</td></tr>'}).join('')+'</table></div>'+(adLiveRows.length?'':'<p class="mut center">Personne pour l\'instant.</p>')+'<p class="mut sm" style="margin:8px 0 0">Mis à jour en direct (affichage chaque seconde, données du serveur toutes les 5 secondes). Le site envoie un signal toutes les minutes tant que la page est ouverte : « en ligne » veut dire vu il y a moins de 5 minutes.</p></div>';
+  [].forEach.call(document.querySelectorAll('[data-ap]'),function(tr){tr.onclick=function(){adminTarget=tr.dataset.ap;adminSub='players';render();scrollTo(0,0)}});tick()}
+ function tick(){if(!adAlive('live')){clearInterval(adLiveT);return}
+  var c={gn:0,yl:0,rd:0,gy:0};
+  [].forEach.call(document.querySelectorAll('tr[data-ls]'),function(tr){var iso=tr.dataset.ls,k=dotC(iso);c[k]++;tr.firstChild.firstChild.className='dot '+k;tr.querySelector('.lst').textContent=seenTxt(iso)});
+  var t=$('lvt');if(t)t.innerHTML='<div class="tile"><b><i class="dot gn"></i> '+c.gn+'</b><span>en ligne</span></div><div class="tile"><b><i class="dot yl"></i> '+c.yl+'</b><span>vus il y a moins de 1 h</span></div><div class="tile"><b><i class="dot rd"></i> '+c.rd+'</b><span>vus il y a plus de 1 h</span></div><div class="tile"><b><i class="dot gy"></i> '+c.gy+'</b><span>inactifs (3 jours et +)</span></div>'}
+ function load(){api('aonline').then(function(r){SKEW=r.now-Date.now();adLiveRows=r.rows;build()}).catch(function(e){if(adAlive('live')&&!adLiveRows.length)$('abody').innerHTML=errBox(e)})}
+ load();var n=0;adLiveT=setInterval(function(){if(!adAlive('live')){clearInterval(adLiveT);return}if(++n%5===0)load();else tick()},1000)}
 
 /* ----- liste des joueurs ----- */
 function adPlayers(){
@@ -892,8 +917,8 @@ function adPlayers(){
   $('abody').innerHTML=role()+'<div class="panel"><div class="bar"><input id="apq" class="inp" style="max-width:260px" placeholder="Chercher un pseudo ou un ID Discord" value="'+esc(adminList.q)+'">'+
    '<select id="aps" class="sel">'+[['lastSeen','Dernière visite'],['score','Score'],['opened','Packs ouverts'],['createdAt','Inscription'],['name','Nom']].map(function(o){return '<option value="'+o[0]+'"'+(adminList.sort===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select>'+
    '<label class="chk"><input type="checkbox" id="apa"'+(adminList.adm?' checked':'')+'> Admins seulement</label><span class="mut sm">'+d.total+' inscrit'+(d.total>1?'s':'')+'</span></div>'+
-   '<div class="tw"><table class="at"><tr><th>Joueur</th><th>Score</th><th>Cartes</th><th>Myth.</th><th>Packs ouverts</th><th>Vu</th><th>Inscrit</th></tr>'+
-   rows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'"><td><div class="who">'+uav(r)+esc(r.name)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td>'+fmt(r.score)+'</td><td>'+r.owned+' / '+CARDS.length+'</td><td>'+r.mythics+'</td><td>'+fmt(r.opened)+'</td><td>'+ago(r.lastSeen)+'</td><td>'+dfr(r.createdAt)+'</td></tr>'}).join('')+
+   '<div class="tw"><table class="at"><tr><th>Joueur</th><th>Score</th><th>Cartes</th><th>Myth.</th><th>Packs ouverts</th><th>Dernière connexion</th><th>Inscrit</th></tr>'+
+   rows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'"><td><div class="who">'+uav(r)+esc(r.name)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td>'+fmt(r.score)+'</td><td>'+r.owned+' / '+CARDS.length+'</td><td>'+r.mythics+'</td><td>'+fmt(r.opened)+'</td><td>'+dotH(r.lastSeen)+' '+exact(r.lastSeen)+(dotC(r.lastSeen)==='gn'?' <b class="on">en ligne</b>':'')+'</td><td>'+dfr(r.createdAt)+'</td></tr>'}).join('')+
    '</table></div>'+(rows.length?'':'<p class="mut center">Aucun résultat.</p>')+(d.total>100?'<p class="mut sm">Les 100 premiers sont affichés : utilise la recherche.</p>':'')+'</div>';
   var q=$('apq');q.oninput=function(){adminList.q=q.value;clearTimeout(adPlayers.t);adPlayers.t=setTimeout(function(){var pos=q.selectionStart;adPlayers.load(true)},300)};
   $('aps').onchange=function(){adminList.sort=this.value;adPlayers.load()};
@@ -913,7 +938,7 @@ function adPaint(){if(!adAlive('players')||!adP)return;
  var p=adP.player,st=adP.state,sm=p.summary,y=scrollY;
  var WP=WPT.concat([]);if(!WP.some(function(x){return x.g===4}))WP.splice(3,0,{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'});
  var h='<div class="bar"><button class="btn sm" id="abk">← Joueurs</button></div>'+
-  '<div class="panel"><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+(p.isOwner?' <span class="tag">PROPRIÉTAIRE</span>':p.isAdmin?' <span class="tag">ADMIN</span>':'')+'</h2><span class="mut sm">ID Discord '+esc(p.discordId||'?')+' · inscrit le '+dfr(p.createdAt)+' · vu '+ago(p.lastSeen)+'</span></div></div>'+
+  '<div class="panel"><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+(p.isOwner?' <span class="tag">PROPRIÉTAIRE</span>':p.isAdmin?' <span class="tag">ADMIN</span>':'')+'</h2><span class="mut sm">ID Discord '+esc(p.discordId||'?')+' · inscrit le '+dfr(p.createdAt)+' · dernière connexion '+dotH(p.lastSeen)+' '+exact(p.lastSeen)+(dotC(p.lastSeen)==='gn'?' (en ligne)':'')+'</span></div></div>'+
   '<div class="bar" style="margin-top:12px"><button class="btn sm" id="apv">Voir son profil public</button>'+(ISOWNER&&!p.isOwner?'<button class="btn sm '+(p.isAdmin?'ghost':'gold')+'" id="apadm">'+(p.isAdmin?'Retirer les droits admin':'Nommer admin')+'</button>':'')+'</div></div>'+
   '<div class="tiles"><div class="tile"><b>'+fmt(st.money)+'</b><span>'+CUR+'</span></div><div class="tile"><b>'+st.stock+'</b><span>packs gratuits</span></div><div class="tile"><b>'+fmt(st.opened)+'</b><span>packs ouverts</span></div><div class="tile"><b>'+sm.owned+' / '+CARDS.length+'</b><span>cartes</span></div><div class="tile"><b>'+sm.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(sm.score)+'</b><span>score</span></div></div>'+
   '<div class="panel"><h3>'+CUR+'</h3><div class="bar">'+[-10000,-1000,-100,100,1000,10000].map(function(n){return '<button class="btn sm '+(n<0?'ghost':'gold')+'" data-am="'+n+'">'+(n>0?'+':'')+fmt(n)+'</button>'}).join('')+'</div>'+
@@ -1091,6 +1116,8 @@ function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.
  var armed=false;$('adel').onclick=function(){if(!armed){armed=true;this.textContent='Confirmer la suppression définitive';return}
   act({action:'delete'}).then(doLogout).catch(function(){})}}
 boot();
+setInterval(function(){if(SESSION&&S&&!document.hidden)api('ping').catch(function(){})},60000);
+document.addEventListener('visibilitychange',function(){if(SESSION&&S&&!document.hidden)api('ping').catch(function(){})});
 setInterval(function(){if(!S||$('ov').hidden===false)return;var old=S.stock;regen();if(S.stock!==old){render();return}
  var el=$('cd');if(el&&S.stock<MAXSTOCK){el.textContent=cd();var rf=$('rf');if(rf){var C=2*Math.PI*44;rf.setAttribute('stroke-dashoffset',C*(1-Math.min(1,(Date.now()-S.last)/HOUR)))}}},1000);
 })();

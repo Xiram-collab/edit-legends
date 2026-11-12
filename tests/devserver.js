@@ -18,6 +18,10 @@ async function seed() {
   await handle('tokC', { action: 'fadd', id: 'B' }); await handle('tokB', { action: 'faccept', id: 'C' });
   await handle('tokB', { action: 'prefs', prefs: { team: [2, 3, 4, 7, null, null, null, null, null, null, null] } });
   for (let i = 0; i < 5; i++) await handle('tokB', { action: 'open', kind: 'free' });
+  const ago = (ms) => new Date(Date.now() - ms).toISOString();
+  db.profiles.get('B').last_seen = ago(20 * 60000); db.profiles.get('C').last_seen = ago(5 * 3600000);
+  db.profiles.set('D', { user_id: 'D', name: 'Dana', avatar: '', discord_id: '444', created_at: ago(20 * 86400000), last_seen: ago(10 * 86400000) });
+  db.profiles.set('E', { user_id: 'E', name: 'Eli', avatar: '', discord_id: '555', created_at: ago(2 * 86400000), last_seen: ago(2 * 60000) });
 }
 http.createServer(async (req, res) => {
   const m = req.url.match(/^\/c\/([a-z0-9]+)/);
