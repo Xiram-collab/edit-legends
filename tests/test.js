@@ -3,6 +3,8 @@ const fakeDb = require('./fakeDb');
 const { createHandler } = require('../lib/handler');
 const C = require('../lib/config');
 const cards = require('../data/cards.json');
+assert.strictEqual(C.START_STOCK, 10, 'un nouveau joueur commence avec 10 packs');
+C.START_STOCK = 3; // les scénarios ci-dessous partent de 3 packs
 
 let clock = 1e12;
 const db = fakeDb(cards, ['AAAA2222', 'BBBB3333', 'CCCC4444', 'DDDD5555', 'EEEE6666']);
