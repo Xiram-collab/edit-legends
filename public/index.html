@@ -254,7 +254,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .over .sum .card{font-size:11px}
 .sw .card{width:100%}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-.bl{width:46%;height:auto;border-radius:14%;filter:drop-shadow(0 0 14px #27e0ff)}.pkface{flex-direction:column;gap:6px}.pkface b{display:block}
+.bl{width:58%;height:auto;filter:drop-shadow(0 0 14px #ff3d81aa)}.pkface{flex-direction:column;gap:6px}.pkface b{display:block}
 .pkface{display:flex!important;align-items:center;justify-content:center}
 .sel{background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit}
 .panel h3{margin-top:12px}
@@ -473,7 +473,7 @@ function cardHTML(i,o){o=o||{};var c=CARDS[i];return '<div class="card'+(c[2]==5
  '<div class="top"><span class="cat">'+CATS[c[1]]+'</span><span class="rar">'+RAR[c[2]].n+'</span></div>'+
  (o.isNew?'<span class="new">NEW</span>':'')+(o.count>1?'<span class="cnt">x'+o.count+'</span>':'')+
  '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+c[0]+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]||'&nbsp;')+'</div></div>'}
-var LOGO='<svg viewBox="0 0 100 100" class="bl" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9f3ff"/><stop offset=".45" stop-color="#5fb4ff"/><stop offset="1" stop-color="#2a63de"/></linearGradient><radialGradient id="lgB" cx=".3" cy=".2" r=".7"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect x="3" y="3" width="94" height="94" rx="24" fill="url(#lgA)" stroke="#143a9c" stroke-width="3"/><path d="M8 62 Q30 40 52 56 T94 40 V76 Q94 94 76 94 H24 Q8 94 8 76Z" fill="#fff" opacity=".18"/><rect x="3" y="3" width="94" height="94" rx="24" fill="url(#lgB)"/><text x="50" y="62" text-anchor="middle" font-family="Rajdhani,Arial Black,Segoe UI,sans-serif" font-weight="800" font-size="40" fill="#fff" stroke="#16358f" stroke-width="5" paint-order="stroke" stroke-linejoin="round" letter-spacing="-1">Edit</text></svg>';
+var LOGO='<img src="img/logo.png" class="bl" alt="">';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
 var tab='home',lastTab='',dupOnly=false,shown=0,busy=false,cvOn=false,parts=[];
 var $=function(id){return document.getElementById(id)};
