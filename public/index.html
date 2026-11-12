@@ -1092,7 +1092,7 @@ function adLog(){
   $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(d.rows.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr><td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+'</div>'}).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
 
 /* ---------- code / roue ---------- */
-var WH=[{n:'Rien',p:50,g:-1,c:'#5a6080',c2:'#2c3050'},{n:'Pack Normal',p:30,g:0,c:'#c3ccd9',c2:'#7d8799'},{n:'Pack Rare+',p:15,g:2,c:'#5aaeff',c2:'#1e63c9'},{n:'Pack Épique+',p:4,g:3,c:'#c77dff',c2:'#7a2fd1'},{n:'Carte Mythique',p:1,g:5,c:'#ff5c96',c2:'#c4124f'}];
+var WH=[{n:'Rien',p:75,g:-1,c:'#5a6080',c2:'#2c3050'},{n:'Pack Normal',p:15,g:0,c:'#c3ccd9',c2:'#7d8799'},{n:'Pack Rare+',p:5,g:2,c:'#5aaeff',c2:'#1e63c9'},{n:'Pack Épique+',p:4,g:3,c:'#c77dff',c2:'#7a2fd1'},{n:'Carte Mythique',p:1,g:5,c:'#ff5c96',c2:'#c4124f'}];
 var spinning=false;
 function codeHash_unused(c){var b=new TextEncoder().encode('EL1:'+c);return crypto.subtle.digest('SHA-256',b).then(function(d){return Array.prototype.map.call(new Uint8Array(d),function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,12)})}
 function wheelSvg(){var a=0,seg='',lab='',defs='',R=100,k;

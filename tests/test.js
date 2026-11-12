@@ -76,7 +76,7 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   const cnt = [0, 0, 0, 0, 0]; const rnd = () => require('crypto').randomInt(0, 1e9) / 1e9;
   for (let i = 0; i < 100000; i++) cnt[spinForReward({ wp: {} }, rnd)]++;
   const pct = cnt.map((x) => x / 1000); console.log('    roue sur 100000 :', pct.join(' / '));
-  [50, 30, 15, 4, 1].forEach((p, i) => assert.ok(Math.abs(pct[i] - p) < 1.0)); ok('probabilités de la roue conformes');
+  [75, 15, 5, 4, 1].forEach((p, i) => assert.ok(Math.abs(pct[i] - p) < 1.0)); ok('probabilités de la roue conformes');
 
   // ouverture des packs en attente
   r = await call('tokA', { action: 'admin', a: 'wpa' });
