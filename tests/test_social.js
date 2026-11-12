@@ -142,6 +142,11 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokA', { action: 'acards' }); assert.strictEqual(r.json.drafts.length, 1); const did = r.json.drafts[0].id;
   await call('tokA', { action: 'acardvote', id: did, rarity: 5 }); r = await call('tokA', { action: 'acards' }); assert.strictEqual(r.json.drafts[0].votes[0].rarity, 5); ok('vote du jury');
   r = await call('tokA', { action: 'acardpub', id: did, rarity: 5 }); assert.strictEqual(cards.length, n0 + 2); assert.strictEqual(cards[n0 + 1][2], 5); ok('publication avec la rareté finale');
+  for (const nm of ['L1', 'L2', 'L3']) await call('tokA', { action: 'acardnew', name: nm, cat: 0, rarity: 1, status: 'private' });
+  r = await call('tokA', { action: 'acards' }); const ids = r.json.drafts.map((x) => x.id); assert.strictEqual(ids.length, 3);
+  const m0 = cards.length; r = await call('tokA', { action: 'acardpubmany', items: ids.map((id) => ({ id, rarity: 2 })) }); assert.strictEqual(r.json.done, 3); assert.strictEqual(cards.length, m0 + 3);
+  r = await call('tokA', { action: 'acards' }); assert.strictEqual(r.json.drafts.length, 0); ok('publication de 3 cartes d\'un coup');
+  for (let k = 0; k < 3; k++) await call('tokA', { action: 'acardremove', id: cards.length - 1 }); assert.strictEqual(cards.length, m0);
   r = await call('tokA', { action: 'acardedit', id: n0, name: 'Zed2', cat: 2, rarity: 2, descr: 'd' }); assert.deepStrictEqual(cards[n0].slice(0, 4), ['Zed2', 2, 2, 'd']); ok('modification nom, catégorie, rareté, description');
   r = await call('tokA', { action: 'acardretire', id: n0, retired: true }); assert.strictEqual(cards[n0][5], 1); ok('carte retirée des packs');
   r = await call('tokA', { action: 'acardremove', id: n0 }); assert.strictEqual(r.status, 400); ok('suppression définitive refusée si pas la dernière');
