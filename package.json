@@ -1,0 +1,9 @@
+{
+  "name": "edit-legends",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Edit Legends - cartes a collectionner de la scene Fortnite edit",
+  "engines": { "node": ">=18" },
+  "scripts": { "test": "node tests/test.js" },
+  "dependencies": { "@supabase/supabase-js": "2.45.4" }
+}
