@@ -133,6 +133,21 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'apost', text: 'x' }); assert.strictEqual(r.status, 403); ok('annonce : refusée aux non-admins');
   r = await call('tokA', { action: 'apost', text: 'Nouvelles cartes !' }); assert.strictEqual(r.status, 200);
   r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.ann[0].text, 'Nouvelles cartes !'); ok('annonce publiée, vue par les joueurs');
+  // création / retrait / suppression de cartes
+  const n0 = cards.length;
+  r = await call('tokB', { action: 'acardnew', name: 'X', cat: 0, rarity: 4, status: 'public' }); assert.strictEqual(r.status, 403); ok('carte publique : refusée aux non-admins');
+  r = await call('tokA', { action: 'acardnew', name: 'Zed', cat: 0, rarity: 4, status: 'public' }); assert.strictEqual(r.json.id, n0); assert.strictEqual(cards.length, n0 + 1); ok('carte publiée : ' + (n0 + 1) + ' cartes');
+  r = await call('tokA', { action: 'acardnew', name: 'zed', cat: 0, rarity: 4, status: 'public' }); assert.strictEqual(r.status, 400); ok('nom déjà pris refusé');
+  r = await call('tokA', { action: 'acardnew', name: 'Brouillon', cat: 1, rarity: 3, status: 'private' }); assert.strictEqual(r.json.public, false); assert.strictEqual(cards.length, n0 + 1); ok('carte privée : pas dans les packs');
+  r = await call('tokA', { action: 'acards' }); assert.strictEqual(r.json.drafts.length, 1); const did = r.json.drafts[0].id;
+  await call('tokA', { action: 'acardvote', id: did, rarity: 5 }); r = await call('tokA', { action: 'acards' }); assert.strictEqual(r.json.drafts[0].votes[0].rarity, 5); ok('vote du jury');
+  r = await call('tokA', { action: 'acardpub', id: did, rarity: 5 }); assert.strictEqual(cards.length, n0 + 2); assert.strictEqual(cards[n0 + 1][2], 5); ok('publication avec la rareté finale');
+  r = await call('tokA', { action: 'acardedit', id: n0, name: 'Zed2', cat: 2, rarity: 2, descr: 'd' }); assert.deepStrictEqual(cards[n0].slice(0, 4), ['Zed2', 2, 2, 'd']); ok('modification nom, catégorie, rareté, description');
+  r = await call('tokA', { action: 'acardretire', id: n0, retired: true }); assert.strictEqual(cards[n0][5], 1); ok('carte retirée des packs');
+  r = await call('tokA', { action: 'acardremove', id: n0 }); assert.strictEqual(r.status, 400); ok('suppression définitive refusée si pas la dernière');
+  r = await call('tokA', { action: 'acardremove', id: n0 + 1 }); assert.strictEqual(cards.length, n0 + 1); ok('dernière carte supprimée pour de bon');
+  r = await call('tokA', { action: 'acardremove', id: n0 }); assert.strictEqual(cards.length, n0); ok('puis la précédente');
+  r = await call('tokB', { action: 'ping' });
   r = await call('tokA', { action: 'adelann', id: r.json.ann[0].id }); r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.ann.length, 0); ok('annonce supprimée');
   console.log('\n' + n + ' vérifications réussies (social/admin)');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });

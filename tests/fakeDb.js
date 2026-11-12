@@ -1,7 +1,7 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
-  const friends = [], logs = [], anns = [];
+  const friends = [], logs = [], anns = [], drafts = [];
   const users = {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
     tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
@@ -64,6 +64,15 @@ module.exports = function fakeDb(cards, validCodes) {
     },
     async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
     async setAdminFlag(uid, v) { const p = profiles.get(uid); if (p) p.is_admin = !!v; },
+    async listDrafts() { return drafts.slice().reverse(); },
+    async getDraft(id) { return drafts.find((d) => d.id === id) || null; },
+    async addDraft(row) { drafts.push(Object.assign({ id: drafts.length + 100, votes: {}, created_at: new Date(1e12).toISOString() }, row)); },
+    async deleteDraft(id) { const i = drafts.findIndex((d) => d.id === id); if (i >= 0) drafts.splice(i, 1); },
+    async setDraftVotes(id, votes) { const d = drafts.find((x) => x.id === id); if (d) d.votes = votes; },
+    async addCard(row) { const id = cards.length; cards[id] = [row.name, row.cat, row.rarity, row.descr || '', row.img || '']; return id; },
+    async deleteCard(id) { cards.length = id; },
+    async updateCard(id, f) { const c = cards[id]; if (f.cat !== undefined) c[1] = f.cat; if (f.rarity !== undefined) c[2] = f.rarity; if (f.retired !== undefined) c[5] = f.retired ? 1 : 0; if (f.name !== undefined) c[0] = f.name; if (f.descr !== undefined) c[3] = f.descr; if (f.img !== undefined) c[4] = f.img; },
+    async uploadImage(buf) { return 'https://x.test/storage/v1/object/public/cards/c' + buf.length + '.webp'; },
     async listAnnouncements(n) { return anns.slice().reverse().slice(0, n).map((a) => ({ id: a.id, text: a.text, created_at: a.created_at })); },
     async addAnnouncement(text) { anns.push({ id: anns.length + 1, text, created_at: new Date(1e12).toISOString() }); },
     async deleteAnnouncement(id) { const i = anns.findIndex((a) => a.id === id); if (i >= 0) anns.splice(i, 1); },

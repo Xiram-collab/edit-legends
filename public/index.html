@@ -408,7 +408,7 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 .lbr .lv{grid-area:lv;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}.lbr .lsub{grid-area:ls;text-align:right;font-size:.8em}
 .lbr.top1 .rk{color:#ffd24a}.lbr.top2 .rk{color:#d5dbe6}.lbr.top3 .rk{color:#e0985a}.lbr.top1{background:linear-gradient(90deg,#ffd24a18,transparent)}
 .frow{display:flex;align-items:center;gap:8px;border-bottom:1px solid #ffffff10;padding:6px 0}.frow:last-child{border-bottom:0}
-.fmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:transparent;border:0;text-align:left;padding:2px}.fmain .nm{font-weight:700}.fwho{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}.fwho .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.req{border:1px solid #ff3d8155;background:linear-gradient(135deg,#ff3d8118,#7b5cff12);border-radius:14px;padding:10px;margin-bottom:8px}.req .fmain{width:100%;padding:0}.rbtns{display:flex;gap:8px;margin-top:10px}.rbtns .btn{flex:1}.nb{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;border-radius:9px;background:#ff2d4a;color:#fff;font:800 10px/17px sans-serif;text-align:center;padding:0 4px;box-shadow:0 0 0 2px #0b0820,0 0 10px #ff2d4a99;pointer-events:none}.nb.inl{position:static;display:inline-block;vertical-align:middle;margin-left:6px;box-shadow:none}.mute.bell{position:relative}nav button{position:relative}.fl.subnav button{position:relative}.fl.subnav .nb{top:2px;right:-2px}.nrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #ffffff10}.nrow:last-child{border-bottom:0}.nrow .ni{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#ffffff14}.nrow p{margin:0}
+.fmain{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:transparent;border:0;text-align:left;padding:2px}.fmain .nm{font-weight:700}.fwho{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}.fwho .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.req{border:1px solid #ff3d8155;background:linear-gradient(135deg,#ff3d8118,#7b5cff12);border-radius:14px;padding:10px;margin-bottom:8px}.req .fmain{width:100%;padding:0}.rbtns{display:flex;gap:8px;margin-top:10px}.rbtns .btn{flex:1}.nb{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;border-radius:9px;background:#ff2d4a;color:#fff;font:800 10px/17px sans-serif;text-align:center;padding:0 4px;box-shadow:0 0 0 2px #0b0820,0 0 10px #ff2d4a99;pointer-events:none}.nb.inl{position:static;display:inline-block;vertical-align:middle;margin-left:6px;box-shadow:none}.mute.bell{position:relative}nav button{position:relative}.fl.subnav button{position:relative}.fl.subnav .nb{top:2px;right:-2px}.cth{width:38px;height:38px;border-radius:8px;object-fit:cover;flex:none;background:#ffffff14;display:inline-grid;place-items:center;font-weight:800}.cform{display:grid;gap:10px}.cform label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--mut)}.cform .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cprev{max-width:120px;max-height:120px;border-radius:10px;border:1px solid var(--line)}.cform .inp,.cform input[type=file]{width:100%;box-sizing:border-box}.radios{display:flex;flex-direction:column;gap:8px}.cform .radios label{display:flex;gap:8px;align-items:center;font-size:13px;color:#fff}.cform .radios input{width:auto;margin:0}.dr{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:8px}.dr .ctl{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}.dr select{flex:1;min-width:110px}.nrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #ffffff10}.nrow:last-child{border-bottom:0}.nrow .ni{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#ffffff14}.nrow p{margin:0}
 .fbtn{display:flex;gap:6px;flex:none}
 .profbox{width:min(900px,100%)}.pf-head{display:flex;align-items:center;gap:14px;margin:4px 0 12px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:10px 0}
@@ -483,16 +483,17 @@ function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;re
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
 function save(){if(!SESSION)return;clearTimeout(prefT);prefT=setTimeout(function(){var p={};PREFK.forEach(function(k){p[k]=S[k]});api('prefs',{prefs:p}).catch(function(){})},700)}
-function api(action,body){body=Object.assign({action:action},body||{});
+function api(action,body){body=Object.assign({action:action,nc:CARDS.length},body||{});
  return fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(SESSION?SESSION.access_token:'')},body:JSON.stringify(body)})
- .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}return j})})}
+ .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.cards&&action!=='me'){CARDS.length=0;j.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
 function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]})}
 function fmt(n){return n.toLocaleString('fr-FR')}
 function pctF(p){return (p>=1?p.toFixed(p%1?2:0):p<0.1?p.toFixed(3):p.toFixed(2)).replace('.',',')+' %'}
 function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
-function art(c){if(!c[4]){var shp=['','hex','rect','sq'][c[1]];return '<div class="av '+shp+'"><div class="ph">'+c[0].replace(/[^A-Za-z0-9]/g,'').charAt(0).toUpperCase()+'</div></div>'}if(c[1]<2&&/-sil$/.test(c[4]||''))return '<div class="av"><img src="img/'+c[4]+'.png" alt="" draggable="false" style="background:linear-gradient(160deg,#3a3f66,#15183a);object-position:50% 100%"></div>';var sil=/-sil$/.test(c[4]||'')?'<image href="img/'+c[4]+'.png" x="8" y="14" width="84" height="86" preserveAspectRatio="xMidYMax meet"/>':'';if(c[4]&&!sil){var src='img/'+c[4]+(c[4].indexOf('.')<0?'.jpg':''),shape=['','hex','rect','sq'][c[1]];return '<div class="av '+shape+'"><img src="'+src+'" alt="" draggable="false"></div>'}var r=c[2],col='var(--r'+r+')',x='';
+function imgUrl(f){return /^https?:/.test(f)?f:'img/'+f+(f.indexOf('.')<0?'.jpg':'')}
+function art(c){if(!c[4]){var shp=['','hex','rect','sq'][c[1]];return '<div class="av '+shp+'"><div class="ph">'+c[0].replace(/[^A-Za-z0-9]/g,'').charAt(0).toUpperCase()+'</div></div>'}if(c[1]<2&&/-sil$/.test(c[4]||''))return '<div class="av"><img src="img/'+c[4]+'.png" alt="" draggable="false" style="background:linear-gradient(160deg,#3a3f66,#15183a);object-position:50% 100%"></div>';var sil=/-sil$/.test(c[4]||'')?'<image href="img/'+c[4]+'.png" x="8" y="14" width="84" height="86" preserveAspectRatio="xMidYMax meet"/>':'';if(c[4]&&!sil){var src=imgUrl(c[4]),shape=['','hex','rect','sq'][c[1]];return '<div class="av '+shape+'"><img src="'+src+'" alt="" draggable="false"></div>'}var r=c[2],col='var(--r'+r+')',x='';
  var rays='';if(r>=3){for(var k=0;k<12;k++){var a1=k*30,a2=a1+9;rays+='<path d="M50 45 L'+(50+90*Math.cos(a1*Math.PI/180)).toFixed(1)+' '+(45+90*Math.sin(a1*Math.PI/180)).toFixed(1)+' L'+(50+90*Math.cos(a2*Math.PI/180)).toFixed(1)+' '+(45+90*Math.sin(a2*Math.PI/180)).toFixed(1)+'Z" style="fill:'+col+'" opacity="'+(r==3?.12:.2)+'"/>'}}
  var sp='';if(r>=4){[[14,18],[84,26],[22,64],[80,70],[50,10]].forEach(function(p,i){sp+='<path d="M'+p[0]+' '+(p[1]-4)+' L'+(p[0]+1.2)+' '+(p[1]-1.2)+' L'+(p[0]+4)+' '+p[1]+' L'+(p[0]+1.2)+' '+(p[1]+1.2)+' L'+p[0]+' '+(p[1]+4)+' L'+(p[0]-1.2)+' '+(p[1]+1.2)+' L'+(p[0]-4)+' '+p[1]+' L'+(p[0]-1.2)+' '+(p[1]-1.2)+'Z" fill="#fff" opacity="'+(r==5?.9:.6)+'"/>'})}
  return '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs>'+
@@ -727,7 +728,7 @@ function rTeam(){
  $('tclear').onclick=function(){S.team=S.team.map(function(){return null});save();render()}}
 var TL=[['5','Mythique',HEX[5]],['4','Légendaire',HEX[4]],['3','Épique',HEX[3]],['2','Rare',HEX[2]],['1','Atypique',HEX[1]],['0','Commun',HEX[0]]],TK='012345';
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
-function chipImg(c){var f=c[4];if(f){var src='img/'+f+(f.indexOf('.')<0?'.jpg':'');if(/-sil$/.test(f))src='img/'+f+'.png';return '<img src="'+src+'" alt="" draggable="false">'}return '<b>'+c[0].charAt(0).toUpperCase()+'</b>'}
+function chipImg(c){var f=c[4];if(f){var src=imgUrl(f);if(/-sil$/.test(f))src='img/'+f+'.png';return '<img src="'+src+'" alt="" draggable="false">'}return '<b>'+c[0].charAt(0).toUpperCase()+'</b>'}
 function TD(){return tcat===4?(S.jtier||(S.jtier={})):S.tier}
 function TO(){if(tcat===4)return S.jord||(S.jord=[]);return S.tord||(S.tord=[])}
 function tierSet(i,L,before){var o=TO(),q=o.indexOf(i);if(q>=0)o.splice(q,1);
@@ -899,7 +900,7 @@ function rShare(){
 
 /* ================= ADMINISTRATION ================= */
 var adminSub='live',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
-var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
+var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['cards','Cartes'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
 function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
 function rAdmin(){
  var nav=subnavH(ADS,adminSub,'data-as');
@@ -911,6 +912,7 @@ function rAdmin(){
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
  if(adminSub==='ann')return adAnn();
+ if(adminSub==='cards')return adCardsPanel();
  adLog()}
 function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (V-Bucks, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (V-Bucks, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
 
@@ -1022,6 +1024,46 @@ function adOwners(card){closePick();var d=document.createElement('div');d.id='pk
   [].forEach.call(d.querySelectorAll('[data-ow2]'),function(tr){tr.onclick=function(){closePick();adminTarget=tr.dataset.ow2;adminSub='players';render();scrollTo(0,0)}})}).catch(function(e){if($('pk')===d){d.firstChild.innerHTML='<p class="center">'+esc(e.message)+'</p>'}})}
 
 /* ----- journal ----- */
+var cardEdit=null,cardImg='';
+function pickImage(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,360/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/webp',.88))};im.onerror=function(){rej(new Error('Image illisible'))};im.src=fr.result};fr.onerror=function(){rej(new Error('Image illisible'))};fr.readAsDataURL(file)})}
+function cthumb(img,name){return img?'<img class="cth" src="'+esc(imgUrl(img))+'" alt="">':'<span class="cth">'+esc((name||'?').charAt(0).toUpperCase())+'</span>'}
+function adCardsPanel(){
+ api('acards').then(function(d){if(!adAlive('cards'))return;
+  var ed=cardEdit!=null?CARDS[cardEdit]:null;if(cardEdit!=null&&!ed)cardEdit=null;
+  var opt=function(list,sel){return list.map(function(x,i){return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+esc(x)+'</option>'}).join('')};
+  var rn=RAR.map(function(r){return r.n}),cnt=RAR.map(function(r,i){return CARDS.filter(function(c){return c&&c[2]===i}).length});
+  var h='<div class="panel"><h3>'+CARDS.length+' cartes publiées</h3><p class="mut sm" style="margin:0">'+RAR.map(function(r,i){return r.n+' <b>'+cnt[i]+'</b>'}).join(' · ')+'</p><p class="mut sm">Une carte publiée apparaît tout de suite dans les packs de tout le monde et les compteurs s\'adaptent (ex. Légendaire 0/'+(cnt[4]+1)+'). Une carte privée reste ici, en attente du vote du jury.</p></div>';
+  h+='<div class="panel"><h3>'+(ed?'Modifier « '+esc(ed[0])+' »':'Créer une carte')+'</h3><div class="cform">'+
+   '<label>Nom<input class="inp" id="cn" maxlength="40" value="'+(ed?esc(ed[0]):'')+'" placeholder="Pseudo de l\'éditeur"></label>'+
+   '<div class="two"><label>Catégorie<select class="inp" id="cc">'+opt(CATS,ed?ed[1]:0)+'</select></label><label>Rareté<select class="inp" id="cr">'+opt(rn,ed?ed[2]:0)+'</select></label></div>'+(ed?'<p class="mut sm" style="margin:0">Changer la rareté modifie le score des joueurs qui possèdent la carte, à leur prochaine action.</p>':'')+
+   '<label>Description (facultatif)<input class="inp" id="cd" maxlength="140" value="'+(ed?esc(ed[3]):'')+'"></label>'+
+   '<label>Logo (image carrée de préférence)<input type="file" id="cf" accept="image/*"></label><div id="cpv">'+(ed&&ed[4]?'<img class="cprev" src="'+esc(imgUrl(ed[4]))+'" alt="">':'')+'</div>'+
+   (ed?'':(ISOWNER?'<div class="radios"><label><input type="radio" name="cv" value="public" checked> Public : dans les packs tout de suite</label><label><input type="radio" name="cv" value="private"> Privé : en attente du jury</label></div>':'<p class="mut sm" style="margin:0">Ta carte sera privée, en attente du jury.</p>'))+
+   '<div class="bar"><button class="btn gold" id="cok">'+(ed?'Enregistrer':'Créer la carte')+'</button>'+(ed?'<button class="btn ghost" id="cno">Annuler</button>':'')+'</div></div></div>';
+  h+='<div class="panel"><h3>En attente du jury ('+d.drafts.length+')</h3>'+(d.drafts.length?d.drafts.map(function(x){
+    var tally={};x.votes.forEach(function(v){tally[v.rarity]=(tally[v.rarity]||0)+1});var best=x.rarity,bn=0;Object.keys(tally).forEach(function(k){if(tally[k]>bn){bn=tally[k];best=+k}});
+    return '<div class="dr"><div style="display:flex;gap:10px;align-items:center">'+cthumb(x.img,x.name)+'<div style="flex:1;min-width:0"><b>'+esc(x.name)+'</b><div class="mut sm">'+CATS[x.cat]+' · proposée '+rn[x.rarity]+' · par '+esc(x.by)+'</div></div></div>'+
+     '<p class="mut sm" style="margin:8px 0 0">'+(x.votes.length?'Jury : '+x.votes.map(function(v){return esc(v.name)+' → '+rn[v.rarity]}).join(', '):'Aucun vote pour l\'instant.')+'</p>'+
+     '<div class="ctl"><select class="inp" data-vr="'+x.id+'">'+opt(rn,x.mine!=null?x.mine:x.rarity)+'</select><button class="btn sm" data-vote="'+x.id+'">'+(x.mine!=null?'Changer mon vote':'Voter')+'</button></div>'+
+     (ISOWNER?'<div class="ctl"><select class="inp" data-pr="'+x.id+'">'+opt(rn,best)+'</select><button class="btn sm gold" data-pub="'+x.id+'">Publier</button></div>':'')+
+     ((ISOWNER||x.by===(PROFILE&&PROFILE.name))?'<div class="ctl"><button class="btn sm ghost" data-dd="'+x.id+'">Supprimer</button></div>':'')+'</div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune carte en attente.</p>')+'</div>';
+  var order=CARDS.map(function(c,i){return i}).filter(function(i){return CARDS[i]}).sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
+  h+='<div class="panel"><h3>Cartes publiées</h3><p class="mut sm">Retirer = la carte ne sort plus des packs mais les joueurs qui l\'ont la gardent (réversible). Supprimer pour de bon = seulement la dernière carte ajoutée, et seulement si personne ne l\'a.</p><div class="tw"><table class="at"><tr><th></th><th>Nom</th><th>Catégorie</th><th>Rareté</th>'+(ISOWNER?'<th></th>':'')+'</tr>'+order.map(function(i){var c=CARDS[i];return '<tr><td>'+cthumb(c[4],c[0])+'</td><td>'+esc(c[0])+'</td><td>'+CATS[c[1]]+'</td><td>'+rn[c[2]]+(c[5]?' <span class="mut sm">(retirée)</span>':'')+'</td>'+(ISOWNER?'<td style="white-space:nowrap"><button class="btn sm" data-ce="'+i+'">Modifier</button> <button class="btn sm ghost" data-ret="'+i+'" data-v="'+(c[5]?0:1)+'">'+(c[5]?'Remettre':'Retirer')+'</button> <button class="btn sm ghost" data-rm="'+i+'">Supprimer</button></td>':'')+'</tr>'}).join('')+'</table></div></div>';
+  $('abody').innerHTML=h;
+  cardImg='';var cf=$('cf');
+  cf.onchange=function(){var f=cf.files[0];if(!f){cardImg='';return}pickImage(f).then(function(u){cardImg=u;$('cpv').innerHTML='<img class="cprev" src="'+u+'" alt="">'}).catch(function(e){toast(e.message)})};
+  var again=function(){adCardsPanel()};
+  $('cok').onclick=function(){var b=this;b.disabled=true;var name=$('cn').value.trim();
+   var req=ed?api('acardedit',{id:cardEdit,name:name,cat:+$('cc').value,rarity:+$('cr').value,descr:$('cd').value,image:cardImg||undefined}):api('acardnew',{name:name,cat:+$('cc').value,rarity:+$('cr').value,descr:$('cd').value,image:cardImg||undefined,status:ISOWNER?document.querySelector('input[name=cv]:checked').value:'private'});
+   req.then(function(r){cardEdit=null;toast(ed?'Carte modifiée':r.public?'Carte publiée : elle est dans les packs':'Carte envoyée au jury');again()}).catch(function(e){b.disabled=false;toast(e.message)})};
+  if($('cno'))$('cno').onclick=function(){cardEdit=null;again()};
+  [].forEach.call(document.querySelectorAll('[data-vote]'),function(b){b.onclick=function(){api('acardvote',{id:+b.dataset.vote,rarity:+document.querySelector('[data-vr="'+b.dataset.vote+'"]').value}).then(function(){toast('Vote enregistré');again()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-pub]'),function(b){b.onclick=function(){b.disabled=true;api('acardpub',{id:+b.dataset.pub,rarity:+document.querySelector('[data-pr="'+b.dataset.pub+'"]').value}).then(function(){toast('Carte publiée : elle est dans les packs');again()}).catch(function(e){b.disabled=false;toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-dd]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer la suppression';return}api('acarddel',{id:+b.dataset.dd}).then(function(){again()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-ret]'),function(b){b.onclick=function(){api('acardretire',{id:+b.dataset.ret,retired:b.dataset.v==='1'}).then(function(){toast(b.dataset.v==='1'?'Carte retirée des packs (les joueurs qui l\'ont la gardent)':'Carte remise dans les packs');again()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(document.querySelectorAll('[data-rm]'),function(b){b.onclick=function(){if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer';return}api('acardremove',{id:+b.dataset.rm}).then(function(){toast('Carte supprimée');again()}).catch(function(e){toast(e.message);again()})}});
+  [].forEach.call(document.querySelectorAll('[data-ce]'),function(b){b.onclick=function(){cardEdit=+b.dataset.ce;again();scrollTo(0,0)}})
+ }).catch(function(e){if(adAlive('cards'))$('abody').innerHTML=errBox(e)})}
 function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;
   $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
