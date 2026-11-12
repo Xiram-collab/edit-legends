@@ -49,6 +49,18 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   await call('tokC', { action: 'prefs', prefs: { hide: true } });
   r = await call('tokB', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); ok('profil caché : toujours visible par ses amis');
   r = await call('tokA', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); assert.ok(!r.json.profile.col); ok('profil caché : l\'admin le voit comme un joueur (sans la collection)');
+  // Pseudo et avatar
+  r = await call('tokC', { action: 'setident', name: 'X' }); assert.strictEqual(r.status, 400); ok('pseudo trop court refusé');
+  r = await call('tokC', { action: 'setident', name: '<b>hack</b>' }); assert.strictEqual(r.status, 400); ok('pseudo avec caractères interdits refusé');
+  r = await call('tokC', { action: 'setident', name: 'alice' }); assert.strictEqual(r.status, 400); ok('pseudo déjà pris (insensible à la casse) refusé');
+  r = await call('tokC', { action: 'setident', name: 'Carlito' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.profile.name, 'Carlito');
+  r = await call('tokC', { action: 'me' }); assert.strictEqual(r.json.profile.name, 'Carlito'); assert.strictEqual(r.json.profile.discordName, 'Carl'); ok('pseudo personnalisé conservé après reconnexion');
+  r = await call('tokC', { action: 'setident', noAvatar: true }); assert.strictEqual(r.json.profile.avatar, ''); assert.strictEqual(r.json.profile.name, 'Carlito'); ok('avatar retiré, pseudo gardé');
+  r = await call('tokB', { action: 'profile', id: 'C' }); assert.strictEqual(r.json.profile.name, 'Carlito'); ok('les autres voient le nouveau pseudo');
+  r = await call('tokB', { action: 'asetident', id: 'C', name: 'Nope' }); assert.strictEqual(r.status, 403); ok('joueur normal ne peut pas changer le pseudo d\'un autre');
+  r = await call('tokA', { action: 'asetident', id: 'C', name: 'Cassius' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.profile.name, 'Cassius'); ok('admin change le pseudo d\'un joueur');
+  r = await call('tokA', { action: 'asetident', id: 'C', name: '' }); assert.strictEqual(r.json.profile.name, 'Carl'); ok('admin remet le pseudo Discord');
+  r = await call('tokC', { action: 'setident', noAvatar: false });
   // Vitrine : 3 cartes possédées, visibles par tous (même sans être ami), les non possédées sont refusées
   for (const c of [3, 4, 5]) await call('tokA', { action: 'apact', id: 'C', a: 'c', i: c, v: 1 });
   r = await call('tokC', { action: 'me' }); const owned = Object.keys(r.json.state.col).map(Number);

@@ -16,8 +16,14 @@ module.exports = function fakeDb(cards, validCodes) {
     async getUser(t) { return users[t] || null; },
     async upsertProfile(u, isAdmin) {
       const p = profiles.get(u.id) || { user_id: u.id, created_at: new Date(1e12).toISOString() };
-      profiles.set(u.id, Object.assign(p, { name: u.name, avatar: u.avatar, discord_id: u.discordId, last_seen: new Date().toISOString() }, isAdmin ? { is_admin: true } : {}));
+      profiles.set(u.id, Object.assign(p, { name: p.custom_name || u.name, avatar: p.no_avatar ? '' : u.avatar, d_name: u.name, d_avatar: u.avatar, discord_id: u.discordId, last_seen: new Date().toISOString() }, isAdmin ? { is_admin: true } : {}));
     },
+    async setIdentity(uid, customName, noAvatar) {
+      const p = profiles.get(uid); if (!p) return null;
+      Object.assign(p, { custom_name: customName || null, no_avatar: !!noAvatar, name: customName || p.d_name || p.name, avatar: noAvatar ? '' : (p.d_avatar || '') });
+      return { id: uid, name: p.name, avatar: p.avatar, custom: p.custom_name || '', noAvatar: p.no_avatar };
+    },
+    async nameTaken(name, uid) { return [...profiles.values()].some((q) => q.user_id !== uid && String(q.name).toLowerCase() === name.toLowerCase()); },
     async isAdmin(uid) { return !!(profiles.get(uid) || {}).is_admin; },
     async loadSave(uid) { await Promise.resolve(); const r = saves.get(uid); return r ? { data: JSON.parse(JSON.stringify(r.data)), version: r.version } : null; },
     async saveSave(uid, S, version, sum) {

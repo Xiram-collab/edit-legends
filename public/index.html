@@ -994,6 +994,7 @@ function adPaint(){if(!adAlive('players')||!adP)return;
  var h='<div class="bar"><button class="btn sm" id="abk">← Joueurs</button></div>'+
   '<div class="panel"><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+(p.isOwner?' <span class="tag">PROPRIÉTAIRE</span>':p.isAdmin?' <span class="tag">ADMIN</span>':'')+'</h2><span class="mut sm">ID Discord '+esc(p.discordId||'?')+' · inscrit le '+dfr(p.createdAt)+' · dernière connexion '+dotH(p.lastSeen)+' '+exact(p.lastSeen)+(dotC(p.lastSeen)==='gn'?' (en ligne)':'')+'</span></div></div>'+
   '<div class="bar" style="margin-top:12px"><button class="btn sm" id="apv">Voir son profil public</button>'+(ISOWNER&&!p.isOwner?'<button class="btn sm '+(p.isAdmin?'ghost':'gold')+'" id="apadm">'+(p.isAdmin?'Retirer les droits admin':'Nommer admin')+'</button>':'')+'</div></div>'+
+  '<div class="panel"><h3>Pseudo et avatar</h3><div class="bar"><input id="ain" class="inp" maxlength="20" value="'+esc(p.customName||p.name)+'" style="max-width:220px"><button class="btn sm gold" id="ainsv">Changer le pseudo</button>'+(p.customName?'<button class="btn sm ghost" id="ainrs">Remettre le pseudo Discord</button>':'')+'<button class="btn sm ghost" id="ainav">'+(p.noAvatar?'Remettre l\'avatar':'Retirer l\'avatar')+'</button></div></div>'+
   '<div class="tiles"><div class="tile"><b>'+fmt(st.money)+'</b><span>'+CUR+'</span></div><div class="tile"><b>'+st.stock+'</b><span>packs gratuits</span></div><div class="tile"><b>'+fmt(st.opened)+'</b><span>packs ouverts</span></div><div class="tile"><b>'+sm.owned+' / '+CARDS.length+'</b><span>cartes</span></div><div class="tile"><b>'+sm.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(sm.score)+'</b><span>score</span></div></div>'+
   '<div class="panel"><h3>'+CUR+'</h3><div class="bar">'+[-10000,-1000,-100,100,1000,10000].map(function(n){return '<button class="btn sm '+(n<0?'ghost':'gold')+'" data-am="'+n+'">'+(n>0?'+':'')+fmt(n)+'</button>'}).join('')+'</div>'+
   '<div class="bar"><input id="amv" class="inp" type="number" min="0" placeholder="Montant" style="max-width:150px"><button class="btn sm gold" id="amadd">Ajouter</button><button class="btn sm ghost" id="amsub">Retirer</button><button class="btn sm" id="amset">Définir à ce montant</button></div></div>'+
@@ -1010,6 +1011,10 @@ function adPaint(){if(!adAlive('players')||!adP)return;
  $('abody').innerHTML=h;
  $('abk').onclick=function(){adminTarget=null;adP=null;adArm='';render();scrollTo(0,0)};
  $('apv').onclick=function(){openProfile(p.id)};
+ var aid=function(body){body.id=p.id;api('asetident',body).then(function(){boardData=null;friendsData=null;toast('Profil modifié');adP=null;render()}).catch(function(e){toast(e.message)})};
+ $('ainsv').onclick=function(){aid({name:$('ain').value})};
+ if($('ainrs'))$('ainrs').onclick=function(){aid({name:''})};
+ $('ainav').onclick=function(){aid({name:p.customName||'',noAvatar:!p.noAvatar})};
  if($('apadm')){var doAdm=function(){api('asetadmin',{id:p.id,v:!p.isAdmin}).then(function(r){p.isAdmin=r.isAdmin;toast(r.isAdmin?'Admin nommé':'Droits admin retirés');adPaint()}).catch(function(e){toast(e.message)})};if(p.isAdmin)twice($('apadm'),doAdm);else $('apadm').onclick=doAdm}
  [].forEach.call(document.querySelectorAll('[data-am]'),function(b){var n=+b.dataset.am;if(n<0)twice(b,function(){adDo('m',n)});else b.onclick=function(){adDo('m',n)}});
  var amt=function(){return Math.max(0,Math.floor(+$('amv').value||0))};
@@ -1213,12 +1218,17 @@ function boot(){var cfg=window.EL_CONFIG||{},started=false;
  $('logout').onclick=doLogout;
  $('acct').onclick=openAcct;$('bell').onclick=openNotifs}
 function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
- d.innerHTML='<div class="pickbox wpbox"><h2>Mon compte</h2><p class="mut">Connecté avec Discord : <b>'+esc(PROFILE&&PROFILE.name||'')+'</b></p><div class="bar"><button class="btn sm" id="alo">Se déconnecter</button></div>'+
-  '<h3 style="margin:14px 0 6px">Confidentialité</h3><label class="chk"><input type="checkbox" id="ahide"'+(S&&S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:6px 0 10px">Décoché, seuls tes amis peuvent voir ton profil. Ton pseudo et ton avatar Discord sont visibles des autres joueurs.</p><label class="chk"><input type="checkbox" id="apres"'+(S&&S.hidep?'':' checked')+'> Montrer à mes amis quand je suis en ligne (pastille)</label><p class="mut sm" style="margin:6px 0 12px">Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.</p>'+
+ d.innerHTML='<div class="pickbox wpbox"><h2>Mon compte</h2><div class="pf-head">'+uav(PROFILE||{},true)+'<div><h3 style="margin:0">'+esc(PROFILE&&PROFILE.name||'')+'</h3><span class="mut sm">Connecté avec Discord</span></div></div><div class="bar"><button class="btn sm" id="alo">Se déconnecter</button></div>'+
+  '<h3 style="margin:14px 0 6px">Profil</h3><div class="bar"><input id="anm" class="inp" maxlength="20" placeholder="Pseudo dans le jeu" value="'+esc(PROFILE&&PROFILE.custom||'')+'" style="max-width:220px"><button class="btn sm gold" id="ansv">Enregistrer</button>'+(PROFILE&&PROFILE.custom?'<button class="btn sm ghost" id="ards">Pseudo Discord ('+esc(PROFILE.discordName||'')+')</button>':'')+'</div><p class="mut sm" style="margin:4px 0 8px">2 à 20 caractères. Laisse vide pour reprendre ton pseudo Discord.</p><label class="chk"><input type="checkbox" id="aav"'+(PROFILE&&PROFILE.noAvatar?'':' checked')+'> Afficher mon avatar Discord</label>'+
+  '<h3 style="margin:14px 0 6px">Confidentialité</h3><label class="chk"><input type="checkbox" id="ahide"'+(S&&S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:6px 0 10px">Décoché, seuls tes amis peuvent voir ton profil. Ton pseudo et ton avatar sont visibles des autres joueurs.</p><label class="chk"><input type="checkbox" id="apres"'+(S&&S.hidep?'':' checked')+'> Montrer à mes amis quand je suis en ligne (pastille)</label><p class="mut sm" style="margin:6px 0 12px">Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.</p>'+
   '<p class="mut sm">Supprimer ton compte efface définitivement ta collection, tes V-Bucks et tes packs. Les codes déjà utilisés restent utilisés.</p><div class="bar"><button class="btn sm ghost" id="adel">Supprimer mon compte</button></div>'+
   '<p class="mut sm"><a href="/confidentialite.html">Confidentialité</a> · <a href="/mentions.html">Mentions légales</a> · <a href="/cgu.html">CGU</a></p><button class="btn ghost sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  $('alo').onclick=doLogout;
+ var identSave=function(body){api('setident',body).then(function(r){PROFILE=Object.assign(PROFILE||{},r.profile);boardData=null;friendsData=null;toast('Profil mis à jour');openAcct()}).catch(function(e){toast(e.message)})};
+ $('ansv').onclick=function(){identSave({name:$('anm').value})};
+ if($('ards'))$('ards').onclick=function(){identSave({name:''})};
+ $('aav').onchange=function(){identSave({noAvatar:!this.checked})};
  $('apres').onchange=function(){S.hidep=!this.checked;save();toast(S.hidep?'Ta présence est cachée à tes amis':'Tes amis voient ta présence')};
  $('ahide').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')};
  var armed=false;$('adel').onclick=function(){if(!armed){armed=true;this.textContent='Confirmer la suppression définitive';return}
