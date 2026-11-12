@@ -1,5 +1,6 @@
 // Point d'entrée réservé au bot Discord : POST /api/bot  avec l'en-tête  x-bot-secret
 //   { action: 'profile', discordId }  ->  équipe + tier lists du joueur
+//   { action: 'board', sort }          ->  top 20 du classement
 //   { action: 'announce', text }      ->  ajoute l'annonce dans la cloche du site
 const crypto = require('crypto');
 const { createDb } = require('../lib/supabaseDb');
@@ -20,6 +21,11 @@ module.exports = async (req, res) => {
       const out = await botProfile(db, body.discordId);
       if (!out) { res.status(404).json({ error: 'no_account' }); return; }
       res.status(200).json(out); return;
+    }
+    if (body.action === 'board') {
+      const sort = ['score', 'owned', 'mythics', 'opened'].includes(body.sort) ? body.sort : 'score';
+      const rows = await db.leaderboard(sort, 20, 0);
+      res.status(200).json({ sort, total: await db.rankedCount(), rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened })) }); return;
     }
     if (body.action === 'announce') {
       const text = String(body.text || '').trim().slice(0, 300);
