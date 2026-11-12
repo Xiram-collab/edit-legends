@@ -656,7 +656,7 @@ function rTeam(){
  function row(a){return '<div class="prow">'+a.map(slot).join('')+'</div>'}
  var ln='<svg class="lines" viewBox="0 0 100 175" preserveAspectRatio="none" aria-hidden="true"><rect x="3" y="3" width="94" height="169"/><path d="M3 87.5H97"/><circle cx="50" cy="87.5" r="12"/><rect x="26" y="3" width="48" height="24"/><rect x="38" y="3" width="24" height="10"/><rect x="26" y="148" width="48" height="24"/><rect x="38" y="162" width="24" height="10"/></svg>';
  $('main').innerHTML='<div class="panel teamhead"><div><h2>Mon équipe</h2><p class="mut sm">Formation 4-4-2. Touche un poste pour y placer un éditeur ou un influenceur de ta collection.</p></div>'+
- '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / 66</b><span class="mut sm">étoiles</span></div></div></div>'+
+ '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / 63</b><span class="mut sm">étoiles</span></div></div></div>'+
  '<div class="pitch">'+ln+row([9,10])+row([5,6,7,8])+row([1,2,3,4])+row([0])+'</div>'+
  '<div class="center" style="margin-top:12px"><button class="btn sm" id="tclear"'+(used?'':' disabled')+'>Vider l’équipe</button></div>';
  [].forEach.call(document.querySelectorAll('[data-slot]'),function(b){b.onclick=function(){openPick(+b.dataset.slot)}});
