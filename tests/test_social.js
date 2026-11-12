@@ -107,5 +107,19 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.status, 200); ok('battement de coeur accepté');
   r = await call('tokB', { action: 'aonline' }); assert.strictEqual(r.status, 403); ok('liste des connectés réservée à l\'admin');
   r = await call('tokA', { action: 'aonline' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.rows.length, 3); assert.ok(r.json.rows[0].lastSeen && r.json.now); ok('liste des connectés : pseudo + dernière connexion précise');
+  // ---------- classement : haut du tableau + voisins ----------
+  const h2 = createHandler(db, { adminIds: '111', now: () => clock, boardTop: 1 });
+  for (const t of ['tokD', 'tokE']) await h2(t, { action: 'me' });
+  await call('tokA', { action: 'apact', id: 'D', a: 'c', i: com + 2, v: 2 });
+  await call('tokA', { action: 'apact', id: 'E', a: 'c', i: com + 3, v: 1 });
+  const by = {};
+  for (const t of ['tokB', 'tokC', 'tokD', 'tokE']) { r = await h2(t, { action: 'board' }); by[r.json.me.rank] = r.json; }
+  assert.deepStrictEqual(Object.keys(by).sort(), ['1', '2', '3', '4']); ok('4 joueurs classés, rangs 1 à 4 distincts');
+  r = { json: by[3] };
+  assert.strictEqual(r.json.rows.length, 1); assert.strictEqual(r.json.rows[0].rank, 1);
+  assert.deepStrictEqual(r.json.near.map((x) => x.rank), [2, 3, 4]); assert.strictEqual(r.json.total, 4); ok('classement : top + voisin du dessus, moi, voisin du dessous');
+  r = { json: by[4] }; assert.deepStrictEqual(r.json.near.map((x) => x.rank), [3, 4]); ok('dernier : voisin du dessus seulement');
+  r = { json: by[2] }; assert.deepStrictEqual(r.json.near.map((x) => x.rank), [2, 3]); ok('rang 2 : pas de doublon avec le top');
+  r = { json: by[1] }; assert.strictEqual(r.json.near, null); ok('premier : pas de bloc voisins');
   console.log('\n' + n + ' vérifications réussies (social/admin)');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });

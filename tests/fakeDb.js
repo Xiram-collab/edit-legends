@@ -6,6 +6,8 @@ module.exports = function fakeDb(cards, validCodes) {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
     tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
     tokC: { id: 'C', discordId: '333', name: 'Carl', avatar: '' },
+    tokD: { id: 'D', discordId: '444', name: 'Dana', avatar: '' },
+    tokE: { id: 'E', discordId: '555', name: 'Eli', avatar: '' },
   };
   const sumOf = (uid) => { const r = saves.get(uid); return r && r.sum ? r.sum : null; };
   const frow = (x, y) => friends.find((f) => (f.a === x && f.b === y) || (f.a === y && f.b === x)) || null;
@@ -33,12 +35,15 @@ module.exports = function fakeDb(cards, validCodes) {
     async getProfile(id) { return profiles.get(id) || null; },
     async getProfiles(ids) { const m = {}; ids.forEach((i) => { if (profiles.has(i)) m[i] = profiles.get(i); }); return m; },
     async getSummaries(ids) { const m = {}; ids.forEach((i) => { const s = sumOf(i); if (s) m[i] = s; }); return m; },
-    async leaderboard(sort, limit) {
+    _ranked(sort) {
       return [...saves.keys()].filter((id) => { const s = sumOf(id); return s && !s.hidden && s.owned > 0 && profiles.has(id); })
-        .map((id) => Object.assign({ id, name: profiles.get(id).name, avatar: '' }, sumOf(id)))
-        .sort((x, y) => y[sort] - x[sort]).slice(0, limit);
+        .sort((x, y) => sumOf(y)[sort] - sumOf(x)[sort] || (x < y ? -1 : 1));
     },
-    async rankOf(sort, v) { return 1 + [...saves.keys()].filter((id) => { const s = sumOf(id); return s && !s.hidden && s.owned > 0 && s[sort] > v; }).length; },
+    async leaderboard(sort, limit, offset = 0) {
+      return this._ranked(sort).slice(offset, offset + limit).map((id) => Object.assign({ id, name: profiles.get(id).name, avatar: '' }, sumOf(id)));
+    },
+    async rankOf(sort, v, uid) { return this._ranked(sort).indexOf(uid) + 1 || null; },
+    async rankedCount() { return this._ranked('score').length; },
     async searchProfiles(q, uid) {
       return [...profiles.values()].filter((p) => p.user_id !== uid && p.name.toLowerCase().includes(q.toLowerCase()) && !(sumOf(p.user_id) || {}).hidden)
         .map((p) => ({ id: p.user_id, name: p.name, avatar: '', owned: (sumOf(p.user_id) || {}).owned || 0, score: (sumOf(p.user_id) || {}).score || 0 }));
