@@ -838,7 +838,7 @@ function paintProfile(d,p){
 
 /* ----- amis ----- */
 function rFriends(){
- function row(u,btns){return '<div class="frow"><button class="fmain" data-pf="'+esc(u.id)+'">'+uav(u)+'<span class="nm">'+esc(u.name)+'</span><span class="mut sm">'+(u.owned!=null?u.owned+' cartes · score '+fmt(u.score||0):'')+'</span></button><div class="fbtn">'+(btns||'')+'</div></div>'}
+ function row(u,btns){return '<div class="frow"><button class="fmain" data-pf="'+esc(u.id)+'">'+uav(u)+'<span class="nm">'+(u.lastSeen!==undefined?'<i class="dot '+dotC(u.lastSeen)+'"></i> ':'')+esc(u.name)+'</span><span class="mut sm">'+(u.lastSeen!==undefined?(dotC(u.lastSeen)==='gn'?'En ligne · ':'Vu '+ago(u.lastSeen)+' · '):'')+(u.owned!=null?u.owned+' cartes · score '+fmt(u.score||0):'')+'</span></button><div class="fbtn">'+(btns||'')+'</div></div>'}
  function listH(d){var h='';
   if(d.incoming.length)h+='<div class="panel"><h3>Demandes reçues</h3>'+d.incoming.map(function(u){return row(u,'<button class="btn sm gold" data-fa="'+esc(u.id)+'">Accepter</button><button class="btn sm ghost" data-fx="'+esc(u.id)+'">Refuser</button>')}).join('')+'</div>';
   h+='<div class="panel"><h3>Mes amis ('+d.friends.length+')</h3>'+(d.friends.length?d.friends.map(function(u){return row(u)}).join(''):'<p class="mut sm" style="margin:0">Pas encore d\'amis. Cherche un pseudo ci-dessus.</p>')+'</div>';
@@ -854,7 +854,7 @@ function rFriends(){
   if(q.length<2){$('fres').innerHTML='';return}
   searchT=setTimeout(function(){api('search',{q:q}).then(function(r){if(seq!==searchSeq||!$('fres'))return;
    $('fres').innerHTML=r.rows.length?r.rows.map(function(u){return row(u,'<button class="btn sm" data-fadd="'+esc(u.id)+'">Ajouter</button>')}).join(''):'<p class="mut sm">Aucun joueur trouvé (le pseudo doit correspondre à son nom Discord affiché sur le site).</p>';bindList($('fres'))}).catch(function(){})},350)};
- function loadList(){api('friends').then(function(d){friendsData=d;if(!comAlive('friends'))return;$('flist').innerHTML=listH(d);bindList($('flist'))}).catch(function(e){if(comAlive('friends'))$('flist').innerHTML=errBox(e)})}
+ function loadList(){clearTimeout(frT);api('friends').then(function(d){friendsData=d;if(d.now)SKEW=d.now-Date.now();if(!comAlive('friends'))return;$('flist').innerHTML=listH(d);bindList($('flist'));frT=setTimeout(function(){if(comAlive('friends'))loadList()},30000)}).catch(function(e){if(comAlive('friends'))$('flist').innerHTML=errBox(e)})}
  if(friendsData){$('flist').innerHTML=listH(friendsData);bindList($('flist'))}
  loadList()}
 
@@ -896,7 +896,7 @@ function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'A
 
 
 /* ----- connectés en direct ----- */
-var adLiveT=0,adLiveRows=[],SKEW=0;
+var frT=0,adLiveT=0,adLiveRows=[],SKEW=0;
 function nowMs(){return Date.now()+SKEW}
 function dotC(iso){var t=iso?Date.parse(iso):0;if(!t)return 'gy';var a=nowMs()-t;return a<300000?'gn':a<3600000?'yl':a>259200000?'gy':'rd'}
 function dotH(iso){return '<i class="dot '+dotC(iso)+'"></i>'}
