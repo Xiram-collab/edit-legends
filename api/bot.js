@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
       res.status(200).json({ sort, total: await db.rankedCount(), rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened })) }); return;
     }
     if (body.action === 'announce') {
-      const text = String(body.text || '').trim().slice(0, 300);
+      const text = String(body.text || '').trim().slice(0, 2000);
       if (!text) { res.status(400).json({ error: 'Annonce vide' }); return; }
       await db.addAnnouncement(text);
       res.status(200).json({ ok: true }); return;
