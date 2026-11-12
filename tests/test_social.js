@@ -48,7 +48,15 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'profile', id: 'C' }); assert.strictEqual(r.json.profile.rel, 'friend'); assert.strictEqual(r.json.profile.col[myth], 1); assert.ok(Array.isArray(r.json.profile.team)); ok('ami : collection complète visible');
   await call('tokC', { action: 'prefs', prefs: { hide: true } });
   r = await call('tokB', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); ok('profil caché : toujours visible par ses amis');
-  r = await call('tokA', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); assert.ok(r.json.profile.col); ok('profil caché : visible par l\'admin');
+  r = await call('tokA', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200); assert.ok(!r.json.profile.col); ok('profil caché : l\'admin le voit comme un joueur (sans la collection)');
+  // Vitrine : 3 cartes possédées, visibles par tous (même sans être ami), les non possédées sont refusées
+  for (const c of [3, 4, 5]) await call('tokA', { action: 'apact', id: 'C', a: 'c', i: c, v: 1 });
+  r = await call('tokC', { action: 'me' }); const owned = Object.keys(r.json.state.col).map(Number);
+  const notOwned = r.json.cards.findIndex((c, k) => !r.json.state.col[k]);
+  r = await call('tokC', { action: 'prefs', prefs: { vitrine: [owned[0], notOwned, owned[0]] } }); assert.strictEqual(r.status, 200);
+  r = await call('tokC', { action: 'me' }); assert.deepStrictEqual(r.json.state.vitrine, [owned[0], null, null]); ok('vitrine : carte non possédée et doublon refusés');
+  r = await call('tokC', { action: 'prefs', prefs: { vitrine: [owned[0], owned[1], owned[2]] } });
+  r = await call('tokA', { action: 'profile', id: 'C' }); assert.deepStrictEqual(r.json.profile.vitrine, [owned[0], owned[1], owned[2]]); assert.ok(!r.json.profile.col); ok('vitrine visible par un non-ami (admin compris), sans la collection');
   await call('tokC', { action: 'prefs', prefs: { hide: false } });
   r = await call('tokB', { action: 'fremove', id: 'C' }); assert.strictEqual(db.friends.length, 0); ok('amitié supprimée');
   // inverse : Carl invite Bob alors que Bob l'a déjà invité => ami direct

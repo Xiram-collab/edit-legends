@@ -177,6 +177,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .packwrap .packbox{margin:0;width:100%}
 .glowp{position:absolute;inset:-20%;background:radial-gradient(circle,#ff3d8166,transparent 65%);filter:blur(12px);animation:orb 3s ease-in-out infinite}
 .prog{flex:1;min-width:80px;max-width:220px;height:8px;border-radius:99px;background:#ffffff14;overflow:hidden}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--acc2),var(--acc));transition:width .6s}
+.item.lock .card{filter:grayscale(1) brightness(.5);opacity:.55}.item.lock .pst{opacity:.6}.vitp{margin:10px 0}.vitrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:520px}.vslot{background:none;border:2px dashed var(--line,#2f2866);border-radius:14px;padding:0;width:100%;aspect-ratio:5/7;display:grid;place-items:center;cursor:pointer;color:var(--mut,#9a93c4)}.vslot:not(.empty){border:none;padding:0;aspect-ratio:auto;align-self:start;display:block}.vslot .plus{font-size:42px}
 .item{animation:rise .5s both}@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.94)}}
 .mini{width:70px;aspect-ratio:5/7;margin:0 auto;border-radius:8px;border:2px solid var(--c);display:grid;place-items:center;background:linear-gradient(160deg,#2a1f6a,#0e0a2e);color:var(--c);font-size:1.4em;box-shadow:0 0 18px var(--c);animation:float 3s ease-in-out infinite}
 .pk:hover{transform:translateY(-4px);box-shadow:0 10px 30px #0008}.pk{transition:.2s}
@@ -480,7 +481,7 @@ var PACKS=[
  {n:'Pack Légendaire+',g:4,price:3500,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
 var HOUR=3600000,MAXSTOCK=10,CUR='V-Bucks';
 var S=null,SB=null,SESSION=null,ISADMIN=false,PROFILE=null,prefT=0,netBusy=false;
-var PREFK=['team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
+var PREFK=['vitrine','team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
@@ -679,19 +680,33 @@ function dupValue(){var t=0;CARDS.forEach(function(c,i){var n=S.col[i]||0;if(n>1
 function rCol(){var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  var h='<div class="bar"><b>'+owned+' / '+CARDS.length+' cartes</b><div class="prog"><i style="width:'+(owned/CARDS.length*100)+'%"></i></div><label><input type="checkbox" id="dup"'+(dupOnly?' checked':'')+'> Voir seulement les doublons</label>'+
  '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn sm" id="shcol">Partager ma collection</button></div>';
+ if(!S.vitrine)S.vitrine=[null,null,null];
+ h+='<div class="panel vitp"><h3>Ma vitrine</h3><p class="mut sm">Choisis 3 cartes : c’est tout ce que verront les joueurs qui cliquent sur ton nom dans le classement (tes amis voient aussi ta collection).</p><div class="vitrow">'+[0,1,2].map(function(k){var i=S.vitrine[k];return '<button class="vslot'+(i==null||!S.col[i]?' empty':'')+'" data-vs="'+k+'">'+(i!=null&&S.col[i]?cardHTML(i):'<span class="plus">+</span>')+'</button>'}).join('')+'</div></div>';
  var any=false;
- for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&n&&(!dupOnly||n>1))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
+ for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&(dupOnly?n>1:(n||!c[5])))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
   var tot=0,own=0,pul=0;CARDS.forEach(function(c,i){if(c[2]===r){tot++;if(S.col[i])own++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
+   if(!n)return '<div class="item lock" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>1?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
  if(!any)h+='<div class="panel center mut">'+(dupOnly?'Aucun doublon pour l\'instant.':'Ta collection est vide. Ouvre un pack !')+'</div>';
  $('main').innerHTML=h;
  $('dup').onchange=function(){dupOnly=this.checked;render()};
+ [].forEach.call(document.querySelectorAll('[data-vs]'),function(b){b.onclick=function(){openVit(+b.dataset.vs)}});
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
  $('shcol').onclick=shareCollection;
  twice($('sellall'),function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})},'Confirmer : vendre tous les doublons');
  [].forEach.call(document.querySelectorAll('[data-s]'),function(b){twice(b,function(){var i=+b.dataset.s;if(S.col[i]>1)act({action:'sell',i:i}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})},'Confirmer')})}
+function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q){if(x!=null&&q!==k)taken[x]=1});
+ var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&!taken[i])items.push(i)});
+ items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
+ var h='<div class="pickbox"><div class="pickhd"><h3>Vitrine : carte '+(k+1)+'</h3><button class="btn sm" id="pkx">Fermer</button></div>'+
+ (v[k]!=null?'<div style="margin:0 0 10px"><button class="btn sm gold" id="pkrm">Retirer '+CARDS[v[k]][0]+'</button></div>':'')+
+ (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i)+'</button>'}).join('')+'</div>':'<p class="mut">Tu n’as encore aucune carte.</p>')+'</div>';
+ var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML=h;document.body.appendChild(d);
+ d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
+ if($('pkrm'))$('pkrm').onclick=function(){S.vitrine[k]=null;save();closePick();render()};
+ [].forEach.call(d.querySelectorAll('[data-pi]'),function(b){b.onclick=function(){S.vitrine[k]=+b.dataset.pi;save();sfx('flip');closePick();render()}})}
 function rShop(){$('main').innerHTML='<p class="mut">Les packs payants n\'utilisent pas ton stock gratuit. Vends tes doublons pour gagner des '+CUR+'.</p><div class="shop">'+
  PACKS.map(function(p,k){var col=HEX[p.g];return '<div class="pk" style="--c:'+col+'"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div><h3>'+p.n+'</h3><div>'+p.t+'</div><div class="mut">5 cartes</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(S.money<p.price?' disabled':'')+'>Acheter et ouvrir</button></div>'}).join('')+'</div>';
  [].forEach.call(document.querySelectorAll('[data-b]'),function(b){twice(b,function(){var p=PACKS[+b.dataset.b];if(S.money<p.price||busy)return;sfx('buy');openVia({action:'open',kind:'buy',g:p.g})},'Confirmer l\'achat')})}
@@ -847,6 +862,7 @@ function paintProfile(d,p){
  var relB={none:'<button class="btn sm" data-fr="fadd">Ajouter en ami</button>',sent:'<button class="btn sm ghost" disabled>Demande envoyée</button><button class="btn sm ghost" data-fr="fremove">Annuler</button>',received:'<button class="btn sm gold" data-fr="faccept">Accepter la demande</button><button class="btn sm ghost" data-fr="fremove">Refuser</button>',friend:'<button class="btn sm ghost" data-fr="fremove">Retirer des amis</button>',self:''}[p.rel]||'';
  var h='<div class="pickhd"><h3>Profil</h3><button class="btn sm" id="pkx">Fermer</button></div><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+'</h2><span class="mut sm">'+(p.rank?'#'+p.rank+' au classement · ':'')+'inscrit le '+dfr(p.since)+'</span></div></div>'+
   '<div class="tiles"><div class="tile"><b>'+fmt(p.score)+'</b><span>score</span></div><div class="tile"><b>'+p.owned+' / '+CARDS.length+'</b><span>cartes</span></div><div class="tile"><b>'+p.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(p.opened)+'</b><span>packs ouverts</span></div></div>'+
+  (p.vitrine&&p.vitrine.length?'<div class="panel vitp"><h3>Vitrine</h3><div class="grid">'+p.vitrine.map(function(i){return '<div class="item">'+cardHTML(i)+'</div>'}).join('')+'</div></div>':'')+
   '<div class="bar">'+relB+(ISADMIN&&p.rel!=='self'?'<button class="btn sm gold" id="pfadm">Gérer ce joueur</button>':'')+'</div>';
  if(p.col){
   var t=p.team||[],names=function(a){return a.map(function(i){var c=t[i]!=null&&CARDS[t[i]];return c?'<span class="tn2" style="--rc:'+HEX[c[2]]+'">'+esc(c[0])+'</span>':'<span class="tn2 mut">—</span>'}).join('')};
