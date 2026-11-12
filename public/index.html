@@ -211,15 +211,15 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .face.front{transform:rotateY(180deg)}
 .fc .face .card,.fc .face .card.m{width:100%;height:100%;aspect-ratio:auto;font-size:16px;animation:none}
 .fc .face .card.m{animation:glow 2.4s ease-in-out infinite}
-.back .bk{position:relative;width:100%;height:100%;padding:5px;background:linear-gradient(135deg,#27e0ff,#7c5cff 50%,#ff3d81);clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);filter:drop-shadow(0 0 14px #27e0ff66)}
-.back .bkin{position:relative;overflow:hidden;width:100%;height:100%;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);background:radial-gradient(circle at 50% 42%,#5b3cff 0,#1d1470 38%,#07051a 88%);display:grid;place-items:center}
-.back .sun{position:absolute;left:50%;top:42%;width:230%;aspect-ratio:1;translate:-50% -50%;background:repeating-conic-gradient(from 0deg,#ffffff1f 0 7deg,transparent 7deg 20deg);-webkit-mask-image:radial-gradient(circle,#000 0,transparent 62%);mask-image:radial-gradient(circle,#000 0,transparent 62%);animation:spin 50s linear infinite}
-.back .emb{position:absolute;left:50%;top:42%;width:60%;translate:-50% -50%;z-index:2;filter:drop-shadow(0 6px 18px #000a) drop-shadow(0 0 22px #27e0ff99);animation:embf 3.4s ease-in-out infinite}
-.back .emb svg{width:100%;height:auto;display:block}
+.back .bk{position:relative;width:100%;height:100%;padding:5px;background:linear-gradient(135deg,#ff8ad0,#ff2f9a 45%,#b0105f);clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px),0 16px);filter:drop-shadow(0 0 14px #ff2f9a88)}
+.back .bkin{position:relative;overflow:hidden;width:100%;height:100%;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);background:linear-gradient(115deg,transparent 0 18%,#ff2f9a2e 18% 26%,transparent 26% 62%,#ff2f9a24 62% 68%,transparent 68%),radial-gradient(circle at 50% 42%,#4a0c33 0,#1c0516 40%,#050106 90%);display:grid;place-items:center}
+.back .sun{position:absolute;left:50%;top:42%;width:230%;aspect-ratio:1;translate:-50% -50%;background:repeating-conic-gradient(from 0deg,#ff5db61f 0 7deg,transparent 7deg 20deg);-webkit-mask-image:radial-gradient(circle,#000 0,transparent 62%);mask-image:radial-gradient(circle,#000 0,transparent 62%);animation:spin 50s linear infinite}
+.back .emb{position:absolute;left:50%;top:42%;width:60%;translate:-50% -50%;z-index:2;filter:drop-shadow(0 6px 18px #000a) drop-shadow(0 0 22px #ff2f9aaa);animation:embf 3.4s ease-in-out infinite}
+.back .emb svg,.back .emb img{width:100%;height:auto;display:block;margin:0 auto}
 @keyframes embf{50%{translate:-50% calc(-50% - 6px)}}
 .back .bkt{position:absolute;left:8%;right:8%;bottom:14%;display:flex;align-items:center;gap:8px;z-index:2}
-.back .bkt i{flex:1;height:2px;background:linear-gradient(90deg,transparent,#27e0ff)}.back .bkt i:last-child{background:linear-gradient(270deg,transparent,#27e0ff)}
-.back .bkt b{font-family:"Rajdhani","Segoe UI",sans-serif;font-size:14px;letter-spacing:.3em;text-indent:.3em;color:#fff;text-shadow:0 0 12px #27e0ff;white-space:nowrap}
+.back .bkt i{flex:1;height:2px;background:linear-gradient(90deg,transparent,#ff2f9a)}.back .bkt i:last-child{background:linear-gradient(270deg,transparent,#ff2f9a)}
+.back .bkt b{font-family:"Rajdhani","Segoe UI",sans-serif;font-size:14px;letter-spacing:.3em;text-indent:.3em;color:#fff;text-shadow:0 0 12px #ff2f9a;white-space:nowrap}
 .back .bks{position:absolute;left:0;right:0;bottom:6%;text-align:center;font-size:11px;letter-spacing:.3em;color:#ffd24a;text-shadow:0 0 8px #ffb020;z-index:2}
 .back .bkin::after{content:"";position:absolute;inset:-20%;background:linear-gradient(115deg,transparent 42%,#ffffff33 50%,transparent 58%);translate:-120% 0;animation:shn 3.6s ease-in-out infinite;pointer-events:none;z-index:3}
 @keyframes shn{60%,100%{translate:120% 0}}
