@@ -688,11 +688,11 @@ function rCol(){var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('dup').onchange=function(){dupOnly=this.checked;render()};
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
  $('shcol').onclick=shareCollection;
- $('sellall').onclick=function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})};
- [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>1)act({action:'sell',i:i}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})}})}
+ twice($('sellall'),function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})},'Confirmer : vendre tous les doublons');
+ [].forEach.call(document.querySelectorAll('[data-s]'),function(b){twice(b,function(){var i=+b.dataset.s;if(S.col[i]>1)act({action:'sell',i:i}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})},'Confirmer')})}
 function rShop(){$('main').innerHTML='<p class="mut">Les packs payants n\'utilisent pas ton stock gratuit. Vends tes doublons pour gagner des '+CUR+'.</p><div class="shop">'+
  PACKS.map(function(p,k){var col=HEX[p.g];return '<div class="pk" style="--c:'+col+'"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div><h3>'+p.n+'</h3><div>'+p.t+'</div><div class="mut">5 cartes</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(S.money<p.price?' disabled':'')+'>Acheter et ouvrir</button></div>'}).join('')+'</div>';
- [].forEach.call(document.querySelectorAll('[data-b]'),function(b){b.onclick=function(){var p=PACKS[+b.dataset.b];if(S.money<p.price||busy)return;sfx('buy');openVia({action:'open',kind:'buy',g:p.g})}})}
+ [].forEach.call(document.querySelectorAll('[data-b]'),function(b){twice(b,function(){var p=PACKS[+b.dataset.b];if(S.money<p.price||busy)return;sfx('buy');openVia({action:'open',kind:'buy',g:p.g})},'Confirmer l\'achat')})}
 function rProb(){var h='<div class="panel"><h2>Probabilités par carte tirée</h2><p class="mut sm">Chance que chaque carte d\'un pack soit de cette rareté (5 cartes par pack).</p><table><tr><th>Rareté</th><th>Chance</th><th>Valeur</th></tr>'+
  RAR.map(function(r,i){return '<tr style="color:'+HEX[i]+'"><td><b>'+r.n+'</b></td><td>'+pctF(r.p)+'</td><td>'+fmt(r.v)+' '+CUR+'</td></tr>'}).join('')+'</table>'+
  '<h3 style="margin-top:18px">Par carte</h3><p class="mut sm">Chance de tirer cette carte précise sur une carte tirée.</p><table><tr><th>Carte</th><th>Rareté</th><th>Chance</th></tr>';
@@ -730,7 +730,7 @@ function rTeam(){
  '<div class="pitch">'+ln+row([9,10])+row([5,6,7,8])+row([1,2,3,4])+row([0])+'</div>'+
  '<div class="center" style="margin-top:12px"><button class="btn sm" id="tclear"'+(used?'':' disabled')+'>Vider l’équipe</button></div>';
  [].forEach.call(document.querySelectorAll('[data-slot]'),function(b){b.onclick=function(){openPick(+b.dataset.slot)}});
- $('tclear').onclick=function(){S.team=S.team.map(function(){return null});save();render()}}
+ twice($('tclear'),function(){S.team=S.team.map(function(){return null});save();render()},'Confirmer : vider mon équipe')}
 var TL=[['5','Mythique',HEX[5]],['4','Légendaire',HEX[4]],['3','Épique',HEX[3]],['2','Rare',HEX[2]],['1','Atypique',HEX[1]],['0','Commun',HEX[0]]],TK='012345';
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
 function chipImg(c){var f=c[4];if(f){var src=imgUrl(f);if(/-sil$/.test(f))src='img/'+f+'.png';return '<img src="'+src+'" alt="" draggable="false">'}return '<b>'+c[0].charAt(0).toUpperCase()+'</b>'}
@@ -773,10 +773,10 @@ function rTier(){
   var b=$('tcopy'),ok=function(){b.textContent='Copié !';setTimeout(function(){b.textContent='Copier mon classement'},1800)};
   try{navigator.clipboard.writeText(tx).then(ok,function(){fb()})}catch(e){fb()}
   function fb(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox"><div class="pickhd"><h3>Mon classement</h3><button class="btn sm" id="pkx">Fermer</button></div><textarea readonly style="width:100%;height:50vh;background:#0006;color:#fff;border:1px solid var(--line);border-radius:8px;padding:8px">'+esc(tx)+'</textarea></div>';document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;d.querySelector('textarea').select()}};
- $('tnreset').onclick=function(){S.tnames={};save();render()};
+ twice($('tnreset'),function(){S.tnames={};save();render()});
  [].forEach.call(document.querySelectorAll('.tn'),function(inp){var k=inp.dataset.k;inp.onclick=function(e){e.stopPropagation()};inp.onkeydown=function(e){e.stopPropagation();if(e.key==='Enter')inp.blur()};
   inp.onchange=function(){var v=inp.value.trim();S.tnames=S.tnames||{};if(v)S.tnames[k]=v;else{delete S.tnames[k];inp.value=TL.filter(function(r){return r[0]===k})[0][1]}save()}});
- $('tireset').onclick=function(){eds.forEach(function(i){delete TD()[i]});tsel=null;save();render()};
+ twice($('tireset'),function(){eds.forEach(function(i){delete TD()[i]});tsel=null;save();render()},'Confirmer : tout remettre à zéro');
  [].forEach.call(document.querySelectorAll('[data-tc]'),function(b){b.onclick=function(){tcat=+b.dataset.tc;tsel=null;render()}})}
 var rstArm=false;
 function rTest(){
@@ -792,6 +792,7 @@ function rTest(){
   '<h3>Temps</h3><div class="bar">'+b('Remplir le stock à 10','sfull',10)+'</div></div>';
  [].forEach.call(document.querySelectorAll('[data-g]'),function(el){el.onclick=function(){var a=el.dataset.g,v=+el.dataset.v;
   if(a==='rst'&&!rstArm){rstArm=true;setTimeout(function(){if(rstArm){rstArm=false;if(tab==='admin')render()}},4000);render();return}
+  if(['m0','s0','creset'].indexOf(a)>=0){if(el.dataset.sure!=='1'){el.dataset.sure='1';el.dataset.o=el.textContent;el.textContent='Confirmer ?';setTimeout(function(){if(el.isConnected&&el.dataset.sure==='1'){el.dataset.sure='0';el.textContent=el.dataset.o}},4000);return}el.dataset.sure='0'}
   if(a==='rst')rstArm=false;
   if((a==='wt'||a==='p'||a==='p10')&&(busy||spinning))return;
   var prev=Object.assign({},S.col);if(a==='wt'){tab='code';render()}
@@ -856,7 +857,7 @@ function paintProfile(d,p){
   if(!shown)h+='<p class="mut center">Collection vide.</p>'}
  else h+='<div class="panel center mut">'+(p.rel==='self'?'':'Ajoute '+esc(p.name)+' en ami (et attends qu\'il accepte) pour voir sa collection complète.')+'</div>';
  d.firstChild.innerHTML=h;$('pkx').onclick=closePick;
- [].forEach.call(d.querySelectorAll('[data-fr]'),function(b){b.onclick=function(){api(b.dataset.fr,{id:p.id}).then(function(r){friendsData=null;toast({fadd:'Demande envoyée',faccept:'Vous êtes amis',fremove:'Fait'}[b.dataset.fr]);openProfile(p.id);if(tab==='com'&&comSub==='friends')render()}).catch(function(e){toast(e.message)})}});
+ [].forEach.call(d.querySelectorAll('[data-fr]'),function(b){var run=function(){api(b.dataset.fr,{id:p.id}).then(function(r){friendsData=null;toast({fadd:'Demande envoyée',faccept:'Vous êtes amis',fremove:'Fait'}[b.dataset.fr]);openProfile(p.id);if(tab==='com'&&comSub==='friends')render()}).catch(function(e){toast(e.message)})};if(b.dataset.fr==='fremove')twice(b,run);else b.onclick=run});
  if($('pfadm'))$('pfadm').onclick=function(){closePick();tab='admin';adminSub='players';adminTarget=p.id;render();scrollTo(0,0)}}
 
 /* ----- amis ----- */
@@ -872,7 +873,7 @@ function rFriends(){
  function bindList(root){
   [].forEach.call(root.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}});
   [].forEach.call(root.querySelectorAll('[data-fa]'),function(b){b.onclick=function(){api('faccept',{id:b.dataset.fa}).then(function(){toast('Vous êtes amis');friendsData=null;render()}).catch(function(e){toast(e.message)})}});
-  [].forEach.call(root.querySelectorAll('[data-fx]'),function(b){b.onclick=function(){api('fremove',{id:b.dataset.fx}).then(function(){friendsData=null;render()}).catch(function(e){toast(e.message)})}});
+  [].forEach.call(root.querySelectorAll('[data-fx]'),function(b){twice(b,function(){api('fremove',{id:b.dataset.fx}).then(function(){friendsData=null;doPing();render()}).catch(function(e){toast(e.message)})})});
   [].forEach.call(root.querySelectorAll('[data-fadd]'),function(b){b.onclick=function(){b.disabled=true;api('fadd',{id:b.dataset.fadd}).then(function(r){b.textContent=r.rel==='friend'?'Amis':'Envoyée';friendsData=null;toast(r.rel==='friend'?'Vous êtes amis':'Demande envoyée');loadList()}).catch(function(e){b.disabled=false;toast(e.message)})}})}
  $('cbody').innerHTML='<div class="panel"><h3>Ajouter un ami</h3><input id="fsr" class="inp" placeholder="Pseudo Discord du joueur (2 lettres minimum)" maxlength="40" autocomplete="off"><div id="fres"></div></div><div id="flist"></div>';
  $('fsr').oninput=function(){clearTimeout(searchT);var q=this.value.trim(),seq=++searchSeq;
@@ -994,10 +995,10 @@ function adPaint(){if(!adAlive('players')||!adP)return;
  if($('apadm')){var doAdm=function(){api('asetadmin',{id:p.id,v:!p.isAdmin}).then(function(r){p.isAdmin=r.isAdmin;toast(r.isAdmin?'Admin nommé':'Droits admin retirés');adPaint()}).catch(function(e){toast(e.message)})};if(p.isAdmin)twice($('apadm'),doAdm);else $('apadm').onclick=doAdm}
  [].forEach.call(document.querySelectorAll('[data-am]'),function(b){var n=+b.dataset.am;if(n<0)twice(b,function(){adDo('m',n)});else b.onclick=function(){adDo('m',n)}});
  var amt=function(){return Math.max(0,Math.floor(+$('amv').value||0))};
- $('amadd').onclick=function(){if(amt())adDo('m',amt())};twice($('amsub'),function(){if(amt())adDo('m',-amt())});$('amset').onclick=function(){if($('amv').value!=='')adDo('mset',amt())};
+ $('amadd').onclick=function(){if(amt())adDo('m',amt())};twice($('amsub'),function(){if(amt())adDo('m',-amt())});twice($('amset'),function(){if($('amv').value!=='')adDo('mset',amt())},'Confirmer : écraser le montant');
  [].forEach.call(document.querySelectorAll('[data-as2]'),function(b){var n=+b.dataset.as2;if(n<0)twice(b,function(){adDo('s',n)});else b.onclick=function(){adDo('s',n)}});
- [].forEach.call(document.querySelectorAll('[data-aw]'),function(b){b.onclick=function(){adDo('wp',+b.dataset.d,+b.dataset.aw)}});
- [].forEach.call(document.querySelectorAll('[data-ac]'),function(b){b.onclick=function(){adDo('c',+b.dataset.d,+b.dataset.ac)}});
+ [].forEach.call(document.querySelectorAll('[data-aw]'),function(b){var go=function(){adDo('wp',+b.dataset.d,+b.dataset.aw)};if(+b.dataset.d<0)twice(b,go,'?');else b.onclick=go});
+ [].forEach.call(document.querySelectorAll('[data-ac]'),function(b){var go=function(){adDo('c',+b.dataset.d,+b.dataset.ac)};if(+b.dataset.d<0)twice(b,go,'?');else b.onclick=go});
  $('acq').oninput=function(){adF.q=this.value;var pos=this.selectionStart;adPaint();var e=$('acq');e.focus();e.setSelectionRange(pos,pos)};
  $('aco').onchange=function(){adF.own=this.checked;adPaint()};
  var arm=function(k){return function(){if(adArm!==k){adArm=k;adPaint();setTimeout(function(){if(adArm===k){adArm='';if(adAlive('players')&&adP)adPaint()}},4000);return}adArm='';adDo(k)}};
