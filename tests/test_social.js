@@ -239,6 +239,8 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   await call('tokA', { action: 'acardaccept', id: ea.id });
   r = await call('tokE', { action: 'cardmydel', id: ea.id }); assert.strictEqual(r.status, 400); ok('une proposition acceptée ne peut plus être annulée par le joueur');
   await call('tokA', { action: 'acarddel', id: ea.id });
+  r = await call('tokB', { action: 'acodes' }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'acodes' }); assert.strictEqual(r.status, 200); assert.ok(r.json.rows.length >= 3 && r.json.rows[0].codes >= r.json.rows[r.json.rows.length - 1].codes); ok('admin : codes utilisés par joueur');
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 V-Bucks, 10 packs)');
