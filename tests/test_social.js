@@ -256,6 +256,12 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
     assert.strictEqual(r.json.state.extra.coach, null); assert.strictEqual(r.json.state.extra.stade, null); assert.strictEqual(r.json.state.extra.club, null); ok('équipe : coach déjà dans le 11 et mauvaises catégories refusés');
     await call('tokB', { action: 'prefs', prefs: { team: Array(11).fill(null), extra: { coach: null, stade: null, club: null } } });
   }
+  {
+    const col = (await call('tokB', { action: 'me' })).json.state.col; const wid = Number(Object.keys(col)[0]);
+    r = await call('tokB', { action: 'acardwipe', id: wid }); assert.strictEqual(r.status, 403);
+    r = await call('tokA', { action: 'acardwipe', id: wid }); assert.strictEqual(r.status, 200); assert.ok(r.json.holders >= 1);
+    r = await call('tokB', { action: 'me' }); assert.ok(!(wid in r.json.state.col)); assert.ok(!(wid in r.json.state.pulled)); ok('carte effacée de la collection de tous les joueurs');
+  }
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 V-Bucks, 10 packs)');
