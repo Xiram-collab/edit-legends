@@ -64,6 +64,12 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   const par = await Promise.all([call('tokA', { action: 'code', code: 'BBBB3333' }), call('tokB', { action: 'code', code: 'BBBB3333' })]);
   assert.strictEqual(par.filter((x) => x.status === 200).length, 1); ok('même code envoyé par 2 joueurs en même temps : un seul gagne');
 
+  // tour de roue payant (150 Coins), sans code
+  r = await call('tokC', { action: 'spinpay' }); assert.strictEqual(r.status, 400); assert.ok(/Coins/.test(r.json.error)); ok('roue payante refusée sans assez de Coins');
+  await call('tokA', { action: 'apact', id: 'C', a: 'm', v: 1000 });
+  r = await call('tokC', { action: 'spinpay' }); assert.strictEqual(r.status, 200); assert.ok(Array.isArray(r.json.spins) && r.json.spins.length >= 1);
+  const gain = r.json.spins.reduce((a, x) => a + (x.coins || 0), 0); assert.strictEqual(r.json.state.money, 1000 - 150 + gain); ok('roue payante : 150 Coins débités, gains crédités, aucun code utilisé');
+
   // essais ratés : verrou
   db.saves.get('B').data.bad = 0; db.saves.get('B').data.lock = 0; db.saves.get('B').version++;
   for (let i = 0; i < 4; i++) { r = await call('tokB', { action: 'code', code: 'ZZZZ' + i + '999' }); assert.strictEqual(r.status, 400); assert.ok(!/attends/.test(r.json.error)); }
