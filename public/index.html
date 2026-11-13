@@ -586,7 +586,7 @@ function cardHTML(i,o){o=o||{};var c=CARDS[i];return '<div class="card'+(c[2]==5
  '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+c[0]+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]||'&nbsp;')+'</div></div>'}
 var LOGO='<img src="img/logo.png" class="bl" alt="">';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
-var tab='home',lastTab='',dupOnly=false,shown=0,busy=false,cvOn=false,parts=[];
+var tab='home',lastTab='',dupOnly=(function(){try{return localStorage.getItem('el_own')==='1'}catch(e){return false}})(),shown=0,busy=false,cvOn=false,parts=[];
 var $=function(id){return document.getElementById(id)};
 /* ---------- sons ---------- */
 var AC=null,MS=null,NB=null;
@@ -757,18 +757,18 @@ function rCol(){
  if(colSub==='vit'){$('main').innerHTML=colNav()+vitH();bindColNav();[].forEach.call(document.querySelectorAll('[data-vs]'),function(b){b.onclick=function(){openVit(+b.dataset.vs)}});return}
  if(colSub==='tit'){rTitles();return}
 var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
- var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes</b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div><label><input type="checkbox" id="dup"'+(dupOnly?' checked':'')+'> Voir seulement les doublons</label>'+
+ var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes</b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div><label><input type="checkbox" id="dup"'+(dupOnly?' checked':'')+'> Voir seulement mes cartes</label>'+
  '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn sm" id="shcol">Partager ma collection</button></div>';
  var any=false;
- for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&(dupOnly?n>1:(n||!c[5])))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
+ for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&(dupOnly?n>0:(n||!c[5])))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
   var tot=0,own=0,pul=0;CARDS.forEach(function(c,i){if(c[2]===r){tot++;if(S.col[i])own++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>1?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
- if(!any)h+='<div class="panel center mut">'+(dupOnly?'Aucun doublon pour l\'instant.':'Ta collection est vide. Ouvre un pack !')+'</div>';
+ if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
- $('dup').onchange=function(){dupOnly=this.checked;render()};
+ $('dup').onchange=function(){dupOnly=this.checked;try{localStorage.setItem('el_own',dupOnly?'1':'0')}catch(e){}render()};
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
  $('shcol').onclick=shareCollection;
  $('sellall').onclick=function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})};
