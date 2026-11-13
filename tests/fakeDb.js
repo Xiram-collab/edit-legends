@@ -1,7 +1,7 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
-  const friends = [], logs = [], anns = [], drafts = [], notes = [];
+  const friends = [], logs = [], anns = [], drafts = [], notes = [], times = [];
   const users = {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
     tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
@@ -84,6 +84,19 @@ module.exports = function fakeDb(cards, validCodes) {
       return [...saves.entries()].filter(([id, r]) => { const s = sumOf(id); return s && !s.hidden && r.data.per && r.data.per[kf[0]] === key; })
         .map(([id, r]) => { const s = sumOf(id); return { id, score: r.data.per[kf[1]] || 0, runs: r.data.per[kf[2]] || 0, owned: s.owned || 0, mythics: s.mythics || 0, opened: s.opened || 0 }; });
     },
+    // ----- temps de la map -----
+    times,
+    async addTime(row) { const id = times.length + 1; times.push(Object.assign({ id, status: 'pending', paid: false, hide_run: false, created_at: new Date(1e12 + id * 1000).toISOString() }, row)); return id; },
+    async listTimes(f) { return times.filter((t) => (!f.week || t.week === f.week) && (!f.status || t.status === f.status) && (!f.user || t.user_id === f.user)).map((t) => Object.assign({}, t)).reverse(); },
+    async timesToSettle(cur) { return times.filter((t) => t.week < cur && (t.status === 'pending' || (t.status === 'accepted' && !t.paid))).map((t) => Object.assign({}, t)); },
+    async getTime(id) { const t = times.find((x) => x.id === id); return t ? Object.assign({}, t) : null; },
+    async updateTime(id, f) { Object.assign(times.find((x) => x.id === id), f); },
+    async deleteTime(id) { const i = times.findIndex((x) => x.id === id); if (i >= 0) times.splice(i, 1); },
+    async claimTimePaid(id) { await Promise.resolve(); const t = times.find((x) => x.id === id); if (!t || t.paid) return false; t.paid = true; return true; },
+    async unclaimTimePaid(id) { const t = times.find((x) => x.id === id); if (t) t.paid = false; },
+    async settleWeek(week) { times.forEach((t) => { if (t.week === week && t.status === 'accepted') t.paid = true; }); },
+    async recordTime() { const a = times.filter((t) => t.status === 'accepted').sort((x, y) => x.ms - y.ms || x.id - y.id); return a[0] ? Object.assign({}, a[0]) : null; },
+    async countPendingTimes() { return times.filter((t) => t.status === 'pending').length; },
     async getEquipped(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && r.data.title) m[i] = r.data.title; }); return m; },
     async titleStats() {
       const counts = {}; let total = 0;

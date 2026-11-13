@@ -24,7 +24,9 @@
 <meta name="robots" content="index,follow">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}img{max-width:100%}[hidden]{display:none!important}.tmw{border-bottom:1px solid var(--line)}.tmw .lbr{border-bottom:0}.tmn{padding:0 10px 8px 82px;word-break:break-word}.tml{font-weight:800;font-variant-numeric:tabular-nums;color:#fff;text-decoration:none;border-bottom:1px dashed var(--acc)}a.tml:hover{color:var(--gold)}.tml.off{border:0;color:var(--fg)}.tml small{font-weight:600;color:var(--mut)}.rwd{color:var(--gold)}.tmrec{text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}.tmrec .big{font-size:2em}.tmr .nm{cursor:pointer}
+.tmgrid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:900px){.tmgrid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}.rwl{display:grid;grid-template-columns:1fr;gap:2px;font-size:14px}.rwl div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid var(--line)}.rwl b{min-width:2.6em}.rwl span{color:var(--gold);text-align:right}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <title>Edit Legends : cartes Fortnite edit à collectionner</title>
@@ -640,11 +642,11 @@ function setPurse(){var from=shown,to=S.money,t0=performance.now();
 var IC={miss:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/>',rank:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/>',code:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',"home": "<path d=\"M3 11l9-8 9 8\"/><path d=\"M5 10v10h5v-6h4v6h5V10\"/>", "open": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2.5\"/><path d=\"M12 8l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8L8 10.9l2.8-.3z\"/>", "col": "<rect x=\"3\" y=\"4\" width=\"9\" height=\"13\" rx=\"2\"/><rect x=\"9\" y=\"7\" width=\"9\" height=\"13\" rx=\"2\"/><path d=\"M21 9v8\"/>", "shop": "<path d=\"M4 8h16l-1.5 11a2 2 0 01-2 1.7H7.5a2 2 0 01-2-1.7z\"/><path d=\"M8.5 8V6.5a3.5 3.5 0 017 0V8\"/>", "prob": "<path d=\"M5 20V11M12 20V4M19 20v-7\"/>", "test": "<path d=\"M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4A2 2 0 0019 18l-5-9V3\"/><path d=\"M7.5 15h9\"/>"};
 IC.com='<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.3c3 .2 5 2.5 5 5.7"/>';IC.admin='<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>';
 function ico(k){return '<svg class="ti" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'}
-var NOTIF={reqs:0,mc:0,ann:[],notes:[]};
+var NOTIF={reqs:0,mc:0,tp:0,ann:[],notes:[]};
 function annSeen(){try{return +localStorage.getItem('el_ann')||0}catch(e){return 0}}
 function annUnread(){var m=annSeen();return NOTIF.ann.filter(function(a){return a.id>m}).length}
 function paintBell(){var b=$('nb');if(!b)return;var n=NOTIF.reqs+annUnread()+NOTIF.notes.length;b.hidden=!n;b.textContent=n>9?'9+':n}
-function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;NOTIF.ann=r.ann||[];NOTIF.notes=r.notes||[];paintBell();if((old!==NOTIF.reqs||oldm!==NOTIF.mc)&&S)tabs()}).catch(function(){})}
+function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;var oldt=NOTIF.tp;NOTIF.tp=r.tp||0;NOTIF.ann=r.ann||[];NOTIF.notes=r.notes||[];paintBell();if((old!==NOTIF.reqs||oldm!==NOTIF.mc||oldt!==NOTIF.tp)&&S)tabs()}).catch(function(){})}
 function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>m)m=a.id});var un=annSeen();
  var d=document.createElement('div');d.id='pk';d.className='pickov';
  var h='<div class="pickbox wpbox" style="max-height:88vh;overflow-y:auto"><h2>Notifications</h2>';
@@ -657,7 +659,7 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
  var f=$('nfr');if(f)f.onclick=function(){closePick();tab='com';comSub='friends';render();scrollTo(0,0)};
  try{if(m)localStorage.setItem('el_ann',m)}catch(e){}var ids=NOTIF.notes.map(function(x){return x.id});if(ids.length){NOTIF.notes=[];api('notread',{ids:ids}).catch(function(){})}paintBell()}
 function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classement'],['miss','Missions'],['com','Communauté'],['shop','Boutique'],['code','Code']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
- $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
+ $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='admin'&&NOTIF.tp?'<span class="nb">'+(NOTIF.tp>9?'9+':NOTIF.tp)+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
 function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
@@ -972,7 +974,7 @@ function rTitles(){
 
 /* ================= COMMUNAUTÉ ================= */
 var SCORE=[1,2,4,10,25,60],ISOWNER=false;
-var comSub='friends',boardSort='score',boardPer='all',boardData=null,friendsData=null,searchT=0,searchSeq=0;
+var comSub='friends',boardScope='all',timeData=null,boardSort='score',boardPer='all',boardData=null,friendsData=null,searchT=0,searchSeq=0;
 var COMS=[['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Partage'],['add','Ajouter une carte'],['prob','Probabilités']];
 function ttag(t){return t&&t.n?'<span class="ttl" style="--c:'+HEX[t.t]+'">'+esc(t.n)+'</span>':''}
 function uav(u,big){var c='uav'+(big?' big':'');return u&&u.avatar?'<img class="'+c+'" src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;'+c+' ph2&quot;>?</span>\'">':'<span class="'+c+' ph2">'+esc(((u&&u.name)||'?').charAt(0).toUpperCase())+'</span>'}
@@ -981,7 +983,10 @@ function dfr(iso){return iso?new Date(iso).toLocaleDateString('fr-FR'):'?'}
 function subnavH(list,cur,attr){return '<div class="fl subnav">'+list.map(function(s){return '<button '+attr+'="'+s[0]+'"'+(cur===s[0]?' class="on"':'')+'>'+s[1]+(attr==='data-cs'&&s[0]==='friends'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+'</button>'}).join('')+'</div>'}
 function bindNav(attr,fn){[].forEach.call(document.querySelectorAll('['+attr+']'),function(b){b.onclick=function(){fn(b.getAttribute(attr))}})}
 function comAlive(sub){return (sub==='board'?tab==='rank':tab==='com'&&comSub===sub)&&$('cbody')}
-function rRank(){$('main').innerHTML='<div id="cbody"></div>';rBoard()}
+var RSC=[['all','Joueurs'],['friends','Amis'],['time','Temps']];
+function rRank(){$('main').innerHTML=subnavH(RSC,boardScope,'data-rs')+'<div id="cbody"></div>';
+ bindNav('data-rs',function(v){boardScope=v;boardData=null;render();scrollTo(0,0)});
+ if(boardScope==='time')rTimes();else rBoard()}
 function rCom(){
  var nav=subnavH(COMS,comSub,'data-cs');
  var bind=function(){bindNav('data-cs',function(v){comSub=v;render();scrollTo(0,0)})};
@@ -1003,14 +1008,57 @@ function rBoard(){
   var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b>'+(me.rank&&d.total?'<span class="mut sm">sur <b>'+d.total+'</b> joueurs · Top '+Math.max(1,Math.ceil(me.rank/d.total*100))+' %</span>':'')+'</div><div><span class="mut sm">Score'+(P?(boardPer==='day'?' du jour':' de la semaine'):'')+'</span><b>'+fmt(me.score)+'</b></div>'+(P?'':'<div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+TOT()+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>')+(boardSort==='runs'?'<div><span class="mut sm">Runs</span><b>'+(me.runs||0)+'</b></div>':'')+
    (me.hidden?'<p class="mut sm" style="flex-basis:100%;margin:0">Tu es caché du classement (réglage dans l\'onglet Partage).</p>':(boardSort==='runs'?(!me.rank?'<p class="mut sm" style="flex-basis:100%;margin:0">Fais la map et entre ton code de fin pour apparaître ici.</p>':''):(P&&!me.rank?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre des packs pour entrer dans ce classement.</p>':!me.owned?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre un pack pour entrer au classement.</p>':'')))+'</div>';
   var row=function(r){return '<button class="lbr'+(r.rank<=3?' top'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk">'+r.rank+'</span>'+uav(r)+'<span class="nm">'+esc(r.name)+ttag(r.title)+'</span><span class="lv">'+val(r)+'</span><span class="lsub mut">'+(P?(boardPer==='day'?'aujourd\'hui':'cette semaine'):boardSort==='score'?r.owned+' cartes · '+r.mythics+' M':boardSort==='runs'?'faits sur la map':'score '+fmt(r.score))+'</span></button>'};
-  h+='<div class="panel lbx">'+(d.total?'<div class="lbhead"><b>Top '+d.rows.length+'</b><span class="mut sm">sur <b>'+d.total+'</b> joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':'')+'</span></div>':'')+(d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap">• • •<span class="mut sm">ta position</span></div>'+d.near.map(row).join(''):''):'<p class="mut center">Personne au classement pour l\'instant.</p>')+'</div>'+
+  h+='<div class="panel lbx">'+(d.total?'<div class="lbhead"><b>'+(boardScope==='friends'?'Entre amis':'Top '+d.rows.length)+'</b><span class="mut sm">sur <b>'+d.total+'</b> joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':'')+'</span></div>':'')+(d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap">• • •<span class="mut sm">ta position</span></div>'+d.near.map(row).join(''):''):(boardScope==='friends'?'<p class="mut center">Ajoute des amis (onglet Communauté > Amis) pour les voir ici.</p>':'<p class="mut center">Personne au classement pour l\'instant.</p>'))+'</div>'+
    '<p class="mut sm">Score : chaque carte obtenue rapporte des points selon sa rareté ('+RAR.map(function(r,i){return r.n+' '+SCORE[i]}).join(', ')+'). Les doublons comptent, même revendus : plus tu ouvres de packs, plus ton score monte. Classement Runs : nombre de fois où tu as fini la map, selon les codes de fin que tu as entrés. Le haut du classement montre les 20 premiers, puis ta position avec le joueur juste au-dessus et juste en dessous. Touche un joueur pour voir son profil.</p>';
   $('cbody').innerHTML=h;
   bindNav('data-bs',function(v){boardSort=v;boardData=null;render()});
   bindNav('data-bp',function(v){boardPer=v;boardData=null;render()});
   [].forEach.call(document.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}})}
- if(boardData&&boardData.sort===boardSort&&boardData.period===boardPer)paint(boardData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
- api('board',{sort:boardSort,period:boardPer}).then(function(r){boardData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
+ if(boardData&&boardData.sort===boardSort&&boardData.period===boardPer&&(boardData.scope||'all')===boardScope)paint(boardData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
+ api('board',{sort:boardSort,period:boardPer,scope:boardScope}).then(function(r){boardData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
+
+
+/* ----- classement des temps de la map ----- */
+function fmtMs(ms){var m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60,r=ms%1000;return m+':'+('0'+s).slice(-2)+'.'+('00'+r).slice(-3)}
+function rewTxt(w){return w?fmt(w.c)+' Coins'+(w.g?' + pack '+(w.g===3?'Épique+':'Rare+'):''):''}
+function resetTxt(ms){var s=Math.max(0,Math.floor(ms/1000)),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?d+' j '+h+' h':h?h+' h '+m+' min':m+' min'}
+function tmTime(r){return r.link?'<a class="tml" href="'+esc(r.link)+'" target="_blank" rel="noopener noreferrer nofollow" title="Voir la vidéo du run">▶ '+fmtMs(r.ms)+'</a>':'<span class="tml off"'+(r.hidden?' title="Run masqué par le joueur"':'')+'>'+fmtMs(r.ms)+(r.hidden?' <small>masqué</small>':'')+'</span>'}
+function rTimes(){
+ function paint(d){if(!comAlive('board'))return;
+  var ord=function(n){return n===1?'1er':n+'e'};
+  var tmRow=function(r){return '<div class="tmw"><div class="lbr tmr'+(r.rank<=3?' top'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'"><span class="rk">'+r.rank+'</span>'+uav(r)+'<span class="nm" data-pf="'+esc(r.id)+'">'+esc(r.name)+ttag(r.title)+'</span><span class="lv">'+tmTime(r)+'</span><span class="lsub mut">'+[r.platform,r.device].filter(Boolean).map(esc).join(' · ')+(r.reward?' · <b class="rwd">'+esc(rewTxt(r.reward))+'</b>':'')+'</span></div>'+(r.note?'<div class="tmn mut sm">'+esc(r.note)+'</div>':'')+'</div>'};
+  var rec=d.record,me=d.me,st={pending:'En attente',accepted:'Validé',rejected:'Refusé'};
+  var h='<div class="runnote">Classement des temps de la map : <b>remis à zéro chaque lundi à minuit</b> (heure de Paris), dans <b>'+resetTxt(d.resetAt-d.now)+'</b>. Le top '+d.rewards.length+' de la semaine gagne des récompenses, versées automatiquement à la fin de la semaine. Pour apparaître, envoie ton temps avec une vidéo : il est validé par l\'admin.</div>';
+  h+='<div class="panel tmrec"><span class="mut sm">Record de la map</span>'+(rec?'<b class="big">'+tmTime(rec)+'</b><span class="mut sm">par <b>'+esc(rec.name)+'</b>'+(rec.platform?' · '+esc(rec.platform):'')+(rec.hidden?' · run masqué':' · touche le temps pour voir la vidéo')+'</span>':'<b class="big">—</b><span class="mut sm">Aucun temps validé pour l\'instant : sois le premier !</span>')+'</div>';
+  h+='<div class="panel mine"><div><span class="mut sm">Ma place cette semaine</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b></div>'+(me.ms?'<div><span class="mut sm">Mon meilleur temps</span><b>'+fmtMs(me.ms)+'</b></div>':'')+(me.reward?'<div><span class="mut sm">Récompense actuelle</span><b class="rwd">'+esc(rewTxt(me.reward))+'</b></div>':'')+'</div>';
+  if(me.list.length)h+='<div class="panel"><h3>Mes envois</h3>'+me.list.map(function(x){return '<div class="frow"><span class="fwho"><span class="nm">'+fmtMs(x.ms)+(x.hidden?' <small class="mut">(masqué)</small>':'')+'</span><span class="mut sm">'+st[x.status]+' · '+dfr(x.at)+'</span></span>'+(x.status==='pending'?'<div class="fbtn"><button class="btn sm ghost" data-td="'+x.id+'">Annuler</button></div>':'')+'</div>'}).join('')+'</div>';
+  h+='<div class="tmgrid"><div><div class="panel lbx"><div class="lbhead"><b>Temps de la semaine</b><span class="mut sm"><b>'+d.total+'</b> joueur'+(d.total>1?'s':'')+'</span></div>'+(d.rows.length?d.rows.map(tmRow).join(''):'<p class="mut center">Aucun temps validé cette semaine.</p>')+'<div class="bar" style="justify-content:center;margin-top:10px"><button class="btn gold" id="tadd">Ajouter un temps</button></div></div></div>'+
+   '<div><div class="panel"><h3>Récompenses de la semaine</h3><div class="rwl">'+d.rewards.map(function(w,i){return '<div><b>'+ord(i+1)+'</b><span>'+esc(rewTxt(w))+'</span></div>'}).join('')+'</div></div>'+
+   (d.lastWeek.rows.length?'<div class="panel"><h3>Semaine dernière</h3>'+d.lastWeek.rows.map(function(r){return '<div class="frow"><span class="fwho"><span class="nm">'+r.rank+'. '+esc(r.name)+'</span><span class="mut sm">'+fmtMs(r.ms)+'</span></span></div>'}).join('')+'</div>':'')+'</div></div>';
+  $('cbody').innerHTML=h;
+  [].forEach.call(document.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}});
+  [].forEach.call(document.querySelectorAll('[data-td]'),function(b){twice(b,function(){api('timedel',{id:+b.dataset.td}).then(function(){toast('Envoi annulé');timeData=null;rTimes()}).catch(function(e){toast(e.message)})},'Annuler ?')});
+  $('tadd').onclick=function(){openTimeForm(d)}}
+ if(timeData)paint(timeData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
+ api('times').then(function(r){timeData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
+function openTimeForm(d){closePick();var o=document.createElement('div');o.id='pk';o.className='pickov';
+ var opt=function(l){return l.map(function(x){return '<option>'+esc(x)+'</option>'}).join('')};
+ o.innerHTML='<div class="pickbox wpbox"><h2>Ajouter un temps</h2><div class="cform plain"><label>Temps<input class="inp" id="tft" maxlength="12" placeholder="1:23.456" inputmode="decimal" autocomplete="off"></label><label>Lien de la vidéo (preuve)<input class="inp" id="tfl" maxlength="300" placeholder="https://..." autocomplete="off"></label><div class="two"><label>Périphérique<select class="inp" id="tfd">'+opt(d.devices)+'</select></label><label>Plateforme<select class="inp" id="tfp">'+opt(d.platforms)+'</select></label></div><label>Note (facultatif)<input class="inp" id="tfn" maxlength="200" placeholder="Ex : run sans bug, 3e tentative"></label>'+
+  '<label class="chk" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;text-align:left;width:100%"><input type="checkbox" id="tfh" style="width:auto"> Masquer mon run aux autres joueurs</label><p class="mut sm" style="margin:0;text-align:left">Si tu ne coches pas, les joueurs pourront cliquer sur ton temps dans le classement pour voir ta vidéo. Coché, seul l\'admin voit le lien (ton temps reste affiché).</p><div id="tfe" class="mut sm" style="color:#ff6b8a"></div><div class="bar"><button class="btn gold" id="tfok">Envoyer</button><button class="btn ghost" id="tfx">Annuler</button></div></div></div>';
+ document.body.appendChild(o);o.onclick=function(e){if(e.target===o)closePick()};$('tfx').onclick=closePick;
+ $('tfok').onclick=function(){var b=this;b.disabled=true;$('tfe').textContent='';
+  api('timesubmit',{time:$('tft').value,link:$('tfl').value,note:$('tfn').value,device:$('tfd').value,platform:$('tfp').value,hide:$('tfh').checked}).then(function(){closePick();timeData=null;toast('Envoyé ! L\'admin va le vérifier.');if(tab==='rank'&&boardScope==='time')rTimes()}).catch(function(e){b.disabled=false;$('tfe').textContent=e.message})}}
+function adTimes(){
+ api('atimes').then(function(d){if(!adAlive('times'))return;NOTIF.tp=d.pending.length;tabs();
+  var ln=function(x){return '<a href="'+esc(x.link)+'" target="_blank" rel="noopener noreferrer nofollow">Voir la vidéo</a>'};
+  var pr=function(x){return '<div class="dr"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+uav(x)+'<div style="flex:1;min-width:180px"><b>'+esc(x.name)+'</b> · <b class="tml off">'+fmtMs(x.ms)+'</b><div class="mut sm">'+esc(x.platform)+' · '+esc(x.device)+' · semaine du '+dfr(x.week)+(x.best?' · meilleur validé : '+fmtMs(x.best):'')+(x.hidden?' · <b>run masqué</b>':'')+'</div>'+(x.note?'<div class="mut sm">'+esc(x.note)+'</div>':'')+'<div class="sm">'+ln(x)+'</div></div><div class="fbtn"><button class="btn sm gold" data-ay="'+x.id+'">Accepter</button><button class="btn sm ghost" data-an="'+x.id+'">Refuser</button></div></div></div>'};
+  var ar=function(x){return '<div class="frow"><span class="fwho"><span class="nm">'+x.rank+'. '+esc(x.name)+' · '+fmtMs(x.ms)+'</span><span class="mut sm">'+esc(x.platform)+' · '+esc(x.device)+(x.hidden?' · masqué':'')+' · '+ln(x)+'</span></span><div class="fbtn"><button class="btn sm ghost" data-ar="'+x.id+'">Retirer</button></div></div>'};
+  $('abody').innerHTML='<div class="panel"><h3>Temps à valider ('+d.pending.length+')</h3>'+(d.pending.length?d.pending.map(pr).join(''):'<p class="mut sm" style="margin:0">Rien en attente.</p>')+'</div><div class="panel"><h3>Classement de la semaine ('+d.accepted.length+')</h3>'+(d.accepted.length?d.accepted.map(ar).join(''):'<p class="mut sm" style="margin:0">Aucun temps validé.</p>')+'<p class="mut sm" style="margin:8px 0 0">Les récompenses sont versées automatiquement après la fin de la semaine (lundi minuit), dès que tous les temps de la semaine sont traités, ou au plus tard 3 jours après. Valide donc les temps avant.</p></div>';
+  var dec=function(id,st){api('atimedecide',{id:+id,status:st}).then(function(){timeData=null;adTimes()}).catch(function(e){toast(e.message)})};
+  [].forEach.call(document.querySelectorAll('[data-ay]'),function(b){b.onclick=function(){dec(b.dataset.ay,'accepted')}});
+  [].forEach.call(document.querySelectorAll('[data-an]'),function(b){twice(b,function(){dec(b.dataset.an,'rejected')},'Confirmer ?')});
+  [].forEach.call(document.querySelectorAll('[data-ar]'),function(b){twice(b,function(){dec(b.dataset.ar,'rejected')},'Confirmer ?')})
+ }).catch(function(e){if(adAlive('times'))$('abody').innerHTML=errBox(e)})}
 
 /* ----- profil d'un joueur ----- */
 function openProfile(id){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox profbox"><p class="mut center">Chargement…</p></div>';
@@ -1095,7 +1143,7 @@ function rShare(){
 
 /* ================= ADMINISTRATION ================= */
 var adminSub='live',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
-var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['cards','Cartes'],['jury','Jury'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
+var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['cards','Cartes'],['jury','Jury'],['times','Temps'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
 function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
 function rAdmin(){
  if(!ISADMIN)adminSub='jury';
@@ -1110,6 +1158,7 @@ function rAdmin(){
  if(adminSub==='ann')return adAnn();
  if(adminSub==='cards')return adCardsPanel();
  if(adminSub==='jury')return adJury();
+ if(adminSub==='times')return adTimes();
  adLog()}
 function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (Coins, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (Coins, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
 
