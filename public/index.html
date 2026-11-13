@@ -109,7 +109,10 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px so
 .over .card{width:min(300px,calc((100svh - 170px)*5/7),86vw);font-size:16px;animation:pop .35s ease-out}
 @keyframes pop{from{transform:scale(.6) rotateY(90deg);opacity:0}}
 .over .card.m{animation:pop .35s ease-out,glow 2.4s .35s ease-in-out infinite}
-.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;width:min(700px,100%)}
+.sum{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:min(700px,100%)}
+.sum .sw{flex:0 1 clamp(110px,calc((100% - 40px)/5),160px)}
+.sum:has(.sw:only-child) .sw{flex-basis:min(210px,60vw)}
+.sum:has(.sw:nth-child(2):last-child) .sw{flex-basis:min(180px,42vw)}
 .sum .card{width:100%;font-size:11px;animation:none}
 
 .card .art{position:relative}
