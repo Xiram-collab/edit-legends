@@ -369,6 +369,7 @@ main#main{min-height:60vh}
 .dbox h3{margin:0;display:flex;align-items:center;gap:6px;font-size:.95em}.dbox h3 svg{width:16px;height:16px}
 .dsteps{margin:0;padding:0;list-style:none;counter-reset:d;display:grid;gap:5px}
 .dsteps li{counter-increment:d;display:flex;gap:10px;align-items:flex-start;line-height:1.3}
+.wheelpk{margin-top:14px;border:2px solid var(--gold);border-radius:16px;padding:16px;display:grid;gap:6px;justify-items:center;text-align:center;background:linear-gradient(160deg,#3a2c8f55,#161233)}
 .cpay{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin-top:10px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px}
 .dsteps li span{min-width:0}
 .dsteps li.dg{counter-increment:none;display:block;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:.74em;color:#aab2ff;margin-top:6px}.dsteps li.dg::before{display:none}
@@ -748,7 +749,9 @@ function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q)
  if($('pkrm'))$('pkrm').onclick=function(){S.vitrine[k]=null;save();closePick();render()};
  [].forEach.call(d.querySelectorAll('[data-pi]'),function(b){b.onclick=function(){S.vitrine[k]=+b.dataset.pi;save();sfx('flip');closePick();render()}})}
 function rShop(){var dv=dupValue();$('main').innerHTML='<p class="mut">Les packs payants n\'utilisent pas ton stock gratuit. Vends tes doublons pour gagner des '+CUR+'.</p><div class="panel center" style="margin-bottom:14px"><button class="btn gold" id="shopsell"'+(dv?'':' disabled')+'>Revendre mes doublons'+(dv?' (+'+fmt(dv)+' '+CUR+')':'')+'</button><p class="mut sm" style="margin:8px 0 0">'+(dv?'Tu gardes un exemplaire de chaque carte, seuls les doublons sont vendus.':'Tu n\'as aucun doublon à revendre pour l\'instant.')+'</p></div><div class="shop">'+
- PACKS.map(function(p,k){var col=HEX[p.g];return '<div class="pk" style="--c:'+col+'"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div><h3>'+p.n+'</h3><div>'+p.t+'</div><div class="mut">5 cartes</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(S.money<p.price?' disabled':'')+'>Acheter et ouvrir</button></div>'}).join('')+'</div>';
+ PACKS.map(function(p,k){var col=HEX[p.g];return '<div class="pk" style="--c:'+col+'"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div><h3>'+p.n+'</h3><div>'+p.t+'</div><div class="mut">5 cartes</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(S.money<p.price?' disabled':'')+'>Acheter et ouvrir</button></div>'}).join('')+'</div>'+
+ '<div class="pk wheelpk"><div class="mini" style="--c:#ffd24a"><b class="disp">★</b></div><h3>Roue</h3><div>Un tour de roue sans code</div><div class="mut">Packs, cartes, Coins ou relance gratuite. Jusqu\'à une Mythique au choix.</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(SPIN_PRICE)+' '+CUR+'</div><button class="btn gold" id="shopwheel"'+(S.money<SPIN_PRICE?' disabled':'')+'>Tourner la roue</button></div>';
+ var sw=$('shopwheel');if(sw)twice(sw,function(){if(S.money<SPIN_PRICE||busy)return;autoPay=true;tab='code';render();scrollTo(0,0)},'Confirmer : '+fmt(SPIN_PRICE)+' '+CUR);
  var ss=$('shopsell');if(ss)ss.onclick=function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})};
  [].forEach.call(document.querySelectorAll('[data-b]'),function(b){twice(b,function(){var p=PACKS[+b.dataset.b];if(S.money<p.price||busy)return;sfx('buy');openVia({action:'open',kind:'buy',g:p.g})},'Confirmer l\'achat')})}
 function rProb(){var h='<div class="panel"><h2>Probabilités par carte tirée</h2><p class="mut sm">Chance que chaque carte d\'un pack soit de cette rareté (5 cartes par pack).</p><table><tr><th>Rareté</th><th>Chance</th><th>Valeur</th></tr>'+
@@ -1310,7 +1313,7 @@ var WH=[{n:'Avant (rien)',p:0,t:'none',c:'#5a6080',c2:'#2c3050'},
 {n:'200 Coins',l:['200','Coins'],p:1,t:'coins',v:200,c:'#ffe27a',c2:'#d18a00'}];
 /* 12 parts de même taille (visuel) : la vraie probabilité de chaque gain est celle de la légende */
 var SL=[1,7,6,5,2,7,1,6,3,5,8,4],SA=30;
-var spinning=false;
+var spinning=false,autoPay=false;
 function codeHash_unused(c){var b=new TextEncoder().encode('EL1:'+c);return crypto.subtle.digest('SHA-256',b).then(function(d){return Array.prototype.map.call(new Uint8Array(d),function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,12)})}
 function wheelSvg(){var seg='',lab='',defs='',pegs='',bulbs='',R=100,k;
  SL.forEach(function(wi,i){var w=WH[wi];defs+='<radialGradient id="wgd'+i+'" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="'+w.c2+'"/><stop offset=".5" stop-color="'+w.c2+'"/><stop offset="1" stop-color="'+w.c+'"/></radialGradient>'});
@@ -1379,6 +1382,7 @@ function rCode(){
    runSpins(r.spins||[{res:r.res}],0,function(o){setState(r.state);msg(winText(o),true);winEnd(o,prev)})
   }).catch(function(e){$('cgo').disabled=false;if($('cpay'))$('cpay').disabled=S.money<SPIN_PRICE;if(e.message!=='busy')msg(e.message||'Erreur',false)})};
  var pb=$('cpay');if(pb)twice(pb,function(){play({action:'spinpay'})},'Confirmer : '+fmt(SPIN_PRICE)+' '+CUR);
+ if(autoPay){autoPay=false;if(S.money>=SPIN_PRICE)setTimeout(function(){play({action:'spinpay'})},400)}
  var go=function(){if(spinning||busy||netBusy)return;var c=($('cin').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(c.length!==8){msg('Entre ton code de 8 caractères (celui donné par le bot)');return}
   $('cgo').disabled=true;msg('Vérification...',true);
