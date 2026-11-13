@@ -418,10 +418,15 @@ main#main{min-height:60vh}
 .cmsg{min-height:1.4em;font-weight:700;text-align:center}
 .wleg{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:.9em}
 .wleg span{display:inline-flex;align-items:center;gap:6px}.wleg i{width:12px;height:12px;border-radius:3px;display:inline-block}
-.pkb{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:15;width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);background:linear-gradient(160deg,#3a2c8f,#161233);color:var(--gold);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 22px #000a,0 0 18px #ffd24a55;animation:pkbp 2.2s ease-in-out infinite}
+.pkb{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:15;display:flex;align-items:center;gap:9px;height:56px;padding:0 20px 0 16px;border-radius:30px;border:2px solid var(--gold);background:linear-gradient(160deg,#4a38b8,#1b1544);color:#fff;font:inherit;font-weight:800;font-size:14px;letter-spacing:.02em;cursor:pointer;box-shadow:0 8px 26px #000b,0 0 22px #ffd24a77;animation:pkbp 1.8s ease-in-out infinite,pkbw 3.2s ease-in-out infinite}
+.pkb::before{content:"";position:absolute;inset:-4px;border-radius:34px;border:2px solid var(--gold);opacity:0;animation:pkbr 1.8s ease-out infinite;pointer-events:none}
+.pkb svg{flex:none;color:var(--gold)}
+.pkb .pkt{white-space:nowrap}
 .pkb[hidden]{display:none}
-.pkb .pkn{position:absolute;top:-6px;right:-6px;min-width:24px;height:24px;border-radius:12px;padding:0 6px;background:#ff3d81;color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;border:2px solid #0c0a1a}
+.pkb .pkn{min-width:26px;height:26px;border-radius:13px;padding:0 7px;background:#ff3d81;color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center;border:2px solid #0c0a1a}
 @keyframes pkbp{0%,100%{box-shadow:0 6px 22px #000a,0 0 10px #ffd24a44}50%{box-shadow:0 6px 22px #000a,0 0 26px #ffd24acc}}
+@keyframes pkbw{0%,62%,100%{transform:none}66%{transform:translateY(-12px) rotate(-3deg)}72%{transform:translateY(0) rotate(2.5deg)}78%{transform:translateY(-6px) rotate(-1.5deg)}84%{transform:none}}
+@keyframes pkbr{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.22,1.5)}}
 .wpbox{width:min(560px,100%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 .wpl{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.wpl .pk{width:132px;padding:12px;gap:6px}
 .sum .sw{cursor:pointer}
@@ -1364,7 +1369,7 @@ var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#
 function wpTotal(){var t=0;WPT.forEach(function(x){t+=S.wp[x.g]||0});return t}
 function wpBadge(){var b=$('pkb');if(!b){b=document.createElement('button');b.id='pkb';b.className='pkb';b.setAttribute('aria-label','Packs en attente');b.onclick=openWaiting;document.body.appendChild(b)}
  var n=wpTotal();b.hidden=n<1||!$('ov').hidden;
- b.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M5 8h14M9 13h6"/></svg><span class="pkn">'+n+'</span>'}
+ b.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M5 8h14M9 13h6"/></svg><span class="pkt">Packs en attente</span><span class="pkn">'+n+'</span>'}
 function openWaiting(){if(busy)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
  var h=WPT.filter(function(x){return (S.wp[x.g]||0)>0}).map(function(x){var n=S.wp[x.g];return '<div class="pk wpk" style="--c:'+x.c+'"><div class="mini" style="--c:'+x.c+'"><b class="disp">'+x.l+'</b></div><h3>'+x.n+'</h3><div class="mut">x'+n+' en attente</div><button class="btn sm" data-ow="'+x.g+'">Ouvrir</button></div>'}).join('');
  d.innerHTML='<div class="pickbox wpbox"><h2>Packs en attente</h2>'+(h?'<div class="wpl">'+h+'</div>':'<p class="mut">Aucun pack en attente.</p>')+'<button class="btn ghost sm" id="pkx">Fermer</button></div>';
