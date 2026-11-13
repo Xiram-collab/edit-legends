@@ -7,7 +7,7 @@ const cards = require('../data/cards.json');
 let clock = 1e12, n = 0;
 const ok = (m) => { n++; console.log('ok  ' + m); };
 const db = fakeDb(cards, []);
-const h = createHandler(db, { adminIds: '111', now: () => clock });
+const h = createHandler(db, { adminIds: '111', now: () => clock, periodAll: {} });
 const call = (t, b) => h(t, b);
 const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[2] === 0);
 
