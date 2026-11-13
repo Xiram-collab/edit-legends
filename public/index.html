@@ -780,12 +780,13 @@ function rTeam(){
  var t=S.team,used=0,stars=0,k;
  for(k=0;k<11;k++){if(t[k]!=null&&(!S.col[t[k]]||CARDS[t[k]][1]>1))t[k]=null;if(t[k]!=null){used++;stars+=CARDS[t[k]][2]+1}}
  var E=S.extra=S.extra||{coach:null,stade:null,club:null};['coach','stade','club'].forEach(function(x){if(E[x]!=null&&(!S.col[E[x]]||EXC[x].indexOf(CARDS[E[x]][1])<0||t.indexOf(E[x])>=0))E[x]=null});
+ ['coach','stade','club'].forEach(function(x){if(E[x]!=null)stars+=CARDS[E[x]][2]+1});
  function xslot(x){var i=E[x];return '<div class="xs"><span class="mut sm xl">'+EXN[x]+'</span><button class="slot'+(i==null?' empty':'')+'" data-xs="'+x+'" aria-label="'+EXN[x]+'">'+(i==null?'<span class="plus">+</span><span class="pl">'+EXN[x].toUpperCase()+'</span>':cardHTML(i))+'</button></div>'}
  function slot(k){var i=t[k];return '<button class="slot'+(i==null?' empty':'')+'" data-slot="'+k+'" aria-label="'+PN[k]+'">'+(i==null?'<span class="plus">+</span><span class="pl">'+PL[k]+'</span>':cardHTML(i))+'</button>'}
  function row(a){return '<div class="prow">'+a.map(slot).join('')+'</div>'}
  var ln='<svg class="lines" viewBox="0 0 100 175" preserveAspectRatio="none" aria-hidden="true"><rect x="3" y="3" width="94" height="169"/><path d="M3 87.5H97"/><circle cx="50" cy="87.5" r="12"/><rect x="26" y="3" width="48" height="24"/><rect x="38" y="3" width="24" height="10"/><rect x="26" y="148" width="48" height="24"/><rect x="38" y="162" width="24" height="10"/></svg>';
  $('main').innerHTML='<div class="panel teamhead"><div><h2>Mon équipe</h2><p class="mut sm">Formation 4-4-2. Touche un poste pour y placer un éditeur ou un influenceur de ta collection. À côté : un coach (éditeur ou influenceur en plus), un stade (map) et un club (structure).</p></div>'+
- '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / 63</b><span class="mut sm">étoiles</span></div></div></div>'+
+ '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / 84</b><span class="mut sm">étoiles</span></div></div></div>'+
  '<div class="tmwrap"><div class="pitch">'+ln+row([9,10])+row([5,6,7,8])+row([1,2,3,4])+row([0])+'</div><div class="tside">'+xslot('coach')+xslot('stade')+xslot('club')+'</div></div>'+
  '<div class="center" style="margin-top:12px"><button class="btn sm" id="tclear"'+(used?'':' disabled')+'>Vider l’équipe</button></div>';
  [].forEach.call(document.querySelectorAll('[data-slot]'),function(b){b.onclick=function(){openPick(+b.dataset.slot)}});
