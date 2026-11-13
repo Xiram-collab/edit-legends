@@ -21,7 +21,7 @@ function page(d, origin, sid) {
     d.cards.forEach((c, i) => { if (c && c[2] === r && d.col[i] > 0) items.push({ c, n: d.col[i] }); });
     if (!items.length) continue;
     items.sort((x, y) => x.c[0].localeCompare(y.c[0], 'fr', { sensitivity: 'base', numeric: true }));
-    const have = items.length, all = d.cards.filter((c) => c && c[2] === r).length;
+    const have = items.length, all = d.cards.filter((c, i) => c && c[2] === r && (!c[5] || d.col[i] > 0)).length;
     body += '<section style="--c:' + RAR[r][1] + '"><h2>' + RAR[r][0] + ' <small>' + have + ' / ' + all + '</small></h2><div class="g">' +
       items.map(({ c, n }) => {
         const src = imgSrc(c[4]);

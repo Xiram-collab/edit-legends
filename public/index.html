@@ -765,7 +765,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&(dupOnly?n>0:(n||!c[5])))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
-  var tot=0,own=0,pul=0;CARDS.forEach(function(c,i){if(c[2]===r){tot++;if(S.col[i])own++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
+  var tot=0,own=0,pul=0;CARDS.forEach(function(c,i){if(c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>1?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
@@ -1091,7 +1091,7 @@ function paintProfile(d,p){
   var shown=0;
   for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){if(c[2]===r&&p.col[i]>0)items.push(i)});if(!items.length)continue;shown+=items.length;
    items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
-   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+items.length+' / '+CARDS.filter(function(c){return c[2]===r}).length+'</span></h3><div class="grid">'+items.map(function(i){return '<div class="item">'+cardHTML(i,{count:p.col[i]})+'</div>'}).join('')+'</div></div>'}
+   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+items.length+' / '+CARDS.filter(function(c,i){return c[2]===r&&(!c[5]||p.col[i]>0)}).length+'</span></h3><div class="grid">'+items.map(function(i){return '<div class="item">'+cardHTML(i,{count:p.col[i]})+'</div>'}).join('')+'</div></div>'}
   if(!shown)h+='<p class="mut center">Collection vide.</p>'}
  else h+='<div class="panel center mut">'+(p.rel==='self'?'':'Ajoute '+esc(p.name)+' en ami (et attends qu\'il accepte) pour voir sa collection complète.')+'</div>';
  d.firstChild.innerHTML=h;$('pkx').onclick=closePick;
