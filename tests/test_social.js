@@ -242,6 +242,8 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'acodes' }); assert.strictEqual(r.status, 403);
   r = await call('tokA', { action: 'acodes' }); assert.strictEqual(r.status, 200); assert.ok(r.json.rows.length >= 3 && r.json.rows[0].wheel.length === 5 && r.json.rows[0].codes >= r.json.rows[r.json.rows.length - 1].codes); ok('admin : codes utilisés par joueur');
   r = await call('tokA', { action: 'aonline' }); assert.ok(r.json.total >= 3); ok('admin : total des inscrits dans Connectés');
+  r = await call('tokA', { action: 'board', sort: 'runs' }); assert.strictEqual(r.status, 200); assert.ok(Array.isArray(r.json.rows) && r.json.me.runs !== undefined);
+  for (let k = 1; k < r.json.rows.length; k++) assert.ok(r.json.rows[k - 1].runs >= r.json.rows[k].runs); ok('classement Runs : trié par nombre de codes utilisés');
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 V-Bucks, 10 packs)');

@@ -73,6 +73,12 @@ module.exports = function fakeDb(cards, validCodes) {
       return [...profiles.values()].map((p) => { const s = sumOf(p.user_id) || {}; return { id: p.user_id, name: p.name, avatar: '', discordId: p.discord_id || '', createdAt: p.created_at, lastSeen: p.last_seen, isAdmin: !!p.is_admin, owned: s.owned || 0, mythics: s.mythics || 0, score: s.score || 0, opened: s.opened || 0 }; });
     },
     async codesByUser() { const m = {}; codes.forEach((c) => { if (c.used && c.by) m[c.by] = (m[c.by] || 0) + 1; }); return m; },
+    async runsBoard() {
+      const m = await this.codesByUser();
+      return Object.keys(m).filter((id) => { const s = sumOf(id); return s && !s.hidden; })
+        .map((id) => { const s = sumOf(id); return { id, runs: m[id], owned: s.owned || 0, mythics: s.mythics || 0, score: s.score || 0, opened: s.opened || 0 }; })
+        .sort((a, b) => b.runs - a.runs || (a.id < b.id ? -1 : 1));
+    },
     async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
     async setAdminFlag(uid, v) { const p = profiles.get(uid); if (p) p.is_admin = !!v; },
     async listDrafts() { return drafts.slice().reverse(); },
