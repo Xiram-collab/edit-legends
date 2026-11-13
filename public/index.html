@@ -442,9 +442,10 @@ main#main{min-height:60vh}
 .mrow:last-child{border-bottom:0}.mrow .mn{font-weight:800}.mrow .md{grid-column:1;font-size:.85em}.mrow .mprg{grid-column:1/-1;display:flex;align-items:center;gap:10px}
 .mrow .mprg .prog{flex:1;max-width:none;height:9px}.mrow .mprg b{min-width:64px;text-align:right;font-variant-numeric:tabular-nums;font-size:.85em}
 .mrow .mr{grid-row:1/3;grid-column:2;text-align:right;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
-.mrow.done .mn{color:#7be3a0}.mrow.own .mn{color:var(--c)}
+.mrow.mdone .mn{color:#7be3a0}.mrow.tgot .mn{color:var(--c)}
 .mtag{font-size:.7em;font-weight:800;padding:2px 8px;border-radius:999px;background:#ffffff14;color:var(--mut);white-space:nowrap}
 .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 4px}
+.tbar{margin-top:18px}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .tcard{border:1px solid var(--c);border-radius:12px;padding:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 18%,transparent),transparent);display:flex;flex-direction:column;gap:6px}
 .tcard b{color:var(--c);font-size:1.05em}.tcard.on{box-shadow:0 0 0 2px var(--c),0 4px 18px color-mix(in srgb,var(--c) 40%,transparent)}
@@ -552,7 +553,8 @@ function api(action,body){body=Object.assign({action:action,nc:CARDS.length},bod
  .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.catalog&&action!=='me'){CARDS.length=0;j.catalog.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
-function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]})}
+function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]});if(typeof schedPing==='function')schedPing()}
+function schedPing(){if(pingT)return;pingT=setTimeout(function(){pingT=0;doPing()},2500)}
 function fmt(n){return n.toLocaleString('fr-FR')}
 function pctF(p){return (p>=1?p.toFixed(p%1?2:0):p<0.1?p.toFixed(3):p.toFixed(2)).replace('.',',')+' %'}
 function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
@@ -629,11 +631,11 @@ function setPurse(){var from=shown,to=S.money,t0=performance.now();
 var IC={miss:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/>',rank:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/>',code:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',"home": "<path d=\"M3 11l9-8 9 8\"/><path d=\"M5 10v10h5v-6h4v6h5V10\"/>", "open": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2.5\"/><path d=\"M12 8l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8L8 10.9l2.8-.3z\"/>", "col": "<rect x=\"3\" y=\"4\" width=\"9\" height=\"13\" rx=\"2\"/><rect x=\"9\" y=\"7\" width=\"9\" height=\"13\" rx=\"2\"/><path d=\"M21 9v8\"/>", "shop": "<path d=\"M4 8h16l-1.5 11a2 2 0 01-2 1.7H7.5a2 2 0 01-2-1.7z\"/><path d=\"M8.5 8V6.5a3.5 3.5 0 017 0V8\"/>", "prob": "<path d=\"M5 20V11M12 20V4M19 20v-7\"/>", "test": "<path d=\"M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4A2 2 0 0019 18l-5-9V3\"/><path d=\"M7.5 15h9\"/>"};
 IC.com='<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.3c3 .2 5 2.5 5 5.7"/>';IC.admin='<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>';
 function ico(k){return '<svg class="ti" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'}
-var NOTIF={reqs:0,ann:[],notes:[]};
+var NOTIF={reqs:0,mc:0,ann:[],notes:[]};
 function annSeen(){try{return +localStorage.getItem('el_ann')||0}catch(e){return 0}}
 function annUnread(){var m=annSeen();return NOTIF.ann.filter(function(a){return a.id>m}).length}
 function paintBell(){var b=$('nb');if(!b)return;var n=NOTIF.reqs+annUnread()+NOTIF.notes.length;b.hidden=!n;b.textContent=n>9?'9+':n}
-function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs;NOTIF.reqs=r.reqs||0;NOTIF.ann=r.ann||[];NOTIF.notes=r.notes||[];paintBell();if(old!==NOTIF.reqs&&S)tabs()}).catch(function(){})}
+function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;NOTIF.ann=r.ann||[];NOTIF.notes=r.notes||[];paintBell();if((old!==NOTIF.reqs||oldm!==NOTIF.mc)&&S)tabs()}).catch(function(){})}
 function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>m)m=a.id});var un=annSeen();
  var d=document.createElement('div');d.id='pk';d.className='pickov';
  var h='<div class="pickbox wpbox" style="max-height:88vh;overflow-y:auto"><h2>Notifications</h2>';
@@ -645,8 +647,8 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
  d.onclick=function(e){if(e.target===d)closePick()};$('nx').onclick=closePick;
  var f=$('nfr');if(f)f.onclick=function(){closePick();tab='com';comSub='friends';render();scrollTo(0,0)};
  try{if(m)localStorage.setItem('el_ann',m)}catch(e){}var ids=NOTIF.notes.map(function(x){return x.id});if(ids.length){NOTIF.notes=[];api('notread',{ids:ids}).catch(function(){})}paintBell()}
-function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classement'],['com','Communauté'],['shop','Boutique'],['code','Code'],['miss','Missions']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
- $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+'</button>'}).join('');
+function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classement'],['miss','Missions'],['com','Communauté'],['shop','Boutique'],['code','Code']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
+ $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
 function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
@@ -901,39 +903,57 @@ function rTest(){
    if(M[a])toast(M[a]);render()}).catch(function(){})}})}
 
 /* ---------- missions et titres ---------- */
-var MISS=null;
+var MISS=null,missSub='miss',MSUBS=[['miss','Missions'],['tit','Titres']],pingT=0;
 function pctTxt(p){return p<=0?'0 %':p<0.1?'moins de 0,1 %':String(p).replace('.',',')+' %'}
-function loadMiss(cb,err){api('missions',{}).then(function(r){MISS=r;if(r.state)setState(r.state);cb(r)}).catch(function(e){err(e)})}
-function titleRow(t,mode){
+function setMc(n){NOTIF.mc=n||0;tabs()}
+function loadMiss(cb,err){api('missions',{}).then(function(r){MISS=r;if(r.state)setState(r.state);setMc(r.mc);cb(r)}).catch(function(e){err(e)})}
+function rewardTxt(r){var a=[];(r.got.packs||[]).forEach(function(p){a.push(p.label)});(r.got.titles||[]).forEach(function(t){a.push('titre '+t.n)});return a.join(', ')}
+function doClaim(ids){
+ // affichage immédiat : la réponse du serveur remplace ensuite l'état
+ var rdy=MISS.packs.filter(function(m){return m.ready&&(!ids||ids.indexOf(m.id)>=0)}),rt=MISS.titles.filter(function(t){return t.ready&&(!ids||ids.indexOf(t.id)>=0)});
+ if(!rdy.length&&!rt.length)return;
+ rdy.forEach(function(m){m.ready=false;m.claimed=true});rt.forEach(function(t){t.ready=false;t.own=true});
+ MISS.mc=Math.max(0,MISS.mc-rdy.length-rt.length);setMc(MISS.mc);sfx('coin');
+ toast('Récupéré : '+rdy.map(function(m){return m.rl}).concat(rt.map(function(t){return 'titre '+t.n})).join(', ')+(rt.length?' · équipe-le dans Collection > Titres':'')+(rdy.length?' · packs dans tes packs en attente':''));paintMiss();
+ api('claim',ids?{ids:ids}:{}).then(function(r){MISS=r;setState(r.state);setMc(r.mc);paintMiss();wpBadge()}).catch(function(e){toast(e.message);loadMiss(paintMiss,function(){})})}
+function missSubH(){return subnavH(MSUBS,missSub,'data-ms').replace(/(data-ms="tit"[^>]*>Titres)/,'$1')}
+function titleRow(t){
  var c='style="--c:'+HEX[t.t]+'"',pc=Math.min(100,t.v/t.g*100);
- return '<div class="mrow'+(t.own?' own':'')+'" '+c+'><div class="mn">'+esc(t.n)+(t.secret?' <span class="mtag">secret</span>':'')+'</div><div class="md mut">'+esc(t.d)+' · possédé par '+pctTxt(t.pct)+' des joueurs</div>'+
-  '<div class="mr">'+(t.own?(MISS.equipped===t.id?'<span class="mtag">Équipé</span>':'<button class="btn sm" data-eq="'+t.id+'">Équiper</button>'):'<span class="mtag">'+(t.t>=4?'Très rare':t.t>=3?'Rare':'Titre')+'</span>')+'</div>'+
-  '<div class="mprg"><div class="prog"><i style="width:'+pc+'%;background:'+HEX[t.t]+'"></i></div><b>'+(t.own?'Obtenu':fmt(t.v)+' / '+fmt(t.g))+'</b></div></div>'}
+ return '<div class="mrow'+(t.own?' tgot':'')+'" '+c+'><div class="mn">'+esc(t.n)+(t.secret?' <span class="mtag">secret</span>':'')+'</div><div class="md mut">'+esc(t.d)+' · possédé par '+pctTxt(t.pct)+' des joueurs</div>'+
+  '<div class="mr">'+(t.own?'<span class="mtag">Obtenu</span>':t.ready?'<button class="btn gold sm" data-cl="'+t.id+'">Récupérer</button>':'<span class="mtag">'+(t.t>=4?'Très rare':t.t>=3?'Rare':'Titre')+'</span>')+'</div>'+
+  '<div class="mprg"><div class="prog"><i style="width:'+pc+'%;background:'+HEX[t.t]+'"></i></div><b>'+fmt(t.v)+' / '+fmt(t.g)+'</b></div></div>'}
 function bindEq(){[].forEach.call(document.querySelectorAll('[data-eq]'),function(b){b.onclick=function(){api('settitle',{id:b.dataset.eq}).then(function(r){MISS=r;setState(r.state);toast('Titre équipé');render()}).catch(function(e){toast(e.message)})}})}
-function rMiss(){
- $('main').innerHTML='<div class="panel center mut">Chargement…</div>';
- loadMiss(function(r){if(tab!=='miss')return;
-  var kinds={once:'Missions',day:'Quotidiennes',week:'Hebdomadaires'};
+function bindCl(){[].forEach.call(document.querySelectorAll('[data-cl]'),function(b){b.onclick=function(){doClaim([b.dataset.cl])}});
+ if($('clall'))$('clall').onclick=function(){doClaim(null)}}
+function paintMiss(){if(tab!=='miss'||!MISS)return;
+ var r=MISS,kinds={once:'Missions',day:'Quotidiennes',week:'Hebdomadaires'},nTit=r.titles.filter(function(t){return t.ready}).length,nPk=r.packs.filter(function(m){return m.ready}).length;
+ var nav='<div class="fl subnav">'+MSUBS.map(function(s){var n=s[0]==='tit'?nTit:nPk;return '<button data-ms="'+s[0]+'"'+(missSub===s[0]?' class="on"':'')+'>'+s[1]+(n?'<span class="nb">'+n+'</span>':'')+'</button>'}).join('')+'</div>';
+ var all=(nTit+nPk)?'<div class="bar" style="margin-top:0"><button class="btn gold" id="clall">Tout récupérer ('+(nTit+nPk)+')</button></div>':'';
+ var h;
+ if(missSub==='tit'){
+  h='<div class="panel"><div class="mhead"><h2 style="margin:0">Titres</h2><span class="mut sm">'+r.nbOwn+' / '+r.titles.length+' obtenus · une fois récupéré, équipe ton titre dans Collection &gt; Titres</span></div>'+all+
+   r.titles.slice().sort(function(a,b){return (b.ready-a.ready)||(b.own-a.own)||(b.v/b.g-a.v/a.g)}).map(titleRow).join('')+'</div>'}
+ else{
   var pk=function(m){var pc=Math.min(100,m.v/m.g*100);
-   return '<div class="mrow'+(m.claimed?' done':'')+'"><div class="mn">'+esc(m.n)+'</div><div class="md mut">'+esc(m.d)+' · récompense : <b>'+esc(m.rl)+'</b></div>'+
-    '<div class="mr">'+(m.claimed?'<span class="mtag">'+(m.kind==='once'?'Récupérée':'Récupérée aujourd\'hui')+'</span>':m.ready?'<button class="btn gold sm" data-cl="'+m.id+'">Récupérer</button>':'')+'</div>'+
+   return '<div class="mrow'+(m.claimed?' mdone':'')+'"><div class="mn">'+esc(m.n)+(m.kind==='once'&&m.steps>1?' <span class="mtag">palier '+Math.min(m.step,m.steps)+' / '+m.steps+'</span>':'')+'</div><div class="md mut">'+esc(m.d)+' · récompense : <b>'+esc(m.rl)+'</b></div>'+
+    '<div class="mr">'+(m.claimed?'<span class="mtag">'+(m.kind==='once'?'Terminée':'Récupérée')+'</span>':m.ready?'<button class="btn gold sm" data-cl="'+m.id+'">Récupérer</button>':'')+'</div>'+
     '<div class="mprg"><div class="prog"><i style="width:'+pc+'%"></i></div><b>'+fmt(m.v)+' / '+fmt(m.g)+'</b></div></div>'};
-  var h='<div class="panel"><div class="mhead"><h2 style="margin:0">Missions de packs</h2><span class="mut sm">Les packs récupérés arrivent dans tes packs en attente</span></div>'+
-   ['once','day','week'].map(function(k){var l=r.packs.filter(function(m){return m.kind===k});return '<h3 style="margin:14px 0 2px">'+kinds[k]+(k==='day'?' <span class="mut sm">remise à zéro à minuit (Paris)</span>':k==='week'?' <span class="mut sm">remise à zéro le lundi (Paris)</span>':'')+'</h3>'+l.map(pk).join('')}).join('')+'</div>'+
-   '<div class="panel"><div class="mhead"><h2 style="margin:0">Missions de titres</h2><span class="mut sm">'+r.nbOwn+' / '+r.titles.length+' obtenus · équipe-les dans Collection &gt; Titres</span></div>'+
-   r.titles.slice().sort(function(a,b){return (b.own-a.own)||(a.g<=0?0:b.v/b.g-a.v/a.g)}).map(function(t){return titleRow(t)}).join('')+'</div>';
-  $('main').innerHTML=h;bindEq();
-  [].forEach.call(document.querySelectorAll('[data-cl]'),function(b){b.onclick=function(){b.disabled=true;api('claim',{id:b.dataset.cl}).then(function(r2){MISS=r2;setState(r2.state);sfx('coin');toast('Récupéré : '+r2.got.label+' (packs en attente)');render()}).catch(function(e){toast(e.message);render()})}})
- },function(e){if(tab==='miss')$('main').innerHTML=errBox(e)})}
+  h='<div class="panel"><div class="mhead"><h2 style="margin:0">Missions</h2><span class="mut sm">Les packs récupérés arrivent dans tes packs en attente</span></div>'+all+
+   ['once','day','week'].map(function(k){var l=r.packs.filter(function(m){return m.kind===k});return '<h3 style="margin:14px 0 2px">'+kinds[k]+(k==='once'?' <span class="mut sm">un nouveau palier apparaît après chaque récompense</span>':k==='day'?' <span class="mut sm">remise à zéro à minuit (Paris)</span>':' <span class="mut sm">remise à zéro le lundi (Paris)</span>')+'</h3>'+l.map(pk).join('')}).join('')+'</div>'}
+ $('main').innerHTML=nav+h;
+ bindNav('data-ms',function(v){missSub=v;paintMiss();scrollTo(0,0)});bindEq();bindCl()}
+function rMiss(){
+ if(MISS)paintMiss();else $('main').innerHTML='<div class="panel center mut">Chargement…</div>';
+ loadMiss(paintMiss,function(e){if(tab==='miss')$('main').innerHTML=errBox(e)})}
 function rTitles(){
  $('main').innerHTML=colNav()+'<div class="panel center mut">Chargement…</div>';bindColNav();
  loadMiss(function(r){if(tab!=='col'||colSub!=='tit')return;
-  var own=r.titles.filter(function(t){return t.own});
+  var own=r.titles.filter(function(t){return t.own}),eqT=r.titles.filter(function(t){return t.id===r.equipped})[0];
   var h=colNav()+'<div class="panel"><div class="mhead"><h2 style="margin:0">Mes titres</h2><span class="mut sm">'+own.length+' / '+r.titles.length+' obtenus</span></div>'+
-   '<p class="mut sm">Un seul titre à la fois : il apparaît sous ton pseudo dans le classement, chez tes amis et sur ton profil. Les titres se gagnent dans l\'onglet Missions. La couleur dépend de la rareté du titre (part des joueurs qui l\'ont).</p>'+
-   (r.equipped?'<div class="bar"><span>Titre équipé : '+ttag({n:(r.titles.filter(function(t){return t.id===r.equipped})[0]||{}).n,t:(r.titles.filter(function(t){return t.id===r.equipped})[0]||{}).t})+'</span><button class="btn sm ghost" id="uneq">Ne rien équiper</button></div>':'')+
+   '<p class="mut sm">Un seul titre à la fois : il apparaît sous ton pseudo dans le classement, chez tes amis et sur ton profil. Les titres se récupèrent dans l\'onglet Missions. La couleur dépend de la rareté du titre (part des joueurs qui l\'ont).</p>'+
+   (eqT?'<div class="bar"><span>Titre équipé : '+ttag(eqT)+'</span><button class="btn sm ghost" id="uneq">Ne rien équiper</button></div>':'')+
    (own.length?'<div class="tgrid">'+own.sort(function(a,b){return b.t-a.t||a.n.localeCompare(b.n,'fr')}).map(function(t){return '<div class="tcard'+(r.equipped===t.id?' on':'')+'" style="--c:'+HEX[t.t]+'"><b>'+esc(t.n)+'</b><span class="mut sm">'+esc(t.d)+'</span><span class="mut sm">Possédé par '+pctTxt(t.pct)+' des joueurs</span>'+(r.equipped===t.id?'<span class="mtag">Équipé</span>':'<button class="btn sm" data-eq="'+t.id+'">Équiper</button>')+'</div>'}).join('')+'</div>':'<p class="mut center">Aucun titre pour l\'instant. Va dans l\'onglet <b>Missions</b> pour en gagner.</p>')+
-   '<div class="bar"><button class="btn sm gold" data-t="miss">Voir les missions</button></div></div>';
+   '<div class="bar tbar"><button class="btn sm gold" data-t="miss">Voir les missions'+(r.mc?' ('+r.mc+' à récupérer)':'')+'</button></div></div>';
   $('main').innerHTML=h;bindColNav();bindEq();
   if($('uneq'))$('uneq').onclick=function(){api('settitle',{id:null}).then(function(r2){MISS=r2;setState(r2.state);render()}).catch(function(e){toast(e.message)})}
  },function(e){if(tab==='col'&&colSub==='tit')$('main').innerHTML=colNav()+errBox(e);bindColNav()})}
