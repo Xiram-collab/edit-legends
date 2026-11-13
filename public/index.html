@@ -221,7 +221,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .back .bkin{position:relative;overflow:hidden;width:100%;height:100%;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);background:linear-gradient(115deg,transparent 0 18%,color-mix(in srgb,#ff3d81 18%,transparent) 18% 26%,transparent 26% 62%,color-mix(in srgb,#ff3d81 14%,transparent) 62% 68%,transparent 68%),radial-gradient(circle at 50% 42%,color-mix(in srgb,#ff3d81 32%,#000) 0,color-mix(in srgb,#ff3d81 12%,#000) 40%,#050106 90%);display:grid;place-items:center}
 .back .sun{position:absolute;left:50%;top:42%;width:230%;aspect-ratio:1;translate:-50% -50%;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,#ff3d81 16%,transparent) 0 7deg,transparent 7deg 20deg);-webkit-mask-image:radial-gradient(circle,#000 0,transparent 62%);mask-image:radial-gradient(circle,#000 0,transparent 62%);animation:spin 50s linear infinite}
 .back .emb{position:absolute;left:50%;top:42%;width:60%;translate:-50% -50%;z-index:2;filter:drop-shadow(0 6px 18px #000a) drop-shadow(0 0 22px color-mix(in srgb,#ff3d81 70%,transparent));animation:embf 3.4s ease-in-out infinite}
-.back .emb svg,.back .emb img{width:100%;height:auto;display:block;margin:0 auto}
+.back .emb svg,.back .emb img{width:100%;height:auto;aspect-ratio:1;display:block;margin:0 auto}
 @keyframes embf{50%{translate:-50% calc(-50% - 6px)}}
 .back .bkt{position:absolute;left:8%;right:8%;bottom:14%;display:flex;align-items:center;gap:8px;z-index:2}
 .back .bkt i{flex:1;height:2px;background:linear-gradient(90deg,transparent,#ff3d81)}.back .bkt i:last-child{background:linear-gradient(270deg,transparent,#ff3d81)}
@@ -584,7 +584,7 @@ function cardHTML(i,o){o=o||{};var c=CARDS[i];return '<div class="card'+(c[2]==5
  '<div class="top"><span class="cat">'+CATS[c[1]]+'</span><span class="rar">'+RAR[c[2]].n+'</span></div>'+
  (o.isNew?'<span class="new">NEW</span>':'')+(o.count>1?'<span class="cnt">x'+o.count+'</span>':'')+
  '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+c[0]+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]||'&nbsp;')+'</div></div>'}
-var LOGO='<img src="img/logo.png" class="bl" alt="">';
+var LOGO='<img src="img/logo.png" class="bl" alt="" width="512" height="512">';(new Image()).src='img/logo.png';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
 var tab='home',lastTab='',dupOnly=(function(){try{return localStorage.getItem('el_own')==='1'}catch(e){return false}})(),shown=0,busy=false,cvOn=false,parts=[];
 var $=function(id){return document.getElementById(id)};
