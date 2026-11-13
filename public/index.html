@@ -1401,8 +1401,6 @@ setInterval(function(){if(!document.hidden)doPing()},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)doPing()});
 setInterval(function(){if(!S||$('ov').hidden===false)return;var old=S.stock;regen();if(S.stock!==old){render();return}
  var el=$('cd');if(el&&S.stock<MAXSTOCK){el.textContent=cd();var rf=$('rf');if(rf){var C=2*Math.PI*44;rf.setAttribute('stroke-dashoffset',C*(1-Math.min(1,(Date.now()-S.last)/HOUR)))}}},1000);
-})();
-
 /* flèche retour en haut de chaque fenêtre (plus besoin de descendre pour fermer) */
 try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(n){
  if(n.nodeType!==1||!n.classList||!n.classList.contains('pickov'))return;
@@ -1410,6 +1408,8 @@ try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.a
  var f=bx.firstElementChild;if(f&&(f.id==='pkx'||(f.querySelector&&f.querySelector('#pkx'))))return;
  var r=document.createElement('div');r.className='bkr';r.innerHTML='<button class="btn sm" type="button">← Retour</button>';
  r.firstChild.onclick=function(){closePick();n.remove()};bx.insertBefore(r,bx.firstChild)})})}).observe(document.body,{childList:true})}catch(e){}
+})();
+
 </script>
 </body>
 </html>
