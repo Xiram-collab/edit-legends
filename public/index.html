@@ -255,6 +255,8 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 @keyframes tz{50%{box-shadow:0 0 50px var(--a),inset 0 0 30px var(--a)}}
 .sumt{margin-bottom:4px}.sum .sw{animation:rise .5s both}
 .over .sum .card{font-size:11px}
+/* contenu plus haut que l'écran (Tout ouvrir) : centré s'il tient, sinon on peut remonter tout en haut */
+.over{justify-content:flex-start}.over>:first-child{margin-top:auto}.over>:last-child{margin-bottom:auto}
 .sw .card{width:100%}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .bl{width:58%;height:auto;filter:drop-shadow(0 0 14px #ff3d81aa)}.pkface{flex-direction:column;gap:6px}.pkface b{display:block}
