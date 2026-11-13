@@ -866,7 +866,7 @@ function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Er
 
 /* ----- classement ----- */
 function rBoard(){
- var sorts=[['score','Score'],['owned','Cartes'],['mythics','Mythiques'],['opened','Packs ouverts'],['runs','Runs']];
+ var sorts=[['score','Score'],['runs','Runs']];
  function paint(d){if(!comAlive('board'))return;
   var val=function(r){return boardSort==='score'?fmt(r.score)+' pts':boardSort==='owned'?r.owned+' / '+CARDS.length:boardSort==='mythics'?r.mythics+(r.mythics>1?' Mythiques':' Mythique'):boardSort==='runs'?r.runs+(r.runs>1?' runs':' run'):fmt(r.opened)+' packs'};
   var h='<span class="mut sm sortlbl">Trier par</span><div class="fl sorts">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
