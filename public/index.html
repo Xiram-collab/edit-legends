@@ -1329,7 +1329,7 @@ function winText(o){var W=WH[o.res];
  if(W.t==='coins')return 'Tu gagnes '+fmt(o.coins||W.v)+' '+CUR+' !';
  return 'Tu gagnes : '+W.n+' !'+(W.t==='pack'||W.t==='card'?' À récupérer dans tes packs en attente.':'')}
 function winEnd(o,prev){var W=WH[o.res];
- if(W.t==='pack'||W.t==='card'){sfx('coin');toast(W.n+' ajouté à tes packs en attente : va la récupérer');setTimeout(render,900)}
+ if(W.t==='pack'||W.t==='card'){sfx('coin');toast(W.n+' ajouté à tes packs en attente');setTimeout(function(){render();openWaiting()},1100)}
  else if(W.t==='coins'){sfx('coin');toast('+'+fmt(o.coins||W.v)+' '+CUR);setTimeout(render,900)}
  else setTimeout(render,900)}
 function rCode(){
