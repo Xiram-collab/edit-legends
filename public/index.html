@@ -310,7 +310,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .mapcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border:1px solid var(--gold);border-radius:12px;background:#ffb02012}.mapcode b{font-size:1.5em;letter-spacing:.06em;color:var(--gold)}
 .tile.clk{cursor:pointer}.tile.clk:hover{border-color:var(--gold)}.tile u{text-decoration:none;color:var(--gold);font-size:.85em}
 .mythpick{display:flex;flex-direction:column;gap:8px}.mp{display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px;border-radius:12px;border:2px solid #ff3d8155;background:#ff3d8110;color:inherit}.mp.on{border-color:#ff3d81;box-shadow:0 0 14px #ff3d8199;background:#ff3d8122}.mp .mpt{display:flex;flex-direction:column;gap:2px;min-width:0}
-.tmwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}.tmwrap .pitch{flex:1 1 320px;min-width:0}.tside{display:flex;flex-direction:column;gap:12px;flex:0 0 118px}.tside .xs{display:flex;flex-direction:column;gap:4px;align-items:center}.tside .slot{width:104px;font-size:11.5px}.tside .xl{font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.tmwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}.tmwrap{justify-content:center}.tmwrap .pitch{flex:0 1 400px;width:min(400px,100%);min-width:0;margin-top:0}.tside{display:flex;flex-direction:column;gap:10px;flex:0 0 92px}.tside .xs{display:flex;flex-direction:column;gap:4px;align-items:center}.tside .slot{width:84px;font-size:9.3px}.tside .xl{font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:560px){.tside{flex:1 1 100%;flex-direction:row;justify-content:space-around}}
 .ov2{outline:2px dashed var(--acc2);outline-offset:-3px}
 .chip{display:flex;flex-direction:column;align-items:center;gap:3px;width:64px;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
@@ -776,6 +776,7 @@ function openPickX(key){closePick();var E=S.extra,taken={};S.team.forEach(functi
  d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  if($('pkrm'))$('pkrm').onclick=function(){E[key]=null;save();closePick();render()};
  [].forEach.call(d.querySelectorAll('[data-pi]'),function(b){b.onclick=function(){E[key]=+b.dataset.pi;save();sfx('flip');closePick();render()}})}
+function starsMax(){var e=[],m=0,b=0;CARDS.forEach(function(c){if(!c||c[5])return;if(c[1]<=1)e.push(c[2]+1);else if(c[1]===2)m=Math.max(m,c[2]+1);else if(c[1]===3)b=Math.max(b,c[2]+1)});e.sort(function(x,y){return y-x});return e.slice(0,12).reduce(function(a,x){return a+x},0)+m+b}
 function rTeam(){
  var t=S.team,used=0,stars=0,k;
  for(k=0;k<11;k++){if(t[k]!=null&&(!S.col[t[k]]||CARDS[t[k]][1]>1))t[k]=null;if(t[k]!=null){used++;stars+=CARDS[t[k]][2]+1}}
@@ -786,7 +787,7 @@ function rTeam(){
  function row(a){return '<div class="prow">'+a.map(slot).join('')+'</div>'}
  var ln='<svg class="lines" viewBox="0 0 100 175" preserveAspectRatio="none" aria-hidden="true"><rect x="3" y="3" width="94" height="169"/><path d="M3 87.5H97"/><circle cx="50" cy="87.5" r="12"/><rect x="26" y="3" width="48" height="24"/><rect x="38" y="3" width="24" height="10"/><rect x="26" y="148" width="48" height="24"/><rect x="38" y="162" width="24" height="10"/></svg>';
  $('main').innerHTML='<div class="panel teamhead"><div><h2>Mon équipe</h2><p class="mut sm">Formation 4-4-2. Touche un poste pour y placer un éditeur ou un influenceur de ta collection. À côté : un coach (éditeur ou influenceur en plus), un stade (map) et un club (structure).</p></div>'+
- '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / 84</b><span class="mut sm">étoiles</span></div></div></div>'+
+ '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / '+starsMax()+'</b><span class="mut sm">étoiles</span></div></div></div>'+
  '<div class="tmwrap"><div class="pitch">'+ln+row([9,10])+row([5,6,7,8])+row([1,2,3,4])+row([0])+'</div><div class="tside">'+xslot('coach')+xslot('stade')+xslot('club')+'</div></div>'+
  '<div class="center" style="margin-top:12px"><button class="btn sm" id="tclear"'+(used?'':' disabled')+'>Vider l’équipe</button></div>';
  [].forEach.call(document.querySelectorAll('[data-slot]'),function(b){b.onclick=function(){openPick(+b.dataset.slot)}});
