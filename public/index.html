@@ -313,6 +313,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .tmwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}.tmwrap{justify-content:center}.tmwrap .pitch{flex:0 1 400px;width:min(400px,100%);min-width:0;margin:0}.tside{display:flex;flex-direction:column;gap:10px;flex:0 0 104px}.tside .xs{display:flex;flex-direction:column;gap:4px;align-items:center}.tside .slot{width:96px;font-size:10.6px}.tside .slot .card{font-size:10.6px}.tside .slot.empty .plus{font-size:26px}.tside .slot.empty .pl{font-size:10px}.tside .xl{font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:560px){.tside{flex:1 1 100%;flex-direction:row;justify-content:space-around}}
 .runnote{margin:0 0 12px;padding:10px 12px;border-radius:12px;border:1px solid var(--gold);background:#ffb02012;font-size:14px;line-height:1.45}
+.jbig{display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px 0 2px}.jbig .btn{font-size:1.15em;padding:16px 22px;width:100%;max-width:420px}.btn.danger{background:#ff3d81;color:#fff}
 .ov2{outline:2px dashed var(--acc2);outline-offset:-3px}
 .chip{display:flex;flex-direction:column;align-items:center;gap:3px;width:64px;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
 .chip .ci{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid var(--rc);box-shadow:0 0 10px color-mix(in srgb,var(--rc) 55%,transparent);display:grid;place-items:center;background:#15123a;font-weight:800;font-size:1.3em}
@@ -1210,16 +1211,24 @@ function jyTier(put){
 function jyDraw(){
  var IM={};JY.items.forEach(function(x){IM[x.k]=x});
  var shown=JY.items.filter(function(x){return JY.all||x.draft}),nd=JY.items.filter(function(x){return x.draft}).length;
- var h='<div class="panel"><h3>Tier list du jury</h3><p class="mut sm" style="margin:0 0 10px">Classe les cartes proposées ('+nd+' en examen). Coche la case pour afficher aussi celles du site. Le contour de chaque carte est la rareté demandée par le joueur (ou la rareté actuelle si elle est publiée). Touche une carte puis une ligne pour la placer, ou glisse-la.</p>'+
-  '<div class="bar"><label class="mut sm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="jonly"'+(JY.all?' checked':'')+'> Afficher aussi toutes les cartes du site</label><span class="mut sm" id="jst" style="margin-left:auto">Enregistré</span></div>'+
-  '<div class="bar"><button class="btn gold" id="jsend">'+(ISOWNER?'Compter ma tier list dans les avis':'Envoyer ma tier list')+'</button><span class="mut sm">'+(JY.sent?'Dernier envoi : '+new Date(JY.sent).toLocaleString('fr-FR'):'Pas encore envoyée')+'</span></div></div><div class="tiers jtiers">';
+ var h='<div class="panel"><h3>Tier list du jury</h3><p class="mut sm" style="margin:0 0 10px">Classe les nouvelles cartes proposées ('+nd+' à classer)'+(ISADMIN?'. Coche la case pour afficher aussi celles du site':'')+'. Le contour de chaque carte est la rareté demandée par le joueur. Touche une carte puis une ligne pour la placer, ou glisse-la.'+(ISADMIN?'':' Quand tu as fini, envoie ton résultat : tu n\'auras qu\'un seul envoi, ton rôle de jury s\'arrêtera ensuite.')+'</p>'+
+  '<div class="bar">'+(ISADMIN?'<label class="mut sm" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="jonly"'+(JY.all?' checked':'')+'> Afficher aussi toutes les cartes du site</label>':'')+'<span class="mut sm" id="jst" style="margin-left:auto">Enregistré</span></div>'+
+  (ISADMIN?'<div class="bar"><button class="btn gold" id="jsend">Compter ma tier list dans les avis</button><span class="mut sm">'+(JY.sent?'Dernier envoi : '+new Date(JY.sent).toLocaleString('fr-FR'):'Pas encore envoyée')+'</span></div>':'<div class="jbig"><button class="btn gold" id="jsend">Envoyer mon résultat de jury</button><span class="mut sm" id="jcnt"></span></div>')+'</div><div class="tiers jtiers">';
  TL.forEach(function(r){var L=r[0],m=shown.filter(function(x){return JY.t[x.k]===L});m.sort(function(a,b){return JY.o.indexOf(a.k)-JY.o.indexOf(b.k)});
   h+='<div class="trow" data-jz="'+L+'" style="--tc:'+r[2]+'"><div class="tl"><b>'+r[1]+'</b></div><div class="tz">'+m.map(jyChip).join('')+'</div></div>'});
  var un=shown.filter(function(x){return JY.t[x.k]===undefined});un.sort(function(a,b){return (b.draft?1:0)-(a.draft?1:0)||b.rarity-a.rarity||a.name.localeCompare(b.name)});
  h+='</div><div class="tpool" data-jz=""><h3>Non classés ('+un.length+')</h3><div class="tz">'+(un.map(jyChip).join('')||'<span class="mut sm">Tout est classé.</span>')+'</div></div>';
  if(!JY.put(h))return;
- $('jonly').onchange=function(){JY.all=this.checked;jyDraw()};
- $('jsend').onclick=function(){var b=this;b.disabled=true;jyFlush().then(function(){return api('jlsend')}).then(function(){JY.sent=Date.now();toast(ISOWNER?'Ta tier list est comptée':'Tier list envoyée');jyDraw()}).catch(function(e){b.disabled=false;toast(e.message)})};
+ if($('jonly'))$('jonly').onchange=function(){JY.all=this.checked;jyDraw()};
+ var nrk=Object.keys(JY.t).length,nnr=shown.length-shown.filter(function(x){return JY.t[x.k]!==undefined}).length;
+ if($('jcnt'))$('jcnt').textContent=nrk+' carte'+(nrk>1?'s':'')+' classée'+(nrk>1?'s':'')+(nnr?' · '+nnr+' non classée'+(nnr>1?'s':''):'');
+ $('jsend').onclick=function(){var b=this;
+  if(!ISADMIN){
+   if(!nrk){toast('Classe au moins une carte avant d\'envoyer');return}
+   if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Confirmer : tu ne pourras plus classer par la suite';b.classList.add('danger');setTimeout(function(){if(b&&b.dataset.sure==='1'){b.dataset.sure='';b.textContent='Envoyer mon résultat de jury';b.classList.remove('danger')}},6000);return}}
+  b.disabled=true;jyFlush().then(function(){return api('jlsend')}).then(function(){
+   if(ISADMIN){JY.sent=Date.now();toast('Ta tier list est comptée');jyDraw();return}
+   $('abody').innerHTML='<div class="panel center"><h3>Merci !</h3><p>Ton résultat de jury a bien été envoyé. Ton rôle de jury est maintenant terminé.</p></div>';setTimeout(function(){location.reload()},2500)}).catch(function(e){b.disabled=false;toast(e.message)})};
  [].forEach.call(document.querySelectorAll('[data-jz]'),function(z){
   z.onclick=function(){if(JY.sel)jySet(JY.sel,z.dataset.jz)};
   z.ondragover=function(e){e.preventDefault();z.classList.add('ov2')};
