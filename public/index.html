@@ -456,6 +456,7 @@ main#main{min-height:60vh}
 .fl.sorts button{padding:12px 8px;font-size:15px;font-weight:800;border-radius:12px;text-align:center;border:1px solid #ffffff2a;background:#ffffff14;color:var(--fg,#fff)}
 .fl.sorts button.on{background:linear-gradient(135deg,#7b5cff,#4a2fd0);color:#fff;border-color:#ffffff55;box-shadow:0 4px 16px #7b5cff88}
 .fl.pers{margin-bottom:12px}
+.fl.msub button{position:relative}
 .fl.pers button{font-size:16px;padding:14px 8px}
 a.btn{display:inline-block;text-decoration:none;text-align:center}
 .sortlbl{display:block;margin:0 0 6px}
@@ -930,7 +931,7 @@ function bindCl(){[].forEach.call(document.querySelectorAll('[data-cl]'),functio
  if($('clall'))$('clall').onclick=function(){doClaim(null)}}
 function paintMiss(){if(tab!=='miss'||!MISS)return;
  var r=MISS,kinds={once:'Missions',day:'Quotidiennes',week:'Hebdomadaires'},nTit=r.titles.filter(function(t){return t.ready}).length,nPk=r.packs.filter(function(m){return m.ready}).length;
- var nav='<div class="fl subnav">'+MSUBS.map(function(s){var n=s[0]==='tit'?nTit:nPk;return '<button data-ms="'+s[0]+'"'+(missSub===s[0]?' class="on"':'')+'>'+s[1]+(n?'<span class="nb">'+n+'</span>':'')+'</button>'}).join('')+'</div>';
+ var nav='<div class="fl sorts pers msub">'+MSUBS.map(function(s){var n=s[0]==='tit'?nTit:nPk;return '<button data-ms="'+s[0]+'"'+(missSub===s[0]?' class="on"':'')+'>'+s[1]+(n?'<span class="nb">'+n+'</span>':'')+'</button>'}).join('')+'</div>';
  var all=(nTit+nPk)?'<div class="bar" style="margin-top:0"><button class="btn gold" id="clall">Tout récupérer ('+(nTit+nPk)+')</button></div>':'';
  var h;
  if(missSub==='tit'){
