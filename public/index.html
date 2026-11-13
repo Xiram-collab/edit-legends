@@ -310,6 +310,8 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 .mapcode{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border:1px solid var(--gold);border-radius:12px;background:#ffb02012}.mapcode b{font-size:1.5em;letter-spacing:.06em;color:var(--gold)}
 .tile.clk{cursor:pointer}.tile.clk:hover{border-color:var(--gold)}.tile u{text-decoration:none;color:var(--gold);font-size:.85em}
 .mythpick{display:flex;flex-direction:column;gap:8px}.mp{display:flex;align-items:center;gap:10px;text-align:left;padding:8px 10px;border-radius:12px;border:2px solid #ff3d8155;background:#ff3d8110;color:inherit}.mp.on{border-color:#ff3d81;box-shadow:0 0 14px #ff3d8199;background:#ff3d8122}.mp .mpt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.tmwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}.tmwrap .pitch{flex:1 1 320px;min-width:0}.tside{display:flex;flex-direction:column;gap:12px;flex:0 0 118px}.tside .xs{display:flex;flex-direction:column;gap:4px;align-items:center}.tside .slot{width:104px;font-size:11.5px}.tside .xl{font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+@media(max-width:560px){.tside{flex:1 1 100%;flex-direction:row;justify-content:space-around}}
 .ov2{outline:2px dashed var(--acc2);outline-offset:-3px}
 .chip{display:flex;flex-direction:column;align-items:center;gap:3px;width:64px;cursor:grab;user-select:none;-webkit-user-select:none;transition:transform .15s}
 .chip .ci{width:52px;height:52px;border-radius:50%;overflow:hidden;border:2px solid var(--rc);box-shadow:0 0 10px color-mix(in srgb,var(--rc) 55%,transparent);display:grid;place-items:center;background:#15123a;font-weight:800;font-size:1.3em}
@@ -507,7 +509,7 @@ var PACKS=[
  {n:'Pack Légendaire+',g:4,price:3500,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
 var HOUR=3600000,MAXSTOCK=10,CUR='V-Bucks';
 var S=null,SB=null,SESSION=null,ISADMIN=false,ISJURY=false,PROFILE=null,prefT=0,netBusy=false;
-var PREFK=['vitrine','team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
+var PREFK=['vitrine','extra','team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
@@ -750,7 +752,7 @@ var PL=['GB','DEF','DEF','DEF','DEF','MIL','MIL','MIL','MIL','ATT','ATT'],PN=['G
 var pkF=-1,tsel=null,tcat=0;
 function closePick(){var p=$('pk');if(p)p.remove()}
 function openPick(k){closePick();
- var t=S.team,taken={};t.forEach(function(v,q){if(v!=null&&q!==k)taken[v]=1});
+ var t=S.team,taken={};t.forEach(function(v,q){if(v!=null&&q!==k)taken[v]=1});['coach'].forEach(function(x){if(S.extra&&S.extra[x]!=null)taken[S.extra[x]]=1});
  var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&c[1]<2&&!taken[i]&&(pkF<0||c[1]===pkF))items.push(i)});
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
  var h='<div class="pickbox"><div class="pickhd"><h3>'+PN[k]+'</h3><button class="btn sm" id="pkx">Fermer</button></div>'+
@@ -763,18 +765,32 @@ function openPick(k){closePick();
  if($('pkrm'))$('pkrm').onclick=function(){S.team[k]=null;save();closePick();render()};
  [].forEach.call(d.querySelectorAll('[data-f]'),function(b){b.onclick=function(){pkF=+b.dataset.f;openPick(k)}});
  [].forEach.call(d.querySelectorAll('[data-pi]'),function(b){b.onclick=function(){S.team[k]=+b.dataset.pi;save();sfx('flip');closePick();render()}})}
+var EXN={coach:'Coach',stade:'Stade',club:'Club'},EXH={coach:'Un éditeur ou un influenceur de plus, qui n\'est pas déjà dans ton 11.',stade:'Une map qui sera ton stade.',club:'Une structure qui sera ton club.'},EXC={coach:[0,1],stade:[2],club:[3]};
+function openPickX(key){closePick();var E=S.extra,taken={};S.team.forEach(function(v){if(v!=null)taken[v]=1});
+ var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&EXC[key].indexOf(c[1])>=0&&!taken[i])items.push(i)});
+ items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
+ var h='<div class="pickbox"><div class="pickhd"><h3>'+EXN[key]+'</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">'+EXH[key]+'</p>'+
+ (E[key]!=null?'<div style="margin:0 0 10px"><button class="btn sm gold" id="pkrm">Retirer '+esc(CARDS[E[key]][0])+'</button></div>':'')+
+ (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i)+'</button>'}).join('')+'</div>':'<p class="mut">Aucune carte de ce type dans ta collection pour l\'instant.</p>')+'</div>';
+ var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML=h;document.body.appendChild(d);
+ d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
+ if($('pkrm'))$('pkrm').onclick=function(){E[key]=null;save();closePick();render()};
+ [].forEach.call(d.querySelectorAll('[data-pi]'),function(b){b.onclick=function(){E[key]=+b.dataset.pi;save();sfx('flip');closePick();render()}})}
 function rTeam(){
  var t=S.team,used=0,stars=0,k;
  for(k=0;k<11;k++){if(t[k]!=null&&(!S.col[t[k]]||CARDS[t[k]][1]>1))t[k]=null;if(t[k]!=null){used++;stars+=CARDS[t[k]][2]+1}}
+ var E=S.extra=S.extra||{coach:null,stade:null,club:null};['coach','stade','club'].forEach(function(x){if(E[x]!=null&&(!S.col[E[x]]||EXC[x].indexOf(CARDS[E[x]][1])<0||t.indexOf(E[x])>=0))E[x]=null});
+ function xslot(x){var i=E[x];return '<div class="xs"><span class="mut sm xl">'+EXN[x]+'</span><button class="slot'+(i==null?' empty':'')+'" data-xs="'+x+'" aria-label="'+EXN[x]+'">'+(i==null?'<span class="plus">+</span><span class="pl">'+EXN[x].toUpperCase()+'</span>':cardHTML(i))+'</button></div>'}
  function slot(k){var i=t[k];return '<button class="slot'+(i==null?' empty':'')+'" data-slot="'+k+'" aria-label="'+PN[k]+'">'+(i==null?'<span class="plus">+</span><span class="pl">'+PL[k]+'</span>':cardHTML(i))+'</button>'}
  function row(a){return '<div class="prow">'+a.map(slot).join('')+'</div>'}
  var ln='<svg class="lines" viewBox="0 0 100 175" preserveAspectRatio="none" aria-hidden="true"><rect x="3" y="3" width="94" height="169"/><path d="M3 87.5H97"/><circle cx="50" cy="87.5" r="12"/><rect x="26" y="3" width="48" height="24"/><rect x="38" y="3" width="24" height="10"/><rect x="26" y="148" width="48" height="24"/><rect x="38" y="162" width="24" height="10"/></svg>';
- $('main').innerHTML='<div class="panel teamhead"><div><h2>Mon équipe</h2><p class="mut sm">Formation 4-4-2. Touche un poste pour y placer un éditeur ou un influenceur de ta collection.</p></div>'+
+ $('main').innerHTML='<div class="panel teamhead"><div><h2>Mon équipe</h2><p class="mut sm">Formation 4-4-2. Touche un poste pour y placer un éditeur ou un influenceur de ta collection. À côté : un coach (éditeur ou influenceur en plus), un stade (map) et un club (structure).</p></div>'+
  '<div class="tstat"><div><b>'+used+' / 11</b><span class="mut sm">joueurs</span></div><div><b>'+stars+' / 63</b><span class="mut sm">étoiles</span></div></div></div>'+
- '<div class="pitch">'+ln+row([9,10])+row([5,6,7,8])+row([1,2,3,4])+row([0])+'</div>'+
+ '<div class="tmwrap"><div class="pitch">'+ln+row([9,10])+row([5,6,7,8])+row([1,2,3,4])+row([0])+'</div><div class="tside">'+xslot('coach')+xslot('stade')+xslot('club')+'</div></div>'+
  '<div class="center" style="margin-top:12px"><button class="btn sm" id="tclear"'+(used?'':' disabled')+'>Vider l’équipe</button></div>';
  [].forEach.call(document.querySelectorAll('[data-slot]'),function(b){b.onclick=function(){openPick(+b.dataset.slot)}});
- twice($('tclear'),function(){S.team=S.team.map(function(){return null});save();render()},'Confirmer : vider mon équipe')}
+ [].forEach.call(document.querySelectorAll('[data-xs]'),function(b){b.onclick=function(){openPickX(b.dataset.xs)}});
+ twice($('tclear'),function(){S.team=S.team.map(function(){return null});S.extra={coach:null,stade:null,club:null};save();render()},'Confirmer : vider mon équipe')}
 var TL=[['5','Mythique',HEX[5]],['4','Légendaire',HEX[4]],['3','Épique',HEX[3]],['2','Rare',HEX[2]],['1','Atypique',HEX[1]],['0','Commun',HEX[0]]],TK='012345';
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
 function chipImg(c){var f=c[4];if(f){var src=imgUrl(f);if(/-sil$/.test(f))src='img/'+f+'.png';return '<img src="'+src+'" alt="" draggable="false">'}return '<b>'+c[0].charAt(0).toUpperCase()+'</b>'}
