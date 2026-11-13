@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="description" content="Ouvre des packs gratuits chaque heure et collectionne les cartes des éditeurs, influenceurs et map edits de la scène Fortnite edit. Gratuit, fait par un fan.">
 <meta name="theme-color" content="#0c0a1a">
 <meta property="og:title" content="Edit Legends">
@@ -264,6 +264,7 @@ body{background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-grad
 /* contenu plus haut que l'écran (Tout ouvrir) : centré s'il tient, sinon on peut remonter tout en haut */
 .over{justify-content:safe center}
 /* écran d'ouverture : en-tête et aide sortent du flux, la carte reste pile au centre quelle que soit la hauteur du texte */
+html,body,.over{touch-action:manipulation}
 .over>.hdr{position:absolute;top:calc(18px + env(safe-area-inset-top,0px));left:0;right:0;text-align:center;pointer-events:none}
 .over>.hint{position:absolute;left:0;right:0;bottom:calc(64px + env(safe-area-inset-bottom,0px));min-height:1.2em;text-align:center;pointer-events:none}
 .sw .card{width:100%}
