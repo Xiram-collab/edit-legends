@@ -20,8 +20,8 @@ async function seed() {
   for (let i = 0; i < 5; i++) await handle('tokB', { action: 'open', kind: 'free' });
   // temps de démonstration
   const tm = (t, time, extra) => handle(t, Object.assign({ action: 'timesubmit', time, link: 'https://youtu.be/demo', device: 'Manette', platform: 'PC', note: 'sans bug' }, extra));
-  await tm('tokB', '1:20.500'); await tm('tokC', '1:15.250', { hide: true, platform: 'PlayStation' }); await tm('tokB', '1:10.000', { note: 'run en cours de validation' });
-  await handle('tokA', { action: 'atimedecide', id: 1, status: 'accepted' }); await handle('tokA', { action: 'atimedecide', id: 2, status: 'accepted' });
+  await tm('tokB', '1:20.500'); await tm('tokC', '1:15.250', { hide: true, platform: 'PlayStation' }); await tm('tokB', '1:05.000', { device: 'Clavier / souris' }); await tm('tokB', '1:10.000', { note: 'run en cours de validation' });
+  await handle('tokA', { action: 'atimedecide', id: 1, status: 'accepted' }); await handle('tokA', { action: 'atimedecide', id: 2, status: 'accepted' }); await handle('tokA', { action: 'atimedecide', id: 4, status: 'accepted' });
   const ago = (ms) => new Date(Date.now() - ms).toISOString();
   db.profiles.get('B').last_seen = ago(20 * 60000); db.profiles.get('C').last_seen = ago(5 * 3600000);
   db.profiles.set('D', { user_id: 'D', name: 'Dana', avatar: '', discord_id: '444', created_at: ago(20 * 86400000), last_seen: ago(10 * 86400000) });

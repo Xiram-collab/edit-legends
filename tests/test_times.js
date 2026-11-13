@@ -83,6 +83,23 @@ const sub = (t, o) => call(t, Object.assign({ action: 'timesubmit', time: '1:30.
   await Promise.all([call('tokD', { action: 'times' }), h2('tokD', { action: 'times' }), call('tokA', { action: 'ping' }), h2('tokB', { action: 'ping' })]);
   assert.strictEqual((await call('tokB', { action: 'me' })).json.state.money, m0 + C.TIME_REWARDS[0].c); ok('requêtes simultanées : pas de double paiement');
 
+  // ----- deux classements : Manette et Clavier / souris, top 10 chacun -----
+  assert.strictEqual(C.TIME_REWARDS.length, 10); ok('récompenses : top 10');
+  clock = G.nextWeekStart(clock) + 7200000;
+  await sub('tokB', { time: '1:30.000' }); await sub('tokC', { time: '1:40.000', device: 'Clavier / souris' }); await sub('tokD', { time: '1:35.000', device: 'Clavier / souris' });
+  await sub('tokB', { time: '1:45.000', device: 'Clavier / souris' });
+  const ids = (await call('tokA', { action: 'atimes' })).json.pending.map((x) => x.id);
+  for (const id of ids) await call('tokA', { action: 'atimedecide', id, status: 'accepted' });
+  r = await call('tokD', { action: 'times', device: 'Manette' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Bob']); assert.strictEqual(r.json.device, 'Manette');
+  r = await call('tokD', { action: 'times', device: 'Clavier / souris' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Dana', 'Carl', 'Bob']); assert.strictEqual(r.json.me.rank, 1); assert.strictEqual(r.json.record.ms, 95000); ok('un classement par périphérique, record séparé');
+  r = await call('tokD', { action: 'times', device: 'nimporte' }); assert.strictEqual(r.json.device, 'Manette'); ok('périphérique inconnu ramené à Manette');
+  r = await sub('tokB', { time: '1:50.000', device: 'Clavier / souris' }); assert.strictEqual(r.status, 400); r = await sub('tokB', { time: '1:20.000', device: 'Manette' }); assert.strictEqual(r.status, 200); ok('le meilleur temps à battre est propre à chaque périphérique');
+  await call('tokA', { action: 'atimedecide', id: (await call('tokA', { action: 'atimes' })).json.pending[0].id, status: 'rejected' });
+  const w0 = {}; for (const u of ['B', 'C', 'D']) w0[u] = (await call('tok' + u, { action: 'me' })).json.state.money;
+  clock = G.nextWeekStart(clock) + 3600000; await call('tokD', { action: 'times' }); await call('tokD', { action: 'times' });
+  const w1 = {}; for (const u of ['B', 'C', 'D']) w1[u] = (await call('tok' + u, { action: 'me' })).json.state.money;
+  assert.strictEqual(w1.B - w0.B, C.TIME_REWARDS[0].c + C.TIME_REWARDS[2].c); assert.strictEqual(w1.D - w0.D, C.TIME_REWARDS[0].c); assert.strictEqual(w1.C - w0.C, C.TIME_REWARDS[1].c); ok('récompenses versées séparément pour chaque classement (B : 1er Manette + 3e Clavier)');
+
   // ----- classement entre amis -----
   await call('tokB', { action: 'fadd', id: 'C' }); await call('tokC', { action: 'faccept', id: 'B' });
   await call('tokA', { action: 'apact', id: 'B', a: 'c', i: 0, v: 1 }); await call('tokA', { action: 'apact', id: 'C', a: 'c', i: 1, v: 3 });
