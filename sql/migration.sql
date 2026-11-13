@@ -42,7 +42,7 @@ insert into public.cards (id, name, cat, rarity, descr, img) values
   (5, 'Strom', 0, 3, '', 'strom'),
   (6, 'Just ZiNoX', 0, 2, '', 'zinox'),
   (7, 'Monks', 0, 0, '', 'monks'),
-  (8, 'Tinouska', 0, 0, '', 'tinouska'),
+  (8, 'Tinouska', 0, 1, '', 'tinouska'),
   (9, 'nox', 0, 0, '', 'nox'),
   (10, 'DragonnP', 0, 5, '', 'dragonn'),
   (11, 'WaYz', 0, 3, '', 'wayz'),
