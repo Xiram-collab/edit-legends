@@ -126,7 +126,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokA', { action: 'aplayer', id: 'B' }); assert.strictEqual(r.json.state.col[com], 1); assert.strictEqual(r.json.player.name, 'Bob'); ok('fiche complète d\'un joueur');
   // argent, stock, packs en attente, cartes
   r = await call('tokA', { action: 'apact', id: 'B', a: 'm', v: 5000 }); assert.strictEqual(r.json.state.money, 5000);
-  r = await call('tokA', { action: 'apact', id: 'B', a: 'm', v: -999999 }); assert.strictEqual(r.json.state.money, 0); ok('V-Bucks : ajout, retrait, jamais négatif');
+  r = await call('tokA', { action: 'apact', id: 'B', a: 'm', v: -999999 }); assert.strictEqual(r.json.state.money, 0); ok('Coins : ajout, retrait, jamais négatif');
   r = await call('tokA', { action: 'apact', id: 'B', a: 'mset', v: 777 }); assert.strictEqual(r.json.state.money, 777);
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 4, v: 2 }); assert.strictEqual(r.json.state.wp[4], 2);
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 4, v: -5 }); assert.strictEqual(r.json.state.wp[4], 0);
@@ -242,7 +242,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokE', { action: 'cardmydel', id: ea.id }); assert.strictEqual(r.status, 400); ok('une proposition acceptée ne peut plus être annulée par le joueur');
   await call('tokA', { action: 'acarddel', id: ea.id });
   r = await call('tokB', { action: 'acodes' }); assert.strictEqual(r.status, 403);
-  r = await call('tokA', { action: 'acodes' }); assert.strictEqual(r.status, 200); assert.ok(r.json.rows.length >= 3 && r.json.rows[0].wheel.length === 5 && r.json.rows[0].codes >= r.json.rows[r.json.rows.length - 1].codes); ok('admin : codes utilisés par joueur');
+  r = await call('tokA', { action: 'acodes' }); assert.strictEqual(r.status, 200); assert.ok(r.json.rows.length >= 3 && r.json.rows[0].wheel.length === require('../lib/config').WH.length && r.json.rows[0].codes >= r.json.rows[r.json.rows.length - 1].codes); ok('admin : codes utilisés par joueur');
   r = await call('tokA', { action: 'aonline' }); assert.ok(r.json.total >= 3); ok('admin : total des inscrits dans Connectés');
   r = await call('tokA', { action: 'board', sort: 'runs' }); assert.strictEqual(r.status, 200); assert.ok(Array.isArray(r.json.rows) && r.json.me.runs !== undefined);
   for (let k = 1; k < r.json.rows.length; k++) assert.ok(r.json.rows[k - 1].runs >= r.json.rows[k].runs); ok('classement Runs : trié par nombre de codes utilisés');
@@ -266,7 +266,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   }
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
-  r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 V-Bucks, 10 packs)');
+  r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 Coins, 10 packs)');
   r = await call('tokB', { action: 'aresetall', confirm: 'RESET' }); assert.strictEqual(r.status, 403); ok('reset général refusé aux non-propriétaires');
   r = await call('tokA', { action: 'aresetall' }); assert.strictEqual(r.status, 400); ok('reset général sans confirmation refusé');
   await call('tokB', { action: 'prefs', prefs: { hide: true } });

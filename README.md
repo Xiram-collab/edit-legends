@@ -3,7 +3,7 @@
 Site de cartes à collectionner sur la scène Fortnite edit.
 
 - `public/` : le site (page, images, pages légales)
-- `api/game.js` + `lib/` : le serveur (Vercel). Toute la logique du jeu s'exécute ici : tirage des packs, V-Bucks, ventes, codes de la roue, mode test réservé à l'administrateur.
+- `api/game.js` + `lib/` : le serveur (Vercel). Toute la logique du jeu s'exécute ici : tirage des packs, Coins, ventes, codes de la roue, mode test réservé à l'administrateur.
 - `sql/migration.sql` : tables Supabase (à coller dans SQL Editor) ; `sql/codes.csv` : les 50 000 codes de la roue.
 - `tests/` : `npm install && npm test` lance 26 vérifications du serveur sur une base simulée ; `node tests/devserver.js` lance le site en local.
 
@@ -30,5 +30,5 @@ SUPABASE_URL=... SUPABASE_SECRET_KEY=... node scripts/restore.js backup
 ## Communauté et administration
 
 - **Migration à lancer une fois** : `sql/migration_social.sql` (Supabase > SQL Editor > Run). Elle ajoute le classement, les amis, le lien de partage et le journal admin, et remplit le classement avec les collections existantes.
-- Onglet **Communauté** : classement (score, cartes, Mythiques, packs), amis (demande + acceptation, collection visible entre amis), Mon 11, tier list, partage de collection (`/c/<id>`, page publique sans V-Bucks).
-- Onglet **Admin** (propriétaire = `ADMIN_DISCORD_IDS`, admins nommés depuis la fiche d'un joueur) : liste des joueurs, fiche joueur (V-Bucks, packs gratuits, packs en attente, cartes +/-), statistiques globales, journal de toutes les actions.
+- Onglet **Communauté** : classement (score, cartes, Mythiques, packs), amis (demande + acceptation, collection visible entre amis), Mon 11, tier list, partage de collection (`/c/<id>`, page publique sans Coins).
+- Onglet **Admin** (propriétaire = `ADMIN_DISCORD_IDS`, admins nommés depuis la fiche d'un joueur) : liste des joueurs, fiche joueur (Coins, packs gratuits, packs en attente, cartes +/-), statistiques globales, journal de toutes les actions.

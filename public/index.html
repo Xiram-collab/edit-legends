@@ -484,7 +484,7 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 <button class="dbtn lp-big ldiscord"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/></svg> Se connecter avec Discord</button>
 <p class="lp-note">10 packs offerts à l'inscription &middot; 1 pack gratuit par heure</p><p id="lmsg" class="lg-err"></p></div>
 <div class="fanw lp-fan"><div class="fan f1" data-r="3"><div class="card" style="--rc:var(--r3);display:grid;place-items:center"><b style="font-size:3em;color:var(--r3)">?</b></div></div><div class="fan f2" data-r="2"><div class="card" style="--rc:var(--r2);display:grid;place-items:center"><b style="font-size:3em;color:var(--r2)">?</b></div></div><div class="fan f0" data-r="5"><div class="card" style="--rc:var(--r5);display:grid;place-items:center"><b style="font-size:3em;color:var(--r5)">?</b></div></div><div class="orb"></div></div></section>
-<section class="lp-sec"><h2>Comment ça marche</h2><div class="lp-steps"><div class="lp-step"><i>1</i><h3>Connecte-toi</h3><p>Avec ton compte Discord, en un clic. Tu reçois tout de suite 10 packs.</p></div><div class="lp-step"><i>2</i><h3>Ouvre des packs</h3><p>5 cartes par pack, du Commun au Mythique. Un pack gratuit de plus chaque heure.</p></div><div class="lp-step"><i>3</i><h3>Collectionne et revends</h3><p>Complète ta collection, vends tes doublons en V-Bucks et achète des packs à rareté garantie.</p></div><div class="lp-step"><i>4</i><h3>Tente la roue</h3><p>Termine la map Fortnite, échange ton code sur Discord et fais tourner la roue : packs rares, épiques, et même la carte Mythique de ton choix.</p></div></div></section>
+<section class="lp-sec"><h2>Comment ça marche</h2><div class="lp-steps"><div class="lp-step"><i>1</i><h3>Connecte-toi</h3><p>Avec ton compte Discord, en un clic. Tu reçois tout de suite 10 packs.</p></div><div class="lp-step"><i>2</i><h3>Ouvre des packs</h3><p>5 cartes par pack, du Commun au Mythique. Un pack gratuit de plus chaque heure.</p></div><div class="lp-step"><i>3</i><h3>Collectionne et revends</h3><p>Complète ta collection, vends tes doublons en Coins et achète des packs à rareté garantie.</p></div><div class="lp-step"><i>4</i><h3>Tente la roue</h3><p>Termine la map Fortnite, échange ton code sur Discord et fais tourner la roue : packs rares, épiques, et même la carte Mythique de ton choix.</p></div></div></section>
 <section class="lp-sec"><h2>Six raretés à collectionner</h2><div class="lp-rars"><span class="lp-rar" style="--c:#9aa4b2">Commun</span><span class="lp-rar" style="--c:#3ddc84">Atypique</span><span class="lp-rar" style="--c:#3b9cff">Rare</span><span class="lp-rar" style="--c:#b45cff">Épique</span><span class="lp-rar" style="--c:#ffb020">Légendaire</span><span class="lp-rar" style="--c:#ff3d81">Mythique</span></div></section>
 <section class="lp-sec"><h2>Plus qu'un simple tirage</h2><div class="lp-feats"><div class="lp-feat"><h3>Ta collection</h3><p>Suis les cartes obtenues, les doublons et ta progression par rareté.</p></div><div class="lp-feat"><h3>Ton équipe de 11</h3><p>Compose ton équipe de rêve avec les éditeurs que tu as trouvés.</p></div><div class="lp-feat"><h3>Ta tier list</h3><p>Classe les éditeurs et influenceurs à ta façon, de S à D.</p></div><div class="lp-feat"><h3>Une boutique</h3><p>Packs Rare+, Épique+ et Légendaire+ avec une rareté garantie.</p></div></div></section>
 <section class="lp-cta"><h2>Prêt à ouvrir ton premier pack ?</h2><button class="dbtn lp-big ldiscord"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/></svg> Se connecter avec Discord</button><p class="lp-note">Nous gardons uniquement ton pseudo Discord, ton avatar et ta progression. <a href="/confidentialite.html">Confidentialité</a></p></section>
@@ -509,7 +509,7 @@ var PACKS=[
  {n:'Pack Rare+',g:2,price:400,c:'var(--r2)',t:'1 carte Rare ou mieux garantie'},
  {n:'Pack Épique+',g:3,price:1000,c:'var(--r3)',t:'1 carte Épique ou mieux garantie'},
  {n:'Pack Légendaire+',g:4,price:3500,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
-var HOUR=3600000,MAXSTOCK=10,CUR='V-Bucks';
+var HOUR=3600000,MAXSTOCK=10,CUR='Coins';
 var S=null,SB=null,SESSION=null,ISADMIN=false,ISJURY=false,PROFILE=null,prefT=0,netBusy=false;
 var PREFK=['vitrine','extra','team','tier','tord','tnames','jtier','jord','mute','hide','hidep'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
@@ -635,13 +635,13 @@ function rHome(){
   return '<div class="lr"><b style="color:'+HEX[o.i]+'">'+o.r.n+'</b><div class="lb"><i style="--w:'+w+'%;background:'+HEX[o.i]+'"></i></div><span>'+q.toFixed(1).replace('.',',')+' %</span></div>'}).join('');
  $('main').innerHTML=
  '<section class="hero"><div class="ht"><div class="kick">Le jeu de cartes de la scène edit</div><h2 class="big">Collectionne<br>les <em>légendes</em><br>de l\'edit</h2>'+
- '<p class="lead">Ouvre des packs, trouve les éditeurs et créateurs qui font la scène Fortnite, revends tes doublons en V-Bucks et complète ta collection.</p>'+
+ '<p class="lead">Ouvre des packs, trouve les éditeurs et créateurs qui font la scène Fortnite, revends tes doublons en Coins et complète ta collection.</p>'+
  '<div class="cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack gratuit <span class="badge">'+S.stock+'</span></button><button class="btn ghost" data-t="col">Ma collection</button></div>'+
  '<div class="stats"><div><b>'+owned+'/'+TOT(S.col)+'</b><span>cartes</span></div><div><b>'+S.opened+'</b><span>packs ouverts</span></div><div><b>'+S.stock+'</b><span>packs en stock</span></div></div></div>'+
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i)+'</div>'}).join('')+'<div class="orb"></div></div></section>'+
  '<div class="tick"><div class="track">'+names+names+names+names+'</div></div>'+
  '<section class="row2"><div class="panel center"><h3>Pack gratuit</h3>'+ring()+pips()+'<p class="mut sm">1 pack offert toutes les heures · 10 en stock max</p></div>'+
- '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 1</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs et map edits, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en V-Bucks et achète des packs à rareté garantie.</li></ol></div></section>'+
+ '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 1</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs et map edits, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en Coins et achète des packs à rareté garantie.</li></ol></div></section>'+
  '<section class="panel sec2"><h3>Les raretés</h3><p class="mut sm" style="margin:-4px 0 10px">Chance qu’un pack gratuit contienne au moins une carte de cette rareté</p><div class="lad">'+lad+'</div></section>';
  var g=$('hgo');if(g)g.onclick=function(){tab='open';render();setTimeout(function(){var b=$('go');if(b)b.click()},50)}}
 function rOpen(){
@@ -849,7 +849,7 @@ function rTest(){
  var opts=CARDS.map(function(c,i){return '<option value="'+i+'">'+c[0]+' ('+RAR[c[2]].n+')</option>'}).join('');
  var b=function(l,a,v,cls){return '<button class="btn sm '+(cls||'')+'" data-g="'+a+'" data-v="'+v+'">'+l+'</button>'};
  $('main').innerHTML='<div class="panel"><h2>Mes outils</h2><p class="mut">Actions sur ton propre compte (pour tester le jeu). Pour agir sur un autre joueur, va dans l\'onglet Joueurs. Tout est exécuté et vérifié par le serveur.</p>'+
- '<h3 style="margin-top:14px">V-Bucks</h3><div class="bar">'+[100,1000,10000,100000].map(function(n){return b('+'+fmt(n),'m',n,'gold')}).join('')+b('Remettre à 0','m0',0,'ghost')+'</div>'+
+ '<h3 style="margin-top:14px">Coins</h3><div class="bar">'+[100,1000,10000,100000].map(function(n){return b('+'+fmt(n),'m',n,'gold')}).join('')+b('Remettre à 0','m0',0,'ghost')+'</div>'+
  '<h3>Packs gratuits en stock</h3><div class="bar">'+[1,5,10,50].map(function(n){return b('+'+n,'s',n)}).join('')+b('Stock à 0','s0',0,'ghost')+'</div>'+
  '<h3>Ouvrir un pack directement</h3><div class="bar">'+b('Pack normal','p',0)+b('Rare+','p',2)+b('Épique+','p',3)+b('Légendaire+','p',4)+b('Ouvrir 10 packs','p10',0,'gold')+'</div>'+
  '<h3>Cartes</h3><div class="bar"><select id="gc" class="sel">'+opts+'</select>'+b('+1 carte','c',1)+b('+1 de chaque','call',1)+b('Vider la collection','creset',0,'ghost')+'</div>'+
@@ -863,9 +863,9 @@ function rTest(){
   if((a==='wt'||a==='p'||a==='p10')&&(busy||spinning))return;
   var prev=Object.assign({},S.col);if(a==='wt'){tab='code';render()}
   act({action:'admin',a:a,v:v,i:+($('gc')?$('gc').value:0)}).then(function(r){setState(r.state);
-   if(a==='wt'){spinWheel(r.res,function(){toast(r.res===0?'Rien':'Gagné : '+WH[r.res].n);setTimeout(render,900)});return}
+   if(a==='wt'){runSpins(r.spins||[{res:r.res}],0,function(o){toast(winText(o));winEnd(o,prev)});return}
    if(r.cards){reveal(r.cards,prev);return}
-   var M={m:'+'+fmt(v)+' '+CUR,m0:'V-Bucks remis à 0',s:'+'+v+' pack'+(v>1?'s':''),s0:'Stock vidé',sfull:'Stock plein',c:'+1 carte',call:'+1 de chaque carte',creset:'Collection vidée',rst:'Obtenues et packs ouverts remis à 0',wpa:'Packs en attente ajoutés'};
+   var M={m:'+'+fmt(v)+' '+CUR,m0:'Coins remis à 0',s:'+'+v+' pack'+(v>1?'s':''),s0:'Stock vidé',sfull:'Stock plein',c:'+1 carte',call:'+1 de chaque carte',creset:'Collection vidée',rst:'Obtenues et packs ouverts remis à 0',wpa:'Packs en attente ajoutés'};
    if(M[a])toast(M[a]);render()}).catch(function(){})}})}
 
 /* ================= COMMUNAUTÉ ================= */
@@ -978,7 +978,7 @@ function rAdd(){
  mine()}
 function rShare(){
  var owned=0,my=0;CARDS.forEach(function(c,i){if(S.col[i]){owned++;if(c[2]===5)my++}});
- $('cbody').innerHTML='<div class="panel"><h2>Partager ma collection</h2><p class="mut">Un lien public vers ta collection : tes cartes, ton score et tes Mythiques. Tes V-Bucks et tes packs ne sont jamais montrés.</p>'+
+ $('cbody').innerHTML='<div class="panel"><h2>Partager ma collection</h2><p class="mut">Un lien public vers ta collection : tes cartes, ton score et tes Mythiques. Tes Coins et tes packs ne sont jamais montrés.</p>'+
   '<div class="tiles"><div class="tile"><b>'+owned+' / '+TOT(S.col)+'</b><span>cartes</span></div><div class="tile"><b>'+my+'</b><span>Mythiques</span></div></div>'+
   '<div class="bar"><button class="btn gold" id="shb">Partager ma collection</button></div></div>'+
   '<div class="panel"><h3>Confidentialité</h3><label class="chk"><input type="checkbox" id="shh"'+(S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:8px 0 0">Ton pseudo et ton avatar Discord sont visibles des autres joueurs connectés. Décoché, seuls tes amis (et l\'administrateur) peuvent voir ton profil. Le lien de partage reste actif tant que tu ne supprimes pas ton compte.</p></div>';
@@ -1003,7 +1003,7 @@ function rAdmin(){
  if(adminSub==='cards')return adCardsPanel();
  if(adminSub==='jury')return adJury();
  adLog()}
-function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (V-Bucks, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (V-Bucks, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
+function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (Coins, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (Coins, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
 
 
 /* ----- connectés en direct ----- */
@@ -1037,7 +1037,7 @@ function adPlayers(){
    '<div class="tw"><table class="at"><tr><th>Joueur</th><th>Score</th><th>Cartes</th><th>Myth.</th><th>Packs ouverts</th><th>Dernière connexion</th><th>Inscrit</th></tr>'+
    rows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'"><td><div class="who">'+uav(r)+esc(r.name)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td>'+fmt(r.score)+'</td><td>'+r.owned+' / '+TOT()+'</td><td>'+r.mythics+'</td><td>'+fmt(r.opened)+'</td><td>'+dotH(r.lastSeen)+' '+exact(r.lastSeen)+(dotC(r.lastSeen)==='gn'?' <b class="on">en ligne</b>':'')+'</td><td>'+dfr(r.createdAt)+'</td></tr>'}).join('')+
    '</table></div>'+(rows.length?'':'<p class="mut center">Aucun résultat.</p>')+(d.total>100?'<p class="mut sm">Les 100 premiers sont affichés : utilise la recherche.</p>':'')+'</div>'+
-   (ISOWNER?'<div class="panel" style="border-color:#ff2d4a66"><h3>Zone dangereuse : reset général</h3><p class="mut sm">Remet <b>tous les joueurs</b> à zéro, comme des nouveaux joueurs : collection, V-Bucks, packs (10/10), tier lists, équipe, stats. Leurs amis et leurs réglages de confidentialité sont conservés. <b>Irréversible</b> (la sauvegarde chiffrée quotidienne est la seule récupération).</p><div class="bar"><input id="rall" class="inp" style="max-width:220px" placeholder="Tape RESET pour confirmer" autocomplete="off"><button class="btn sm ghost" id="rallb" disabled>Reset tout le monde</button></div></div>':'');
+   (ISOWNER?'<div class="panel" style="border-color:#ff2d4a66"><h3>Zone dangereuse : reset général</h3><p class="mut sm">Remet <b>tous les joueurs</b> à zéro, comme des nouveaux joueurs : collection, Coins, packs (10/10), tier lists, équipe, stats. Leurs amis et leurs réglages de confidentialité sont conservés. <b>Irréversible</b> (la sauvegarde chiffrée quotidienne est la seule récupération).</p><div class="bar"><input id="rall" class="inp" style="max-width:220px" placeholder="Tape RESET pour confirmer" autocomplete="off"><button class="btn sm ghost" id="rallb" disabled>Reset tout le monde</button></div></div>':'');
   var q=$('apq');q.oninput=function(){adminList.q=q.value;clearTimeout(adPlayers.t);adPlayers.t=setTimeout(function(){var pos=q.selectionStart;adPlayers.load(true)},300)};
   if($('rall')){$('rall').oninput=function(){$('rallb').disabled=this.value.trim()!=='RESET'};twice($('rallb'),function(){var b=$('rallb');b.disabled=true;api('aresetall',{confirm:'RESET'}).then(function(r){toast(r.done+' joueur'+(r.done>1?'s':'')+' remis à zéro');api('me').then(function(m){setState(m.state);setPurse()}).catch(function(){});adPlayers.load()}).catch(function(e){b.disabled=false;toast(e.message)})},'Dernière confirmation : tout effacer')}
   $('aps').onchange=function(){adminList.sort=this.value;adPlayers.load()};
@@ -1262,7 +1262,7 @@ function jyMem(put){
 function openCodes(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox profbox"><div class="pickhd"><h3>Codes utilisés par joueur</h3><button class="btn sm" id="pkx">Fermer</button></div><div id="cdl"><p class="mut center">Chargement…</p></div></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  api('acodes').then(function(r){if(!$('cdl'))return;var used=r.rows.reduce(function(a,x){return a+x.codes},0);
-  $('cdl').innerHTML='<p class="mut sm" style="margin:0 0 8px">'+r.total+' joueurs inscrits · '+used+' codes utilisés. Résultats de la roue comptés depuis la mise à jour du jour : les tours plus anciens ne sont pas détaillés.</p><div class="tw"><table class="at"><tr><th>Joueur</th><th>Codes</th><th>Rien</th><th>Normal</th><th>Rare+</th><th>Épique+</th><th>Mythique</th></tr>'+r.rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td><b>'+x.codes+'</b></td>'+x.wheel.map(function(n){return '<td>'+(n||'-')+'</td>'}).join('')+'</tr>'}).join('')+'</table></div>'}).catch(function(e){if($('cdl'))$('cdl').innerHTML=errBox(e)})}
+  $('cdl').innerHTML='<p class="mut sm" style="margin:0 0 8px">'+r.total+' joueurs inscrits · '+used+' codes utilisés. Résultats de la roue par joueur. « Avant (rien) » = les anciens tours sans gain, avant la nouvelle roue ; les tours plus anciens ne sont pas détaillés.</p><div class="tw"><table class="at"><tr><th>Joueur</th><th>Codes</th><th>Pack normal</th><th>Rare+</th><th>Épique+</th><th>Mythique</th><th>Relance</th><th>Carte</th><th>50 Coins</th><th>200 Coins</th><th>Avant (rien)</th></tr>'+r.rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td><b>'+x.codes+'</b></td>'+[1,2,3,4,5,6,7,8,0].map(function(k){var n=x.wheel[k];return '<td>'+(n||'-')+'</td>'}).join('')+'</tr>'}).join('')+'</table></div>'}).catch(function(e){if($('cdl'))$('cdl').innerHTML=errBox(e)})}
 function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;
   $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
@@ -1274,45 +1274,68 @@ function adLog(){
   $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(d.rows.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr><td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+'</div>'}).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
 
 /* ---------- code / roue ---------- */
-var WH=[{n:'Rien',p:75,g:-1,c:'#5a6080',c2:'#2c3050'},{n:'Pack Normal',p:15,g:0,c:'#c3ccd9',c2:'#7d8799'},{n:'Pack Rare+',p:5,g:2,c:'#5aaeff',c2:'#1e63c9'},{n:'Pack Épique+',p:4,g:3,c:'#c77dff',c2:'#7a2fd1'},{n:'Mythique au choix',p:1,g:5,c:'#ff5c96',c2:'#c4124f'}];
+var WH=[{n:'Avant (rien)',p:0,t:'none',c:'#5a6080',c2:'#2c3050'},
+{n:'Pack Normal',l:['PACK','normal'],p:15,t:'pack',g:0,c:'#c3ccd9',c2:'#7d8799'},
+{n:'Pack Rare+',l:['RARE+','pack'],p:5,t:'pack',g:2,c:'#5aaeff',c2:'#1e63c9'},
+{n:'Pack Épique+',l:['ÉPIQUE+','pack'],p:4,t:'pack',g:3,c:'#c77dff',c2:'#7a2fd1'},
+{n:'Mythique au choix',l:['MYTHIQUE','au choix'],p:1,t:'pack',g:5,c:'#ff5c96',c2:'#c4124f'},
+{n:'Relance la roue',l:['RELANCE','tour gratuit'],p:10,t:'relance',c:'#3ddc84',c2:'#16844a'},
+{n:'Une carte',l:['CARTE','au hasard'],p:60,t:'card',c:'#4aa3ff',c2:'#1d5fb8'},
+{n:'50 Coins',l:['50','Coins'],p:4,t:'coins',v:50,c:'#ffd24a',c2:'#b57800'},
+{n:'200 Coins',l:['200','Coins'],p:1,t:'coins',v:200,c:'#ffe27a',c2:'#d18a00'}];
+/* 12 parts de même taille (visuel) : la vraie probabilité de chaque gain est celle de la légende */
+var SL=[1,7,6,5,2,7,1,6,3,5,8,4],SA=30;
 var spinning=false;
 function codeHash_unused(c){var b=new TextEncoder().encode('EL1:'+c);return crypto.subtle.digest('SHA-256',b).then(function(d){return Array.prototype.map.call(new Uint8Array(d),function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,12)})}
-function wheelSvg(){var a=0,seg='',lab='',defs='',R=100,k;
- WH.forEach(function(w,i){defs+='<radialGradient id="wgd'+i+'" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="'+w.c2+'"/><stop offset=".55" stop-color="'+w.c2+'"/><stop offset="1" stop-color="'+w.c+'"/></radialGradient>'});
- WH.forEach(function(w,i){var a0=a,a1=a+w.p*3.6,r0=(a0-90)*Math.PI/180,r1=(a1-90)*Math.PI/180,big=a1-a0>180?1:0;
-  seg+='<path class="sg" id="sg'+i+'" d="M0 0L'+(R*Math.cos(r0)).toFixed(2)+' '+(R*Math.sin(r0)).toFixed(2)+'A'+R+' '+R+' 0 '+big+' 1 '+(R*Math.cos(r1)).toFixed(2)+' '+(R*Math.sin(r1)).toFixed(2)+'Z" fill="url(#wgd'+i+')" stroke="#0c0a1a" stroke-width="1.2"/>';
-  var mm=(a0+a1)/2,m=(mm-90)*Math.PI/180;
-  if(w.p>=3){var rr=w.p<10?62:56,rot=mm-90+(mm>180?180:0);
-   lab+='<text transform="translate('+(rr*Math.cos(m)).toFixed(1)+' '+(rr*Math.sin(m)).toFixed(1)+') rotate('+rot.toFixed(1)+')" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-weight="800" font-size="'+(w.p<10?6.4:9.5)+'" style="paint-order:stroke;stroke:#000a;stroke-width:1.8px;letter-spacing:.02em">'+w.n+'</text>'}
-  else{lab+='<path transform="translate('+(86*Math.cos(m)).toFixed(1)+' '+(86*Math.sin(m)).toFixed(1)+')" d="M0-6 L1.6-1.8 L6-1.4 L2.6 1.2 L3.8 5.6 L0 3.2 L-3.8 5.6 L-2.6 1.2 L-6-1.4 L-1.6-1.8Z" fill="#fff" stroke="#c4124f" stroke-width=".6"/>'}
-  a=a1});
- var pegs='',bulbs='';WH.reduce(function(acc,w){pegs+='<circle cx="'+(103*Math.cos((acc-90)*Math.PI/180)).toFixed(1)+'" cy="'+(103*Math.sin((acc-90)*Math.PI/180)).toFixed(1)+'" r="2.6" fill="#ffe28a" stroke="#6a4b00" stroke-width=".6"/>';return acc+w.p*3.6},0);
+function wheelSvg(){var seg='',lab='',defs='',pegs='',bulbs='',R=100,k;
+ SL.forEach(function(wi,i){var w=WH[wi];defs+='<radialGradient id="wgd'+i+'" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="'+w.c2+'"/><stop offset=".5" stop-color="'+w.c2+'"/><stop offset="1" stop-color="'+w.c+'"/></radialGradient>'});
+ SL.forEach(function(wi,i){var w=WH[wi],a0=i*SA,a1=a0+SA,r0=(a0-90)*Math.PI/180,r1=(a1-90)*Math.PI/180;
+  seg+='<path class="sg" id="sg'+i+'" d="M0 0L'+(R*Math.cos(r0)).toFixed(2)+' '+(R*Math.sin(r0)).toFixed(2)+'A'+R+' '+R+' 0 0 1 '+(R*Math.cos(r1)).toFixed(2)+' '+(R*Math.sin(r1)).toFixed(2)+'Z" fill="url(#wgd'+i+')" stroke="#0c0a1a" stroke-width="1.2"/>';
+  var mm=a0+SA/2,m=(mm-90)*Math.PI/180,rot=mm-90+(mm>180?180:0),dark=w.t==='coins',big=w.l[0].length>6?7.4:(w.t==='coins'?10.5:9);
+  lab+='<text transform="translate('+(60*Math.cos(m)).toFixed(1)+' '+(60*Math.sin(m)).toFixed(1)+') rotate('+rot.toFixed(1)+')" text-anchor="middle" dominant-baseline="middle" fill="'+(dark?'#2a1c00':'#fff')+'" font-weight="800" style="'+(dark?'':'paint-order:stroke;stroke:#000a;stroke-width:1.8px;')+'letter-spacing:.02em"><tspan x="0" dy="-3" font-size="'+big+'">'+w.l[0]+'</tspan><tspan x="0" dy="9" font-size="5.6" font-weight="700" fill-opacity=".9">'+w.l[1]+'</tspan></text>';
+  pegs+='<circle cx="'+(103*Math.cos(r0)).toFixed(1)+'" cy="'+(103*Math.sin(r0)).toFixed(1)+'" r="2.6" fill="#ffe28a" stroke="#6a4b00" stroke-width=".6"/>'});
  for(k=0;k<28;k++){var q=k/28*2*Math.PI;bulbs+='<circle class="bulb" cx="'+(113*Math.cos(q)).toFixed(1)+'" cy="'+(113*Math.sin(q)).toFixed(1)+'" r="3.1"/>'}
  return '<svg viewBox="-122 -122 244 244"><defs>'+defs+'<linearGradient id="wrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset=".5" stop-color="#27e0ff"/><stop offset="1" stop-color="#ff3d81"/></linearGradient><radialGradient id="whub" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff5c2"/><stop offset=".5" stop-color="#ffd24a"/><stop offset="1" stop-color="#a86d00"/></radialGradient></defs>'+
  '<circle r="119" fill="#0a0820" stroke="url(#wrim)" stroke-width="3"/><circle r="107.5" fill="#120e33" stroke="#3a2f8a" stroke-width="1"/>'+bulbs+
  '<g class="wg" id="wg">'+seg+lab+pegs+'</g><circle r="100" fill="none" stroke="#ffffff22" stroke-width="1.5"/><circle r="15" fill="url(#whub)" stroke="#5b3b00" stroke-width="1.6"/><path d="M0-8 L2.4-2.6 L8-2.2 L3.6 1.6 L5 7 L0 4 L-5 7 L-3.6 1.6 L-8-2.2 L-2.4-2.6Z" fill="#7a4a00"/></svg>'}
 function wTick(){var p=document.querySelector('.ptr');if(p){p.classList.remove('flick');void p.offsetWidth;p.classList.add('flick')}if(!S.mute)try{tone(1500,.035,'triangle',.09,0,900)}catch(e){}}
 function confetti(cols,n){var w=document.querySelector('.wheel');if(!w)return;var f=document.createElement('div');f.className='cfx';var h='';for(var i=0;i<n;i++){var an=Math.random()*Math.PI*2,d=110+Math.random()*190;h+='<i style="background:'+cols[i%cols.length]+';--dx:'+(Math.cos(an)*d).toFixed(0)+'px;--dy:'+(Math.sin(an)*d-40).toFixed(0)+'px;--rot:'+((Math.random()*900-450)|0)+'deg;animation-delay:'+(Math.random()*.12).toFixed(2)+'s"></i>'}f.innerHTML=h;w.appendChild(f);setTimeout(function(){f.remove()},1900)}
-function spinWheel(res,done){if(spinning)return;spinning=true;var a=0,mid=0;WH.forEach(function(w,i){if(i===res)mid=a+w.p*1.8;a+=w.p*3.6});
- var seg=WH[res].p*3.6,off=(Math.random()-.5)*(seg*.7),final=360*7+(360-(mid+off)),g=$('wg'),wh=document.querySelector('.wheel'),T=6400,back=-14,t0=null,last=-1;
- var bnd=[],c=0;WH.forEach(function(w){bnd.push(c);c+=w.p*3.6});
- var segAt=function(th){var o=(((360-th)%360)+360)%360,k=0;for(var i=0;i<bnd.length;i++)if(o>=bnd[i])k=i;return k};
+function spinWheel(res,done,rar){if(spinning)return;spinning=true;var c=[];SL.forEach(function(w,k){if(w===res)c.push(k)});
+ var sl=c[Math.floor(Math.random()*c.length)],mid=sl*SA+SA/2,off=(Math.random()-.5)*SA*.7,g=$('wg'),wh=document.querySelector('.wheel'),
+  base=(+g.dataset.rot||0)%360,fin0=360-(mid+off),final=base+((((fin0-base)%360)+360)%360)+360*6,T=6400,back=-14,t0=null,last=-1;
+ SL.forEach(function(w,k){var e=$('sg'+k);if(e)e.setAttribute('class','sg')});wh.classList.remove('won','glow');
  wh.classList.add('spin');sfx('flip');
  var ease=function(t){return 1-Math.pow(1-t,4.2)};
  (function fr(ts){if(t0===null)t0=ts;var el=ts-t0,ang;
-  if(el<380){var u=el/380;ang=back*Math.sin(u*Math.PI/2)}
-  else{var u=Math.min(1,(el-380)/T);ang=back+(final-back)*ease(u)}
+  if(el<380){var u=el/380;ang=base+back*Math.sin(u*Math.PI/2)}
+  else{var u=Math.min(1,(el-380)/T);ang=base+back+(final-base-back)*ease(u)}
   g.style.transform='rotate('+ang+'deg)';
-  var sg=segAt(ang)*1000+Math.floor((((360-ang)%360+360)%360)/1000);var bi=-1;var o=(((360-ang)%360)+360)%360;for(var i=0;i<bnd.length;i++)if(o>=bnd[i])bi=i;
+  var bi=Math.floor((((360-ang)%360+360)%360)/SA)%SL.length;
   if(bi!==last){if(last>=0)wTick();last=bi}
   if(el<380+T){requestAnimationFrame(fr)}
-  else{g.style.transform='rotate('+final+'deg)';spinning=false;wh.classList.remove('spin');wh.classList.add('won');
-   WH.forEach(function(w,i){var e=$('sg'+i);if(e)e.setAttribute('class','sg '+(i===res?'win':'dim'))});
-   if(res>0){wh.style.setProperty('--wc',WH[res].c);wh.classList.add('glow');confetti([WH[res].c,'#ffd24a','#ffffff',WH[res].c2],res>=3?90:46);if(!S.mute)try{chord(60,[0,4,7,12],'triangle',.07,0,.9)}catch(e){}}
-   else if(!S.mute){try{tone(220,.3,'sine',.07,0,140)}catch(e){}}
-   setTimeout(function(){if(done)done()},700)}})(performance.now())}
+  else{g.style.transform='rotate('+final+'deg)';g.dataset.rot=final;spinning=false;wh.classList.remove('spin');wh.classList.add('won');
+   SL.forEach(function(w,k){var e=$('sg'+k);if(e)e.setAttribute('class','sg '+(k===sl?'win':'dim'))});
+   var W=WH[res],weak=W.t==='relance'||(W.t==='card'&&rar<2),big=(W.t==='pack'&&W.g>=3)||res===8||(W.t==='card'&&rar>=3);
+   if(!weak){wh.style.setProperty('--wc',W.c);wh.classList.add('glow');confetti([W.c,'#ffd24a','#ffffff',W.c2],big?90:46);if(!S.mute)try{chord(60,[0,4,7,12],'triangle',.07,0,big?.9:.6)}catch(e){}}
+   else if(!S.mute){try{tone(W.t==='relance'?660:300,.3,'triangle',.07,0,W.t==='relance'?880:200)}catch(e){}}
+   setTimeout(function(){if(done)done(sl)},700)}})(performance.now())}
+/* enchaîne les tours (une relance rejoue gratuitement), puis appelle fin(dernier tour) */
+function runSpins(spins,k,fin){var o=spins[k],W=WH[o.res];
+ spinWheel(o.res,function(){
+  if(W.t==='relance'&&k+1<spins.length){var m=$('cmsg');if(m){m.textContent='Relance ! La roue repart...';m.style.color='var(--gold)'}setTimeout(function(){runSpins(spins,k+1,fin)},1300)}
+  else fin(o)},o.card!=null&&CARDS[o.card]?CARDS[o.card][2]:-1)}
+/* annonce le gain du dernier tour */
+function winText(o){var W=WH[o.res];
+ if(W.t==='card'&&CARDS[o.card])return 'Tu gagnes la carte '+CARDS[o.card][0]+' ('+RAR[CARDS[o.card][2]].n+') !';
+ if(W.t==='coins')return 'Tu gagnes '+fmt(o.coins||W.v)+' '+CUR+' !';
+ return 'Tu gagnes : '+W.n+' !'}
+function winEnd(o,prev){var W=WH[o.res];
+ if(W.t==='pack'){sfx('coin');toast(W.n+' ajouté à tes packs en attente');setTimeout(render,900)}
+ else if(W.t==='coins'){sfx('coin');toast('+'+fmt(o.coins||W.v)+' '+CUR);setTimeout(render,900)}
+ else if(W.t==='card'&&CARDS[o.card]){toast('Carte ajoutée à ta collection');setTimeout(function(){reveal([o.card],prev)},500)}
+ else setTimeout(render,900)}
 function rCode(){
- var leg=WH.map(function(w){return '<span><i style="background:'+w.c+'"></i>'+w.n+' '+w.p+' %</span>'}).join('');
+ var leg=WH.filter(function(w){return w.p>0}).map(function(w){return '<span><i style="background:'+w.c+'"></i>'+w.n+' '+w.p+' %</span>'}).join('')+'<span class="mut">La rareté d\'une carte gagnée suit les probabilités des packs.</span>';
  var pend=false?'<button class="btn gold" id="wclaim">Récupérer ma récompense : '+WH[S.wpend].n+'</button>':'';
  var ICO='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>';
  var dbox='<aside class="dbox"><h3>'+ICO+' Ton code sur Discord</h3><ol class="dsteps">'+
@@ -1332,9 +1355,9 @@ function rCode(){
  var go=function(){if(spinning||busy||netBusy)return;var c=($('cin').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
   if(c.length!==8){msg('Entre ton code de 8 caractères (celui donné par le bot)');return}
   $('cgo').disabled=true;msg('Vérification...',true);
+  var prev=Object.assign({},S.col);
   act({action:'code',code:c}).then(function(r){msg('Bonne chance...',true);$('cin').disabled=true;
-   spinWheel(r.res,function(){setState(r.state);var w=WH[r.res];msg(r.res===0?'Rien cette fois...':'Tu gagnes : '+w.n+' !',r.res>0);
-    if(w.g>=0){sfx('coin');toast(w.n+' ajouté à tes packs en attente')}else toast('Perdu, retente avec un autre code');setTimeout(render,900)})
+   runSpins(r.spins||[{res:r.res}],0,function(o){setState(r.state);msg(winText(o),true);var cm=$('cmsg');if(cm&&WH[o.res].t==='card'&&CARDS[o.card])cm.style.color=HEX[CARDS[o.card][2]];winEnd(o,prev)})
   }).catch(function(e){$('cgo').disabled=false;if(e.message!=='busy')msg(e.message||'Erreur',false)})};
  $('cgo').onclick=go;$('cin').onkeydown=function(e){if(e.key==='Enter')go()};
  $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);this.value=v.replace(/(.{4})(?=.)/g,'$1-')}}
@@ -1373,7 +1396,7 @@ function lpStart(){if(lpOn)return;lpOn=true;
    show();setTimeout(function(){lpT.push(setInterval(show,1000))},k*330)})}).catch(function(){})}
 function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
-function applyConfig(cfg){if(cfg.SCORE)SCORE=cfg.SCORE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){if(cfg.WH[i])w.p=cfg.WH[i].p})}
+function applyConfig(cfg){if(cfg.SCORE)SCORE=cfg.SCORE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
 function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;ISJURY=!!r.isJury;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
@@ -1396,7 +1419,7 @@ function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.
   sw('ahide',!(S&&S.hide),'Apparaître dans le classement','Décoché, seuls tes amis voient ton profil et tu n\'es plus trouvable dans la recherche.')+
   sw('apres',!(S&&S.hidep),'Montrer quand je suis en ligne','Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.')+'</section>'+
   '<section class="acs danger"><h3>Compte</h3><div class="setrow"><span class="atx"><b>Se déconnecter</b><span class="mut sm">Tu pourras te reconnecter avec Discord.</span></span><button class="btn sm" id="alo">Déconnexion</button></div>'+
-  '<div class="setrow"><span class="atx"><b>Supprimer mon compte</b><span class="mut sm">Efface ta collection, tes V-Bucks et tes packs. Les codes déjà utilisés restent utilisés.</span></span><button class="btn sm ghost dng" id="adel">Supprimer</button></div></section>'+
+  '<div class="setrow"><span class="atx"><b>Supprimer mon compte</b><span class="mut sm">Efface ta collection, tes Coins et tes packs. Les codes déjà utilisés restent utilisés.</span></span><button class="btn sm ghost dng" id="adel">Supprimer</button></div></section>'+
   '<p class="mut sm alinks"><a href="/confidentialite.html">Confidentialité</a> · <a href="/mentions.html">Mentions légales</a> · <a href="/cgu.html">CGU</a></p></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  $('alo').onclick=doLogout;

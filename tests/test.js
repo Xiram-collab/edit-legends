@@ -32,7 +32,7 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   clock += 3600000; r = await call('tokB', { action: 'me' }); assert.strictEqual(r.json.state.stock, 1); ok('+1 pack gratuit après 1 h');
 
   // achat sans argent
-  r = await call('tokB', { action: 'open', kind: 'buy', g: 2 }); assert.strictEqual(r.status, 400); ok('achat sans V-Bucks refusé');
+  r = await call('tokB', { action: 'open', kind: 'buy', g: 2 }); assert.strictEqual(r.status, 400); ok('achat sans Coins refusé');
   r = await call('tokB', { action: 'open', kind: 'buy', g: 9 }); assert.strictEqual(r.status, 400); ok('pack inconnu refusé');
 
   // le mode test est interdit à Bob, autorisé à Alice
@@ -58,7 +58,7 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   assert.strictEqual(good, 3, 'réussies=' + good); assert.strictEqual(db.saves.get('B').data.stock, 0); ok('12 clics simultanés : seulement 3 packs ouverts');
 
   // codes : un code ne marche qu'une fois pour tout le site
-  r = await call('tokB', { action: 'code', code: 'aaaa-2222' }); assert.strictEqual(r.status, 200); assert.ok(r.json.res >= 0 && r.json.res < 5); ok('code valide accepté (casse et tiret ignorés)');
+  r = await call('tokB', { action: 'code', code: 'aaaa-2222' }); assert.strictEqual(r.status, 200); assert.ok(r.json.res > 0 && r.json.res < require('../lib/config').WH.length && Array.isArray(r.json.spins) && r.json.spins.length >= 1); ok('code valide accepté (casse et tiret ignorés)');
   r = await call('tokA', { action: 'code', code: 'AAAA2222' }); assert.strictEqual(r.status, 400); ok('même code refusé à un autre joueur');
   r = await call('tokB', { action: 'code', code: 'AAAA2222' }); assert.strictEqual(r.status, 400); ok('même code refusé au même joueur');
   const par = await Promise.all([call('tokA', { action: 'code', code: 'BBBB3333' }), call('tokB', { action: 'code', code: 'BBBB3333' })]);
@@ -72,11 +72,24 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   clock += 61000; r = await call('tokB', { action: 'code', code: 'CCCC4444' }); assert.strictEqual(r.status, 200); ok('verrou levé après 60 s');
 
   // récompenses : simulation de la roue (distribution)
-  const { spinForReward } = require('../lib/game');
-  const cnt = [0, 0, 0, 0, 0]; const rnd = () => require('crypto').randomInt(0, 1e9) / 1e9;
-  for (let i = 0; i < 100000; i++) cnt[spinForReward({ wp: {} }, rnd)]++;
+  const { spinForReward, wheelPick } = require('../lib/game'); const CW = require('../lib/config').WH;
+  const cnt = CW.map(() => 0); const rnd = () => require('crypto').randomInt(0, 1e9) / 1e9;
+  for (let i = 0; i < 100000; i++) cnt[wheelPick(rnd)]++;
   const pct = cnt.map((x) => x / 1000); console.log('    roue sur 100000 :', pct.join(' / '));
-  [75, 15, 5, 4, 1].forEach((p, i) => assert.ok(Math.abs(pct[i] - p) < 1.0)); ok('probabilités de la roue conformes');
+  CW.forEach((w, i) => assert.ok(Math.abs(pct[i] - w.p) < 1.0)); ok('probabilités de la roue conformes');
+  assert.strictEqual(Math.round(CW.reduce((a, w) => a + w.p, 0)), 100); ok('la roue fait 100 %');
+  // effets : carte directe, Coins, packs en attente, relance enchaînée
+  const S0 = { wp: {}, money: 0, col: {}, pulled: {}, opened: 0 }; let nCard = 0, nCoins = 0, nRel = 0, maxChain = 0;
+  for (let i = 0; i < 4000; i++) {
+    const R = spinForReward(S0, rnd, cards); const last = R.spins[R.spins.length - 1];
+    assert.ok(R.spins.slice(0, -1).every((x) => CW[x.res].t === 'relance') && CW[last.res].t !== 'relance');
+    nRel += R.spins.length - 1; maxChain = Math.max(maxChain, R.spins.length - 1);
+    if (CW[last.res].t === 'card') { nCard++; assert.ok(Number.isInteger(last.card) && S0.col[last.card] > 0); }
+    if (CW[last.res].t === 'coins') nCoins += last.coins;
+  }
+  assert.ok(nCard > 0 && nCoins > 0 && nRel > 0 && maxChain <= 5 && S0.money === nCoins && S0.opened === 0); ok('roue : carte ajoutée, Coins crédités, relances (max 5), aucun pack compté');
+  const S1 = { wp: {}, money: 0, col: {}, pulled: {}, opened: 0, wheel: [3, 1, 0, 0, 0] }; spinForReward(S1, rnd, cards);
+  assert.strictEqual(S1.wheel.length, CW.length); assert.strictEqual(S1.wheel[0], 3); ok('anciens compteurs de roue conservés');
 
   // ouverture des packs en attente
   r = await call('tokA', { action: 'admin', a: 'wpa' });
