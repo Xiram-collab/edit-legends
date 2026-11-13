@@ -289,6 +289,38 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
     r = await call('tokB', { action: 'board', sort: 'runs', period: 'bidon' }); assert.strictEqual(r.json.period, 'all'); ok('période inconnue ramenée à Global');
     clock = base;
   }
+  // missions et titres
+  {
+    const M = require('../lib/missions');
+    r = await call('tokB', { action: 'missions' }); assert.strictEqual(r.status, 200); assert.ok(r.json.titles.length === M.TITLES.length && r.json.packs.length === M.MISSIONS.length);
+    assert.ok(r.json.packs.every((m) => m.rw !== 5 && m.rw !== 4) && M.MISSIONS.every((m) => [0, 2, 3, 6].includes(m.rw))); ok('missions : aucune récompense Mythique/Légendaire en pack');
+    r = await call('tokB', { action: 'claim', id: 'm_vente' }); assert.strictEqual(r.status, 400); ok('mission non terminée : récompense refusée');
+    r = await call('tokB', { action: 'settitle', id: 'collectionneur' }); assert.strictEqual(r.status, 403); ok('titre non débloqué : équipement refusé');
+    const cs = (await call('tokB', { action: 'me' })).json.cards;
+    for (let i = 0; i < 31; i++) await call('tokA', { action: 'apact', id: 'B', a: 'c', v: 1, i });
+    r = await call('tokB', { action: 'missions' }); const tt = r.json.titles.find((t) => t.id === 'collectionneur'); assert.ok(tt.own && tt.v === 30 && tt.g === 30); assert.ok(typeof tt.pct === 'number' && tt.pct > 0 && tt.t >= 0 && tt.t <= 5); ok('titre débloqué automatiquement avec son pourcentage');
+    r = await call('tokB', { action: 'settitle', id: 'collectionneur' }); assert.strictEqual(r.json.equipped, 'collectionneur'); ok('équiper un titre');
+    r = await call('tokC', { action: 'board', sort: 'score' }); const row = r.json.rows.find((x) => x.name === 'Bob'); assert.ok(row && row.title && row.title.n === 'Collectionneur'); ok('le titre apparaît dans le classement');
+    r = await call('tokB', { action: 'settitle', id: null }); assert.strictEqual(r.json.equipped, null);
+    r = await call('tokC', { action: 'board', sort: 'score' }); assert.ok(!r.json.rows.find((x) => x.name === 'Bob').title); ok('retirer le titre');
+    await call('tokB', { action: 'settitle', id: 'collectionneur' });
+    const com = cs.findIndex((c) => c && c[2] === 0);
+    await call('tokA', { action: 'apact', id: 'B', a: 'c', v: 60, i: com });
+    await call('tokB', { action: 'sell', all: true });
+    r = await call('tokB', { action: 'missions' }); assert.ok(r.json.packs.find((m) => m.id === 'm_vente').ready); ok('revendre des doublons fait avancer la mission');
+    r = await call('tokB', { action: 'claim', id: 'm_vente' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.got.rw, 6); assert.ok(r.json.state.wp[6] >= 1); ok('récompense : carte au hasard en attente');
+    r = await call('tokB', { action: 'claim', id: 'm_vente' }); assert.strictEqual(r.status, 400); ok('récompense non récupérable deux fois');
+    r = await call('tokB', { action: 'claim', id: 'inconnue' }); assert.strictEqual(r.status, 400);
+    // une mission quotidienne se renouvelle le lendemain (heure de Paris)
+    const base = clock; clock = Date.UTC(2026, 5, 20, 10);
+    await call('tokA', { action: 'apact', id: 'B', a: 'wp', v: 6, i: 0 });
+    for (let k = 0; k < 5; k++) await call('tokB', { action: 'openwp', g: 0 });
+    r = await call('tokB', { action: 'missions' }); assert.ok(r.json.packs.find((m) => m.id === 'q_packs').ready);
+    await call('tokB', { action: 'claim', id: 'q_packs' }); r = await call('tokB', { action: 'missions' }); assert.ok(r.json.packs.find((m) => m.id === 'q_packs').claimed);
+    clock = Date.UTC(2026, 5, 21, 10); r = await call('tokB', { action: 'missions' }); const q = r.json.packs.find((m) => m.id === 'q_packs'); assert.ok(!q.claimed && q.v === 0); ok('mission quotidienne remise à zéro le lendemain');
+    clock = base;
+    r = await call('tokC', { action: 'friends' }); assert.ok(Array.isArray(r.json.friends)); ok('amis : lignes avec titre');
+  }
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 Coins, 10 packs)');

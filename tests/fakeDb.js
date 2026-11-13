@@ -84,6 +84,13 @@ module.exports = function fakeDb(cards, validCodes) {
       return [...saves.entries()].filter(([id, r]) => { const s = sumOf(id); return s && !s.hidden && r.data.per && r.data.per[kf[0]] === key; })
         .map(([id, r]) => { const s = sumOf(id); return { id, score: r.data.per[kf[1]] || 0, runs: r.data.per[kf[2]] || 0, owned: s.owned || 0, mythics: s.mythics || 0, opened: s.opened || 0 }; });
     },
+    async getEquipped(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && r.data.title) m[i] = r.data.title; }); return m; },
+    async titleStats() {
+      const counts = {}; let total = 0;
+      saves.forEach((r) => { if (!(r.data.opened > 0)) return; total++; Object.keys(r.data.titles || {}).forEach((k) => { counts[k] = (counts[k] || 0) + 1; }); });
+      return { counts, total };
+    },
+    async userRuns(uid) { let n = 0; codes.forEach((c) => { if (c.used && c.by === uid) n++; }); return n; },
     async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
     async setAdminFlag(uid, v) { const p = profiles.get(uid); if (p) p.is_admin = !!v; },
     async listDrafts() { return drafts.slice().reverse(); },
