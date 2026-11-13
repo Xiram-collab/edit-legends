@@ -1024,7 +1024,7 @@ function fmtMs(ms){var m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60,r=ms%1000
 function rewTxt(w){return w?fmt(w.c)+' Coins'+(w.g?' + pack '+(w.g===3?'Épique+':'Rare+'):''):''}
 function resetTxt(ms){var s=Math.max(0,Math.floor(ms/1000)),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?d+' j '+h+' h':h?h+' h '+m+' min':m+' min'}
 function tmTime(r){return r.link?'<a class="tml" href="'+esc(r.link)+'" target="_blank" rel="noopener noreferrer nofollow" title="Voir la vidéo du run">▶ '+fmtMs(r.ms)+'</a>':'<span class="tml off"'+(r.hidden?' title="Run masqué par le joueur"':'')+'>'+fmtMs(r.ms)+(r.hidden?' <small>masqué</small>':'')+'</span>'}
-var tmT=0,timeDev='Manette';
+var tmT=0,timeDev='Clavier / souris';
 function tmTick(d){clearInterval(tmT);var skew=d.now-Date.now();
  var p=function(n){return n<10?'0'+n:''+n};
  var draw=function(){var el=$('tmcd');if(!el||!comAlive('board')||boardScope!=='time'){clearInterval(tmT);return}
