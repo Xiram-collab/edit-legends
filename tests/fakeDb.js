@@ -79,6 +79,11 @@ module.exports = function fakeDb(cards, validCodes) {
         .map((id) => { const s = sumOf(id); return { id, runs: m[id], owned: s.owned || 0, mythics: s.mythics || 0, score: s.score || 0, opened: s.opened || 0 }; })
         .sort((a, b) => b.runs - a.runs || (a.id < b.id ? -1 : 1));
     },
+    async periodBoard(period, key) {
+      const kf = period === 'day' ? ['dk', 'd', 'dr'] : ['wk', 'w', 'wr'];
+      return [...saves.entries()].filter(([id, r]) => { const s = sumOf(id); return s && !s.hidden && r.data.per && r.data.per[kf[0]] === key; })
+        .map(([id, r]) => { const s = sumOf(id); return { id, score: r.data.per[kf[1]] || 0, runs: r.data.per[kf[2]] || 0, owned: s.owned || 0, mythics: s.mythics || 0, opened: s.opened || 0 }; });
+    },
     async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
     async setAdminFlag(uid, v) { const p = profiles.get(uid); if (p) p.is_admin = !!v; },
     async listDrafts() { return drafts.slice().reverse(); },

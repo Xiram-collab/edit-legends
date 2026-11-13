@@ -437,6 +437,7 @@ main#main{min-height:60vh}
 .fl.subnav button{background:none;border:0;border-bottom:3px solid transparent;border-radius:0;margin-bottom:-2px;padding:10px 14px;font-size:14px;font-weight:800;white-space:nowrap;color:var(--mut)}
 .fl.subnav button.on{background:none;color:#fff;border-bottom-color:#ff3d81}
 .fl.sorts{gap:6px}
+.fl.pers{margin-bottom:10px}
 a.btn{display:inline-block;text-decoration:none;text-align:center}
 .sortlbl{display:block;margin:0 0 6px}
 .uav{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;background:var(--panel2);border:1px solid var(--line)}.uav.big{width:64px;height:64px}
@@ -881,7 +882,7 @@ function rTest(){
 
 /* ================= COMMUNAUTÉ ================= */
 var SCORE=[1,2,4,10,25,60],ISOWNER=false;
-var comSub='friends',boardSort='score',boardData=null,friendsData=null,searchT=0,searchSeq=0;
+var comSub='friends',boardSort='score',boardPer='all',boardData=null,friendsData=null,searchT=0,searchSeq=0;
 var COMS=[['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Partage'],['add','Ajouter une carte']];
 function uav(u,big){var c='uav'+(big?' big':'');return u&&u.avatar?'<img class="'+c+'" src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;'+c+' ph2&quot;>?</span>\'">':'<span class="'+c+' ph2">'+esc(((u&&u.name)||'?').charAt(0).toUpperCase())+'</span>'}
 function ago(iso){if(!iso)return 'jamais';var s=Math.max(0,(Date.now()-Date.parse(iso))/1000);if(s<90)return 'à l\'instant';if(s<3600)return 'il y a '+Math.round(s/60)+' min';if(s<86400)return 'il y a '+Math.round(s/3600)+' h';return 'il y a '+Math.round(s/86400)+' j'}
@@ -903,18 +904,22 @@ function rBoard(){
  var sorts=[['score','Score'],['runs','Runs']];
  function paint(d){if(!comAlive('board'))return;
   var val=function(r){return boardSort==='score'?fmt(r.score)+' pts':boardSort==='owned'?r.owned+' / '+TOT():boardSort==='mythics'?r.mythics+(r.mythics>1?' Mythiques':' Mythique'):boardSort==='runs'?r.runs+(r.runs>1?' runs':' run'):fmt(r.opened)+' packs'};
-  var h='<span class="mut sm sortlbl">Trier par</span><div class="fl sorts">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
+  var pers=[['all','Global'],['week','Hebdo'],['day','Jour']],P=boardPer!=='all';
+  var h='<div class="fl sorts pers">'+pers.map(function(s){return '<button data-bp="'+s[0]+'"'+(boardPer===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>'+
+   (P?'<p class="runnote">'+(boardPer==='day'?'Classement du jour : remis à zéro chaque jour à minuit (heure de Paris).':'Classement de la semaine : remis à zéro chaque lundi à minuit (heure de Paris).')+' Seuls les points et les runs gagnés pendant la période comptent.</p>':'')+
+   '<span class="mut sm sortlbl">Trier par</span><div class="fl sorts">'+sorts.map(function(s){return '<button data-bs="'+s[0]+'"'+(boardSort===s[0]?' class="on"':'')+'>'+s[1]+'</button>'}).join('')+'</div>';
   if(boardSort==='runs')h+='<p class="runnote">Un <b>run</b> = une fois où tu as fini la map Fortnite et entré ton code de fin dans l\'onglet <b>Code</b> pour tourner la roue. Le classement compte le nombre de runs effectués sur la map.</p>';
-  var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b>'+(me.rank&&d.total?'<span class="mut sm">sur <b>'+d.total+'</b> joueurs · Top '+Math.max(1,Math.ceil(me.rank/d.total*100))+' %</span>':'')+'</div><div><span class="mut sm">Score</span><b>'+fmt(me.score)+'</b></div><div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+TOT()+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>'+(boardSort==='runs'?'<div><span class="mut sm">Runs</span><b>'+(me.runs||0)+'</b></div>':'')+
-   (me.hidden?'<p class="mut sm" style="flex-basis:100%;margin:0">Tu es caché du classement (réglage dans l\'onglet Partage).</p>':(boardSort==='runs'?(!me.rank?'<p class="mut sm" style="flex-basis:100%;margin:0">Fais la map et entre ton code de fin pour apparaître ici.</p>':''):(!me.owned?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre un pack pour entrer au classement.</p>':'')))+'</div>';
-  var row=function(r){return '<button class="lbr'+(r.rank<=3?' top'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk">'+r.rank+'</span>'+uav(r)+'<span class="nm">'+esc(r.name)+'</span><span class="lv">'+val(r)+'</span><span class="lsub mut">'+(boardSort==='score'?r.owned+' cartes · '+r.mythics+' M':boardSort==='runs'?'faits sur la map':'score '+fmt(r.score))+'</span></button>'};
+  var me=d.me;h+='<div class="panel mine"><div><span class="mut sm">Ma position</span><b class="big">'+(me.rank?'#'+me.rank:'—')+'</b>'+(me.rank&&d.total?'<span class="mut sm">sur <b>'+d.total+'</b> joueurs · Top '+Math.max(1,Math.ceil(me.rank/d.total*100))+' %</span>':'')+'</div><div><span class="mut sm">Score'+(P?(boardPer==='day'?' du jour':' de la semaine'):'')+'</span><b>'+fmt(me.score)+'</b></div>'+(P?'':'<div><span class="mut sm">Cartes</span><b>'+me.owned+' / '+TOT()+'</b></div><div><span class="mut sm">Mythiques</span><b>'+me.mythics+'</b></div>')+(boardSort==='runs'?'<div><span class="mut sm">Runs</span><b>'+(me.runs||0)+'</b></div>':'')+
+   (me.hidden?'<p class="mut sm" style="flex-basis:100%;margin:0">Tu es caché du classement (réglage dans l\'onglet Partage).</p>':(boardSort==='runs'?(!me.rank?'<p class="mut sm" style="flex-basis:100%;margin:0">Fais la map et entre ton code de fin pour apparaître ici.</p>':''):(P&&!me.rank?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre des packs pour entrer dans ce classement.</p>':!me.owned?'<p class="mut sm" style="flex-basis:100%;margin:0">Ouvre un pack pour entrer au classement.</p>':'')))+'</div>';
+  var row=function(r){return '<button class="lbr'+(r.rank<=3?' top'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk">'+r.rank+'</span>'+uav(r)+'<span class="nm">'+esc(r.name)+'</span><span class="lv">'+val(r)+'</span><span class="lsub mut">'+(P?(boardPer==='day'?'aujourd\'hui':'cette semaine'):boardSort==='score'?r.owned+' cartes · '+r.mythics+' M':boardSort==='runs'?'faits sur la map':'score '+fmt(r.score))+'</span></button>'};
   h+='<div class="panel lbx">'+(d.total?'<div class="lbhead"><b>Top '+d.rows.length+'</b><span class="mut sm">sur <b>'+d.total+'</b> joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':'')+'</span></div>':'')+(d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap">• • •<span class="mut sm">ta position</span></div>'+d.near.map(row).join(''):''):'<p class="mut center">Personne au classement pour l\'instant.</p>')+'</div>'+
    '<p class="mut sm">Score : chaque carte obtenue rapporte des points selon sa rareté ('+RAR.map(function(r,i){return r.n+' '+SCORE[i]}).join(', ')+'). Les doublons comptent, même revendus : plus tu ouvres de packs, plus ton score monte. Classement Runs : nombre de fois où tu as fini la map, selon les codes de fin que tu as entrés. Le haut du classement montre les 20 premiers, puis ta position avec le joueur juste au-dessus et juste en dessous. Touche un joueur pour voir son profil.</p>';
   $('cbody').innerHTML=h;
   bindNav('data-bs',function(v){boardSort=v;boardData=null;render()});
+  bindNav('data-bp',function(v){boardPer=v;boardData=null;render()});
   [].forEach.call(document.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}})}
- if(boardData&&boardData.sort===boardSort)paint(boardData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
- api('board',{sort:boardSort}).then(function(r){boardData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
+ if(boardData&&boardData.sort===boardSort&&boardData.period===boardPer)paint(boardData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
+ api('board',{sort:boardSort,period:boardPer}).then(function(r){boardData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
 
 /* ----- profil d'un joueur ----- */
 function openProfile(id){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML='<div class="pickbox profbox"><p class="mut center">Chargement…</p></div>';

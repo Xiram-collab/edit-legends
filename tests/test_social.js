@@ -264,6 +264,31 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
     r = await call('tokA', { action: 'acardwipe', id: wid }); assert.strictEqual(r.status, 200); assert.ok(r.json.holders >= 1);
     r = await call('tokB', { action: 'me' }); assert.ok(!(wid in r.json.state.col)); assert.ok(!(wid in r.json.state.pulled)); ok('carte effacée de la collection de tous les joueurs');
   }
+  // classements Jour / Semaine (heure de Paris)
+  {
+    const G = require('../lib/game');
+    // 23:30 UTC le 6 juin 2026 = 01:30 le 7 juin à Paris (été, UTC+2) : le jour change avant minuit UTC
+    assert.strictEqual(G.parisKeys(Date.UTC(2026, 5, 6, 22, 30)).dk, '2026-06-07'); assert.strictEqual(G.parisKeys(Date.UTC(2026, 5, 6, 21, 30)).dk, '2026-06-06');
+    assert.strictEqual(G.parisKeys(Date.UTC(2026, 5, 7, 12)).wk, '2026-06-01'); assert.strictEqual(G.parisKeys(Date.UTC(2026, 5, 7, 22, 30)).wk, '2026-06-08'); ok('clés Paris : jour et lundi de la semaine');
+    const base = clock; clock = Date.UTC(2026, 5, 10, 10);
+    await call('tokB', { action: 'prefs', prefs: { hide: false } }); await call('tokC', { action: 'prefs', prefs: { hide: false } });
+    await call('tokA', { action: 'apact', id: 'B', a: 'wp', v: 3, i: 0 });
+    let b0 = await call('tokB', { action: 'board', sort: 'score', period: 'day' }); assert.strictEqual(b0.status, 200); assert.strictEqual(b0.json.period, 'day');
+    const before = (b0.json.rows.find((x) => x.name === 'Bob') || { score: 0 }).score;
+    r = await call('tokB', { action: 'openwp', g: 0 }); assert.strictEqual(r.status, 200);
+    const gj = await call('tokB', { action: 'board', sort: 'score', period: 'day' }); const gs = await call('tokB', { action: 'board', sort: 'score', period: 'week' }); const gg = await call('tokB', { action: 'board', sort: 'score' });
+    assert.ok(gj.json.me.score > before && gj.json.me.score === gs.json.me.score && gj.json.me.rank >= 1 && gg.json.period === 'all'); ok('points gagnés comptés dans Jour et Semaine');
+    clock = Date.UTC(2026, 5, 11, 10);   // lendemain : même semaine
+    let d2 = await call('tokB', { action: 'board', sort: 'score', period: 'day' }); assert.ok(!d2.json.rows.some((x) => x.name === 'Bob')); assert.strictEqual(d2.json.me.score, 0);
+    let w2 = await call('tokB', { action: 'board', sort: 'score', period: 'week' }); assert.ok(w2.json.rows.some((x) => x.name === 'Bob')); ok('le classement du jour repart à zéro, pas celui de la semaine');
+    clock = Date.UTC(2026, 5, 15, 10);   // lundi suivant
+    w2 = await call('tokB', { action: 'board', sort: 'score', period: 'week' }); assert.ok(!w2.json.rows.some((x) => x.name === 'Bob')); ok('le classement hebdo repart à zéro le lundi');
+    // les gains de l'admin ne comptent pas
+    await call('tokA', { action: 'apact', id: 'B', a: 'c', v: 1, i: 5 });
+    w2 = await call('tokB', { action: 'board', sort: 'score', period: 'week' }); assert.ok(!w2.json.rows.some((x) => x.name === 'Bob')); ok('les cartes données par l\'admin ne comptent pas dans les périodes');
+    r = await call('tokB', { action: 'board', sort: 'runs', period: 'bidon' }); assert.strictEqual(r.json.period, 'all'); ok('période inconnue ramenée à Global');
+    clock = base;
+  }
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 Coins, 10 packs)');
