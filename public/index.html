@@ -1277,7 +1277,7 @@ var WH=[{n:'Avant (rien)',p:0,t:'none',c:'#5a6080',c2:'#2c3050'},
 {n:'Pack Épique+',l:['ÉPIQUE+','pack'],p:4,t:'pack',g:3,c:'#c77dff',c2:'#7a2fd1'},
 {n:'Mythique au choix',l:['MYTHIQUE','au choix'],p:1,t:'pack',g:5,c:'#ff5c96',c2:'#c4124f'},
 {n:'Relance la roue',l:['RELANCE','tour gratuit'],p:10,t:'relance',c:'#3ddc84',c2:'#16844a'},
-{n:'Une carte',l:['CARTE','au hasard'],p:60,t:'card',c:'#1fe0d0',c2:'#0a7f8c'},
+{n:'Carte au hasard',l:['CARTE','au hasard'],p:60,t:'card',c:'#1fe0d0',c2:'#0a7f8c'},
 {n:'50 Coins',l:['50','Coins'],p:4,t:'coins',v:50,c:'#ffd24a',c2:'#b57800'},
 {n:'200 Coins',l:['200','Coins'],p:1,t:'coins',v:200,c:'#ffe27a',c2:'#d18a00'}];
 /* 12 parts de même taille (visuel) : la vraie probabilité de chaque gain est celle de la légende */
@@ -1312,7 +1312,7 @@ function spinWheel(res,done,rar){if(spinning)return;spinning=true;var c=[];SL.fo
   if(el<380+T){requestAnimationFrame(fr)}
   else{g.style.transform='rotate('+final+'deg)';g.dataset.rot=final;spinning=false;wh.classList.remove('spin');wh.classList.add('won');
    SL.forEach(function(w,k){var e=$('sg'+k);if(e)e.setAttribute('class','sg '+(k===sl?'win':'dim'))});
-   var W=WH[res],weak=W.t==='relance'||(W.t==='card'&&rar<2),big=(W.t==='pack'&&W.g>=3)||res===8||(W.t==='card'&&rar>=3);
+   var W=WH[res],weak=W.t==='relance',big=(W.t==='pack'&&W.g>=3)||res===8;
    if(!weak){wh.style.setProperty('--wc',W.c);wh.classList.add('glow');confetti([W.c,'#ffd24a','#ffffff',W.c2],big?90:46);if(!S.mute)try{chord(60,[0,4,7,12],'triangle',.07,0,big?.9:.6)}catch(e){}}
    else if(!S.mute){try{tone(W.t==='relance'?660:300,.3,'triangle',.07,0,W.t==='relance'?880:200)}catch(e){}}
    setTimeout(function(){if(done)done(sl)},700)}})(performance.now())}
@@ -1320,19 +1320,17 @@ function spinWheel(res,done,rar){if(spinning)return;spinning=true;var c=[];SL.fo
 function runSpins(spins,k,fin){var o=spins[k],W=WH[o.res];
  spinWheel(o.res,function(){
   if(W.t==='relance'&&k+1<spins.length){var m=$('cmsg');if(m){m.textContent='Relance ! La roue repart...';m.style.color='var(--gold)'}setTimeout(function(){runSpins(spins,k+1,fin)},1300)}
-  else fin(o)},o.card!=null&&CARDS[o.card]?CARDS[o.card][2]:-1)}
+  else fin(o)},-1)}
 /* annonce le gain du dernier tour */
 function winText(o){var W=WH[o.res];
- if(W.t==='card'&&CARDS[o.card])return 'Tu gagnes la carte '+CARDS[o.card][0]+' ('+RAR[CARDS[o.card][2]].n+') !';
  if(W.t==='coins')return 'Tu gagnes '+fmt(o.coins||W.v)+' '+CUR+' !';
- return 'Tu gagnes : '+W.n+' !'}
+ return 'Tu gagnes : '+W.n+' !'+(W.t==='pack'||W.t==='card'?' À récupérer dans tes packs en attente.':'')}
 function winEnd(o,prev){var W=WH[o.res];
- if(W.t==='pack'){sfx('coin');toast(W.n+' ajouté à tes packs en attente');setTimeout(render,900)}
+ if(W.t==='pack'||W.t==='card'){sfx('coin');toast(W.n+' ajouté à tes packs en attente : va la récupérer');setTimeout(render,900)}
  else if(W.t==='coins'){sfx('coin');toast('+'+fmt(o.coins||W.v)+' '+CUR);setTimeout(render,900)}
- else if(W.t==='card'&&CARDS[o.card]){toast('Carte ajoutée à ta collection');setTimeout(function(){reveal([o.card],prev)},500)}
  else setTimeout(render,900)}
 function rCode(){
- var leg=WH.filter(function(w){return w.p>0}).sort(function(x,y){return x.p-y.p}).map(function(w){return '<span><i style="background:'+w.c+'"></i>'+w.n+' '+w.p+' %</span>'}).join('')+'<span class="mut">La rareté d\'une carte gagnée suit les probabilités des packs.</span>';
+ var leg=WH.filter(function(w){return w.p>0}).sort(function(x,y){return x.p-y.p}).map(function(w){return '<span><i style="background:'+w.c+'"></i>'+w.n+' '+w.p+' %</span>'}).join('')+'<span class="mut">Pack ou carte gagnés : à récupérer dans tes packs en attente. La rareté de la carte suit les probabilités des packs.</span>';
  var pend=false?'<button class="btn gold" id="wclaim">Récupérer ma récompense : '+WH[S.wpend].n+'</button>':'';
  var ICO='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>';
  var dbox='<aside class="dbox"><h3>'+ICO+' Tu as ton code de fin de map ? Voici quoi faire</h3><ol class="dsteps">'+
@@ -1352,13 +1350,13 @@ function rCode(){
   $('cgo').disabled=true;msg('Vérification...',true);
   var prev=Object.assign({},S.col);
   act({action:'code',code:c}).then(function(r){msg('Bonne chance...',true);$('cin').disabled=true;
-   runSpins(r.spins||[{res:r.res}],0,function(o){setState(r.state);msg(winText(o),true);var cm=$('cmsg');if(cm&&WH[o.res].t==='card'&&CARDS[o.card])cm.style.color=HEX[CARDS[o.card][2]];winEnd(o,prev)})
+   runSpins(r.spins||[{res:r.res}],0,function(o){setState(r.state);msg(winText(o),true);winEnd(o,prev)})
   }).catch(function(e){$('cgo').disabled=false;if(e.message!=='busy')msg(e.message||'Erreur',false)})};
  $('cgo').onclick=go;$('cin').onkeydown=function(e){if(e.key==='Enter')go()};
  $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);this.value=v.replace(/(.{4})(?=.)/g,'$1-')}}
 
 /* ---------- packs en attente ---------- */
-var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'}];
+var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'},{g:6,n:'Carte au hasard',l:'C',c:'#1fe0d0'}];
 function wpTotal(){var t=0;WPT.forEach(function(x){t+=S.wp[x.g]||0});return t}
 function wpBadge(){var b=$('pkb');if(!b){b=document.createElement('button');b.id='pkb';b.className='pkb';b.setAttribute('aria-label','Packs en attente');b.onclick=openWaiting;document.body.appendChild(b)}
  var n=wpTotal();b.hidden=n<1||!$('ov').hidden;
