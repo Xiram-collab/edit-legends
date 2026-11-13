@@ -292,7 +292,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   // missions et titres
   {
     const M = require('../lib/missions');
-    r = await call('tokB', { action: 'missions' }); assert.strictEqual(r.status, 200); assert.ok(r.json.titles.length === M.TITLES.length && r.json.packs.length === M.MISSIONS.length);
+    r = await call('tokB', { action: 'missions' }); assert.strictEqual(r.status, 200); assert.ok(r.json.titles.length === M.TITLES.filter((t) => !t.retired).length && r.json.packs.length === M.MISSIONS.length);
     assert.ok(M.MISSIONS.every((m) => m.tiers.every((t) => [0, 2, 3, 6].includes(t.rw)))); ok('missions : aucune récompense Mythique/Légendaire en pack');
     r = await call('tokB', { action: 'claim', ids: ['m_vente'] }); assert.strictEqual(r.status, 400); ok('mission non terminée : récompense refusée');
     r = await call('tokB', { action: 'settitle', id: 'collectionneur' }); assert.strictEqual(r.status, 403); ok('titre non débloqué : équipement refusé');
