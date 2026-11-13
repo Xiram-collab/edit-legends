@@ -328,6 +328,14 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
     clock = base;
     r = await call('tokC', { action: 'friends' }); assert.ok(Array.isArray(r.json.friends)); ok('amis : lignes avec titre');
   }
+  // tout ouvrir (packs en attente)
+  {
+    await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: 3, i: 0 }); await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: 2, i: 6 }); await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: 1, i: 5 });
+    const o0 = (await call('tokC', { action: 'me' })).json.state.opened;
+    r = await call('tokC', { action: 'openall' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.cards.length, 3 * 5 + 2); assert.strictEqual(r.json.state.opened, o0 + 3);
+    assert.strictEqual(r.json.state.wp[0] || 0, 0); assert.strictEqual(r.json.state.wp[6] || 0, 0); assert.strictEqual(r.json.state.wp[5], 1); ok('tout ouvrir : tous les packs, la Mythique au choix reste en attente');
+    r = await call('tokC', { action: 'openall' }); assert.strictEqual(r.status, 400); ok('tout ouvrir sans pack : refusé');
+  }
   // reset d'un joueur et reset général
   await call('tokA', { action: 'apact', id: 'D', a: 'm', v: 500 });
   r = await call('tokA', { action: 'apact', id: 'D', a: 'rst' }); assert.strictEqual(r.json.state.money, 0); assert.strictEqual(r.json.state.stock, 10); assert.deepStrictEqual(r.json.state.col, {}); ok('reset d\'un joueur : comme un nouveau (0 Coins, 10 packs)');

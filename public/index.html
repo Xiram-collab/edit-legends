@@ -446,6 +446,7 @@ main#main{min-height:60vh}
 .mtag{font-size:.7em;font-weight:800;padding:2px 8px;border-radius:999px;background:#ffffff14;color:var(--mut);white-space:nowrap}
 .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 4px}
 .tbar{margin-top:18px}
+.tcard>:last-child{margin-top:auto}
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .tcard{border:1px solid var(--c);border-radius:12px;padding:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 18%,transparent),transparent);display:flex;flex-direction:column;gap:6px}
 .tcard b{color:var(--c);font-size:1.05em}.tcard.on{box-shadow:0 0 0 2px var(--c),0 4px 18px color-mix(in srgb,var(--c) 40%,transparent)}
@@ -1484,10 +1485,13 @@ function wpBadge(){var b=$('pkb');if(!b){b=document.createElement('button');b.id
  var n=wpTotal();b.hidden=n<1||!$('ov').hidden;
  b.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M5 8h14M9 13h6"/></svg><span class="pkt">Packs en attente</span><span class="pkn">'+n+'</span>'}
 function openWaiting(){if(busy)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
+ var nAll=[0,2,3,4,6].reduce(function(t,g){return t+(S.wp[g]||0)},0);
  var h=WPT.filter(function(x){return (S.wp[x.g]||0)>0}).map(function(x){var n=S.wp[x.g];return '<div class="pk wpk" style="--c:'+x.c+'"><div class="mini" style="--c:'+x.c+'"><b class="disp">'+x.l+'</b></div><h3>'+x.n+'</h3><div class="mut">x'+n+' en attente</div><button class="btn sm" data-ow="'+x.g+'">Ouvrir</button></div>'}).join('');
- d.innerHTML='<div class="pickbox wpbox"><h2>Packs en attente</h2>'+(h?'<div class="wpl">'+h+'</div>':'<p class="mut">Aucun pack en attente.</p>')+'<button class="btn ghost sm" id="pkx">Fermer</button></div>';
+ d.innerHTML='<div class="pickbox wpbox"><h2>Packs en attente</h2>'+(h?'<div class="wpl">'+h+'</div>':'<p class="mut">Aucun pack en attente.</p>')+(nAll>1?'<button class="btn gold" id="owall" style="margin-bottom:8px">Tout ouvrir ('+nAll+')</button>':'')+'<button class="btn ghost sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
- [].forEach.call(d.querySelectorAll('[data-ow]'),function(b){b.onclick=function(){openWaitingPack(+b.dataset.ow)}})}
+ [].forEach.call(d.querySelectorAll('[data-ow]'),function(b){b.onclick=function(){openWaitingPack(+b.dataset.ow)}});
+ if($('owall'))$('owall').onclick=openAllWaiting}
+function openAllWaiting(){if(busy||netBusy)return;closePick();var prev=Object.assign({},S.col),it=packIntro();act({action:'openall'}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
 function openMythPick(){closePick();var ids=[];CARDS.forEach(function(c,i){if(c&&c[2]===5&&!c[5])ids.push(i)});var sel=null,d=document.createElement('div');d.id='pk';d.className='pickov';
  var paint=function(){d.innerHTML='<div class="pickbox"><div class="pickhd"><h3>Choisis ta carte Mythique</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">Tu as gagné une Mythique au choix : touche la carte que tu veux, puis confirme. Ce choix est définitif.</p><div class="mythpick">'+ids.map(function(i){var c=CARDS[i];return '<button class="mp'+(sel===i?' on':'')+'" data-mp="'+i+'">'+cthumb(c[4],c[0])+'<span class="mpt"><b>'+esc(c[0])+'</b><span class="mut sm">'+CATS[c[1]]+(c[3]?' · '+esc(c[3]):'')+'</span></span></button>'}).join('')+'</div><div class="bar" style="margin-top:12px"><button class="btn gold" id="mpok"'+(sel==null?' disabled':'')+'>'+(sel==null?'Choisis une carte':'Confirmer : '+esc(CARDS[sel][0]))+'</button></div></div>';
   $('pkx').onclick=closePick;[].forEach.call(d.querySelectorAll('[data-mp]'),function(b){b.onclick=function(){sel=+b.dataset.mp;var y=d.querySelector('.pickbox').scrollTop;paint();d.querySelector('.pickbox').scrollTop=y}});
