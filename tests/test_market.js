@@ -215,7 +215,7 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const g0 = { B: await bank('tokB'), C: await bank('tokC') };
   r = await call('tokB', { action: 'agift', coins: 100 }); assert.strictEqual(r.status, 403);
   r = await call('tokA', { action: 'agift', coins: 0, n: 0 }); assert.strictEqual(r.status, 400);
-  r = await call('tokA', { action: 'agift', coins: 250, pack: 2, n: 1, msg: 'Joyeux Noël' }); assert.strictEqual(r.status, 200); assert.ok(r.json.players >= 4);
+  r = await call('tokA', { action: 'agift', coins: 250, pack: 2, n: 1, msg: 'Joyeux Noël\n\n\nOn se retrouve vite' }); assert.strictEqual(r.status, 200); assert.ok(r.json.players >= 4);
   assert.strictEqual(await bank('tokB'), g0.B + 250); assert.strictEqual(await bank('tokC'), g0.C + 250);
   assert.ok(((await call('tokC', { action: 'me' })).json.state.wp[2] || 0) >= 1); assert.ok((await call('tokC', { action: 'ping' })).json.notes.some((x) => /Joyeux Noël/.test(x.text))); ok('cadeau à tous : Coins + pack en attente + notification (propriétaire seulement)');
 
