@@ -219,5 +219,11 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   assert.strictEqual(await bank('tokB'), g0.B + 250); assert.strictEqual(await bank('tokC'), g0.C + 250);
   assert.ok(((await call('tokC', { action: 'me' })).json.state.wp[2] || 0) >= 1); assert.ok((await call('tokC', { action: 'ping' })).json.notes.some((x) => /Joyeux Noël/.test(x.text))); ok('cadeau à tous : Coins + pack en attente + notification (propriétaire seulement)');
 
+  // journal : suppression (propriétaire seulement)
+  r = await call('tokA', { action: 'alog' }); assert.ok(r.json.canDelete && r.json.rows.length > 2); const lgid = r.json.rows[0].id, nlog = r.json.rows.length;
+  r = await call('tokB', { action: 'alogdel', ids: [lgid] }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'alogdel', ids: [] }); assert.strictEqual(r.status, 400);
+  r = await call('tokA', { action: 'alogdel', ids: [lgid] }); assert.strictEqual(r.status, 200); assert.strictEqual((await call('tokA', { action: 'alog' })).json.rows.length, nlog - 1);
+  r = await call('tokA', { action: 'alogdel', all: true }); assert.strictEqual(r.status, 200); assert.strictEqual((await call('tokA', { action: 'alog' })).json.rows.length, 0); ok('journal : suppression de lignes ou de tout (propriétaire seulement)');
   console.log(n + ' vérifications réussies (marché / Ma carte)');
 })().catch((e) => { console.error(e); process.exit(1); });

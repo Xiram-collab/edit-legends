@@ -1762,7 +1762,17 @@ function adAnn(){
 function adLog(){
  api('alog').then(function(d){if(!adAlive('log'))return;
   var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Joueur remis à zéro (nouveau joueur)',gift:'🎁 Cadeau à '+(v.who||'tous')+' ('+(v.players||0)+' joueurs) : '+(v.coins?fmt(v.coins)+' '+CUR:'')+(v.n?' + '+v.n+' pack'+(v.n>1?'s':''):''),'offre-retiree':'Offre du marché retirée','echange-retire':'Échange retiré',resetall:'RESET GÉNÉRAL de tous les joueurs','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
-  $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(d.rows.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr><td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+'</div>'}).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
+  var cd=d.canDelete;
+  $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(cd&&d.rows.length?'<div class="bar"><button class="btn sm ghost" id="lgall">Tout cocher</button><button class="btn sm" id="lgdel" disabled>Supprimer la sélection</button><button class="btn sm ghost" id="lg7">Garder 7 jours</button><button class="btn sm ghost" id="lgclr">Tout vider</button></div>':(d.rows.length?'':''))+(d.rows.length?'<div class="tw"><table class="at"><tr>'+(cd?'<th></th>':'')+'<th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr>'+(cd?'<td><input type="checkbox" class="lgc" data-lg="'+l.id+'"></td>':'')+'<td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+(cd?'':'<p class="mut sm">Seul le propriétaire peut supprimer des lignes du journal.</p>')+'</div>';
+  if(cd&&d.rows.length){
+   var boxes=function(){return [].slice.call(document.querySelectorAll('.lgc'))},upd=function(){var n=boxes().filter(function(b){return b.checked}).length;$('lgdel').disabled=!n;$('lgdel').textContent=n?'Supprimer la sélection ('+n+')':'Supprimer la sélection'};
+   boxes().forEach(function(b){b.onchange=upd});
+   $('lgall').onclick=function(){var all=boxes().every(function(b){return b.checked});boxes().forEach(function(b){b.checked=!all});upd()};
+   var run=function(body,msg){api('alogdel',body).then(function(){toast(msg);adLog()}).catch(function(e){toast(e.message)})};
+   twice($('lgdel'),function(){var ids=boxes().filter(function(b){return b.checked}).map(function(b){return +b.dataset.lg});run({ids:ids},ids.length+' ligne'+(ids.length>1?'s':'')+' supprimée'+(ids.length>1?'s':''))},'Confirmer la suppression ?');
+   twice($('lg7'),function(){run({days:7},'Lignes de plus de 7 jours supprimées')},'Supprimer tout ce qui a plus de 7 jours ?');
+   twice($('lgclr'),function(){run({all:true},'Journal vidé')},'Tout vider définitivement ?')}
+  }).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
 
 /* ---------- code / roue ---------- */
 var WH=[{n:'Avant (rien)',p:0,t:'none',c:'#5a6080',c2:'#2c3050'},

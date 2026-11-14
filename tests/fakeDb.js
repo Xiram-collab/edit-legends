@@ -143,7 +143,8 @@ module.exports = function fakeDb(cards, validCodes) {
     async listAnnouncements(n) { return anns.slice().reverse().slice(0, n).map((a) => ({ id: a.id, text: a.text, created_at: a.created_at })); },
     async addAnnouncement(text) { anns.push({ id: anns.length + 1, text, created_at: new Date(1e12).toISOString() }); },
     async deleteAnnouncement(id) { const i = anns.findIndex((a) => a.id === id); if (i >= 0) anns.splice(i, 1); },
-    async logAdmin(e) { logs.push(Object.assign({ at: new Date(1e12).toISOString() }, e)); },
+    async logAdmin(e) { logs.push(Object.assign({ id: logs.length + 1000 + Math.floor(Math.random() * 1e6), at: new Date(1e12).toISOString() }, e)); },
+    async deleteLogs(f) { const keep = logs.filter((l) => (Array.isArray(f.ids) ? !f.ids.includes(l.id) : f.before ? !(Date.parse(l.at) < Date.parse(f.before)) : false)); logs.length = 0; keep.forEach((l) => logs.push(l)); },
     async recentLogs(n) { return logs.slice().reverse().slice(0, n); },
   };
 };
