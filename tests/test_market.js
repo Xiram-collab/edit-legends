@@ -126,6 +126,14 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   clock += 20000; await call('tokD', { action: 'mlist' });
   assert.strictEqual((await db.marketGet(oldA)).buynow, 70); assert.strictEqual((await db.marketGet(oldC)).buynow, 70); assert.strictEqual((await db.marketGet(oldB)).buynow, 300); ok('anciennes offres au minimum recalées au nouveau seuil, les autres inchangées');
 
+  // doublon : une copie en vente, la collection garde x2, et le doublon reste vendable contre des Coins
+  const dd = idOf(2); await give('B', dd, 2 - await count('tokB', dd) > 0 ? 2 - await count('tokB', dd) : 0);
+  const dc = await count('tokB', dd);
+  r = await call('tokB', { action: 'msell', i: dd, buynow: 300 }); assert.strictEqual(r.status, 200);
+  assert.strictEqual(await count('tokB', dd), dc); ok('doublon mis en vente : la collection garde le même nombre d\'exemplaires');
+  const b0 = await bank('tokB'); r = await call('tokB', { action: 'sell', i: dd }); assert.strictEqual(r.status, 200); assert.ok((await bank('tokB')) > b0); assert.strictEqual(await count('tokB', dd), dc - 1); ok('le doublon reste vendable en Coins pendant qu\'une copie est sur le marché');
+  const offer = (await call('tokD', { action: 'mlist' })).json.open.find((x) => x.card === dd && x.mine !== true); assert.ok(offer); r = await call('tokC', { action: 'mbuy', id: offer.id }); assert.strictEqual(r.status, 200); ok('la copie en vente reste achetable');
+
   // association automatique : pseudo identique à une carte Éditeur
   const edc = cards.findIndex((c, i) => c && !c[5] && c[1] === 0 && !(i === mine)); const edn = cards[edc][0];
   const strc = cards.findIndex((c) => c && !c[5] && c[1] === 3);
