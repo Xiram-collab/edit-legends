@@ -96,9 +96,16 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   r = await call('tokC', { action: 'mbuy', id: idv }); assert.strictEqual(r.status, 400); assert.strictEqual(await bank('tokC'), bk); assert.strictEqual(await count('tokC', cmy2), 0); ok('vendeur sans la carte : vente annulée, acheteur remboursé');
 
   // ancienne offre (carte consignée à la pose) : annulation = carte rendue
+  const lc = await count('tokB', cm);
   const lg = await db.marketInsert({ seller: 'B', card: cm, start: 10, buynow: 10, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
-  const lgs = (await db.marketGet(lg)).seller; const lc = await count('tokB', cm);
-  r = await call('tokB', { action: 'mcancel', id: lg }); assert.strictEqual(r.status, 200); assert.strictEqual(await count('tokB', cm), lc + 1); ok('ancienne offre consignée : annulation rend la carte');
+    r = await call('tokB', { action: 'mcancel', id: lg }); assert.strictEqual(r.status, 200); assert.strictEqual(await count('tokB', cm), lc + 1); ok('ancienne offre consignée : annulation rend la carte');
+
+  // fin de consigne : la carte d'une ancienne offre retourne chez le vendeur, qui la possède de nouveau
+  const lc2 = await count('tokB', cm);
+  const lg2 = await db.marketInsert({ seller: 'B', card: cm, start: 10, buynow: 10, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
+  clock += 20000; await call('tokD', { action: 'mlist' });
+  assert.strictEqual(await count('tokB', cm), lc2 + 1);
+  r = await call('tokB', { action: 'mcancel', id: lg2 }); assert.strictEqual(r.status, 200); assert.strictEqual(await count('tokB', cm), lc2 + 1); ok('ancienne offre : carte rendue au vendeur dès l\'ouverture du marché, annulation sans doublon');
 
   // missions et titres liés au marché
   const M = require('../lib/missions');
