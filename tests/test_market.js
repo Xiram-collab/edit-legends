@@ -111,6 +111,16 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const id5 = r.status === 200 ? (await call('tokC', { action: 'mlist' })).json.open[0].id : null;
   if (id5) { const rr = await call('tokC', { action: 'mbid', id: id5, v: 5000000 }); assert.ok([400].includes(rr.status)); ok('mise supérieure aux Coins disponibles refusée'); }
 
+  // missions et titres liés au marché
+  const M = require('../lib/missions');
+  let mv = (await call('tokB', { action: 'missions' })); assert.strictEqual(mv.status, 200);
+  const mk = (v, id) => v.json.packs.find((m) => m.id === id);
+  assert.ok(db.saves.get('B').data.mkSold >= 4, 'ventes comptées : ' + db.saves.get('B').data.mkSold);
+  assert.ok(mk(mv, 'm_mkvente').ready, 'palier « vendre 1 carte » prêt');
+  assert.ok(db.saves.get('D').data.mkBought >= 3, 'achats comptés : ' + db.saves.get('D').data.mkBought);
+  assert.ok(M.TITLES.some((x) => x.id === 'negociant') && M.MISSIONS.some((x) => x.id === 'm_mkachat'));
+  r = await call('tokB', { action: 'claim', ids: ['m_mkvente'] }); assert.strictEqual(r.status, 200); assert.ok(r.json.got.packs.length >= 1); ok('missions du marché : vendeur et acheteur comptés et récupérables');
+
   // limite de propositions de cartes : 30
   assert.strictEqual(C.CARD_PROPOSALS_MAX, 30);
   for (let i = 0; i < 30; i++) { r = await call('tokC', { action: 'cardsubmit', name: 'Test carte ' + i, cat: 0, rarity: 0 }); assert.strictEqual(r.status, 200, 'proposition ' + i); }
