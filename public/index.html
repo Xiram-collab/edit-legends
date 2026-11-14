@@ -93,7 +93,7 @@ main{max-width:1000px;margin:0 auto}
 .card .art svg{width:100%;height:100%;display:block}
 .card .nm{text-align:center;font-weight:700;font-size:1.25em;text-transform:uppercase;letter-spacing:.05em;line-height:1.1}
 .card .nm.long{font-size:.85em!important;letter-spacing:.01em!important;white-space:nowrap}
-.card .ds{text-align:center;color:var(--mut);font-size:.68em;min-height:1.4em;line-height:1.2}
+.card .ds{text-align:center;color:var(--mut);font-size:.68em;min-height:1.4em;line-height:1.2;max-height:2.4em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}.zdesc{max-width:340px;margin:10px auto 0;padding:10px 12px;border-radius:12px;background:#ffffff10;border:1px solid var(--line);font-size:14px;line-height:1.4;text-align:left;white-space:pre-line;overflow-wrap:anywhere;max-height:30vh;overflow:auto}
 .card .new{position:absolute;top:30px;left:6px;z-index:4;background:linear-gradient(135deg,#ff4d4d,#d10f3a);color:#fff;font-size:.6em;font-weight:800;letter-spacing:.08em;padding:2px 7px;border-radius:5px;box-shadow:0 0 10px #ff2d55aa;animation:newpop .5s .5s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes newpop{from{scale:0;rotate:-20deg}}
 .card .cnt{position:absolute;top:30px;right:6px;background:#000a;border-radius:4px;padding:0 6px;font-size:.7em;font-weight:700}
@@ -596,7 +596,8 @@ function art(c){if(!c[4]){var shp=['','hex','rect','sq'][c[1]];return '<div clas
 function cardHTML(i,o){o=o||{};var c=CARDS[i];return '<div class="card'+(c[2]==5?' m':'')+'" style="--rc:'+RAR[c[2]].c+'">'+
  '<div class="top"><span class="cat">'+CATS[c[1]]+'</span><span class="rar">'+RAR[c[2]].n+'</span></div>'+
  (o.isNew?'<span class="new">NEW</span>':'')+(o.count>1?'<span class="cnt">x'+o.count+'</span>':'')+
- '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+c[0]+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]||'&nbsp;')+'</div></div>'}
+ '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]?esc(firstSent(c[3])):'&nbsp;')+'</div></div>'}
+function firstSent(t){t=String(t||'').replace(/\s+/g,' ').trim();var m=t.match(/^.*?[.!?…](?=\s|$)/);return m?m[0]:t}
 var LOGO='<img src="img/logo.png" class="bl" alt="" width="512" height="512">';(new Image()).src='img/logo.png';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
 var tab='home',lastTab='',dupOnly=(function(){try{return localStorage.getItem('el_own')==='1'}catch(e){return false}})(),shown=0,busy=false,cvOn=false,parts=[];
@@ -758,7 +759,7 @@ function jnote(i){var v=JN[CARDS[i][0]];return v==null?'':v.toFixed(1).replace('
 function jpos(i){var p=JO.indexOf(CARDS[i][0]);return p<0?999:p}
 function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||0,n);
  var d=document.createElement('div');d.id='pk';d.className='pickov';
- d.innerHTML='<div class="pickbox zoombox"><div class="zc">'+cardHTML(i)+'</div><div class="pst" style="font-size:15px">Obtenue x'+pl+'</div><button class="btn sm" id="pkx">Fermer</button></div>';
+ d.innerHTML='<div class="pickbox zoombox"><div class="zc">'+cardHTML(i)+'</div>'+(CARDS[i][3]?'<div class="zdesc">'+esc(CARDS[i][3])+'</div>':'')+'<div class="pst" style="font-size:15px">Obtenue x'+pl+'</div><button class="btn sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick}
 function dupValue(){var t=0;CARDS.forEach(function(c,i){var n=S.col[i]||0;if(n>1)t+=(n-1)*RAR[c[2]].v});return t}
 var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
