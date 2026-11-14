@@ -459,6 +459,28 @@ main#main{min-height:60vh}
 .wpl{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}.wpl .pk{width:132px;padding:12px;gap:6px}
 .sum .sw{cursor:pointer}
 /* communauté + admin */
+
+/* ===== Panel admin : thème de Noël ===== */
+body.xmas{--bg:#08140f;--panel:#10241b;--panel2:#16342a;--line:#2f5b43;--acc:#e23b4e;--acc2:#4de08a;--gold:#ffd86b;--mut:#a9c9b4;--fg:#fff6ea;
+background-image:radial-gradient(900px 420px at 85% -10%,#7a1c2a66,transparent),radial-gradient(700px 420px at 0 0,#0e5a3a66,transparent);background-attachment:fixed}
+body.xmas::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 90px 120px,#fff,transparent),radial-gradient(3px 3px at 160px 60px,#fff,transparent),radial-gradient(2px 2px at 230px 180px,#fff,transparent),radial-gradient(2px 2px at 300px 90px,#fff,transparent);background-size:340px 220px;animation:xsnow 14s linear infinite}
+@keyframes xsnow{to{background-position:60px 220px}}
+@media(prefers-reduced-motion:reduce){body.xmas::before{animation:none}}
+body.xmas #main{position:relative;z-index:1}
+body.xmas .panel{border-color:#2f5b43;background:linear-gradient(180deg,#143023,#0f2219);box-shadow:0 0 0 1px #ffffff08 inset,0 6px 18px #0006}
+body.xmas .panel h3{color:var(--gold)}
+body.xmas .tile{background:#0d1f17;border-color:#2f5b43}body.xmas .tile b{color:#fff}
+body.xmas .tile.clk:hover{border-color:#e23b4e}
+body.xmas .fl.subnav{border-bottom-color:#2f5b43}body.xmas .fl.subnav button.on{border-bottom-color:#e23b4e;color:#fff}
+body.xmas .btn.gold{background:linear-gradient(180deg,#e23b4e,#a3182b);color:#fff;border-color:#ffd86b}
+body.xmas table.at th{color:var(--gold)}
+.xban{margin:0 0 12px;padding:16px;border-radius:16px;text-align:center;border:2px solid var(--gold);background:repeating-linear-gradient(135deg,#a3182b 0 14px,#8a1424 14px 28px);box-shadow:0 8px 24px #0008}
+.xban .xt{font-size:1.5em;font-weight:900;color:#fff;text-shadow:0 2px 0 #0006;letter-spacing:.5px}.xban .xs{color:#ffe9c2;margin-top:4px}
+.admg{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch}
+.admg button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);color:var(--mut);font-weight:800;font-size:13px;position:relative;cursor:pointer}
+.admg button .agi{font-size:20px;line-height:1}.admg button.on{color:#fff;border-color:var(--gold);background:linear-gradient(180deg,#7a1c2a,#4b0f1a)}
+.admg .nb{position:absolute;top:2px;right:4px}
+.adbars{display:flex;gap:6px;align-items:flex-end;height:120px}.adb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;font-size:11px;color:var(--mut)}.adb i{width:100%;max-width:34px;border-radius:6px 6px 2px 2px;display:block}.adb b{color:var(--fg);font-size:12px}
 .fl.subnav{gap:0;margin:0 0 16px;border-bottom:2px solid var(--line);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .fl.subnav button{background:none;border:0;border-bottom:3px solid transparent;border-radius:0;margin-bottom:-2px;padding:10px 14px;font-size:14px;font-weight:800;white-space:nowrap;color:var(--mut)}
 .fl.subnav button.on{background:none;color:#fff;border-bottom-color:#ff3d81}
@@ -723,7 +745,7 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
 function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classement'],['miss','Missions'],['com','Communauté'],['shop','Boutique'],['mk','Marché'],['code','Code']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
  $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='admin'&&ISADMIN&&(NOTIF.tp+NOTIF.cp)?'<span class="nb">'+((NOTIF.tp+NOTIF.cp)>9?'9+':(NOTIF.tp+NOTIF.cp))+'</span>':'')+(t[0]==='admin'&&!ISADMIN&&NOTIF.tp?'<span class="nb">'+(NOTIF.tp>9?'9+':NOTIF.tp)+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
-function render(){if(!S)return;var qf=$('qsfix');if(qf)qf.remove();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
+function render(){if(!S)return;var qf=$('qsfix');if(qf)qf.remove();document.body.classList.toggle('xmas',tab==='admin'&&!!ISADMIN);regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(tab!=='mk'&&mkT){clearInterval(mkT);mkT=0}if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
  ({home:rHome,rank:rRank,col:rCol,shop:rShop,code:rCode,com:rCom,miss:rMiss,admin:rAdmin,mk:rMarket})[tab]()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
@@ -1224,16 +1246,19 @@ function rShare(){
  $('shh').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')}}
 
 /* ================= ADMINISTRATION ================= */
-var adminSub='live',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
+var adminSub='home',adminTarget=null,adminList={q:'',sort:'lastSeen',adm:false},adminData=null,adCards={q:'',r:-1,sort:'pulled',own:false};
 var ADS=[['live','Connectés'],['players','Joueurs'],['stats','Statistiques'],['cards','Cartes'],['jury','Jury'],['times','Temps'],['own','Ma carte'],['ann','Annonces'],['tools','Mes outils'],['log','Journal']];
 function adAlive(sub){return tab==='admin'&&adminSub===sub&&$('abody')}
 function rAdmin(){
  if(!ISADMIN)adminSub='jury';
- var nav=ISADMIN?subnavH(ADS,adminSub,'data-as'):'';
- var bind=function(){bindNav('data-as',function(v){adminSub=v;adminTarget=null;render();scrollTo(0,0)})};
+ var nav=adNav();
+ var bind=function(){bindNav('data-as',function(v){adminSub=v;adminTarget=null;render();scrollTo(0,0)});bindNav('data-ag',function(v){var g=ADG.filter(function(x){return x[0]===v})[0];adminSub=g[3][0];adminTarget=null;render();scrollTo(0,0)})};
  if(adminSub==='tools'){rTest();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
  $('main').innerHTML=nav+'<div id="abody"><div class="panel center mut">Chargement…</div></div>';bind();
  clearInterval(adLiveT);
+ if(adminSub==='home')return adHome();
+ if(adminSub==='market')return adMarket();
+ if(adminSub==='gift')return adGift();
  if(adminSub==='live')return adLive();
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
@@ -1245,6 +1270,55 @@ function rAdmin(){
  adLog()}
 function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'Administrateur')+'</b> <span class="mut sm">'+(ISOWNER?'Droits complets : stats, gestion de tous les joueurs (Coins, packs, cartes), nommer ou retirer des admins. Ton compte ne peut être modifié par personne d\'autre.':'Stats et gestion des joueurs (Coins, packs, cartes). Tu ne peux pas nommer d\'admins ni modifier le propriétaire.')+' Toute action sur un joueur est enregistrée dans le Journal.</span></div>'}
 
+
+/* ----- Panel admin : navigation par groupes, accueil, marché, cadeaux ----- */
+var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift']],['sys','⚙️','Système',['ann','log','tools']]];
+var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',ann:'Annonces',log:'Journal',tools:'Mes outils'};
+function adNav(){
+ if(!ISADMIN)return '';
+ var g=ADG.filter(function(x){return x[3].indexOf(adminSub)>=0})[0]||ADG[0];
+ var top='<div class="admg">'+ADG.map(function(x){var nb=x[0]==='ct'&&(NOTIF.tp+NOTIF.cp)>0?'<span class="nb">'+(NOTIF.tp+NOTIF.cp)+'</span>':'';return '<button data-ag="'+x[0]+'"'+(x===g?' class="on"':'')+'><span class="agi">'+x[1]+'</span>'+x[2]+nb+'</button>'}).join('')+'</div>';
+ return top+(g[3].length>1?subnavH(g[3].map(function(k){return [k,ADL[k]]}),adminSub,'data-as'):'')}
+function xmasDays(){var n=new Date(),y=n.getFullYear(),x=new Date(y,11,25);if(n>x&&!(n.getMonth()===11&&n.getDate()===25))x=new Date(y+1,11,25);return n.getMonth()===11&&n.getDate()===25?0:Math.ceil((x-n)/86400000)}
+function adBars(a,col){var mx=Math.max(1,Math.max.apply(null,a.map(function(x){return x.n})));return '<div class="adbars">'+a.map(function(x){var d=x.day.slice(8)+'/'+x.day.slice(5,7);return '<div class="adb"><b>'+x.n+'</b><i style="height:'+Math.max(4,Math.round(x.n/mx*80))+'px;background:'+col+'"></i><span>'+d+'</span></div>'}).join('')+'</div>'}
+function adHome(){
+ api('adash').then(function(d){if(!adAlive('home'))return;
+  var U=d.users,P=d.pending,M=d.market,E=d.eco,tile=function(b,s,go){return '<div class="tile'+(go?' clk':'')+'"'+(go?' data-go="'+go+'" role="button" tabindex="0"':'')+'><b>'+b+'</b><span>'+s+'</span></div>'};
+  var todo=P.times+P.cards+P.jury;
+  var h='<div class="xban"><div class="xt">🎄 Panel du Père Noël</div><div class="xs">'+(xmasDays()===0?'Joyeux Noël ! 🎅':'Noël dans <b>'+xmasDays()+' jour'+(xmasDays()>1?'s':'')+'</b> ⛄')+' · '+U.online+' joueur'+(U.online>1?'s':'')+' en ligne</div></div>'+
+   '<div class="panel"><h3>📬 À traiter '+(todo?'<span class="nb inl">'+todo+'</span>':'')+'</h3><div class="tiles">'+tile(P.times,'temps à valider','times')+tile(P.cards,'cartes proposées','cards')+tile(P.jury,'cartes au jury','jury')+'</div>'+(todo?'':'<p class="mut sm" style="margin:6px 0 0">Rien en attente, bravo ! 🎁</p>')+'</div>'+
+   '<div class="panel"><h3>👥 Joueurs</h3><div class="tiles">'+tile(fmt(U.total),'inscrits','players')+tile(U.online,'en ligne (5 min)','live')+tile('+'+U.new24h,'nouveaux (24 h)')+tile(U.active24h,'actifs (24 h)')+tile(U.active7d,'actifs (7 j)')+'</div>'+
+   '<p class="mut sm" style="margin:8px 0 2px">Inscriptions (7 derniers jours)</p>'+adBars(d.signups,'#3ddc84')+'<p class="mut sm" style="margin:8px 0 2px">Joueurs actifs par jour</p>'+adBars(d.actives,'#ff5a6e')+'</div>'+
+   '<div class="panel"><h3>🛒 Marché</h3><div class="tiles">'+tile(M.offers,'offres en cours','market')+tile(M.trades,'échanges en cours','market')+tile(M.sold24,'ventes (24 h)')+tile(fmt(M.volume24),CUR+' échangés (24 h)')+tile(M.sold7,'ventes (7 j)')+tile(fmt(M.volume7),CUR+' échangés (7 j)')+'</div></div>'+
+   '<div class="panel"><h3>💰 Économie</h3><div class="tiles">'+tile(fmt(E.coins),CUR+' en circulation')+tile(fmt(E.avg),CUR+' par joueur (moyenne)')+tile(fmt(E.opened),'packs ouverts')+tile(fmt(E.waiting),'packs en attente')+'</div></div>'+
+   '<div class="panel"><h3>🏆 Classements</h3><div class="two"><div><p class="mut sm" style="margin:0 0 4px">Les plus riches</p>'+d.rich.map(function(x,i){return '<div class="nrow"><button class="tag2" data-ap2="'+esc(x.id)+'">'+(i+1)+'. '+esc(x.name)+'</button><b>'+fmt(x.v)+'</b></div>'}).join('')+'</div><div><p class="mut sm" style="margin:0 0 4px">Meilleur score</p>'+d.score.map(function(x,i){return '<div class="nrow"><button class="tag2" data-ap2="'+esc(x.id)+'">'+(i+1)+'. '+esc(x.name)+'</button><b>'+fmt(x.v)+'</b></div>'}).join('')+'</div></div></div>'+
+   '<div class="panel"><h3>⚡ Raccourcis</h3><div class="bar"><button class="btn gold sm" data-go="gift">🎁 Cadeau à tous</button><button class="btn sm" data-go="ann">📣 Annonce</button><button class="btn sm" data-go="market">🛒 Marché</button><button class="btn sm" data-go="stats">📊 Statistiques</button><button class="btn sm" data-go="log">📜 Journal</button></div></div>';
+  $('abody').innerHTML=h;
+  var go=function(v){adminSub=v;adminTarget=null;render();scrollTo(0,0)};
+  [].forEach.call(document.querySelectorAll('[data-go]'),function(b){b.onclick=function(){go(b.dataset.go)};b.onkeydown=function(e){if(e.key==='Enter')go(b.dataset.go)}});
+  [].forEach.call(document.querySelectorAll('[data-ap2]'),function(b){b.onclick=function(){adminTarget=b.dataset.ap2;adminSub='players';render();scrollTo(0,0)}})
+ }).catch(function(e){if(adAlive('home'))$('abody').innerHTML=errBox(e)})}
+function adMarket(){
+ api('amarket').then(function(d){if(!adAlive('market'))return;
+  var cn=function(i){return '<b style="color:'+HEX[CARDS[i][2]]+'">'+esc(CARDS[i][0])+'</b>'},pl=function(n,id){return '<button class="tag2" data-ap2="'+esc(id)+'">'+esc(n)+'</button>'};
+  var h='<div class="panel"><h3>🛒 Offres en cours ('+d.offers.length+')</h3>'+(d.offers.length?'<div class="tw"><table class="at"><tr><th>Carte</th><th>Vendeur</th><th>Prix</th><th>Fin</th><th></th></tr>'+d.offers.map(function(l){return '<tr><td>'+cn(l.card)+'</td><td>'+pl(l.seller,l.sellerId)+'</td><td>'+fmt(l.price)+'</td><td>'+mkLeft(l.endsAt)+'</td><td><button class="btn sm ghost" data-xc="'+l.id+'">Retirer</button></td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Aucune offre.</p>')+'</div>'+
+   '<div class="panel"><h3>⇄ Échanges en cours ('+d.trades.length+')</h3>'+(d.trades.length?'<div class="tw"><table class="at"><tr><th>Donne</th><th>Veut</th><th>Auteur</th><th>Fin</th><th></th></tr>'+d.trades.map(function(l){return '<tr><td>'+l.give.map(cn).join(' + ')+'</td><td>'+cn(l.want)+'</td><td>'+pl(l.seller,l.sellerId)+'</td><td>'+mkLeft(l.endsAt)+'</td><td><button class="btn sm ghost" data-xc="'+l.id+'">Retirer</button></td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Aucun échange.</p>')+'</div>'+
+   '<div class="panel"><h3>💸 Dernières ventes (7 j)</h3>'+(d.sold.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Carte</th><th>Prix</th><th>Vendeur → acheteur</th></tr>'+d.sold.map(function(l){return '<tr><td>'+ago(new Date(l.at).toISOString())+'</td><td>'+cn(l.card)+'</td><td>'+fmt(l.price)+'</td><td>'+esc(l.seller)+' → '+esc(l.buyer)+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Aucune vente.</p>')+'</div>';
+  $('abody').innerHTML=h;
+  [].forEach.call(document.querySelectorAll('[data-ap2]'),function(b){b.onclick=function(){adminTarget=b.dataset.ap2;adminSub='players';render();scrollTo(0,0)}});
+  [].forEach.call(document.querySelectorAll('[data-xc]'),function(b){twice(b,function(){api('amcancel',{id:+b.dataset.xc}).then(function(){toast('Retiré du marché');adMarket()}).catch(function(e){toast(e.message)})},'Confirmer')})
+ }).catch(function(e){if(adAlive('market'))$('abody').innerHTML=errBox(e)})}
+function adGift(){
+ if(!ISOWNER){$('abody').innerHTML='<div class="panel"><h3>🎁 Cadeaux</h3><p class="mut">Réservé au propriétaire du site.</p></div>';return}
+ var packs=WPT.filter(function(x){return [0,2,3,4,5,6].indexOf(x.g)>=0});
+ $('abody').innerHTML='<div class="panel"><h3>🎁 Cadeau à tous les joueurs</h3><p class="mut sm">Les Coins sont ajoutés tout de suite ; les packs arrivent dans « Packs en attente ». Chaque joueur reçoit une notification. Action enregistrée dans le Journal.</p>'+
+  '<div class="bar"><button class="btn sm" data-gp="500|0|0">🎅 500 Coins</button><button class="btn sm" data-gp="1000|2|1">🎄 1000 Coins + Rare+</button><button class="btn sm" data-gp="0|3|1">⭐ 1 pack Épique+</button><button class="btn sm" data-gp="0|4|1">👑 1 pack Légendaire+</button></div>'+
+  '<div class="cform plain"><label>Coins par joueur<input class="inp" id="gc" type="number" min="0" max="100000" inputmode="numeric" value="0"></label><div class="two"><label>Pack offert<select class="inp" id="gp">'+packs.map(function(x){return '<option value="'+x.g+'">'+esc(x.n)+'</option>'}).join('')+'</select></label><label>Quantité<input class="inp" id="gn" type="number" min="0" max="10" inputmode="numeric" value="0"></label></div>'+
+  '<label>À qui<select class="inp" id="gw"><option value="all">Tous les joueurs</option><option value="active7d">Joueurs actifs ces 7 jours</option></select></label><label>Message (facultatif)<input class="inp" id="gm" maxlength="120" placeholder="Ex : Joyeux Noël à tous !"></label>'+
+  '<div id="gs" class="mut sm"></div><div class="bar"><button class="btn gold" id="gok">Envoyer le cadeau</button></div></div></div>';
+ [].forEach.call(document.querySelectorAll('[data-gp]'),function(b){b.onclick=function(){var v=b.dataset.gp.split('|');$('gc').value=v[0];$('gp').value=v[1]==='0'&&v[2]==='0'?packs[0].g:v[1];$('gn').value=v[2]}});
+ twice($('gok'),function(){var body={coins:+$('gc').value||0,pack:+$('gp').value,n:+$('gn').value||0,who:$('gw').value,msg:$('gm').value};$('gok').disabled=true;$('gs').textContent='Envoi en cours…';
+  api('agift',body).then(function(r){toast('🎁 Cadeau envoyé à '+r.players+' joueur'+(r.players>1?'s':''));$('gs').textContent='Envoyé à '+r.players+' joueur'+(r.players>1?'s':'')+'.';$('gok').disabled=false}).catch(function(e){toast(e.message);$('gs').textContent=e.message;$('gok').disabled=false})},'Confirmer l\'envoi à tout le monde ?')}
 
 /* ----- connectés en direct ----- */
 var frT=0,adLiveT=0,adLiveRows=[],SKEW=0;
@@ -1685,7 +1759,7 @@ function adAnn(){
   [].forEach.call(document.querySelectorAll('[data-ad]'),function(b){twice(b,function(){api('adelann',{id:+b.dataset.ad}).then(function(){adAnn()}).catch(function(e){toast(e.message)})})})}).catch(function(e){if(adAlive('ann'))$('abody').innerHTML=errBox(e)})}
 function adLog(){
  api('alog').then(function(d){if(!adAlive('log'))return;
-  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Joueur remis à zéro (nouveau joueur)',resetall:'RESET GÉNÉRAL de tous les joueurs','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
+  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Joueur remis à zéro (nouveau joueur)',gift:'🎁 Cadeau à '+(v.who||'tous')+' ('+(v.players||0)+' joueurs) : '+(v.coins?fmt(v.coins)+' '+CUR:'')+(v.n?' + '+v.n+' pack'+(v.n>1?'s':''):''),'offre-retiree':'Offre du marché retirée','echange-retire':'Échange retiré',resetall:'RESET GÉNÉRAL de tous les joueurs','admin+':'Nommé admin','admin-':'Droits admin retirés'}[a]||a};
   $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(d.rows.length?'<div class="tw"><table class="at"><tr><th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr><td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+'</div>'}).catch(function(e){if(adAlive('log'))$('abody').innerHTML=errBox(e)})}
 
 /* ---------- code / roue ---------- */

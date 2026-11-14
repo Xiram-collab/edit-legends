@@ -204,5 +204,20 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   clock += (C.TRADE.HOURS + 1) * 3600000;
   assert.strictEqual((await call('tokB', { action: 'mlist' })).json.trades.length, 0); assert.strictEqual(await count('tokB', e1), 1); ok('échange expiré après ' + C.TRADE.HOURS + ' h, cartes intactes');
 
+
+  // ---------- tableau de bord, marché et cadeaux admin ----------
+  r = await call('tokB', { action: 'adash' }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'adash' }); assert.strictEqual(r.status, 200); assert.ok(r.json.users.total >= 4); assert.strictEqual(r.json.signups.length, 7); assert.ok(r.json.market && r.json.eco && Array.isArray(r.json.rich)); ok('tableau de bord admin (réservé aux admins)');
+  await give('B', cr, 1); await call('tokB', { action: 'msell', i: cr, buynow: 900 });
+  r = await call('tokA', { action: 'amarket' }); assert.strictEqual(r.status, 200); const xo = r.json.offers.find((l) => l.card === cr); assert.ok(xo); ok('l\'admin voit les offres du marché');
+  r = await call('tokB', { action: 'amcancel', id: xo.id }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'amcancel', id: xo.id }); assert.strictEqual(r.status, 200); assert.ok(!(await call('tokA', { action: 'amarket' })).json.offers.some((l) => l.id === xo.id)); ok('l\'admin retire une offre, la carte reste au vendeur');
+  const g0 = { B: await bank('tokB'), C: await bank('tokC') };
+  r = await call('tokB', { action: 'agift', coins: 100 }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'agift', coins: 0, n: 0 }); assert.strictEqual(r.status, 400);
+  r = await call('tokA', { action: 'agift', coins: 250, pack: 2, n: 1, msg: 'Joyeux Noël' }); assert.strictEqual(r.status, 200); assert.ok(r.json.players >= 4);
+  assert.strictEqual(await bank('tokB'), g0.B + 250); assert.strictEqual(await bank('tokC'), g0.C + 250);
+  assert.ok(((await call('tokC', { action: 'me' })).json.state.wp[2] || 0) >= 1); assert.ok((await call('tokC', { action: 'ping' })).json.notes.some((x) => /Joyeux Noël/.test(x.text))); ok('cadeau à tous : Coins + pack en attente + notification (propriétaire seulement)');
+
   console.log(n + ' vérifications réussies (marché / Ma carte)');
 })().catch((e) => { console.error(e); process.exit(1); });
