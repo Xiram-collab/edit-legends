@@ -1,7 +1,7 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
-  const friends = [], logs = [], anns = [], drafts = [], notes = [], times = [];
+  const friends = [], logs = [], anns = [], drafts = [], notes = [], times = [], owners = [], market = [];
   const users = {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
     tokB: { id: 'B', discordId: '222', name: 'Bob', avatar: '' },
@@ -109,6 +109,27 @@ module.exports = function fakeDb(cards, validCodes) {
     async listDrafts() { return drafts.slice().reverse(); },
     async getDraft(id) { return drafts.find((d) => d.id === id) || null; },
     async addDraft(row) { drafts.push(Object.assign({ id: drafts.length + 100, votes: {}, created_at: new Date(1e12).toISOString() }, row)); },
+    notes,
+    market, owners,
+    async cardOwners() { return owners.map((o) => Object.assign({}, o)); },
+    async cardOwnerOf(uid) { const o = owners.find((x) => x.user_id === uid); return o ? Object.assign({}, o) : null; },
+    async cardOwnerSet(cardId, uid) { for (let i = owners.length - 1; i >= 0; i--) if (owners[i].user_id === uid || owners[i].card_id === cardId) owners.splice(i, 1); owners.push({ card_id: cardId, user_id: uid, img_at: null }); },
+    async cardOwnerDel(cardId) { const i = owners.findIndex((x) => x.card_id === cardId); if (i >= 0) owners.splice(i, 1); },
+    async cardOwnerTouch(cardId, iso) { const o = owners.find((x) => x.card_id === cardId); if (o) o.img_at = iso; },
+    async marketInsert(row) { const id = market.length + 1; market.push(Object.assign({ id, status: 'open', bid: 0, bidder: null, bids: 0, buyer: null, final: null, closed_at: null, card_done: false, pay_done: false }, row)); return id; },
+    async marketGet(id) { const m = market.find((x) => x.id === id); return m ? Object.assign({}, m) : null; },
+    async marketOpen() { return market.filter((m) => m.status === 'open').sort((a, b) => Date.parse(a.ends_at) - Date.parse(b.ends_at)).map((m) => Object.assign({}, m)); },
+    async marketSold(n, sinceIso) { return market.filter((m) => m.status === 'sold' && Date.parse(m.closed_at) >= Date.parse(sinceIso)).sort((a, b) => Date.parse(b.closed_at) - Date.parse(a.closed_at)).slice(0, n).map((m) => Object.assign({}, m)); },
+    async marketCountOpen(uid) { return market.filter((m) => m.status === 'open' && m.seller === uid).length; },
+    async marketUpdateIf(id, cond, fields) {
+      await Promise.resolve();
+      const m = market.find((x) => x.id === id);
+      if (!m || Object.keys(cond).some((k) => m[k] !== cond[k])) return false;
+      Object.assign(m, fields); return true;
+    },
+    async marketDue(nowIso) { return market.filter((m) => (m.status === 'open' && Date.parse(m.ends_at) <= Date.parse(nowIso)) || ((m.status === 'sold' || m.status === 'expired') && (!m.card_done || !m.pay_done))).map((m) => Object.assign({}, m)); },
+    async marketClaim(id, flag) { await Promise.resolve(); const m = market.find((x) => x.id === id); if (!m || m[flag]) return false; m[flag] = true; return true; },
+    async marketUnclaim(id, flag) { const m = market.find((x) => x.id === id); if (m) m[flag] = false; },
     async notify(uid, text) { notes.push({ id: notes.length + 1, user_id: uid, text, created_at: new Date().toISOString() }); },
     async listNotes(uid) { return notes.filter((n) => n.user_id === uid).reverse(); },
     async readNotes(uid, ids) { for (let i = notes.length - 1; i >= 0; i--) if (notes[i].user_id === uid && ids.includes(notes[i].id)) notes.splice(i, 1); },

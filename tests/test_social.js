@@ -56,9 +56,9 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'cardsubmit', name: 'nouveau joueur', cat: 1, rarity: 1 }); assert.strictEqual(r.status, 400); ok('doublon de proposition refusé');
   const exist = (await call('tokC', { action: 'me' })).json.cards[0][0];
   r = await call('tokC', { action: 'cardsubmit', name: exist, cat: 0, rarity: 1 }); assert.strictEqual(r.status, 400); ok('carte déjà publiée refusée');
-  for (let k = 0; k < 9; k++) await call('tokC', { action: 'cardsubmit', name: 'Prop ' + k, cat: 0, rarity: 0 });
-  r = await call('tokC', { action: 'cardsubmit', name: 'Prop trop', cat: 0, rarity: 0 }); assert.strictEqual(r.status, 400); ok('10 propositions en attente maximum');
-  r = await call('tokC', { action: 'cardmine' }); assert.strictEqual(r.json.rows.length, 10);
+  for (let k = 0; k < 29; k++) await call('tokC', { action: 'cardsubmit', name: 'Prop ' + k, cat: 0, rarity: 0 });
+  r = await call('tokC', { action: 'cardsubmit', name: 'Prop trop', cat: 0, rarity: 0 }); assert.strictEqual(r.status, 400); ok('30 propositions en attente maximum');
+  r = await call('tokC', { action: 'cardmine' }); assert.strictEqual(r.json.rows.length, 30);
   r = await call('tokB', { action: 'acards' }); assert.strictEqual(r.status, 403);
   r = await call('tokA', { action: 'acards' }); const pd = r.json.drafts.find((x) => x.name === 'Nouveau Joueur'); assert.ok(pd && pd.player === true && pd.by); ok('admin voit la proposition (marquée joueur)');
   r = await call('tokA', { action: 'acarddraftedit', id: pd.id, name: 'Nouveau Joueur 2', rarity: 2, descr: 'modifié' }); assert.strictEqual(r.status, 200);
@@ -212,7 +212,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'me' }); assert.strictEqual(r.json.isJury, true); assert.strictEqual(r.json.isAdmin, false); ok('jury : le membre est reconnu, sans droits admin');
   r = await call('tokB', { action: 'asetjury', id: 'C', on: true }); assert.strictEqual(r.status, 403); ok('jury : un membre ne nomme personne');
   r = await call('tokB', { action: 'aplayers' }); assert.strictEqual(r.status, 403); r = await call('tokB', { action: 'acards' }); assert.strictEqual(r.status, 403); ok('jury : aucun accès au reste de l\'admin');
-  for (let k = 0; k < 10; k++) await call('tokE', { action: 'cardsubmit', name: 'Jur ' + k, cat: 0, rarity: k % 6 });
+  for (let k = 0; k < 30; k++) await call('tokE', { action: 'cardsubmit', name: 'Jur ' + k, cat: 0, rarity: k % 6 });
   r = await call('tokE', { action: 'cardsubmit', name: 'Jur trop', cat: 0, rarity: 1 }); assert.strictEqual(r.status, 400);
   const dr = (await call('tokA', { action: 'acards' })).json.drafts.filter((x) => x.status === 'new');
   r = await call('tokB', { action: 'jlcards' }); assert.ok(!r.json.items.some((x) => x.draft)); ok('jury : propositions non acceptées invisibles');
