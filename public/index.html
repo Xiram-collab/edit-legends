@@ -28,6 +28,10 @@
 .tmgrid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:900px){.tmgrid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}.rwl{display:grid;grid-template-columns:1fr;gap:2px;font-size:14px}.rwl div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid var(--line)}.rwl b{min-width:2.6em}.rwl span{color:var(--gold);text-align:right}
 .tmcd{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;border-color:var(--gold)}.cdg{display:flex;gap:8px;justify-content:center}.cdg div{min-width:64px;padding:8px 6px;border-radius:12px;background:#0006;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center}.cdg b{font-size:1.9em;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--gold)}.cdg span{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}.tmhow .steps{margin:0}
 .qr *{animation:none!important}
+.qsi .card{cursor:pointer}.qsel .card{outline:3px solid var(--gold,#ffc83d);outline-offset:3px;border-radius:14px}.qsx{opacity:.45}
+.qsc{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px}.qsc .btn{min-width:38px;padding:6px 0}.qsc b{min-width:48px;text-align:center}
+.qsch{display:flex;flex-wrap:wrap;gap:6px}.qspan{margin:10px 0}
+.qsbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto!important;z-index:25;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#14102dee;border:1px solid var(--line);border-radius:16px;padding:10px 14px;box-shadow:0 8px 30px #000a;backdrop-filter:blur(6px)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -577,6 +581,23 @@ function api(action,body){body=Object.assign({action:action,nc:CARDS.length},bod
  .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.catalog&&action!=='me'){CARDS.length=0;j.catalog.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
+var qsMode=false,qsSel={};
+function qsMax(i){return Math.max(0,(S.col[i]||0)-1)}
+function qsTotals(){var n=0,g=0;Object.keys(qsSel).forEach(function(k){var q=Math.min(qsSel[k],qsMax(+k));if(q>0){n+=q;g+=q*RAR[CARDS[+k][2]].v}});return {n:n,g:g}}
+function qsPanel(){var t=qsTotals(),h='<div class="panel qspan"><p class="mut sm" style="margin:0 0 8px">Choisis les doublons à vendre (une copie de chaque carte est toujours gardée).</p><div class="qsch">';
+ for(var r=RAR.length-1;r>=0;r--){var g=0,c=0;CARDS.forEach(function(cd,i){if(cd[2]===r&&qsMax(i)>0){c+=qsMax(i);g+=qsMax(i)*RAR[r].v}});if(c)h+='<button class="btn sm" data-qr="'+r+'" style="border-color:'+HEX[r]+'">'+RAR[r].n+' · '+c+' (+'+fmt(g)+')</button>'}
+ return h+'</div></div>'}
+function qsBar(){var t=qsTotals();return '<div><b>'+t.n+' carte'+(t.n>1?'s':'')+'</b> · +'+fmt(t.g)+' '+CUR+'</div><div class="bar"><button class="btn sm ghost" id="qsc">Tout décocher</button><button class="btn gold" id="qsgo"'+(t.n?'':' disabled')+'>Vendre</button></div>'}
+function bindQs(){var old=$('qsfix');if(old)old.remove();var bar=document.createElement('div');bar.id='qsfix';bar.className='qsbar';bar.innerHTML=qsBar();document.body.appendChild(bar);
+ [].forEach.call(document.querySelectorAll('[data-qm]'),function(b){b.onclick=function(e){e.stopPropagation();var i=+b.dataset.qm;qsSel[i]=Math.max(0,(qsSel[i]||0)-1);quietRender()}});
+ [].forEach.call(document.querySelectorAll('[data-qp]'),function(b){b.onclick=function(e){e.stopPropagation();var i=+b.dataset.qp;qsSel[i]=Math.min(qsMax(i),(qsSel[i]||0)+1);quietRender()}});
+ [].forEach.call(document.querySelectorAll('.qsi:not(.qsx) .card'),function(c){c.style.cursor='pointer';c.onclick=function(){var i=+c.parentNode.dataset.qi;qsSel[i]=(qsSel[i]||0)>0?0:qsMax(i);sfx('flip');quietRender()}});
+ [].forEach.call(document.querySelectorAll('[data-qr]'),function(b){b.onclick=function(){var r=+b.dataset.qr,all=true;CARDS.forEach(function(cd,i){if(cd[2]===r&&qsMax(i)>0&&(qsSel[i]||0)<qsMax(i))all=false});CARDS.forEach(function(cd,i){if(cd[2]===r&&qsMax(i)>0)qsSel[i]=all?0:qsMax(i)});quietRender()}});
+ $('qsc').onclick=function(){qsSel={};quietRender()};
+ twice($('qsgo'),function(){qsGo()},'Confirmer la vente')}
+function qsGo(){if(netBusy)return;var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){items.push([i,q]);undo.push([i,q]);t+=q*RAR[CARDS[i][2]].v;n+=q}});if(!items.length)return;
+ undo.forEach(function(u){S.col[u[0]]-=u[1]});S.money+=t;qsMode=false;qsSel={};sfx('coin');toast(n+' carte'+(n>1?'s':'')+' vendue'+(n>1?'s':'')+' · +'+fmt(t)+' '+CUR);quietRender();
+ act({action:'sellmany',items:items}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]+=u[1]});S.money-=t;quietRender()})}
 function quietRender(){document.body.classList.add('qr');render();setTimeout(function(){document.body.classList.remove('qr')},450)}
 // vente instantanée : l'écran se met à jour tout de suite (sans réanimation), le serveur confirme ensuite
 function quickSellOne(i){if(netBusy)return;var v=RAR[CARDS[i][2]].v;S.col[i]--;S.money+=v;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
@@ -681,7 +702,7 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
 function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classement'],['miss','Missions'],['com','Communauté'],['shop','Boutique'],['mk','Marché'],['code','Code']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
  $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='admin'&&NOTIF.tp?'<span class="nb">'+(NOTIF.tp>9?'9+':NOTIF.tp)+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
-function render(){if(!S)return;regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
+function render(){if(!S)return;var qf=$('qsfix');if(qf)qf.remove();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(tab!=='mk'&&mkT){clearInterval(mkT);mkT=0}if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
  ({home:rHome,rank:rRank,col:rCol,shop:rShop,code:rCode,com:rCom,miss:rMiss,admin:rAdmin,mk:rMarket})[tab]()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
@@ -782,20 +803,24 @@ function rCol(){
  if(colSub==='tit'){rTitles();return}
 var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes</b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div><label><input type="checkbox" id="dup"'+(dupOnly?' checked':'')+'> Voir seulement mes cartes</label>'+
- '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn sm" id="shcol">Partager ma collection</button></div>';
+ '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn sm'+(qsMode?' on':'')+'" id="qsb"'+(dupValue()||qsMode?'':' disabled')+'>'+(qsMode?'Quitter la vente rapide':'Vente rapide')+'</button><button class="btn sm" id="shcol">Partager ma collection</button></div>'+(qsMode?qsPanel():'');
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&(dupOnly?n>0:(n||!c[5])))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
   var tot=0,own=0,pul=0;CARDS.forEach(function(c,i){if(c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
+   if(qsMode){var q=Math.min(qsSel[i]||0,n-1);return '<div class="item qsi'+(q?' qsel':'')+(n>1?'':' qsx')+'" data-qi="'+i+'">'+cardHTML(i,{count:n})+(n>1?'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+(n-1)+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>':'<div class="pst">Gardée</div>')+'</div>'}
    return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>1?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
+ if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
  $('dup').onchange=function(){dupOnly=this.checked;try{localStorage.setItem('el_own',dupOnly?'1':'0')}catch(e){}render()};
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
  $('shcol').onclick=shareCollection;
  $('sellall').onclick=function(){quickSellAll()};
+ $('qsb').onclick=function(){qsMode=!qsMode;qsSel={};quietRender()};
+ if(qsMode)bindQs();
  [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>1)quickSellOne(i)}})}
 function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q){if(x!=null&&q!==k)taken[x]=1});
  var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&!taken[i])items.push(i)});

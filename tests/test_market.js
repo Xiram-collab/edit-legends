@@ -134,6 +134,14 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const b0 = await bank('tokB'); r = await call('tokB', { action: 'sell', i: dd }); assert.strictEqual(r.status, 200); assert.ok((await bank('tokB')) > b0); assert.strictEqual(await count('tokB', dd), dc - 1); ok('le doublon reste vendable en Coins pendant qu\'une copie est sur le marché');
   const offer = (await call('tokD', { action: 'mlist' })).json.open.find((x) => x.card === dd && x.mine !== true); assert.ok(offer); r = await call('tokC', { action: 'mbuy', id: offer.id }); assert.strictEqual(r.status, 200); ok('la copie en vente reste achetable');
 
+  // vente rapide : seulement les doublons, tout ou rien
+  const q1 = idOf(0), q2 = idOf(1), cqa = 0; await give('B', q1, 3); await give('B', q2, 2);
+  const qc1 = await count('tokB', q1), qc2 = await count('tokB', q2), bq = await bank('tokB');
+  r = await call('tokB', { action: 'sellmany', items: [[q1, qc1], [q2, 1]] }); assert.strictEqual(r.status, 400); assert.strictEqual(await count('tokB', q1), qc1); assert.strictEqual(await bank('tokB'), bq); ok('vente rapide : on ne peut pas vendre la dernière copie, rien n\'est vendu');
+  r = await call('tokB', { action: 'sellmany', items: [[q1, qc1 - 1], [q2, qc2 - 1]] }); assert.strictEqual(r.status, 200);
+  assert.strictEqual(r.json.gain, (qc1 - 1) * C.RAR[0].v + (qc2 - 1) * C.RAR[1].v); assert.strictEqual(await count('tokB', q1), 1); assert.strictEqual(await count('tokB', q2), 1); assert.strictEqual(await bank('tokB'), bq + r.json.gain); ok('vente rapide : doublons vendus d\'un coup, une copie gardée, Coins crédités');
+  r = await call('tokB', { action: 'sellmany', items: [] }); assert.strictEqual(r.status, 400); r = await call('tokB', { action: 'sellmany', items: [[q1, -2]] }); assert.strictEqual(r.status, 400); ok('vente rapide : sélection vide ou invalide refusée');
+
   // association automatique : pseudo identique à une carte Éditeur
   const edc = cards.findIndex((c, i) => c && !c[5] && c[1] === 0 && !(i === mine)); const edn = cards[edc][0];
   const strc = cards.findIndex((c) => c && !c[5] && c[1] === 3);
