@@ -1510,7 +1510,7 @@ function rMarket(){
  load();clearInterval(mkT);mkT=setInterval(function(){if(tab!=='mk'){clearInterval(mkT);mkT=0;return}if(!document.querySelector('#pk'))load()},20000)}
 function mkOffer(l){
  var act=l.mine?'<span class="mut sm">Ton offre</span><button class="btn sm ghost" data-mc="'+l.id+'">Annuler</button>':'<button class="btn sm gold" data-mbuy="'+l.id+'">Acheter · '+fmt(l.buynow)+' '+CUR+'</button>';
- return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mkown">'+(l.mine?'Tu l\'as (en vente)':S.col[l.card]?'Tu l\'as déjà (x'+S.col[l.card]+')':'Tu ne l\'as pas')+'</div><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
+ return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mkown">'+(S.col[l.card]?'Tu l\'as déjà (x'+S.col[l.card]+')':l.mine?'Tu l\'as (en vente)':'Tu ne l\'as pas')+'</div><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
   '<div class="mkp"><b>'+fmt(l.buynow)+' '+CUR+'</b><span class="mut sm">prix</span></div>'+
   '<div class="mut sm">Se termine dans '+mkLeft(l.endsAt)+'</div><div class="mka">'+act+'</div></div></div>'}
 function paintMarket(){
@@ -1522,7 +1522,7 @@ function paintMarket(){
   var list=d.open.filter(function(l){return mkSub==='mine'?l.mine:true});
   var R=function(l){return CARDS[l.card][2]},P=function(l){return l.buynow||0};
   list.sort({new:function(x,y){return y.endsAt-x.endsAt},old:function(x,y){return x.endsAt-y.endsAt},rhi:function(x,y){return R(y)-R(x)||P(x)-P(y)},rlo:function(x,y){return R(x)-R(y)||P(x)-P(y)},plo:function(x,y){return P(x)-P(y)},phi:function(x,y){return P(y)-P(x)}}[mkSort]);
-  h='<div class="panel"><div class="bar"><button class="btn gold" id="mks">Vendre une carte</button></div><p class="mut sm" style="margin:6px 0 0">Prix minimum : '+RAR.map(function(r,i){return r.n+' '+fmt(MKC.MIN[i])}).join(' · ')+' '+CUR+'. Une offre dure '+MKC.HOURS+' h : si personne n\'achète, la carte te revient.</p></div>'+
+  h='<div class="panel"><div class="bar"><button class="btn gold" id="mks">Vendre une carte</button></div><p class="mut sm" style="margin:6px 0 0">Prix minimum : '+RAR.map(function(r,i){return r.n+' '+fmt(MKC.MIN[i])}).join(' · ')+' '+CUR+'. Une offre dure '+MKC.HOURS+' h : la carte ne quitte ta collection que si elle est achetée.</p></div>'+
    '<div class="panel"><label class="mut sm">Trier par </label><select id="mksort" class="inp">'+[['new','Plus récent'],['old','Plus ancien'],['rhi','Rareté : élevée → faible'],['rlo','Rareté : faible → élevée'],['plo','Prix croissant'],['phi','Prix décroissant']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===mkSort?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
    (list.length?list.map(mkOffer).join(''):'<div class="panel center mut">'+(mkSub==='mine'?'Tu n\'as aucune offre en cours.':'Aucune offre pour l\'instant. Sois le premier à vendre une carte !')+'</div>')}
  b.innerHTML=h;
@@ -1534,11 +1534,11 @@ function paintMarket(){
 function paintMarketSoon(){api('mlist').then(function(d){mkData=d;if(tab==='mk')paintMarket()}).catch(function(){})}
 function cthumbCard(i){var c=CARDS[i];return c&&c[4]?'<img class="cth" src="'+esc(imgUrl(c[4]))+'" alt="">':'<span class="cth">'+esc(c?c[0].charAt(0).toUpperCase():'?')+'</span>'}
 function mkSellDlg(){
- var mine=[];CARDS.forEach(function(c,i){if(c&&S.col[i]>0)mine.push(i)});
+ var lst={};((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine)lst[l.card]=(lst[l.card]||0)+1});var av=function(i){return (S.col[i]||0)-(lst[i]||0)};var mine=[];CARDS.forEach(function(c,i){if(c&&av(i)>0)mine.push(i)});
  if(!mine.length){toast('Tu n\'as aucune carte à vendre');return}
  mine.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0],'fr')});
  var sel=mine[0];closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
- d.innerHTML='<div class="pickbox wpbox mkdlg"><h2>Vendre une carte</h2><p class="mut sm">La carte quitte ta collection tant que l\'offre est ouverte ('+MKC.HOURS+' h). Elle te revient si personne ne l\'achète.</p>'+
+ d.innerHTML='<div class="pickbox wpbox mkdlg"><h2>Vendre une carte</h2><p class="mut sm">Ta carte reste dans ta collection : elle ne la quitte que si quelqu\'un l\'achète. L\'offre dure '+MKC.HOURS+' h.</p>'+
   '<div class="mkgrid" id="msg">'+mine.map(function(i){return '<button type="button" class="mkpick" data-pi="'+i+'"><span class="mkx">x'+S.col[i]+'</span>'+cardHTML(i)+'</button>'}).join('')+'</div>'+
   '<div class="mkchosen" id="msn"></div>'+
   '<label>Ton prix ('+CUR+')<input class="inp" id="mss" type="number" step="1" min="0" inputmode="numeric"></label><div class="mut sm" id="msm"></div>'+
@@ -1547,7 +1547,7 @@ function mkSellDlg(){
  var minOf=function(){return MKC.MIN[CARDS[sel][2]]};
  var clampS=function(){var m=minOf(),v=Math.floor(+$('mss').value);if(!(v>=m))v=m;$('mss').value=v;$('mss').min=m};
  var paint=function(){[].forEach.call(d.querySelectorAll('.mkpick'),function(b){b.classList.toggle('mksel',+b.dataset.pi===sel)});
-  $('msn').innerHTML='<b style="color:'+HEX[CARDS[sel][2]]+'">'+esc(CARDS[sel][0])+'</b> · '+RAR[CARDS[sel][2]].n+' · tu en as '+S.col[sel];$('mss').min=minOf();$('mss').value=minOf();$('msm').textContent='Minimum pour cette rareté : '+fmt(minOf())+' '+CUR+'. Les autres joueurs peuvent l\'acheter à ce prix, ou ne rien faire.'};
+  $('msn').innerHTML='<b style="color:'+HEX[CARDS[sel][2]]+'">'+esc(CARDS[sel][0])+'</b> · '+RAR[CARDS[sel][2]].n+' · disponibles : '+av(sel);$('mss').min=minOf();$('mss').value=minOf();$('msm').textContent='Minimum pour cette rareté : '+fmt(minOf())+' '+CUR+'. Les autres joueurs peuvent l\'acheter à ce prix, ou ne rien faire.'};
  [].forEach.call(d.querySelectorAll('.mkpick'),function(b){b.onclick=function(){sel=+b.dataset.pi;paint()}});
  $('mss').onchange=$('mss').onblur=clampS;
  $('mss').onkeydown=function(ev){if(ev.key==='-'||ev.key==='e'||ev.key==='.'||ev.key===','||ev.key==='+')ev.preventDefault()};
