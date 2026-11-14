@@ -44,8 +44,8 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   // ---------- Marché (prix fixe) ----------
   const [cm, cr, cmy] = [idOf(0), idOf(2), idOf(5)];
   await give('B', cr, 2); await give('B', cmy, 1); await give('B', cm, 1);
-  r = await call('tokB', { action: 'msell', i: cmy, buynow: 1499 }); assert.strictEqual(r.status, 400); ok('prix sous le minimum (Mythique 1500) refusé');
-  r = await call('tokB', { action: 'msell', i: cr, buynow: 99 }); assert.strictEqual(r.status, 400); ok('Rare sous 100 refusée');
+  r = await call('tokB', { action: 'msell', i: cmy, buynow: 2999 }); assert.strictEqual(r.status, 400); ok('prix sous le minimum (Mythique 3000) refusé');
+  r = await call('tokB', { action: 'msell', i: cr, buynow: 69 }); assert.strictEqual(r.status, 400); ok('Rare sous 70 refusée');
   r = await call('tokB', { action: 'msell', i: cr }); assert.strictEqual(r.status, 400); ok('un prix est obligatoire');
   r = await call('tokC', { action: 'msell', i: cr, buynow: 300 }); assert.strictEqual(r.status, 400); ok('vente d\'une carte qu\'on ne possède pas refusée');
   const before = await count('tokB', cr);
@@ -111,10 +111,11 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   r = await call('tokB', { action: 'claim', ids: ['m_mkvente'] }); assert.strictEqual(r.status, 200); assert.ok(r.json.got.packs.length >= 1); ok('missions du marché : vendeur et acheteur comptés et récupérables');
 
   // baisse des seuils : anciennes offres posées pile à l'ancien minimum recalées
-  const oldA = await db.marketInsert({ seller: (await db.marketOpen())[0] ? (await db.marketOpen())[0].seller : 'x', card: cr, start: 200, buynow: 200, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
+  const oldA = await db.marketInsert({ seller: 'B', card: cr, start: 100, buynow: 100, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
+  const oldC = await db.marketInsert({ seller: 'B', card: cr, start: 50, buynow: 50, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
   const oldB = await db.marketInsert({ seller: 'x', card: cr, start: 300, buynow: 300, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
   clock += 20000; await call('tokD', { action: 'mlist' });
-  assert.strictEqual((await db.marketGet(oldA)).buynow, 100); assert.strictEqual((await db.marketGet(oldB)).buynow, 300); ok('anciennes offres au minimum recalées au nouveau seuil, les autres inchangées');
+  assert.strictEqual((await db.marketGet(oldA)).buynow, 70); assert.strictEqual((await db.marketGet(oldC)).buynow, 70); assert.strictEqual((await db.marketGet(oldB)).buynow, 300); ok('anciennes offres au minimum recalées au nouveau seuil, les autres inchangées');
 
   // limite de propositions de cartes : 30
   assert.strictEqual(C.CARD_PROPOSALS_MAX, 30);
