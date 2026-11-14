@@ -1572,7 +1572,7 @@ function paintMarket(){
  if($('mks'))$('mks').onclick=mkSellDlg;
  if($('mksort'))$('mksort').onchange=function(){mkSort=this.value;paintMarket()};
  [].forEach.call(b.querySelectorAll('[data-zi]'),function(e){e.onclick=function(){openCardZoom(+e.dataset.zi)}});
- [].forEach.call(b.querySelectorAll('[data-mbuy]'),function(x){twice(x,function(){act({action:'mbuy',id:+x.dataset.mbuy}).then(function(r){setState(r.state);toast('Carte achetée !');render()}).catch(function(){paintMarketSoon()})},'Confirmer l\'achat ?')});
+ [].forEach.call(b.querySelectorAll('[data-mbuy]'),function(x){twice(x,function(){var box=x.closest('.mko');if(box)box.style.opacity='.35';x.disabled=true;toast('Achat en cours…');act({action:'mbuy',id:+x.dataset.mbuy}).then(function(r){setState(r.state);sfx('coin');toast('Carte achetée ! Elle t\'attend dans « Packs en attente »');render()}).catch(function(){paintMarketSoon()})},'Confirmer l\'achat ?')});
  [].forEach.call(b.querySelectorAll('[data-mc]'),function(x){twice(x,function(){act({action:'mcancel',id:+x.dataset.mc}).then(function(r){setState(r.state);toast('Offre annulée, carte rendue');render()}).catch(function(){})},'Confirmer')})}
 function paintMarketSoon(){api('mlist').then(function(d){mkData=d;if(tab==='mk')paintMarket()}).catch(function(){})}
 function cthumbCard(i){var c=CARDS[i];return c&&c[4]?'<img class="cth" src="'+esc(imgUrl(c[4]))+'" alt="">':'<span class="cth">'+esc(c?c[0].charAt(0).toUpperCase():'?')+'</span>'}
@@ -1700,14 +1700,15 @@ function rCode(){
  $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);this.value=v.replace(/(.{4})(?=.)/g,'$1-')}}
 
 /* ---------- packs en attente ---------- */
-var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'},{g:6,n:'Carte au hasard',l:'C',c:'#1fe0d0'}];
-function wpTotal(){var t=0;WPT.forEach(function(x){t+=S.wp[x.g]||0});return t}
+var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'},{g:6,n:'Carte au hasard',l:'C',c:'#1fe0d0'},{g:7,n:'Carte achetée au marché',l:'✓',c:'#ffc83d'}];
+function wpN(g){return g===7?((S.wc&&S.wc.length)||0):(S.wp[g]||0)}
+function wpTotal(){var t=0;WPT.forEach(function(x){t+=wpN(x.g)});return t}
 function wpBadge(){var b=$('pkb');if(!b){b=document.createElement('button');b.id='pkb';b.className='pkb';b.setAttribute('aria-label','Packs en attente');b.onclick=openWaiting;document.body.appendChild(b)}
  var n=wpTotal();b.hidden=n<1||!$('ov').hidden;
  b.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M5 8h14M9 13h6"/></svg><span class="pkt">Packs en attente</span><span class="pkn">'+n+'</span>'}
 function openWaiting(){if(busy)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
- var nAll=[0,2,3,4,6].reduce(function(t,g){return t+(S.wp[g]||0)},0);
- var h=WPT.filter(function(x){return (S.wp[x.g]||0)>0}).map(function(x){var n=S.wp[x.g];return '<div class="pk wpk" style="--c:'+x.c+'"><div class="mini" style="--c:'+x.c+'"><b class="disp">'+x.l+'</b></div><h3>'+x.n+'</h3><div class="mut">x'+n+' en attente</div><button class="btn sm" data-ow="'+x.g+'">Ouvrir</button></div>'}).join('');
+ var nAll=[0,2,3,4,6,7].reduce(function(t,g){return t+wpN(g)},0);
+ var h=WPT.filter(function(x){return wpN(x.g)>0}).map(function(x){var n=wpN(x.g);return '<div class="pk wpk" style="--c:'+x.c+'"><div class="mini" style="--c:'+x.c+'"><b class="disp">'+x.l+'</b></div><h3>'+x.n+'</h3><div class="mut">x'+n+' en attente</div><button class="btn sm" data-ow="'+x.g+'">Ouvrir</button></div>'}).join('');
  d.innerHTML='<div class="pickbox wpbox"><h2>Packs en attente</h2>'+(h?'<div class="wpl">'+h+'</div>':'<p class="mut">Aucun pack en attente.</p>')+(nAll>1?'<button class="btn gold" id="owall" style="margin-bottom:8px">Tout ouvrir ('+nAll+')</button>':'')+'<button class="btn ghost sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  [].forEach.call(d.querySelectorAll('[data-ow]'),function(b){b.onclick=function(){openWaitingPack(+b.dataset.ow)}});
@@ -1718,7 +1719,7 @@ function openMythPick(){closePick();var ids=[];CARDS.forEach(function(c,i){if(c&
   $('pkx').onclick=closePick;[].forEach.call(d.querySelectorAll('[data-mp]'),function(b){b.onclick=function(){sel=+b.dataset.mp;var y=d.querySelector('.pickbox').scrollTop;paint();d.querySelector('.pickbox').scrollTop=y}});
   $('mpok').onclick=function(){if(sel==null)return;var c=sel;closePick();openWaitingPack(5,c)}};
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};paint()}
-function openWaitingPack(g,card){if(busy||netBusy||!(S.wp[g]>0))return;if(g===5&&card==null&&CARDS.some(function(c){return c&&c[2]===5&&!c[5]})){openMythPick();return}closePick();var prev=Object.assign({},S.col);
+function openWaitingPack(g,card){if(busy||netBusy||!(wpN(g)>0))return;if(g===5&&card==null&&CARDS.some(function(c){return c&&c[2]===5&&!c[5]})){openMythPick();return}closePick();var prev=Object.assign({},S.col);
  var it=packIntro();act({action:'openwp',g:g,card:card}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
 /* ---------- événements ---------- */
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('button'))sfx('click');var b=e.target.closest&&e.target.closest('[data-t]');if(b&&$('ov').hidden){tab=b.dataset.t;render();scrollTo(0,0)}});
