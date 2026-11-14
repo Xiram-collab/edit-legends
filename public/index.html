@@ -460,25 +460,27 @@ main#main{min-height:60vh}
 .sum .sw{cursor:pointer}
 /* communauté + admin */
 
-/* ===== Panel admin : thème de Noël ===== */
-body.xmas{--bg:#08140f;--panel:#10241b;--panel2:#16342a;--line:#2f5b43;--acc:#e23b4e;--acc2:#4de08a;--gold:#ffd86b;--mut:#a9c9b4;--fg:#fff6ea;
-background-image:radial-gradient(900px 420px at 85% -10%,#7a1c2a66,transparent),radial-gradient(700px 420px at 0 0,#0e5a3a66,transparent);background-attachment:fixed}
-body.xmas::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 90px 120px,#fff,transparent),radial-gradient(3px 3px at 160px 60px,#fff,transparent),radial-gradient(2px 2px at 230px 180px,#fff,transparent),radial-gradient(2px 2px at 300px 90px,#fff,transparent);background-size:340px 220px;animation:xsnow 14s linear infinite}
+/* ===== Panel admin : thème de Noël (accents festifs sur le style du site, le logo et l'en-tête ne changent pas) ===== */
+body.xmas::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 90px 120px,#fff,transparent),radial-gradient(3px 3px at 160px 60px,#fff,transparent),radial-gradient(2px 2px at 230px 180px,#fff,transparent),radial-gradient(2px 2px at 300px 90px,#fff,transparent);background-size:340px 220px;animation:xsnow 14s linear infinite}
 @keyframes xsnow{to{background-position:60px 220px}}
 @media(prefers-reduced-motion:reduce){body.xmas::before{animation:none}}
 body.xmas #main{position:relative;z-index:1}
-body.xmas .panel{border-color:#2f5b43;background:linear-gradient(180deg,#143023,#0f2219);box-shadow:0 0 0 1px #ffffff08 inset,0 6px 18px #0006}
-body.xmas .panel h3{color:var(--gold)}
-body.xmas .tile{background:#0d1f17;border-color:#2f5b43}body.xmas .tile b{color:#fff}
-body.xmas .tile.clk:hover{border-color:#e23b4e}
-body.xmas .fl.subnav{border-bottom-color:#2f5b43}body.xmas .fl.subnav button.on{border-bottom-color:#e23b4e;color:#fff}
-body.xmas .btn.gold{background:linear-gradient(180deg,#e23b4e,#a3182b);color:#fff;border-color:#ffd86b}
+body.xmas #main .panel{border-color:#4a3f94;box-shadow:0 0 0 1px #ffffff0a inset,0 6px 18px #0005}
+body.xmas #main .panel h3{color:var(--gold)}
+body.xmas #main .tile.clk:hover{border-color:#ff5a6e}
+body.xmas #main .fl.subnav button.on{border-bottom-color:#ffd24a}
 body.xmas table.at th{color:var(--gold)}
-.xban{margin:0 0 12px;padding:16px;border-radius:16px;text-align:center;border:2px solid var(--gold);background:repeating-linear-gradient(135deg,#a3182b 0 14px,#8a1424 14px 28px);box-shadow:0 8px 24px #0008}
+.xgar{height:26px;margin:0 6px;position:relative}
+.xgar::before{content:"";position:absolute;left:0;right:0;top:3px;height:12px;border-bottom:2px solid #6b5fb8;border-radius:0 0 50% 50%/0 0 100% 100%}
+.xgar::after{content:"";position:absolute;left:4%;right:4%;top:11px;height:12px;background:radial-gradient(circle,#ff5a6e 0 4px,transparent 5px) 0 0/44px 12px repeat-x,radial-gradient(circle,#3ddc84 0 4px,transparent 5px) 11px 0/44px 12px repeat-x,radial-gradient(circle,#ffd24a 0 4px,transparent 5px) 22px 0/44px 12px repeat-x,radial-gradient(circle,#4db8ff 0 4px,transparent 5px) 33px 0/44px 12px repeat-x;filter:drop-shadow(0 0 4px #fff6);animation:xtw 2.4s ease-in-out infinite alternate}
+@keyframes xtw{from{opacity:.65}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.xgar::after{animation:none}}
+.xban{margin:0 0 12px;padding:16px 14px;border-radius:16px;text-align:center;position:relative;overflow:hidden;border:2px solid var(--gold);background:linear-gradient(135deg,#8a1445,#c4124f 55%,#7a1ea8);box-shadow:0 8px 24px #0008,0 0 0 3px #ffffff14 inset}
+.xban::before,.xban::after{content:"❄";position:absolute;top:6px;font-size:18px;color:#ffffffaa}.xban::before{left:12px}.xban::after{right:12px}
 .xban .xt{font-size:1.5em;font-weight:900;color:#fff;text-shadow:0 2px 0 #0006;letter-spacing:.5px}.xban .xs{color:#ffe9c2;margin-top:4px}
 .admg{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch}
 .admg button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);color:var(--mut);font-weight:800;font-size:13px;position:relative;cursor:pointer}
-.admg button .agi{font-size:20px;line-height:1}.admg button.on{color:#fff;border-color:var(--gold);background:linear-gradient(180deg,#7a1c2a,#4b0f1a)}
+.admg button .agi{font-size:20px;line-height:1}.admg button.on{color:#fff;border-color:var(--gold);background:linear-gradient(180deg,#c4124f,#7a1e8a);box-shadow:0 0 14px #c4124f66}
 .admg .nb{position:absolute;top:2px;right:4px}
 .adbars{display:flex;gap:6px;align-items:flex-end;height:120px}.adb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;font-size:11px;color:var(--mut)}.adb i{width:100%;max-width:34px;border-radius:6px 6px 2px 2px;display:block}.adb b{color:var(--fg);font-size:12px}
 .fl.subnav{gap:0;margin:0 0 16px;border-bottom:2px solid var(--line);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -1285,12 +1287,12 @@ function adHome(){
  api('adash').then(function(d){if(!adAlive('home'))return;
   var U=d.users,P=d.pending,M=d.market,E=d.eco,tile=function(b,s,go){return '<div class="tile'+(go?' clk':'')+'"'+(go?' data-go="'+go+'" role="button" tabindex="0"':'')+'><b>'+b+'</b><span>'+s+'</span></div>'};
   var todo=P.times+P.cards+P.jury;
-  var h='<div class="xban"><div class="xt">🎄 Panel du Père Noël</div><div class="xs">'+(xmasDays()===0?'Joyeux Noël ! 🎅':'Noël dans <b>'+xmasDays()+' jour'+(xmasDays()>1?'s':'')+'</b> ⛄')+' · '+U.online+' joueur'+(U.online>1?'s':'')+' en ligne</div></div>'+
+  var h='<div class="xgar"></div><div class="xban"><div class="xt">🎄 Panel du Père Noël</div><div class="xs">'+(xmasDays()===0?'Joyeux Noël ! 🎅':'Noël dans <b>'+xmasDays()+' jour'+(xmasDays()>1?'s':'')+'</b> ⛄')+' · '+U.online+' joueur'+(U.online>1?'s':'')+' en ligne</div></div>'+
    '<div class="panel"><h3>📬 À traiter '+(todo?'<span class="nb inl">'+todo+'</span>':'')+'</h3><div class="tiles">'+tile(P.times,'temps à valider','times')+tile(P.cards,'cartes proposées','cards')+tile(P.jury,'cartes au jury','jury')+'</div>'+(todo?'':'<p class="mut sm" style="margin:6px 0 0">Rien en attente, bravo ! 🎁</p>')+'</div>'+
    '<div class="panel"><h3>👥 Joueurs</h3><div class="tiles">'+tile(fmt(U.total),'inscrits','players')+tile(U.online,'en ligne (5 min)','live')+tile('+'+U.new24h,'nouveaux (24 h)')+tile(U.active24h,'actifs (24 h)')+tile(U.active7d,'actifs (7 j)')+'</div>'+
    '<p class="mut sm" style="margin:8px 0 2px">Inscriptions (7 derniers jours)</p>'+adBars(d.signups,'#3ddc84')+'<p class="mut sm" style="margin:8px 0 2px">Joueurs actifs par jour</p>'+adBars(d.actives,'#ff5a6e')+'</div>'+
    '<div class="panel"><h3>🛒 Marché</h3><div class="tiles">'+tile(M.offers,'offres en cours','market')+tile(M.trades,'échanges en cours','market')+tile(M.sold24,'ventes (24 h)')+tile(fmt(M.volume24),CUR+' échangés (24 h)')+tile(M.sold7,'ventes (7 j)')+tile(fmt(M.volume7),CUR+' échangés (7 j)')+'</div></div>'+
-   '<div class="panel"><h3>💰 Économie</h3><div class="tiles">'+tile(fmt(E.coins),CUR+' en circulation')+tile(fmt(E.avg),CUR+' par joueur (moyenne)')+tile(fmt(E.opened),'packs ouverts')+tile(fmt(E.waiting),'packs en attente')+'</div></div>'+
+   '<div class="panel"><h3>💰 Économie</h3><div class="tiles">'+tile(fmt(E.coins),CUR+' en circulation')+tile(fmt(E.avg),CUR+' par joueur (moyenne)')+tile(fmt(E.opened),'packs ouverts')+tile(fmt(E.pulled),'cartes tirées')+tile(fmt(E.copies),'cartes en circulation')+tile(fmt(E.waiting),'packs en attente')+'</div></div>'+
    '<div class="panel"><h3>🏆 Classements</h3><div class="two"><div><p class="mut sm" style="margin:0 0 4px">Les plus riches</p>'+d.rich.map(function(x,i){return '<div class="nrow"><button class="tag2" data-ap2="'+esc(x.id)+'">'+(i+1)+'. '+esc(x.name)+'</button><b>'+fmt(x.v)+'</b></div>'}).join('')+'</div><div><p class="mut sm" style="margin:0 0 4px">Meilleur score</p>'+d.score.map(function(x,i){return '<div class="nrow"><button class="tag2" data-ap2="'+esc(x.id)+'">'+(i+1)+'. '+esc(x.name)+'</button><b>'+fmt(x.v)+'</b></div>'}).join('')+'</div></div></div>'+
    '<div class="panel"><h3>⚡ Raccourcis</h3><div class="bar"><button class="btn gold sm" data-go="gift">🎁 Cadeau à tous</button><button class="btn sm" data-go="ann">📣 Annonce</button><button class="btn sm" data-go="market">🛒 Marché</button><button class="btn sm" data-go="stats">📊 Statistiques</button><button class="btn sm" data-go="log">📜 Journal</button></div></div>';
   $('abody').innerHTML=h;
@@ -1314,7 +1316,7 @@ function adGift(){
  $('abody').innerHTML='<div class="panel"><h3>🎁 Cadeau à tous les joueurs</h3><p class="mut sm">Les Coins sont ajoutés tout de suite ; les packs arrivent dans « Packs en attente ». Chaque joueur reçoit une notification. Action enregistrée dans le Journal.</p>'+
   '<div class="bar"><button class="btn sm" data-gp="500|0|0">🎅 500 Coins</button><button class="btn sm" data-gp="1000|2|1">🎄 1000 Coins + Rare+</button><button class="btn sm" data-gp="0|3|1">⭐ 1 pack Épique+</button><button class="btn sm" data-gp="0|4|1">👑 1 pack Légendaire+</button></div>'+
   '<div class="cform plain"><label>Coins par joueur<input class="inp" id="gc" type="number" min="0" max="100000" inputmode="numeric" value="0"></label><div class="two"><label>Pack offert<select class="inp" id="gp">'+packs.map(function(x){return '<option value="'+x.g+'">'+esc(x.n)+'</option>'}).join('')+'</select></label><label>Quantité<input class="inp" id="gn" type="number" min="0" max="10" inputmode="numeric" value="0"></label></div>'+
-  '<label>À qui<select class="inp" id="gw"><option value="all">Tous les joueurs</option><option value="active7d">Joueurs actifs ces 7 jours</option></select></label><label>Message (facultatif)<input class="inp" id="gm" maxlength="120" placeholder="Ex : Joyeux Noël à tous !"></label>'+
+  '<label>À qui<select class="inp" id="gw"><option value="all">Tous les joueurs</option><option value="active7d">Joueurs actifs ces 7 jours</option></select></label><label>Message (facultatif)<input class="inp" id="gm" placeholder="Ex : Joyeux Noël à tous !"></label>'+
   '<div id="gs" class="mut sm"></div><div class="bar"><button class="btn gold" id="gok">Envoyer le cadeau</button></div></div></div>';
  [].forEach.call(document.querySelectorAll('[data-gp]'),function(b){b.onclick=function(){var v=b.dataset.gp.split('|');$('gc').value=v[0];$('gp').value=v[1]==='0'&&v[2]==='0'?packs[0].g:v[1];$('gn').value=v[2]}});
  twice($('gok'),function(){var body={coins:+$('gc').value||0,pack:+$('gp').value,n:+$('gn').value||0,who:$('gw').value,msg:$('gm').value};$('gok').disabled=true;$('gs').textContent='Envoi en cours…';
@@ -1754,7 +1756,7 @@ function mkTradeDlg(){
  $('tso').onclick=function(){var b=this;b.disabled=true;act({action:'tsell',give:give,want:want}).then(function(r){setState(r.state);closePick();toast('Échange publié');mkSub='trades';render()}).catch(function(){b.disabled=false})}}
 function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;
-  $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
+  $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql. Pas de limite de longueur.</p><textarea id="anx" class="inp" rows="3" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';
   $('anb').onclick=function(){var t=$('anx').value.trim();if(!t)return;api('apost',{text:t}).then(function(){toast('Annonce publiée');adAnn()}).catch(function(e){toast(e.message)})};
   [].forEach.call(document.querySelectorAll('[data-ad]'),function(b){twice(b,function(){api('adelann',{id:+b.dataset.ad}).then(function(){adAnn()}).catch(function(e){toast(e.message)})})})}).catch(function(e){if(adAlive('ann'))$('abody').innerHTML=errBox(e)})}
 function adLog(){
