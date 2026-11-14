@@ -187,6 +187,13 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const t3 = (await call('tokB', { action: 'mlist' })).json.trades[0].id;
   r = await call('tokC', { action: 'taccept', id: t3 }); assert.strictEqual(r.status, 200);
   assert.strictEqual(await count('tokB', u1), 0); assert.strictEqual(await count('tokB', u2), 0); assert.strictEqual(await count('tokB', ep), 1); assert.strictEqual(await count('tokC', u1), 2); assert.strictEqual(await count('tokC', u2), 1); assert.strictEqual(await count('tokC', ep), 0); ok('échange 3 contre 1 accepté');
+  // même carte au marché ET en échange : quand l'un aboutit, l'autre disparaît
+  await give('C', oth, 1); await give('B', e1, 1);
+  r = await call('tokB', { action: 'msell', i: e1, buynow: 5000 }); assert.strictEqual(r.status, 200, JSON.stringify(r.json));
+  r = await call('tokB', { action: 'tsell', give: [e1], want: oth }); assert.strictEqual(r.status, 200, JSON.stringify(r.json));
+  const tx = (await call('tokB', { action: 'mlist' })).json.trades[0].id;
+  r = await call('tokC', { action: 'taccept', id: tx }); assert.strictEqual(r.status, 200);
+  r = await call('tokB', { action: 'mlist' }); assert.strictEqual(r.json.open.filter((l) => l.card === e1 && l.mine).length, 0); assert.strictEqual(await count('tokB', e1), 0); ok('carte au marché et en échange : l\'échange fait disparaître l\'offre du marché');
   // annulation et expiration
   await give('B', e1, 1);
   await call('tokB', { action: 'tsell', give: [e1], want: oth });

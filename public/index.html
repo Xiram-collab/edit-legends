@@ -1586,7 +1586,7 @@ function paintMarket(){
 function paintMarketSoon(){api('mlist').then(function(d){mkData=d;if(tab==='mk')paintMarket()}).catch(function(){})}
 function cthumbCard(i){var c=CARDS[i];return c&&c[4]?'<img class="cth" src="'+esc(imgUrl(c[4]))+'" alt="">':'<span class="cth">'+esc(c?c[0].charAt(0).toUpperCase():'?')+'</span>'}
 function mkSellDlg(){
- var lst={};((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine)lst[l.card]=(lst[l.card]||0)+1});((mkData&&mkData.trades)||[]).forEach(function(t){if(t.mine)t.give.forEach(function(x){lst[x]=(lst[x]||0)+1})});var av=function(i){return (S.col[i]||0)-(lst[i]||0)};var mine=[];CARDS.forEach(function(c,i){if(c&&av(i)>0)mine.push(i)});
+ var lst={};((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine)lst[l.card]=(lst[l.card]||0)+1});var av=function(i){return (S.col[i]||0)-(lst[i]||0)};var mine=[];CARDS.forEach(function(c,i){if(c&&av(i)>0)mine.push(i)});
  if(!mine.length){toast('Tu n\'as aucune carte à vendre');return}
  mine.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0],'fr')});
  var sel=mine[0];closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
@@ -1607,7 +1607,7 @@ function mkSellDlg(){
  $('mso').onclick=function(){clampS();var b=this,body={action:'msell',i:sel,buynow:+$('mss').value};b.disabled=true;
   act(body).then(function(r){setState(r.state);closePick();toast('Offre publiée');mkSub='mine';render()}).catch(function(){b.disabled=false})}}
 /* ---------- Échanges entre joueurs ---------- */
-function mkFree(i){var n=S.col[i]||0;((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine&&l.card===i)n--});((mkData&&mkData.trades)||[]).forEach(function(t){if(t.mine)t.give.forEach(function(x){if(x===i)n--})});return n}
+function mkFree(i){var n=S.col[i]||0;((mkData&&mkData.trades)||[]).forEach(function(t){if(t.mine)t.give.forEach(function(x){if(x===i)n--})});return n}
 function trSide(label,ids){return '<div class="trs"><div class="mut sm trl">'+label+'</div><div class="trg">'+ids.map(function(i){var c=CARDS[i];return '<div class="trc" data-zi="'+i+'">'+cardHTML(i)+'<div class="sm trn" style="color:'+HEX[c[2]]+'">'+esc(c[0])+'</div></div>'}).join('')+'</div></div>'}
 function trRow(t){
  var ok=t.mine||mkFree(t.want)>0;
@@ -1618,7 +1618,7 @@ function trHTML(){
  var tr=(mkData.trades||[]).slice().sort(function(a,b){return (b.mine-a.mine)||(a.endsAt-b.endsAt)});
  return '<div class="panel"><h3>Échanger des cartes</h3><p class="sm" style="margin:6px 0">Propose une carte que tu as, et dis laquelle tu veux en échange. <b>Le premier joueur qui accepte clôt l\'échange</b> : les cartes changent de main tout de suite.</p>'+
   '<p class="sm" style="margin:6px 0"><b>Les règles :</b></p><ul class="sm" style="margin:0 0 6px 18px;padding:0"><li><b>1 contre 1</b> : deux cartes de la <b>même rareté</b> (ex. Rare contre Rare).</li><li><b>3 contre 1</b> : <b>3 cartes</b> de la rareté juste <b>en dessous</b> contre <b>1 carte</b> de la rareté au-dessus (ex. 3 Rares contre 1 Épique).</li></ul>'+
-  '<p class="mut sm" style="margin:0 0 8px">Tes cartes proposées restent dans ta collection jusqu\'à l\'échange. Une offre dure '+TRH+' h. Pas de Coins dans un échange.</p><div class="bar"><button class="btn gold" id="tnew">Proposer un échange</button></div></div>'+
+  '<p class="mut sm" style="margin:0 0 8px">Tes cartes proposées restent dans ta collection jusqu\'à l\'échange. Si une carte est aussi en vente au marché, l\'autre offre disparaît dès que l\'une aboutit. Une offre dure '+TRH+' h. Pas de Coins dans un échange.</p><div class="bar"><button class="btn gold" id="tnew">Proposer un échange</button></div></div>'+
   (tr.length?tr.map(trRow).join(''):'<div class="panel center mut">Aucun échange pour l\'instant. Propose le premier !</div>')}
 var TRH=12;
 function mkTradeDlg(){
