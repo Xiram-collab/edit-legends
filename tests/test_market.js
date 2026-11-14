@@ -30,6 +30,8 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   r = await call('tokA', { action: 'aownset', card: mine, user: 'C' }); assert.strictEqual(r.status, 400); ok('une carte ne s\'associe qu\'à un seul joueur');
   r = await call('tokB', { action: 'me' }); assert.strictEqual(r.json.mycard.id, mine); ok('Bob voit sa carte dans « me »');
   r = await call('tokB', { action: 'mycardsave', descr: 'Champion, WR 1:23, depuis 2020' }); assert.strictEqual(r.status, 200); assert.strictEqual(cards[mine][3], 'Champion, WR 1:23, depuis 2020'); ok('description modifiée pour tout le monde');
+  r = await call('tokB', { action: 'mycardsave', descr: 'Ligne 1  \n\n\n\nLigne   2\r\n- record' }); assert.strictEqual(cards[mine][3], 'Ligne 1\n\nLigne 2\n- record'); ok('les retours à la ligne de la description sont conservés');
+  await call('tokB', { action: 'mycardsave', descr: 'Champion, WR 1:23, depuis 2020' });
   r = await call('tokB', { action: 'mycardsave', descr: 'quel connard' }); assert.strictEqual(r.status, 400); assert.strictEqual(cards[mine][3], 'Champion, WR 1:23, depuis 2020'); ok('description obscène refusée');
   r = await call('tokB', { action: 'mycardsave', descr: 'p.u.t.e' }); assert.strictEqual(r.status, 400); ok('contournement simple refusé');
   r = await call('tokB', { action: 'mycardsave', image: PNG }); assert.strictEqual(r.status, 200); assert.ok(cards[mine][4].startsWith('https://')); ok('logo changé');
