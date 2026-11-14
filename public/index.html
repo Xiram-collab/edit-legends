@@ -27,6 +27,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}img{max-width:100%}[hidden]{display:none!important}.tmw{border-bottom:1px solid var(--line)}.tmw .lbr{border-bottom:0}.tmn{padding:0 10px 8px 82px;word-break:break-word}.tml{font-weight:800;font-variant-numeric:tabular-nums;color:#fff;text-decoration:none;border-bottom:1px dashed var(--acc)}a.tml:hover{color:var(--gold)}.tml.off{border:0;color:var(--fg)}.tml small{font-weight:600;color:var(--mut)}.rwd{color:var(--gold)}.tmrec{text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}.tmrec .big{font-size:2em}.tmr .nm{cursor:pointer}
 .tmgrid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:900px){.tmgrid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}.rwl{display:grid;grid-template-columns:1fr;gap:2px;font-size:14px}.rwl div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid var(--line)}.rwl b{min-width:2.6em}.rwl span{color:var(--gold);text-align:right}
 .tmcd{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;border-color:var(--gold)}.cdg{display:flex;gap:8px;justify-content:center}.cdg div{min-width:64px;padding:8px 6px;border-radius:12px;background:#0006;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center}.cdg b{font-size:1.9em;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--gold)}.cdg span{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}.tmhow .steps{margin:0}
+.qr *{animation:none!important}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -576,6 +577,12 @@ function api(action,body){body=Object.assign({action:action,nc:CARDS.length},bod
  .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.catalog&&action!=='me'){CARDS.length=0;j.catalog.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
+function quietRender(){document.body.classList.add('qr');render();setTimeout(function(){document.body.classList.remove('qr')},450)}
+// vente instantanée : l'écran se met à jour tout de suite (sans réanimation), le serveur confirme ensuite
+function quickSellOne(i){if(netBusy)return;var v=RAR[CARDS[i][2]].v;S.col[i]--;S.money+=v;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
+ act({action:'sell',i:i}).then(function(r){setState(r.state);quietRender()}).catch(function(){S.col[i]++;S.money-=v;quietRender()})}
+function quickSellAll(){if(netBusy)return;var undo=[],t=0;CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c&&n>1){t+=(n-1)*RAR[c[2]].v;undo.push([i,n]);S.col[i]=1}});if(!t)return;S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR);quietRender();
+ act({action:'sell',all:true}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]=u[1]});S.money-=t;quietRender()})}
 function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]});if(typeof schedPing==='function')schedPing()}
 function schedPing(){if(pingT)return;pingT=setTimeout(function(){pingT=0;doPing()},2500)}
 function fmt(n){return n.toLocaleString('fr-FR')}
@@ -788,8 +795,8 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('dup').onchange=function(){dupOnly=this.checked;try{localStorage.setItem('el_own',dupOnly?'1':'0')}catch(e){}render()};
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
  $('shcol').onclick=shareCollection;
- $('sellall').onclick=function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})};
- [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>1)act({action:'sell',i:i}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})}})}
+ $('sellall').onclick=function(){quickSellAll()};
+ [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>1)quickSellOne(i)}})}
 function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q){if(x!=null&&q!==k)taken[x]=1});
  var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&!taken[i])items.push(i)});
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
@@ -804,7 +811,7 @@ function rShop(){var dv=dupValue();$('main').innerHTML='<p class="mut">Les packs
  PACKS.map(function(p,k){var col=HEX[p.g];return '<div class="pk" style="--c:'+col+'"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div><h3>'+p.n+'</h3><div>'+p.t+'</div><div class="mut">5 cartes</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(S.money<p.price?' disabled':'')+'>Acheter et ouvrir</button></div>'}).join('')+'</div>'+
  '<div class="pk wheelpk"><div class="mini" style="--c:#ffd24a"><b class="disp">★</b></div><h3>Roue</h3><div>Un tour de roue sans code</div><div class="mut">Packs, cartes, Coins ou relance gratuite. Jusqu\'à une Mythique au choix.</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(SPIN_PRICE)+' '+CUR+'</div><button class="btn gold" id="shopwheel"'+(S.money<SPIN_PRICE?' disabled':'')+'>Tourner la roue</button></div>';
  var sw=$('shopwheel');if(sw)twice(sw,function(){if(S.money<SPIN_PRICE||busy)return;autoPay=true;tab='code';render();scrollTo(0,0)},'Confirmer : '+fmt(SPIN_PRICE)+' '+CUR);
- var ss=$('shopsell');if(ss)ss.onclick=function(){act({action:'sell',all:true}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain)+' '+CUR);render()}).catch(function(){})};
+ var ss=$('shopsell');if(ss)ss.onclick=function(){quickSellAll()};
  [].forEach.call(document.querySelectorAll('[data-b]'),function(b){twice(b,function(){var p=PACKS[+b.dataset.b];if(S.money<p.price||busy)return;sfx('buy');openVia({action:'open',kind:'buy',g:p.g})},'Confirmer l\'achat')})}
 function rProb(){var h='<div class="panel"><h2>Probabilités par carte tirée</h2><p class="mut sm">Chance que chaque carte d\'un pack soit de cette rareté (5 cartes par pack).</p><table><tr><th>Rareté</th><th>Chance</th><th>Valeur</th></tr>'+
  RAR.map(function(r,i){return '<tr style="color:'+HEX[i]+'"><td><b>'+r.n+'</b></td><td>'+pctF(r.p)+'</td><td>'+fmt(r.v)+' '+CUR+'</td></tr>'}).join('')+'</table>'+
