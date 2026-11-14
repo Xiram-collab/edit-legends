@@ -1543,7 +1543,7 @@ function adOwn(){
   [].forEach.call(document.querySelectorAll('[data-od]'),function(b){twice(b,function(){api('aowndel',{card:+b.dataset.od}).then(function(){toast('Association retirée');adOwn()}).catch(function(e){toast(e.message)})},'Confirmer')})
  }).catch(function(e){if(adAlive('own'))$('abody').innerHTML=errBox(e)})}
 /* ---------- Marché (enchères entre joueurs) ---------- */
-var mkT=0,mkData=null,mkSub='offers',mkSort='new';
+var mkT=0,mkData=null,mkSub='offers',mkSort='new',mkOwn='all',mkRar=-1;
 function mkLeft(ms){var m=Math.max(0,Math.round((ms-Date.now())/60000)),h=Math.floor(m/60);return h>0?h+' h '+(m%60<10?'0':'')+(m%60)+' min':m+' min'}
 function mkWho(u){return u?'<span class="who">'+uav(u)+esc(u.name)+'</span>':''}
 function rMarket(){
@@ -1564,13 +1564,17 @@ function paintMarket(){
  else{
   var list=d.open.filter(function(l){return mkSub==='mine'?l.mine:true});
   var R=function(l){return CARDS[l.card][2]},P=function(l){return l.buynow||0};
+  var total=list.length;
+  list=list.filter(function(l){return (mkRar<0||R(l)===mkRar)&&(mkOwn==='all'||(mkOwn==='no'?!S.col[l.card]:S.col[l.card]>0))});
   list.sort({new:function(x,y){return y.endsAt-x.endsAt},old:function(x,y){return x.endsAt-y.endsAt},rhi:function(x,y){return R(y)-R(x)||P(x)-P(y)},rlo:function(x,y){return R(x)-R(y)||P(x)-P(y)},plo:function(x,y){return P(x)-P(y)},phi:function(x,y){return P(y)-P(x)}}[mkSort]);
   h='<div class="panel"><div class="bar"><button class="btn gold" id="mks">Vendre une carte</button></div><p class="mut sm" style="margin:6px 0 0">Prix minimum : '+RAR.map(function(r,i){return r.n+' '+fmt(MKC.MIN[i])}).join(' · ')+' '+CUR+'. Une offre dure '+MKC.HOURS+' h : la carte ne quitte ta collection que si elle est achetée.</p></div>'+
-   '<div class="panel"><label class="mut sm">Trier par </label><select id="mksort" class="inp">'+[['new','Plus récent'],['old','Plus ancien'],['rhi','Rareté : élevée → faible'],['rlo','Rareté : faible → élevée'],['plo','Prix croissant'],['phi','Prix décroissant']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===mkSort?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
-   (list.length?list.map(mkOffer).join(''):'<div class="panel center mut">'+(mkSub==='mine'?'Tu n\'as aucune offre en cours.':'Aucune offre pour l\'instant. Sois le premier à vendre une carte !')+'</div>')}
+   '<div class="panel"><div class="two"><label class="mut sm">Afficher<select id="mkown" class="inp">'+[['all','Toutes les cartes'],['no','Cartes que je n\'ai pas'],['yes','Cartes que j\'ai déjà']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===mkOwn?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></label><label class="mut sm">Rareté<select id="mkrar" class="inp"><option value="-1">Toutes</option>'+RAR.map(function(r,i){return '<option value="'+i+'"'+(i===mkRar?' selected':'')+'>'+r.n+'</option>'}).join('')+'</select></label></div><label class="mut sm" style="display:block;margin-top:8px">Trier par </label><select id="mksort" class="inp">'+[['new','Plus récent'],['old','Plus ancien'],['rhi','Rareté : élevée → faible'],['rlo','Rareté : faible → élevée'],['plo','Prix croissant'],['phi','Prix décroissant']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===mkSort?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
+   (list.length?list.map(mkOffer).join(''):'<div class="panel center mut">'+(total&&!list.length?'Aucune offre ne correspond à ce filtre.':mkSub==='mine'?'Tu n\'as aucune offre en cours.':'Aucune offre pour l\'instant. Sois le premier à vendre une carte !')+'</div>')}
  b.innerHTML=h;
  if($('mks'))$('mks').onclick=mkSellDlg;
  if($('mksort'))$('mksort').onchange=function(){mkSort=this.value;paintMarket()};
+ if($('mkown'))$('mkown').onchange=function(){mkOwn=this.value;paintMarket()};
+ if($('mkrar'))$('mkrar').onchange=function(){mkRar=+this.value;paintMarket()};
  [].forEach.call(b.querySelectorAll('[data-zi]'),function(e){e.onclick=function(){openCardZoom(+e.dataset.zi)}});
  [].forEach.call(b.querySelectorAll('[data-mbuy]'),function(x){twice(x,function(){var box=x.closest('.mko');if(box)box.style.opacity='.35';x.disabled=true;toast('Achat en cours…');act({action:'mbuy',id:+x.dataset.mbuy}).then(function(r){setState(r.state);sfx('coin');toast('Carte achetée ! Elle t\'attend dans « Packs en attente »');render()}).catch(function(){paintMarketSoon()})},'Confirmer l\'achat ?')});
  [].forEach.call(b.querySelectorAll('[data-mc]'),function(x){twice(x,function(){act({action:'mcancel',id:+x.dataset.mc}).then(function(r){setState(r.state);toast('Offre annulée, carte rendue');render()}).catch(function(){})},'Confirmer')})}
