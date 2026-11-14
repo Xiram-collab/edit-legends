@@ -39,12 +39,12 @@ const sub = (t, o) => { const b = Object.assign({ action: 'timesubmit', time: '1
   r = await call('tokB', { action: 'atimedecide', id: 1, status: 'accepted' }); assert.strictEqual(r.status, 403); ok('file de validation réservée à l\'admin');
   r = await call('tokA', { action: 'atimes' }); assert.strictEqual(r.json.pending.length, 3); assert.ok(r.json.pending[0].link);
   r = await call('tokA', { action: 'ping' }); assert.strictEqual(r.json.tp, 3); r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.tp, 0); ok('admin voit les envois et le compteur');
-  await call('tokA', { action: 'atimedecide', id: 1, status: 'rejected' });   // 1:30 refusé
+  await call('tokA', { action: 'atimedecide', id: 1, status: 'rejected', reason: '  Vidéo   privée ' });   // 1:30 refusé
   await call('tokA', { action: 'atimedecide', id: 2, status: 'accepted' });   // 1:20 accepté
   await call('tokA', { action: 'atimedecide', id: 3, status: 'accepted' });   // 1:21 accepté (moins bon)
   r = await call('tokB', { action: 'times', device: 'Manette' }); assert.strictEqual(r.json.rows.length, 1); assert.strictEqual(r.json.rows[0].ms, 520000); assert.strictEqual(r.json.rows[0].rank, 1); assert.deepStrictEqual(r.json.rows[0].reward, C.TIME_REWARDS[0]); ok('validé : dans le classement avec son meilleur temps et sa récompense');
   assert.strictEqual(r.json.record.ms, 520000); ok('record de la map');
-  r = await call('tokB', { action: 'ping' }); assert.ok(r.json.notes.some((x) => /validé/.test(x.text)) && r.json.notes.some((x) => /refusé/.test(x.text))); ok('le joueur est notifié');
+  r = await call('tokB', { action: 'ping' }); assert.ok(r.json.notes.some((x) => /validé/.test(x.text)) && r.json.notes.some((x) => /refusé/.test(x.text))); assert.ok(r.json.notes.some((x) => /refusé — raison : Vidéo privée/.test(x.text))); ok('le joueur est notifié (avec la raison du refus)');
   r = await sub('tokB', { time: '1:25.000' }); assert.strictEqual(r.status, 400); ok('un temps moins bon que le meilleur validé est refusé');
 
   // ----- masquer son run -----
