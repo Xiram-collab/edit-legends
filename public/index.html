@@ -280,6 +280,7 @@ html,body,.over{touch-action:manipulation}
 .mkown{color:#ff4d5e;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
 .mkp{display:flex;flex-direction:column}.mkp b{font-size:20px;color:var(--gold)}.mka{display:flex;flex-direction:column;gap:6px;margin-top:4px}.mkbid{display:flex;gap:6px}.mkbid .inp{flex:1;min-width:0}
 .mkt{width:44px;flex:none;cursor:pointer}.mks{align-items:center;gap:10px}.mkdlg{display:flex;flex-direction:column;gap:10px;text-align:left;max-height:92vh;overflow:auto}.mkgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:300px;overflow:auto;padding:4px}.mkpick{background:transparent;border:2px solid transparent;border-radius:12px;padding:3px;cursor:pointer}.mkpick .card{width:100%;font-size:8px;animation:none}.mkpick.mksel{border-color:var(--gold);box-shadow:0 0 14px #ffb02088}.mkchosen{text-align:center}.mkpick{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}.mkpick .card{min-width:0;flex:none;aspect-ratio:5/7}.mkx{font-weight:800;font-size:13px;color:var(--gold)}.mkdlg label{display:flex;flex-direction:column;gap:4px}
+.trx{display:flex;align-items:center;gap:6px;margin:8px 0}.trs{flex:1;min-width:0}.trg{display:flex;gap:4px;flex-wrap:wrap}.trc{width:min(78px,22vw);cursor:pointer;text-align:center}.trc .card{width:100%;font-size:7px;animation:none}.trn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tra{font-size:22px;color:var(--gold);flex:none}.trl{font-weight:700;margin-bottom:4px}
 @media(max-width:380px){.mko{flex-direction:column}.mkc{width:110px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .bl{width:58%;height:auto;filter:drop-shadow(0 0 14px #ff3d81aa)}.pkface{flex-direction:column;gap:6px}.pkface b{display:block}
@@ -1547,7 +1548,7 @@ var mkT=0,mkData=null,mkSub='offers',mkSort='new',mkOwn='all',mkRar=-1;
 function mkLeft(ms){var m=Math.max(0,Math.round((ms-Date.now())/60000)),h=Math.floor(m/60);return h>0?h+' h '+(m%60<10?'0':'')+(m%60)+' min':m+' min'}
 function mkWho(u){return u?'<span class="who">'+uav(u)+esc(u.name)+'</span>':''}
 function rMarket(){
- $('main').innerHTML=subnavH([['offers','Offres'],['mine','Mes offres'],['sold','Dernières ventes']],mkSub,'data-mks')+'<div id="mkb"><div class="panel center mut">Chargement…</div></div>';
+ $('main').innerHTML=subnavH([['offers','Offres'],['mine','Mes offres'],['trades','Échanges'],['sold','Dernières ventes']],mkSub,'data-mks')+'<div id="mkb"><div class="panel center mut">Chargement…</div></div>';
  bindNav('data-mks',function(v){mkSub=v;paintMarket()});
  var load=function(){api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='mk')paintMarket()}).catch(function(e){if(tab==='mk'&&$('mkb'))$('mkb').innerHTML=errBox(e)})};
  load();clearInterval(mkT);mkT=setInterval(function(){if(tab!=='mk'){clearInterval(mkT);mkT=0;return}if(!document.querySelector('#pk'))load()},20000)}
@@ -1558,9 +1559,10 @@ function mkOffer(l){
   '<div class="mut sm">Se termine dans '+mkLeft(l.endsAt)+'</div><div class="mka">'+act+'</div></div></div>'}
 function paintMarket(){
  var b=$('mkb');if(!b||!mkData)return;var d=mkData,h='';
- $('main').querySelector('.subnav').outerHTML=subnavH([['offers','Offres'],['mine','Mes offres'],['sold','Dernières ventes']],mkSub,'data-mks');bindNav('data-mks',function(v){mkSub=v;paintMarket()});
+ $('main').querySelector('.subnav').outerHTML=subnavH([['offers','Offres'],['mine','Mes offres'],['trades','Échanges'],['sold','Dernières ventes']],mkSub,'data-mks');bindNav('data-mks',function(v){mkSub=v;paintMarket()});
  if(mkSub==='sold'){
   h='<div class="panel"><h3>Dernières ventes</h3>'+(d.sold.length?d.sold.map(function(x){var t=new Date(x.at);return '<div class="nrow mks"><div class="mkt" data-zi="'+x.card+'">'+cthumbCard(x.card)+'</div><div style="flex:1;min-width:0"><b style="color:'+HEX[CARDS[x.card][2]]+'">'+esc(CARDS[x.card][0])+'</b><div class="sm">Carte achetée par <b>'+esc(x.buyer.name)+'</b> à '+t.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+(t.toDateString()===new Date().toDateString()?'':' le '+t.toLocaleDateString('fr-FR'))+'</div><div class="mut sm">Vendue par '+esc(x.seller.name)+' · '+fmt(x.price)+' '+CUR+'</div></div></div>'}).join(''):'<p class="mut sm">Aucune vente pour l\'instant.</p>')+'</div>'}
+ else if(mkSub==='trades'){h=trHTML()}
  else{
   var list=d.open.filter(function(l){return mkSub==='mine'?l.mine:true});
   var R=function(l){return CARDS[l.card][2]},P=function(l){return l.buynow||0};
@@ -1571,6 +1573,9 @@ function paintMarket(){
    '<div class="panel"><div class="two"><label class="mut sm">Afficher<select id="mkown" class="inp">'+[['all','Toutes les cartes'],['no','Cartes que je n\'ai pas'],['yes','Cartes que j\'ai déjà']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===mkOwn?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></label><label class="mut sm">Rareté<select id="mkrar" class="inp"><option value="-1">Toutes</option>'+RAR.map(function(r,i){return '<option value="'+i+'"'+(i===mkRar?' selected':'')+'>'+r.n+'</option>'}).join('')+'</select></label></div><label class="mut sm" style="display:block;margin-top:8px">Trier par </label><select id="mksort" class="inp">'+[['new','Plus récent'],['old','Plus ancien'],['rhi','Rareté : élevée → faible'],['rlo','Rareté : faible → élevée'],['plo','Prix croissant'],['phi','Prix décroissant']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===mkSort?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
    (list.length?list.map(mkOffer).join(''):'<div class="panel center mut">'+(total&&!list.length?'Aucune offre ne correspond à ce filtre.':mkSub==='mine'?'Tu n\'as aucune offre en cours.':'Aucune offre pour l\'instant. Sois le premier à vendre une carte !')+'</div>')}
  b.innerHTML=h;
+ if($('tnew'))$('tnew').onclick=mkTradeDlg;
+ [].forEach.call(b.querySelectorAll('[data-ta]'),function(x){twice(x,function(){var box=x.closest('.trr');if(box)box.style.opacity='.35';x.disabled=true;toast('Échange en cours…');act({action:'taccept',id:+x.dataset.ta}).then(function(r){setState(r.state);sfx('coin');toast('Échange réussi ! Les cartes sont dans ta collection');render()}).catch(function(){paintMarketSoon()})},'Confirmer l\'échange ?')});
+ [].forEach.call(b.querySelectorAll('[data-tc]'),function(x){twice(x,function(){act({action:'tcancel',id:+x.dataset.tc}).then(function(r){setState(r.state);toast('Échange annulé');render()}).catch(function(){})},'Confirmer')});
  if($('mks'))$('mks').onclick=mkSellDlg;
  if($('mksort'))$('mksort').onchange=function(){mkSort=this.value;paintMarket()};
  if($('mkown'))$('mkown').onchange=function(){mkOwn=this.value;paintMarket()};
@@ -1581,7 +1586,7 @@ function paintMarket(){
 function paintMarketSoon(){api('mlist').then(function(d){mkData=d;if(tab==='mk')paintMarket()}).catch(function(){})}
 function cthumbCard(i){var c=CARDS[i];return c&&c[4]?'<img class="cth" src="'+esc(imgUrl(c[4]))+'" alt="">':'<span class="cth">'+esc(c?c[0].charAt(0).toUpperCase():'?')+'</span>'}
 function mkSellDlg(){
- var lst={};((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine)lst[l.card]=(lst[l.card]||0)+1});var av=function(i){return (S.col[i]||0)-(lst[i]||0)};var mine=[];CARDS.forEach(function(c,i){if(c&&av(i)>0)mine.push(i)});
+ var lst={};((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine)lst[l.card]=(lst[l.card]||0)+1});((mkData&&mkData.trades)||[]).forEach(function(t){if(t.mine)t.give.forEach(function(x){lst[x]=(lst[x]||0)+1})});var av=function(i){return (S.col[i]||0)-(lst[i]||0)};var mine=[];CARDS.forEach(function(c,i){if(c&&av(i)>0)mine.push(i)});
  if(!mine.length){toast('Tu n\'as aucune carte à vendre');return}
  mine.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0],'fr')});
  var sel=mine[0];closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
@@ -1601,6 +1606,62 @@ function mkSellDlg(){
  paint();
  $('mso').onclick=function(){clampS();var b=this,body={action:'msell',i:sel,buynow:+$('mss').value};b.disabled=true;
   act(body).then(function(r){setState(r.state);closePick();toast('Offre publiée');mkSub='mine';render()}).catch(function(){b.disabled=false})}}
+/* ---------- Échanges entre joueurs ---------- */
+function mkFree(i){var n=S.col[i]||0;((mkData&&mkData.open)||[]).forEach(function(l){if(l.mine&&l.card===i)n--});((mkData&&mkData.trades)||[]).forEach(function(t){if(t.mine)t.give.forEach(function(x){if(x===i)n--})});return n}
+function trSide(label,ids){return '<div class="trs"><div class="mut sm trl">'+label+'</div><div class="trg">'+ids.map(function(i){var c=CARDS[i];return '<div class="trc" data-zi="'+i+'">'+cardHTML(i)+'<div class="sm trn" style="color:'+HEX[c[2]]+'">'+esc(c[0])+'</div></div>'}).join('')+'</div></div>'}
+function trRow(t){
+ var ok=t.mine||mkFree(t.want)>0;
+ return '<div class="panel trr"><div class="mut sm">Proposé par</div>'+mkWho(t.seller)+'<div class="trx">'+trSide(t.mine?'Tu donnes':'Tu reçois',t.give)+'<div class="tra">⇄</div>'+trSide(t.mine?'Tu veux':'Tu donnes',[t.want])+'</div>'+
+  (t.mine?'':'<div class="mkown">'+(mkFree(t.want)>0?'Tu as la carte demandée (x'+mkFree(t.want)+' libre'+(mkFree(t.want)>1?'s':'')+')':'Tu n\'as pas la carte demandée')+'</div>')+
+  '<div class="mut sm">Se termine dans '+mkLeft(t.endsAt)+'</div><div class="mka">'+(t.mine?'<span class="mut sm">Ton échange</span><button class="btn sm ghost" data-tc="'+t.id+'">Annuler</button>':'<button class="btn sm gold"'+(ok?'':' disabled')+' data-ta="'+t.id+'">Accepter l\'échange</button>')+'</div></div>'}
+function trHTML(){
+ var tr=(mkData.trades||[]).slice().sort(function(a,b){return (b.mine-a.mine)||(a.endsAt-b.endsAt)});
+ return '<div class="panel"><h3>Échanger des cartes</h3><p class="sm" style="margin:6px 0">Propose une carte que tu as, et dis laquelle tu veux en échange. <b>Le premier joueur qui accepte clôt l\'échange</b> : les cartes changent de main tout de suite.</p>'+
+  '<p class="sm" style="margin:6px 0"><b>Les règles :</b></p><ul class="sm" style="margin:0 0 6px 18px;padding:0"><li><b>1 contre 1</b> : deux cartes de la <b>même rareté</b> (ex. Rare contre Rare).</li><li><b>3 contre 1</b> : <b>3 cartes</b> de la rareté juste <b>en dessous</b> contre <b>1 carte</b> de la rareté au-dessus (ex. 3 Rares contre 1 Épique).</li></ul>'+
+  '<p class="mut sm" style="margin:0 0 8px">Tes cartes proposées restent dans ta collection jusqu\'à l\'échange. Une offre dure '+TRH+' h. Pas de Coins dans un échange.</p><div class="bar"><button class="btn gold" id="tnew">Proposer un échange</button></div></div>'+
+  (tr.length?tr.map(trRow).join(''):'<div class="panel center mut">Aucun échange pour l\'instant. Propose le premier !</div>')}
+var TRH=12;
+function mkTradeDlg(){
+ var mode=1,give=[],want=-1;
+ var mine=[];CARDS.forEach(function(c,i){if(c&&mkFree(i)>0)mine.push(i)});
+ if(!mine.length){toast('Tu n\'as aucune carte libre à échanger');return}
+ mine.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0],'fr')});
+ closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
+ d.innerHTML='<div class="pickbox wpbox mkdlg"><h2>Proposer un échange</h2>'+
+  '<div class="two"><button type="button" class="btn sm" data-tm="1">1 contre 1</button><button type="button" class="btn sm" data-tm="3">3 contre 1</button></div>'+
+  '<p class="mut sm" id="tmh"></p><b>1. Tu donnes</b><div class="mkgrid" id="tg"></div><div class="mkchosen sm" id="tgs"></div>'+
+  '<b>2. Tu veux</b><div id="tw"></div>'+
+  '<div class="bar"><button class="btn gold" id="tso" disabled>Publier l\'échange</button><button class="btn sm ghost" id="tsx">Annuler</button></div></div>';
+ document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('tsx').onclick=closePick;
+ var cnt=function(i){return give.filter(function(x){return x===i}).length},need=function(){return mode===1?1:3};
+ var tgt=function(){return give.length<need()?-1:(mode===1?CARDS[give[0]][2]:CARDS[give[0]][2]+1)};
+ var paintGive=function(){
+  var lock=mode===3&&give.length?CARDS[give[0]][2]:-1;
+  var list=mine.filter(function(i){return mode===1||CARDS[i][2]<5});
+  $('tg').innerHTML=list.map(function(i){var dim=lock>=0&&CARDS[i][2]!==lock;return '<button type="button" class="mkpick'+(cnt(i)?' mksel':'')+'" data-gi="'+i+'" style="'+(dim?'opacity:.3':'')+'"><span class="mkx">'+(cnt(i)?cnt(i)+'/':'x')+mkFree(i)+'</span>'+cardHTML(i)+'</button>'}).join('');
+  $('tgs').innerHTML=give.length?'<b>'+give.length+'/'+need()+'</b> : '+give.map(function(i){return '<span style="color:'+HEX[CARDS[i][2]]+'">'+esc(CARDS[i][0])+'</span>'}).join(' + ')+' <button type="button" class="btn sm ghost" id="tclr">Vider</button>':'Touche '+(mode===1?'la carte':'les 3 cartes')+' à donner.';
+  if($('tclr'))$('tclr').onclick=function(){give=[];want=-1;paintAll()};
+  [].forEach.call($('tg').querySelectorAll('[data-gi]'),function(b){b.onclick=function(){var i=+b.dataset.gi;
+   if(mode===1){give=[i];want=-1}
+   else{if(lock>=0&&CARDS[i][2]!==lock)return;if(give.length>=3||cnt(i)>=mkFree(i))return;give.push(i);if(give.length<3)want=-1;else want=-1}
+   paintAll()}})};
+ var paintWant=function(){
+  var r=tgt();
+  if(r<0){$('tw').innerHTML='<p class="mut sm">Choisis d\'abord ce que tu donnes.</p>';return}
+  $('tw').innerHTML='<p class="mut sm" style="margin:0 0 6px">Tu veux une carte <b style="color:'+HEX[r]+'">'+RAR[r].n+'</b>.</p><input class="inp" id="tq" placeholder="Chercher une carte…"><div class="mkgrid" id="twg"></div>';
+  var fill=function(){var q=($('tq').value||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');var n=0,h='';
+   CARDS.forEach(function(c,i){if(!c||c[5]||c[2]!==r||give.indexOf(i)>=0||n>=60)return;if(q&&(c[0]||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').indexOf(q)<0)return;n++;h+='<button type="button" class="mkpick'+(i===want?' mksel':'')+'" data-wi="'+i+'">'+cardHTML(i)+'</button>'});
+   $('twg').innerHTML=h||'<p class="mut sm">Aucune carte trouvée.</p>';
+   [].forEach.call($('twg').querySelectorAll('[data-wi]'),function(b){b.onclick=function(){want=+b.dataset.wi;fill();upd()}})};
+  $('tq').oninput=fill;fill()};
+ var upd=function(){$('tso').disabled=!(give.length===need()&&want>=0)};
+ var paintAll=function(){
+  [].forEach.call(d.querySelectorAll('[data-tm]'),function(b){b.classList.toggle('gold',+b.dataset.tm===mode)});
+  $('tmh').textContent=mode===1?'Tu donnes 1 carte et tu reçois 1 carte de la même rareté.':'Tu donnes 3 cartes de même rareté et tu reçois 1 carte de la rareté juste au-dessus.';
+  paintGive();paintWant();upd()};
+ [].forEach.call(d.querySelectorAll('[data-tm]'),function(b){b.onclick=function(){mode=+b.dataset.tm;give=[];want=-1;paintAll()}});
+ paintAll();
+ $('tso').onclick=function(){var b=this;b.disabled=true;act({action:'tsell',give:give,want:want}).then(function(r){setState(r.state);closePick();toast('Échange publié');mkSub='trades';render()}).catch(function(){b.disabled=false})}}
 function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;
   $('abody').innerHTML='<div class="panel"><h3>Nouvelle annonce</h3><p class="mut sm">Elle apparaît dans la cloche de tous les joueurs avec une pastille rouge. Table à créer une fois : sql/migration_annonces.sql.</p><textarea id="anx" class="inp" rows="3" maxlength="300" placeholder="Ex : Nouvelles cartes ajoutées ce week-end !"></textarea><div class="bar"><button class="btn gold" id="anb">Publier</button></div></div><div class="panel"><h3>Annonces récentes</h3>'+(r.ann.length?r.ann.map(function(a){return '<div class="nrow"><div style="flex:1"><p>'+esc(a.text)+'</p><span class="mut sm">'+dfr(a.at)+'</span></div><button class="btn sm ghost" data-ad="'+a.id+'">Supprimer</button></div>'}).join(''):'<p class="mut sm" style="margin:0">Aucune annonce.</p>')+'</div>';

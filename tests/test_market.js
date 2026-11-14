@@ -162,5 +162,40 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   for (let i = 0; i < 30; i++) { r = await call('tokC', { action: 'cardsubmit', name: 'Test carte ' + i, cat: 0, rarity: 0 }); assert.strictEqual(r.status, 200, 'proposition ' + i); }
   r = await call('tokC', { action: 'cardsubmit', name: 'Test carte 31', cat: 0, rarity: 0 }); assert.strictEqual(r.status, 400); ok('30 propositions en attente autorisées, la 31e refusée');
 
+
+  // ---------- Échanges ----------
+  const idsOf = (r, k) => cards.map((c, i) => (c && c[2] === r && !c[5] ? i : -1)).filter((i) => i >= 0).slice(-k);
+  const [e1, e2, oth] = idsOf(2, 3), [u1, u2, u3] = idsOf(1, 3), [ep] = idsOf(2, 4);
+  for (const x of [e1, u1, u2, u3, ep]) { await call('tokB', { action: 'sellmany', items: [[x, await count('tokB', x)]].filter((y) => y[1] > 0) }).catch(() => {}); }
+  await give('B', e1, 1); await give('C', e2, 1); await give('B', u1, 2); await give('B', u2, 1);
+  r = await call('tokB', { action: 'tsell', give: [e1], want: u1 }); assert.strictEqual(r.status, 400); ok('échange : raretés différentes en 1 contre 1 refusé');
+  r = await call('tokB', { action: 'tsell', give: [e1], want: e1 }); assert.strictEqual(r.status, 400); ok('échange : carte contre elle-même refusée');
+  r = await call('tokB', { action: 'tsell', give: [u1, u2, u3], want: ep }); assert.strictEqual(r.status, 400); ok('échange : 3 cartes que je n\'ai pas refusé');
+  r = await call('tokB', { action: 'tsell', give: [u1, u2], want: e1 }); assert.strictEqual(r.status, 400); ok('échange : 2 cartes refusé (1 ou 3 seulement)');
+  r = await call('tokB', { action: 'tsell', give: [e1], want: e2 }); assert.strictEqual(r.status, 200, JSON.stringify(r.json)); ok('échange 1 contre 1 de même rareté publié');
+  r = await call('tokB', { action: 'tsell', give: [e1], want: oth }); assert.strictEqual(r.status, 400); ok('échange : la carte déjà proposée n\'est plus libre');
+  r = await call('tokB', { action: 'mlist' }); assert.strictEqual(r.json.trades.length, 1); assert.strictEqual(r.json.open.filter((l) => l.card === e1).length, 0); ok('l\'échange est dans « trades », pas dans les offres du marché');
+  const tid = r.json.trades[0].id;
+  r = await call('tokB', { action: 'taccept', id: tid }); assert.strictEqual(r.status, 400); ok('on n\'accepte pas son propre échange');
+  r = await call('tokD', { action: 'taccept', id: tid }); assert.strictEqual(r.status, 400); assert.strictEqual(await count('tokB', e1), 1); ok('preneur sans la carte demandée : refus, rien ne bouge');
+  r = await call('tokC', { action: 'taccept', id: tid }); assert.strictEqual(r.status, 200);
+  assert.strictEqual(await count('tokB', e1), 0); assert.strictEqual(await count('tokB', e2), 1); assert.strictEqual(await count('tokC', e1), 1); assert.strictEqual(await count('tokC', e2), 0); ok('échange 1 contre 1 accepté : les cartes ont changé de main');
+  r = await call('tokD', { action: 'taccept', id: tid }); assert.strictEqual(r.status, 400); ok('un échange déjà accepté ne se prend qu\'une fois');
+  // 3 contre 1
+  await give('C', ep, 1);
+  r = await call('tokB', { action: 'tsell', give: [u1, u1, u2], want: ep }); assert.strictEqual(r.status, 200, JSON.stringify(r.json)); ok('échange 3 contre 1 (rareté juste en dessous) publié');
+  const t3 = (await call('tokB', { action: 'mlist' })).json.trades[0].id;
+  r = await call('tokC', { action: 'taccept', id: t3 }); assert.strictEqual(r.status, 200);
+  assert.strictEqual(await count('tokB', u1), 0); assert.strictEqual(await count('tokB', u2), 0); assert.strictEqual(await count('tokB', ep), 1); assert.strictEqual(await count('tokC', u1), 2); assert.strictEqual(await count('tokC', u2), 1); assert.strictEqual(await count('tokC', ep), 0); ok('échange 3 contre 1 accepté');
+  // annulation et expiration
+  await give('B', e1, 1);
+  await call('tokB', { action: 'tsell', give: [e1], want: oth });
+  let tl = (await call('tokB', { action: 'mlist' })).json.trades; assert.strictEqual(tl.length, 1);
+  r = await call('tokD', { action: 'tcancel', id: tl[0].id }); assert.strictEqual(r.status, 404);
+  r = await call('tokB', { action: 'tcancel', id: tl[0].id }); assert.strictEqual(r.status, 200); assert.strictEqual((await call('tokB', { action: 'mlist' })).json.trades.length, 0); ok('annulation par l\'auteur seulement');
+  await call('tokB', { action: 'tsell', give: [e1], want: oth });
+  clock += (C.TRADE.HOURS + 1) * 3600000;
+  assert.strictEqual((await call('tokB', { action: 'mlist' })).json.trades.length, 0); assert.strictEqual(await count('tokB', e1), 1); ok('échange expiré après ' + C.TRADE.HOURS + ' h, cartes intactes');
+
   console.log(n + ' vérifications réussies (marché / Ma carte)');
 })().catch((e) => { console.error(e); process.exit(1); });
