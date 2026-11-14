@@ -693,7 +693,8 @@ var NOTIF={reqs:0,mc:0,tp:0,cp:0,ann:[],notes:[]};
 function annSeen(){try{return +localStorage.getItem('el_ann')||0}catch(e){return 0}}
 function annUnread(){var m=annSeen();return NOTIF.ann.filter(function(a){return a.id>m}).length}
 function paintBell(){var b=$('nb');if(!b)return;var n=NOTIF.reqs+annUnread()+NOTIF.notes.length;b.hidden=!n;b.textContent=n>9?'9+':n}
-function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;var oldt=NOTIF.tp+'/'+NOTIF.cp;NOTIF.tp=r.tp||0;NOTIF.cp=r.cp||0;NOTIF.ann=r.ann||[];NOTIF.notes=r.notes||[];paintBell();if((old!==NOTIF.reqs||oldm!==NOTIF.mc||oldt!==NOTIF.tp+'/'+NOTIF.cp)&&S)tabs()}).catch(function(){})}
+var NOTSEEN=null;
+function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;var oldt=NOTIF.tp+'/'+NOTIF.cp;NOTIF.tp=r.tp||0;NOTIF.cp=r.cp||0;NOTIF.ann=r.ann||[];var nid=(r.notes||[]).map(function(x){return x.id}),fresh=NOTSEEN&&nid.some(function(i){return NOTSEEN.indexOf(i)<0});NOTSEEN=nid;NOTIF.notes=r.notes||[];paintBell();if(fresh)api('me').then(function(m){setState(m.state);if(typeof setPurse==='function')setPurse();if(!document.querySelector('#pk')&&!qsMode&&!busy)render()}).catch(function(){});if((old!==NOTIF.reqs||oldm!==NOTIF.mc||oldt!==NOTIF.tp+'/'+NOTIF.cp)&&S)tabs()}).catch(function(){})}
 function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>m)m=a.id});var un=annSeen();
  var d=document.createElement('div');d.id='pk';d.className='pickov';
  var h='<div class="pickbox wpbox" style="max-height:88vh;overflow-y:auto"><h2>Notifications</h2>';
@@ -1552,7 +1553,7 @@ function rMarket(){
  $('main').innerHTML=subnavH([['offers','Offres'],['mine','Mes offres'],['trades','Échanges'],['sold','Dernières ventes']],mkSub,'data-mks')+'<div id="mkb"><div class="panel center mut">Chargement…</div></div>';
  bindNav('data-mks',function(v){mkSub=v;paintMarket()});
  var load=function(){api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='mk')paintMarket()}).catch(function(e){if(tab==='mk'&&$('mkb'))$('mkb').innerHTML=errBox(e)})};
- load();clearInterval(mkT);mkT=setInterval(function(){if(tab!=='mk'){clearInterval(mkT);mkT=0;return}if(!document.querySelector('#pk'))load()},20000)}
+ load();clearInterval(mkT);mkT=setInterval(function(){if(tab!=='mk'){clearInterval(mkT);mkT=0;return}if(!document.querySelector('#pk')){load();doPing()}},20000)}
 function mkOffer(l){
  var act=l.mine?'<span class="mut sm">Ton offre</span><button class="btn sm ghost" data-mc="'+l.id+'">Annuler</button>':'<button class="btn sm gold" data-mbuy="'+l.id+'">Acheter · '+fmt(l.buynow)+' '+CUR+'</button>';
  return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mkown">'+(S.col[l.card]?'Tu l\'as déjà (x'+S.col[l.card]+')':l.mine?'Tu l\'as (en vente)':'Tu ne l\'as pas')+'</div><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
