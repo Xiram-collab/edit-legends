@@ -142,6 +142,11 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   assert.strictEqual(r.json.gain, (qc1 - 1) * C.RAR[0].v + qc2 * C.RAR[1].v); assert.strictEqual(await count('tokB', q1), 1); assert.strictEqual(await count('tokB', q2), 0); assert.strictEqual(await bank('tokB'), bq + r.json.gain); ok('vente rapide : doublons et dernière copie vendus d\'un coup, Coins crédités');
   r = await call('tokB', { action: 'sellmany', items: [] }); assert.strictEqual(r.status, 400); r = await call('tokB', { action: 'sellmany', items: [[q1, -2]] }); assert.strictEqual(r.status, 400); ok('vente rapide : sélection vide ou invalide refusée');
 
+  // pastille admin : propositions de cartes de joueurs en attente
+  const cp0 = (await call('tokA', { action: 'ping' })).json.cp;
+  await db.addDraft({ name: 'PropoTest', cat: 0, rarity: 1, descr: '', img: '', created_by: 'B', status: 'new' });
+  clock += 20000; assert.strictEqual((await call('tokA', { action: 'ping' })).json.cp, cp0 + 1); assert.strictEqual((await call('tokB', { action: 'ping' })).json.cp, 0); ok('pastille admin : une proposition de carte de joueur est comptée (admin seulement)');
+
   // association automatique : pseudo identique à une carte Éditeur
   const edc = cards.findIndex((c, i) => c && !c[5] && c[1] === 0 && !(i === mine)); const edn = cards[edc][0];
   const strc = cards.findIndex((c) => c && !c[5] && c[1] === 3);
