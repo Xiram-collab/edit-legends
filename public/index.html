@@ -597,6 +597,24 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 @media(max-width:520px){.lbr{grid-template-columns:28px 34px 1fr auto}.lbr .lsub{display:none}.lbr{grid-template-areas:"rk av nm lv"}}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;background:#6b7280}.dot.gn{background:#22e36b;box-shadow:0 0 8px #22e36b}.dot.yl{background:#ffd24a;box-shadow:0 0 6px #ffd24a88}.dot.rd{background:#ff4d5e}.dot.gy{background:#6b7280}
 .leg{display:inline-flex;align-items:center;gap:6px;font-size:.85em;color:var(--mut)}.on{color:#22e36b}
+
+/* ===== Boutons « pastille » : blanc doux + liseré bas, onglet actif rose→orange ===== */
+.mute,.purse{background:linear-gradient(180deg,#fff,#f1ecfb);border:0;color:#2b1d4d;font-weight:800;box-shadow:0 3px 0 #c9b8e6,0 6px 12px #0004}
+.purse{padding:8px 16px}
+.mute:active,.purse:active{transform:translateY(2px);box-shadow:0 1px 0 #c9b8e6,0 3px 8px #0004}
+.mute.pulse,.purse.pulse{box-shadow:0 3px 0 #c9b8e6,0 0 22px #ffd24a99}
+nav{background:linear-gradient(180deg,#ffffffeb,#f4effcdd);border:0;border-radius:20px;padding:6px;gap:2px;box-shadow:0 4px 0 #cdbde8,0 8px 18px #0004}
+nav button{color:#6a5a8f;border-radius:14px;border:0;font-weight:800}
+nav button:hover{color:#2b1d4d;background:#ffffff99}
+nav button[aria-selected=true],body.noel #tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(180deg,#ff5f8a,#ff9a45);border:0;box-shadow:0 4px 0 #b3264f,0 6px 12px #b3264f66;transform:translateY(-1px)}
+nav button .ti{opacity:.85}
+.btn{border:0;border-radius:999px;box-shadow:0 4px 0 #2a1b8f,0 7px 14px #0005;transition:transform .08s,box-shadow .08s,filter .15s}
+.btn:hover:not(:disabled){box-shadow:0 4px 0 #2a1b8f,0 7px 14px #0005}
+.btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #2a1b8f}
+.btn.gold{box-shadow:0 4px 0 #6b4300,0 7px 14px #0005}.btn.gold:active:not(:disabled){box-shadow:0 1px 0 #6b4300}
+.btn.ghost{box-shadow:0 3px 0 #ffffff1f}.btn.ghost:active:not(:disabled){box-shadow:0 0 0 #0000}
+.btn.dng{box-shadow:0 3px 0 #5a1020}
+.btn:disabled{box-shadow:0 3px 0 #0006}
 </style>
 </head>
 <body class="noel">
