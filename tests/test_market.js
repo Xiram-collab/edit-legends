@@ -124,6 +124,16 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   clock += 20000; await call('tokD', { action: 'mlist' });
   assert.strictEqual((await db.marketGet(oldA)).buynow, 70); assert.strictEqual((await db.marketGet(oldC)).buynow, 70); assert.strictEqual((await db.marketGet(oldB)).buynow, 300); ok('anciennes offres au minimum recalées au nouveau seuil, les autres inchangées');
 
+  // association automatique : pseudo identique à une carte Éditeur
+  const edc = cards.findIndex((c, i) => c && !c[5] && c[1] === 0 && !(i === mine)); const edn = cards[edc][0];
+  const strc = cards.findIndex((c) => c && !c[5] && c[1] === 3);
+  await db.setIdentity('D', edn, false);
+  r = await call('tokB', { action: 'aownauto', apply: true }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'aownauto' }); assert.strictEqual(r.status, 200); assert.ok(r.json.found.some((x) => x.card === edc && x.user === 'D')); assert.strictEqual(r.json.applied.length, 0);
+  r = await call('tokA', { action: 'aownauto', apply: true }); assert.ok(r.json.applied.some((x) => x.card === edc && x.user === 'D'));
+  assert.ok((await db.cardOwners()).some((o) => o.card_id === edc && o.user_id === 'D')); assert.ok(!(await db.cardOwners()).some((o) => o.card_id === strc));
+  r = await call('tokA', { action: 'aownauto', apply: true }); assert.strictEqual(r.json.applied.length, 0); ok('association automatique : pseudo identique, propriétaire seul, pas de doublon, pas de structure');
+
   // limite de propositions de cartes : 30
   assert.strictEqual(C.CARD_PROPOSALS_MAX, 30);
   for (let i = 0; i < 30; i++) { r = await call('tokC', { action: 'cardsubmit', name: 'Test carte ' + i, cat: 0, rarity: 0 }); assert.strictEqual(r.status, 200, 'proposition ' + i); }
