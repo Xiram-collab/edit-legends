@@ -11,7 +11,9 @@ const ok = (m) => { n++; console.log('ok  ' + m); };
 const db = fakeDb(cards, []);
 const h = createHandler(db, { adminIds: '111', now: () => clock, periodAll: {} });
 const call = (t, b) => h(t, b);
-const sub = (t, o) => call(t, Object.assign({ action: 'timesubmit', time: '1:30.000', link: 'https://youtu.be/abc', device: 'Manette', platform: 'PC', note: 'ok' }, o));
+// Le chrono descend depuis 10:00 : le temps RESTANT le plus grand gagne. Les scénarios ci-dessous sont écrits en « temps de course » (plus petit = meilleur) ; on les convertit en temps restant.
+const rest = (v) => { const ms = T.parseTime(v); return ms == null ? v : T.fmtTime(600000 - ms); };
+const sub = (t, o) => { const b = Object.assign({ action: 'timesubmit', time: '1:30.000', link: 'https://youtu.be/abc', device: 'Manette', platform: 'PC', note: 'ok' }, o); b.time = rest(b.time); return call(t, b); };
 
 (async () => {
   let r;
@@ -40,8 +42,8 @@ const sub = (t, o) => call(t, Object.assign({ action: 'timesubmit', time: '1:30.
   await call('tokA', { action: 'atimedecide', id: 1, status: 'rejected' });   // 1:30 refusé
   await call('tokA', { action: 'atimedecide', id: 2, status: 'accepted' });   // 1:20 accepté
   await call('tokA', { action: 'atimedecide', id: 3, status: 'accepted' });   // 1:21 accepté (moins bon)
-  r = await call('tokB', { action: 'times', device: 'Manette' }); assert.strictEqual(r.json.rows.length, 1); assert.strictEqual(r.json.rows[0].ms, 80000); assert.strictEqual(r.json.rows[0].rank, 1); assert.deepStrictEqual(r.json.rows[0].reward, C.TIME_REWARDS[0]); ok('validé : dans le classement avec son meilleur temps et sa récompense');
-  assert.strictEqual(r.json.record.ms, 80000); ok('record de la map');
+  r = await call('tokB', { action: 'times', device: 'Manette' }); assert.strictEqual(r.json.rows.length, 1); assert.strictEqual(r.json.rows[0].ms, 520000); assert.strictEqual(r.json.rows[0].rank, 1); assert.deepStrictEqual(r.json.rows[0].reward, C.TIME_REWARDS[0]); ok('validé : dans le classement avec son meilleur temps et sa récompense');
+  assert.strictEqual(r.json.record.ms, 520000); ok('record de la map');
   r = await call('tokB', { action: 'ping' }); assert.ok(r.json.notes.some((x) => /validé/.test(x.text)) && r.json.notes.some((x) => /refusé/.test(x.text))); ok('le joueur est notifié');
   r = await sub('tokB', { time: '1:25.000' }); assert.strictEqual(r.status, 400); ok('un temps moins bon que le meilleur validé est refusé');
 
@@ -91,7 +93,7 @@ const sub = (t, o) => call(t, Object.assign({ action: 'timesubmit', time: '1:30.
   const ids = (await call('tokA', { action: 'atimes' })).json.pending.map((x) => x.id);
   for (const id of ids) await call('tokA', { action: 'atimedecide', id, status: 'accepted' });
   r = await call('tokD', { action: 'times', device: 'Manette' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Bob']); assert.strictEqual(r.json.device, 'Manette');
-  r = await call('tokD', { action: 'times', device: 'Clavier / souris' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Dana', 'Carl', 'Bob']); assert.strictEqual(r.json.me.rank, 1); assert.strictEqual(r.json.record.ms, 95000); ok('un classement par périphérique, record séparé');
+  r = await call('tokD', { action: 'times', device: 'Clavier / souris' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Dana', 'Carl', 'Bob']); assert.strictEqual(r.json.me.rank, 1); assert.strictEqual(r.json.record.ms, 505000); ok('un classement par périphérique, record séparé');
   r = await call('tokD', { action: 'times', device: 'nimporte' }); assert.strictEqual(r.json.device, 'Clavier / souris'); ok('périphérique inconnu ramené au premier classement (Clavier / souris)');
   r = await sub('tokB', { time: '1:50.000', device: 'Clavier / souris' }); assert.strictEqual(r.status, 400); r = await sub('tokB', { time: '1:20.000', device: 'Manette' }); assert.strictEqual(r.status, 200); ok('le meilleur temps à battre est propre à chaque périphérique');
   await call('tokA', { action: 'atimedecide', id: (await call('tokA', { action: 'atimes' })).json.pending[0].id, status: 'rejected' });
@@ -108,5 +110,15 @@ const sub = (t, o) => call(t, Object.assign({ action: 'timesubmit', time: '1:30.
   assert.strictEqual(r.status, 200); assert.deepStrictEqual(r.json.rows.map((x) => x.id).sort(), ['B', 'C']); assert.ok(!r.json.rows.some((x) => x.id === 'D')); assert.strictEqual(r.json.me.rank, r.json.rows.findIndex((x) => x.id === 'B') + 1); ok('classement entre amis : moi + mes amis seulement');
   r = await call('tokB', { action: 'board', scope: 'friends', sort: 'runs', period: 'week' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.rows.length, 2); ok('amis : tri par runs / période hebdo');
   r = await call('tokD', { action: 'board', scope: 'friends' }); assert.strictEqual(r.json.rows.length, 1); assert.strictEqual(r.json.me.rank, 1); ok('sans ami : seulement moi');
+  // ----- chrono à rebours depuis 10:00 + classements Switch et Mobile -----
+  assert.deepStrictEqual(T.DEVICES, ['Clavier / souris', 'Manette', 'Switch', 'Mobile']);
+  clock = G.nextWeekStart(clock) + 3 * 86400000;
+  const raw = (t, o) => call(t, Object.assign({ action: 'timesubmit', link: 'https://youtu.be/x', platform: 'PC' }, o));
+  r = await raw('tokB', { time: '10:00.000', device: 'Switch' }); assert.strictEqual(r.status, 400); ok('le chrono part de 10:00 : un temps restant de 10:00 ou plus est refusé');
+  await raw('tokB', { time: '7:19.000', device: 'Switch' }); await raw('tokC', { time: '7:52.000', device: 'Switch', platform: 'PC' }); await raw('tokD', { time: '7:12.000', device: 'Mobile' });
+  for (const x of (await call('tokA', { action: 'atimes' })).json.pending) await call('tokA', { action: 'atimedecide', id: x.id, status: 'accepted' });
+  r = await call('tokD', { action: 'times', device: 'Switch' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Carl', 'Bob']); assert.strictEqual(r.json.rows[0].ms, 472000); assert.strictEqual(r.json.rows[0].platform, 'Switch'); ok('7:52 bat 7:19 (plus de temps restant = meilleur) ; Switch : plateforme automatique');
+  r = await call('tokD', { action: 'times', device: 'Mobile' }); assert.deepStrictEqual(r.json.rows.map((x) => x.name), ['Dana']); assert.deepStrictEqual(r.json.rows[0].reward, C.TIME_REWARDS[0]); ok('classement Mobile avec les mêmes récompenses');
+  r = await raw('tokC', { time: '7:30.000', device: 'Switch' }); assert.strictEqual(r.status, 400); r = await raw('tokC', { time: '7:55.000', device: 'Switch' }); assert.strictEqual(r.status, 200); ok('il faut faire mieux (plus de temps restant) que son meilleur temps');
   console.log('\n' + n + ' vérifications réussies (temps/amis)');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });
