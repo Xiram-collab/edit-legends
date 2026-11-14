@@ -333,7 +333,7 @@ html,body,.over{touch-action:manipulation}
 
 .mycrow{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}.mycprev{width:min(220px,70vw);flex:none;margin:0 auto}.mycprev .card{width:100%;font-size:14px;animation:none}.mycform{flex:1;min-width:240px;display:flex;flex-direction:column;gap:10px}.mycform label{display:flex;flex-direction:column;gap:4px}.mka .btn{white-space:normal}
 .mko{display:flex;gap:14px;align-items:flex-start;margin-top:10px}.mkc{width:min(130px,34vw);flex:none;cursor:pointer}.mkc .card{width:100%;font-size:10px;animation:none}.mki{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.mkown{color:#ff4d5e;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+.mkown{color:#ff4d5e;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.3px}.mkown.nw{color:#3ddc84}.mkown.own{color:#ffb020}
 .mkp{display:flex;flex-direction:column}.mkp b{font-size:20px;color:var(--gold)}.mka{display:flex;flex-direction:column;gap:6px;margin-top:4px}.mkbid{display:flex;gap:6px}.mkbid .inp{flex:1;min-width:0}
 .mkt{width:44px;flex:none;cursor:pointer}.mks{align-items:center;gap:10px}.mkdlg{display:flex;flex-direction:column;gap:10px;text-align:left;max-height:92vh;overflow:auto}.mkgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:300px;overflow:auto;padding:4px}.mkpick{background:transparent;border:2px solid transparent;border-radius:12px;padding:3px;cursor:pointer}.mkpick .card{width:100%;font-size:8px;animation:none}.mkpick.mksel{border-color:var(--gold);box-shadow:0 0 14px #ffb02088}.mkchosen{text-align:center}.mkpick{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}.mkpick .card{min-width:0;flex:none;aspect-ratio:5/7}.mkx{font-weight:800;font-size:13px;color:var(--gold)}.mkdlg label{display:flex;flex-direction:column;gap:4px}
 .trx{display:flex;align-items:center;gap:6px;margin:8px 0}.trs{flex:1;min-width:0}.trg{display:flex;gap:4px;flex-wrap:wrap}.trc{width:min(78px,22vw);cursor:pointer;text-align:center}.trc .card{width:100%;font-size:7px;animation:none}.trn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tra{font-size:22px;color:var(--gold);flex:none}.trl{font-weight:700;margin-bottom:4px}
@@ -1761,10 +1761,13 @@ function mkSellDlg(){
 /* ---------- Échanges entre joueurs ---------- */
 function mkFree(i){var n=S.col[i]||0;((mkData&&mkData.trades)||[]).forEach(function(t){if(t.mine)t.give.forEach(function(x){if(x===i)n--})});return n}
 function trSide(label,ids){return '<div class="trs"><div class="mut sm trl">'+label+'</div><div class="trg">'+ids.map(function(i){var c=CARDS[i];return '<div class="trc" data-zi="'+i+'">'+cardHTML(i)+'<div class="sm trn" style="color:'+HEX[c[2]]+'">'+esc(c[0])+'</div></div>'}).join('')+'</div></div>'}
+function trOwn(t){var g=t.give.filter(function(i){return i>=0}),n=g.filter(function(i){return S.col[i]>0}).length,k=g.length;
+ var txt=n===0?'Nouvelle carte pour toi':k===1?'Tu as déjà cette carte (x'+S.col[g[0]]+')':'Tu as déjà '+n+' de ces '+k+' cartes';
+ return '<div class="mkown'+(n?' own':' nw')+'">'+txt+'</div>'}
 function trRow(t){
  var ok=t.mine||mkFree(t.want)>0;
  return '<div class="panel trr"><div class="mut sm">Proposé par</div>'+mkWho(t.seller)+'<div class="trx">'+trSide(t.mine?'Tu donnes':'Tu reçois',t.give)+'<div class="tra">⇄</div>'+trSide(t.mine?'Tu veux':'Tu donnes',[t.want])+'</div>'+
-  (t.mine?'':'<div class="mkown">'+(mkFree(t.want)>0?'Tu as la carte demandée (x'+mkFree(t.want)+' libre'+(mkFree(t.want)>1?'s':'')+')':'Tu n\'as pas la carte demandée')+'</div>')+
+  (t.mine?'':trOwn(t))+
   '<div class="mut sm">Se termine dans '+mkLeft(t.endsAt)+'</div><div class="mka">'+(t.mine?'<span class="mut sm">Ton échange</span><button class="btn sm ghost" data-tc="'+t.id+'">Annuler</button>':'<button class="btn sm gold"'+(ok?'':' disabled')+' data-ta="'+t.id+'">Accepter l\'échange</button>')+'</div></div>'}
 function trHTML(){
  var tr=(mkData.trades||[]).slice().sort(function(a,b){return (b.mine-a.mine)||(a.endsAt-b.endsAt)});
