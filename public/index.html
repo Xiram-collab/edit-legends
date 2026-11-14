@@ -272,7 +272,7 @@ html,body,.over{touch-action:manipulation}
 .mycrow{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}.mycprev{width:min(220px,70vw);flex:none;margin:0 auto}.mycprev .card{width:100%;font-size:14px;animation:none}.mycform{flex:1;min-width:240px;display:flex;flex-direction:column;gap:10px}.mycform label{display:flex;flex-direction:column;gap:4px}.mka .btn{white-space:normal}
 .mko{display:flex;gap:14px;align-items:flex-start;margin-top:10px}.mkc{width:min(130px,34vw);flex:none;cursor:pointer}.mkc .card{width:100%;font-size:10px;animation:none}.mki{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .mkp{display:flex;flex-direction:column}.mkp b{font-size:20px;color:var(--gold)}.mka{display:flex;flex-direction:column;gap:6px;margin-top:4px}.mkbid{display:flex;gap:6px}.mkbid .inp{flex:1;min-width:0}
-.mkt{width:44px;flex:none;cursor:pointer}.mks{align-items:center;gap:10px}.mkdlg{display:flex;flex-direction:column;gap:10px;text-align:left}.mkdlg label{display:flex;flex-direction:column;gap:4px}
+.mkt{width:44px;flex:none;cursor:pointer}.mks{align-items:center;gap:10px}.mkdlg{display:flex;flex-direction:column;gap:10px;text-align:left;max-height:92vh;overflow:auto}.mkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:300px;overflow:auto;padding:4px}.mkpick{background:transparent;border:2px solid transparent;border-radius:12px;padding:3px;cursor:pointer}.mkpick .card{width:100%;font-size:8px;animation:none}.mkpick.sel{border-color:var(--gold);box-shadow:0 0 14px #ffb02088}.mkchosen{text-align:center}.mkdlg label{display:flex;flex-direction:column;gap:4px}
 @media(max-width:380px){.mko{flex-direction:column}.mkc{width:110px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .bl{width:58%;height:auto;filter:drop-shadow(0 0 14px #ff3d81aa)}.pkface{flex-direction:column;gap:6px}.pkface b{display:block}
@@ -1509,7 +1509,7 @@ function rMarket(){
 function mkOffer(l){
  var c=CARDS[l.card]||['?',0,0,'',''],price=l.bid?l.bid:l.start;
  var act=l.mine?'<span class="mut sm">Ton offre'+(l.bid?'' :' · aucune mise')+'</span>'+(l.bid?'':'<button class="btn sm ghost" data-mc="'+l.id+'">Annuler</button>'):
-  '<div class="mkbid"><input class="inp" type="number" min="'+l.minNext+'" step="1" value="'+l.minNext+'" id="bv'+l.id+'" inputmode="numeric"><button class="btn sm gold" data-mb="'+l.id+'">'+(l.leading?'Surenchérir':'Miser')+'</button></div>'+(l.buynow?'<button class="btn sm" data-mbuy="'+l.id+'" data-p="'+l.buynow+'">Acheter maintenant · '+fmt(l.buynow)+' '+CUR+'</button>':'');
+  '<div class="mkbid"><input class="inp" type="number" min="'+l.minNext+'" step="1" value="'+l.minNext+'" id="bv'+l.id+'" inputmode="numeric" data-min="'+l.minNext+'" data-buy="'+(l.buynow||0)+'" data-lead="'+(l.leading?1:0)+'"><button class="btn sm gold" data-mb="'+l.id+'">'+(l.leading?'Surenchérir':'Miser')+'</button></div><div class="mut sm">Mise minimale : '+fmt(l.minNext)+' '+CUR+(l.buynow?' · achat immédiat dès '+fmt(l.buynow)+' '+CUR:'')+'</div>';
  return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
   '<div class="mkp"><b>'+fmt(price)+' '+CUR+'</b><span class="mut sm">'+(l.bid?'meilleure mise'+(l.bidder?' de '+esc(l.bidder.name):'')+(l.leading?' (toi)':''):'mise de départ')+'</span></div>'+
   '<div class="mut sm">Se termine dans '+mkLeft(l.endsAt)+(l.bids?' · '+l.bids+' mise'+(l.bids>1?'s':''):'')+'</div><div class="mka">'+act+'</div></div></div>'}
@@ -1525,8 +1525,16 @@ function paintMarket(){
  b.innerHTML=h;
  if($('mks'))$('mks').onclick=mkSellDlg;
  [].forEach.call(b.querySelectorAll('[data-zi]'),function(e){e.onclick=function(){openCardZoom(+e.dataset.zi)}});
- [].forEach.call(b.querySelectorAll('[data-mb]'),function(x){x.onclick=function(){var id=+x.dataset.mb,v=+$('bv'+id).value;x.disabled=true;act({action:'mbid',id:id,v:v}).then(function(r){setState(r.state);toast('Mise de '+fmt(v)+' '+CUR+' enregistrée');render()}).catch(function(){x.disabled=false;paintMarketSoon()})}});
- [].forEach.call(b.querySelectorAll('[data-mbuy]'),function(x){twice(x,function(){var id=+x.dataset.mbuy;act({action:'mbuy',id:id}).then(function(r){setState(r.state);toast('Carte achetée !');render()}).catch(function(){paintMarketSoon()})},'Confirmer l\'achat ?')});
+ [].forEach.call(b.querySelectorAll('[data-mb]'),function(x){
+  var id=+x.dataset.mb,inp=$('bv'+id),mn=+inp.dataset.min,bn=+inp.dataset.buy,lead=inp.dataset.lead==='1';
+  var sync=function(){var v=Math.floor(+inp.value);x.dataset.sure='0';
+   if(!(v>=mn)){x.disabled=true;x.textContent='Min. '+fmt(mn);return}
+   x.disabled=false;x.textContent=bn&&v>=bn?'Acheter maintenant · '+fmt(bn):(lead?'Surenchérir':'Miser')};
+  var clamp=function(){var v=Math.floor(+inp.value);if(!(v>=mn))v=mn;inp.value=v;sync()};
+  inp.oninput=sync;inp.onchange=clamp;inp.onblur=clamp;inp.onkeydown=function(e){if(e.key==='-'||e.key==='e'||e.key==='.'||e.key===','||e.key==='+')e.preventDefault();if(e.key==='Enter')clamp()};
+  x.onclick=function(){clamp();var v=Math.floor(+inp.value),buy=bn&&v>=bn;
+   if(buy&&x.dataset.sure!=='1'){x.dataset.sure='1';x.textContent='Confirmer l\'achat ?';setTimeout(function(){if(x.dataset.sure==='1')sync()},3500);return}
+   x.disabled=true;act({action:'mbid',id:id,v:v}).then(function(r){setState(r.state);toast(r.bought?'Carte achetée !':'Mise de '+fmt(v)+' '+CUR+' enregistrée');render()}).catch(function(){x.disabled=false;paintMarketSoon()})}});
  [].forEach.call(b.querySelectorAll('[data-mc]'),function(x){twice(x,function(){act({action:'mcancel',id:+x.dataset.mc}).then(function(r){setState(r.state);toast('Offre annulée, carte rendue');render()}).catch(function(){})},'Confirmer')})}
 function paintMarketSoon(){api('mlist').then(function(d){mkData=d;if(tab==='mk')paintMarket()}).catch(function(){})}
 function cthumbCard(i){var c=CARDS[i];return c&&c[4]?'<img class="cth" src="'+esc(imgUrl(c[4]))+'" alt="">':'<span class="cth">'+esc(c?c[0].charAt(0).toUpperCase():'?')+'</span>'}
@@ -1534,16 +1542,23 @@ function mkSellDlg(){
  var mine=[];CARDS.forEach(function(c,i){if(c&&S.col[i]>0)mine.push(i)});
  if(!mine.length){toast('Tu n\'as aucune carte à vendre');return}
  mine.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0],'fr')});
- closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
+ var sel=mine[0];closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox wpbox mkdlg"><h2>Vendre une carte</h2><p class="mut sm">La carte quitte ta collection tant que l\'offre est ouverte ('+MKC.HOURS+' h). Elle revient si personne ne mise.</p>'+
-  '<label>Carte<select class="inp" id="msc">'+mine.map(function(i){return '<option value="'+i+'">'+esc(CARDS[i][0])+' · '+RAR[CARDS[i][2]].n+' (x'+S.col[i]+')</option>'}).join('')+'</select></label>'+
-  '<label>Mise de départ ('+CUR+')<input class="inp" id="mss" type="number" step="1" inputmode="numeric"></label><div class="mut sm" id="msm"></div>'+
-  '<label>Achat immédiat (facultatif, supérieur à la mise)<input class="inp" id="msb" type="number" step="1" inputmode="numeric" placeholder="Laisse vide pour une enchère simple"></label>'+
+  '<div class="mkgrid" id="msg">'+mine.map(function(i){return '<button type="button" class="mkpick" data-pi="'+i+'">'+cardHTML(i,{count:S.col[i]})+'</button>'}).join('')+'</div>'+
+  '<div class="mkchosen" id="msn"></div>'+
+  '<label>Mise de départ ('+CUR+')<input class="inp" id="mss" type="number" step="1" min="0" inputmode="numeric"></label><div class="mut sm" id="msm"></div>'+
+  '<label>Achat immédiat (facultatif, supérieur à la mise)<input class="inp" id="msb" type="number" step="1" min="0" inputmode="numeric" placeholder="Laisse vide pour une enchère simple"></label>'+
   '<div class="bar"><button class="btn gold" id="mso">Mettre en vente</button><button class="btn sm ghost" id="msx">Annuler</button></div></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('msx').onclick=closePick;
- var sync=function(){var m=MKC.MIN[CARDS[+$('msc').value][2]];$('mss').min=m;if(!$('mss').value||+$('mss').value<m)$('mss').value=m;$('msm').textContent='Minimum pour cette rareté : '+fmt(m)+' '+CUR};
- $('msc').onchange=function(){$('mss').value='';sync()};sync();
- $('mso').onclick=function(){var b=this,i=+$('msc').value,body={action:'msell',i:i,start:+$('mss').value,buynow:$('msb').value===''?null:+$('msb').value};b.disabled=true;
+ var minOf=function(){return MKC.MIN[CARDS[sel][2]]};
+ var clampS=function(){var m=minOf(),v=Math.floor(+$('mss').value);if(!(v>=m))v=m;$('mss').value=v;$('mss').min=m;var bv=$('msb').value;if(bv!==''&&!(Math.floor(+bv)>v)){$('msb').value=v+1}};
+ var paint=function(){[].forEach.call(d.querySelectorAll('.mkpick'),function(b){b.classList.toggle('sel',+b.dataset.pi===sel)});
+  $('msn').innerHTML='<b style="color:'+HEX[CARDS[sel][2]]+'">'+esc(CARDS[sel][0])+'</b> · '+RAR[CARDS[sel][2]].n;$('mss').min=minOf();$('mss').value=minOf();$('msm').textContent='Minimum pour cette rareté : '+fmt(minOf())+' '+CUR};
+ [].forEach.call(d.querySelectorAll('.mkpick'),function(b){b.onclick=function(){sel=+b.dataset.pi;paint()}});
+ $('mss').onchange=$('mss').onblur=clampS;$('msb').onchange=$('msb').onblur=function(){if(this.value!=='')clampS()};
+ [$('mss'),$('msb')].forEach(function(e){e.onkeydown=function(ev){if(ev.key==='-'||ev.key==='e'||ev.key==='.'||ev.key===','||ev.key==='+')ev.preventDefault()}});
+ paint();
+ $('mso').onclick=function(){clampS();var b=this,body={action:'msell',i:sel,start:+$('mss').value,buynow:$('msb').value===''?null:+$('msb').value};b.disabled=true;
   act(body).then(function(r){setState(r.state);closePick();toast('Offre publiée');mkSub='mine';render()}).catch(function(){b.disabled=false})}}
 function adAnn(){
  api('ping').then(function(r){if(!adAlive('ann'))return;

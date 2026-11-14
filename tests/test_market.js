@@ -55,7 +55,13 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const L = r.json.open[0]; assert.strictEqual(L.seller.name, 'Bob'); assert.strictEqual(L.minNext, 300); ok('l\'offre apparaît avec le nom du vendeur');
   r = await call('tokB', { action: 'mbid', id: L.id, v: 300 }); assert.strictEqual(r.status, 400); ok('pas de mise sur sa propre carte');
   r = await call('tokC', { action: 'mbid', id: L.id, v: 299 }); assert.strictEqual(r.status, 400); ok('mise sous le départ refusée');
-  r = await call('tokC', { action: 'mbid', id: L.id, v: 900 }); assert.strictEqual(r.status, 400); ok('mise au prix d\'achat immédiat refusée (utiliser Acheter)');
+  // une mise au-dessus du prix d'achat immédiat achète tout de suite, au prix demandé (pas au-delà)
+  const L2 = (await call('tokD', { action: 'mlist' })).json.open; assert.strictEqual(L2.length, 1);
+  await give('B', cr, 1); await call('tokB', { action: 'msell', i: cr, start: 300, buynow: 1000 });
+  const idx = (await call('tokD', { action: 'mlist' })).json.open.find((x) => x.buynow === 1000);
+  const dm0 = await bank('tokD'); r = await call('tokD', { action: 'mbid', id: idx.id, v: 5000 });
+  assert.strictEqual(r.status, 200); assert.strictEqual(r.json.bought, true); assert.strictEqual(r.json.state.money, dm0 - 1000); assert.strictEqual((await call('tokD', { action: 'mlist' })).json.open.find((x) => x.id === idx.id), undefined);
+  base.D -= 1000; ok('mise au-dessus du seuil = achat immédiat au prix d\'achat immédiat');
   r = await call('tokC', { action: 'mbid', id: L.id, v: 300 }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.state.money, base.C - 300); ok('mise acceptée : Coins bloqués');
   r = await call('tokD', { action: 'mbid', id: L.id, v: 305 }); assert.strictEqual(r.status, 400); ok('surenchère minimale de 5 % exigée');
   r = await call('tokD', { action: 'mbid', id: L.id, v: 400 }); assert.strictEqual(r.status, 200);
@@ -65,15 +71,15 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const bBefore = await bank('tokB');
   clock += 11 * 3600000; r = await call('tokC', { action: 'mlist' }); assert.strictEqual(r.json.open.length, 1); ok('toujours ouverte avant 12 h');
   clock += 2 * 3600000; r = await call('tokC', { action: 'mlist' });
-  assert.strictEqual(r.json.open.length, 0); assert.strictEqual(r.json.sold.length, 1); assert.strictEqual(r.json.sold[0].buyer.name, 'Dana'); assert.strictEqual(r.json.sold[0].seller.name, 'Bob'); assert.strictEqual(r.json.sold[0].price, 400); ok('fin à 12 h : « achetée par Dana » visible de tous');
-  assert.strictEqual(await count('tokD', cr), 1); assert.strictEqual(await bank('tokB'), bBefore + 400); ok('la carte va au gagnant, les Coins au vendeur');
+  assert.strictEqual(r.json.open.length, 0); assert.strictEqual(r.json.sold.length, 2); assert.strictEqual(r.json.sold[0].buyer.name, 'Dana'); assert.strictEqual(r.json.sold[0].seller.name, 'Bob'); assert.strictEqual(r.json.sold[0].price, 400); ok('fin à 12 h : « achetée par Dana » visible de tous');
+  assert.strictEqual(await count('tokD', cr), 2); assert.strictEqual(await bank('tokB'), bBefore + 400); ok('la carte va au gagnant, les Coins au vendeur');
   r = await call('tokD', { action: 'mbid', id: L.id, v: 999 }); assert.strictEqual(r.status, 400); ok('offre terminée : plus de mise');
 
   // sans mise : la carte revient au vendeur
   const c0 = await count('tokB', cm);
   r = await call('tokB', { action: 'msell', i: cm, start: 20 }); assert.strictEqual(r.status, 200); assert.strictEqual(await count('tokB', cm), c0 - 1);
   clock += 13 * 3600000; await call('tokC', { action: 'mlist' });
-  assert.strictEqual(await count('tokB', cm), c0); r = await call('tokC', { action: 'mlist' }); assert.strictEqual(r.json.open.length, 0); assert.strictEqual(r.json.sold.length, 1); ok('sans mise : la carte revient au vendeur, pas de vente affichée');
+  assert.strictEqual(await count('tokB', cm), c0); r = await call('tokC', { action: 'mlist' }); assert.strictEqual(r.json.open.length, 0); assert.strictEqual(r.json.sold.length, 2); ok('sans mise : la carte revient au vendeur, pas de vente affichée');
 
   // annulation sans mise
   r = await call('tokB', { action: 'msell', i: cm, start: 20 }); const id2 = (await call('tokC', { action: 'mlist' })).json.open[0].id;
