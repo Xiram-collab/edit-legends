@@ -271,6 +271,7 @@ html,body,.over{touch-action:manipulation}
 
 .mycrow{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}.mycprev{width:min(220px,70vw);flex:none;margin:0 auto}.mycprev .card{width:100%;font-size:14px;animation:none}.mycform{flex:1;min-width:240px;display:flex;flex-direction:column;gap:10px}.mycform label{display:flex;flex-direction:column;gap:4px}.mka .btn{white-space:normal}
 .mko{display:flex;gap:14px;align-items:flex-start;margin-top:10px}.mkc{width:min(130px,34vw);flex:none;cursor:pointer}.mkc .card{width:100%;font-size:10px;animation:none}.mki{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.mkown{color:#ff4d5e;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
 .mkp{display:flex;flex-direction:column}.mkp b{font-size:20px;color:var(--gold)}.mka{display:flex;flex-direction:column;gap:6px;margin-top:4px}.mkbid{display:flex;gap:6px}.mkbid .inp{flex:1;min-width:0}
 .mkt{width:44px;flex:none;cursor:pointer}.mks{align-items:center;gap:10px}.mkdlg{display:flex;flex-direction:column;gap:10px;text-align:left;max-height:92vh;overflow:auto}.mkgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:300px;overflow:auto;padding:4px}.mkpick{background:transparent;border:2px solid transparent;border-radius:12px;padding:3px;cursor:pointer}.mkpick .card{width:100%;font-size:8px;animation:none}.mkpick.mksel{border-color:var(--gold);box-shadow:0 0 14px #ffb02088}.mkchosen{text-align:center}.mkpick{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}.mkpick .card{min-width:0;flex:none;aspect-ratio:5/7}.mkx{font-weight:800;font-size:13px;color:var(--gold)}.mkdlg label{display:flex;flex-direction:column;gap:4px}
 @media(max-width:380px){.mko{flex-direction:column}.mkc{width:110px}}
@@ -1509,7 +1510,7 @@ function rMarket(){
  load();clearInterval(mkT);mkT=setInterval(function(){if(tab!=='mk'){clearInterval(mkT);mkT=0;return}if(!document.querySelector('#pk'))load()},20000)}
 function mkOffer(l){
  var act=l.mine?'<span class="mut sm">Ton offre</span><button class="btn sm ghost" data-mc="'+l.id+'">Annuler</button>':'<button class="btn sm gold" data-mbuy="'+l.id+'">Acheter · '+fmt(l.buynow)+' '+CUR+'</button>';
- return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
+ return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mkown">'+(S.col[l.card]?'Tu l\'as déjà (x'+S.col[l.card]+')':'Tu ne l\'as pas')+'</div><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
   '<div class="mkp"><b>'+fmt(l.buynow)+' '+CUR+'</b><span class="mut sm">prix</span></div>'+
   '<div class="mut sm">Se termine dans '+mkLeft(l.endsAt)+'</div><div class="mka">'+act+'</div></div></div>'}
 function paintMarket(){
