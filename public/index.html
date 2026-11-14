@@ -1510,7 +1510,7 @@ function rMarket(){
  load();clearInterval(mkT);mkT=setInterval(function(){if(tab!=='mk'){clearInterval(mkT);mkT=0;return}if(!document.querySelector('#pk'))load()},20000)}
 function mkOffer(l){
  var act=l.mine?'<span class="mut sm">Ton offre</span><button class="btn sm ghost" data-mc="'+l.id+'">Annuler</button>':'<button class="btn sm gold" data-mbuy="'+l.id+'">Acheter · '+fmt(l.buynow)+' '+CUR+'</button>';
- return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mkown">'+(S.col[l.card]?'Tu l\'as déjà (x'+S.col[l.card]+')':'Tu ne l\'as pas')+'</div><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
+ return '<div class="panel mko"><div class="mkc" data-zi="'+l.card+'">'+cardHTML(l.card)+'</div><div class="mki"><div class="mkown">'+(l.mine?'Tu l\'as (en vente)':S.col[l.card]?'Tu l\'as déjà (x'+S.col[l.card]+')':'Tu ne l\'as pas')+'</div><div class="mut sm">Proposée par</div>'+mkWho(l.seller)+
   '<div class="mkp"><b>'+fmt(l.buynow)+' '+CUR+'</b><span class="mut sm">prix</span></div>'+
   '<div class="mut sm">Se termine dans '+mkLeft(l.endsAt)+'</div><div class="mka">'+act+'</div></div></div>'}
 function paintMarket(){
