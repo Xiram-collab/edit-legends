@@ -601,14 +601,28 @@ function bindQs(){var old=$('qsfix');if(old)old.remove();var bar=document.create
 function qsConfirm(){var t=qsTotals();if(!t.n)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox wpbox"><h2>Vendre définitivement ?</h2><p style="font-size:17px;margin:6px 0"><b>'+t.n+' carte'+(t.n>1?'s':'')+'</b> pour <b>+'+fmt(t.g)+' '+CUR+'</b></p>'+(t.last?'<p class="qsw" style="font-size:14px">⚠ '+t.last+' carte'+(t.last>1?'s ne seront':' ne sera')+' plus dans ta collection (dernier exemplaire).</p>':'')+'<p class="mut sm">Cette vente est définitive : tu ne pourras pas revenir en arrière.</p><div class="bar" style="justify-content:center"><button class="btn ghost" id="qsno">Annuler</button><button class="btn gold" id="qsyes">Vendre définitivement</button></div></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('qsno').onclick=closePick;$('qsyes').onclick=function(){closePick();qsGo()}}
-function qsGo(){if(netBusy)return;var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){items.push([i,q]);undo.push([i,q]);t+=q*RAR[CARDS[i][2]].v;n+=q}});if(!items.length)return;
+function qsGo2(){if(netBusy)return;var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){items.push([i,q]);undo.push([i,q]);t+=q*RAR[CARDS[i][2]].v;n+=q}});if(!items.length)return;
  undo.forEach(function(u){S.col[u[0]]-=u[1]});S.money+=t;qsMode=false;qsSel={};sfx('coin');toast(n+' carte'+(n>1?'s':'')+' vendue'+(n>1?'s':'')+' · +'+fmt(t)+' '+CUR);quietRender();
  act({action:'sellmany',items:items}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]+=u[1]});S.money-=t;quietRender()})}
+// Avant de vendre : si une carte vendue est aussi proposée au marché ou en échange et qu'il n'en restera pas assez, on demande confirmation
+function guardSell(plan,go){
+ if(netBusy||!plan.length)return;
+ var check=function(d){var need={},m={};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});var t={};(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});
+  var bad=[];plan.forEach(function(p){var i=p[0],left=(S.col[i]||0)-p[1],nm=m[i]||0,nt=t[i]||0;if(left<Math.max(nm,nt))bad.push({i:i,m:left<nm,t:left<nt})});
+  if(!bad.length){go();return}
+  closePick();var o=document.createElement('div');o.id='pk';o.className='pickov';
+  o.innerHTML='<div class="pickbox wpbox"><h2>Carte déjà proposée</h2>'+bad.map(function(b){return '<p style="margin:6px 0"><b style="color:'+HEX[CARDS[b.i][2]]+'">'+esc(CARDS[b.i][0])+'</b> est '+(b.m&&b.t?'sur le marché et dans un échange':b.m?'sur le marché':'dans un échange')+'.</p>'}).join('')+'<p class="qsw" style="font-size:14px">Voulez-vous vraiment la vendre alors qu\'elle est '+(bad.length>1?'proposée':'proposée')+' ? Tu n\'en auras plus assez : l\'offre sera retirée.</p><div class="bar" style="justify-content:center"><button class="btn ghost" id="gsno">Annuler</button><button class="btn gold" id="gsyes">Vendre quand même</button></div></div>';
+  document.body.appendChild(o);o.onclick=function(e){if(e.target===o)closePick()};$('gsno').onclick=closePick;$('gsyes').onclick=function(){closePick();go()}};
+ if(mkData&&Date.now()-(mkData.at+mkData.now)<10000)check(mkData);
+ else api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;check(d)}).catch(function(){go()})}
+function qsGo(){var plan=[];Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0)plan.push([i,q])});guardSell(plan,qsGo2)}
+function quickSellOne(i){guardSell([[i,1]],function(){quickSellOne2(i)})}
+function quickSellAll(){var plan=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c&&n>1)plan.push([i,n-1])});guardSell(plan,quickSellAll2)}
 function quietRender(){document.body.classList.add('qr');render();setTimeout(function(){document.body.classList.remove('qr')},450)}
 // vente instantanée : l'écran se met à jour tout de suite (sans réanimation), le serveur confirme ensuite
-function quickSellOne(i){if(netBusy)return;var v=RAR[CARDS[i][2]].v;S.col[i]--;S.money+=v;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
+function quickSellOne2(i){if(netBusy)return;var v=RAR[CARDS[i][2]].v;S.col[i]--;S.money+=v;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
  act({action:'sell',i:i}).then(function(r){setState(r.state);quietRender()}).catch(function(){S.col[i]++;S.money-=v;quietRender()})}
-function quickSellAll(){if(netBusy)return;var undo=[],t=0;CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c&&n>1){t+=(n-1)*RAR[c[2]].v;undo.push([i,n]);S.col[i]=1}});if(!t)return;S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR);quietRender();
+function quickSellAll2(){if(netBusy)return;var undo=[],t=0;CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c&&n>1){t+=(n-1)*RAR[c[2]].v;undo.push([i,n]);S.col[i]=1}});if(!t)return;S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR);quietRender();
  act({action:'sell',all:true}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]=u[1]});S.money-=t;quietRender()})}
 function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]});if(typeof schedPing==='function')schedPing()}
 function schedPing(){if(pingT)return;pingT=setTimeout(function(){pingT=0;doPing()},2500)}
