@@ -53,6 +53,8 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   // Propositions de cartes par les joueurs
   r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 0, rarity: 6 }); assert.strictEqual(r.status, 400); ok('rareté inexistante refusée');
   r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 9, rarity: 1 }); assert.strictEqual(r.status, 400); ok('catégorie invalide refusée');
+  for (const [k, nm] of [[4, 'Warrior Test'], [5, 'Builder Test'], [6, 'Mappeur Test'], [7, 'Esport Test']]) { r = await call('tokC', { action: 'cardsubmit', name: nm, cat: k, rarity: 1 }); assert.strictEqual(r.status, 200); }
+  ok('nouvelles catégories (Creative Warrior, Buildfighter, Mappeur, Esport) acceptées dans les propositions');
   r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 0, rarity: 1, descr: 'Un éditeur' }); assert.strictEqual(r.status, 200); ok('un joueur propose une carte');
   r = await call('tokB', { action: 'cardsubmit', name: 'nouveau joueur', cat: 1, rarity: 1 }); assert.strictEqual(r.status, 400); ok('doublon de proposition refusé');
   const exist = (await call('tokC', { action: 'me' })).json.cards[0][0];
