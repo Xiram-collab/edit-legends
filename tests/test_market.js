@@ -55,6 +55,8 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   assert.strictEqual(await count('tokB', cr), before); ok('mise en vente : la carte reste dans la collection');
   r = await call('tokC', { action: 'mlist' }); assert.strictEqual(r.json.open.length, 1);
   const L = r.json.open[0]; assert.strictEqual(L.seller.name, 'Bob'); assert.strictEqual(L.buynow, 900); ok('l\'offre apparaît avec le nom du vendeur et son prix');
+  { const GG = require('../lib/game'); const SS = GG.newState(); const cs = [null, ['x', '', 0], ['y', '', 0]]; SS.col[1] = 5; SS.col[2] = 4; SS.money = 0;
+    const gain = GG.sellAll(SS, cs, { 1: 3 }); assert.strictEqual(SS.col[1], 3); assert.strictEqual(SS.col[2], 1); assert.ok(gain > 0); ok('« tout vendre » garde les exemplaires proposés au marché / en échange'); }
   r = await call('tokC', { action: 'mbid', id: L.id, v: 950 }); assert.strictEqual(r.status, 400); assert.strictEqual(await bank('tokC'), base.C); ok('pas d\'enchères : miser est refusé');
   r = await call('tokB', { action: 'mbuy', id: L.id }); assert.strictEqual(r.status, 400); ok('pas d\'achat de sa propre carte');
   await coins('D', -(await bank('tokD')) + 100);
