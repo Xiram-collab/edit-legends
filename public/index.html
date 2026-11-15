@@ -1431,7 +1431,7 @@ var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','play
 var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
 var PERM_SUB={home:'players',live:'players',players:'players',stats:'players',cards:'cards',times:'times',market:'market',ann:'announce',log:'logs',acts:'logs'};
 function can(k){return !!ISADMIN&&(ISOWNER||!PERMS||PERMS.indexOf(k)>=0)}
-function adSubOk(k){if(ISOWNER||!ISADMIN)return true;if(k==='gift'||k==='own'||k==='team')return false;var p=PERM_SUB[k];return !p||can(p)}
+function adSubOk(k){if(ISOWNER||!ISADMIN)return true;if(k==='gift'||k==='own'||k==='team'||k==='tools')return false;var p=PERM_SUB[k];return !p||can(p)}
 function adGroups(){return ADG.map(function(x){return [x[0],x[1],x[2],x[3].filter(adSubOk)]}).filter(function(x){return x[3].length})}
 function adNav(){
  if(!ISADMIN)return '';

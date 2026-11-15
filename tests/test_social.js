@@ -154,6 +154,8 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'apact', id: 'C', a: 'm', v: 10 }); assert.strictEqual(r.status, 200); ok('avec le droit « Donner / retirer », l\'admin peut agir sur un joueur normal');
   r = await call('tokB', { action: 'aover' }); assert.strictEqual(r.status, 403); ok('droits précis : sans le droit « Temps », l\'admin est bloqué');
   r = await call('tokB', { action: 'me' }); assert.deepStrictEqual(r.json.perms, ['give', 'players']);
+  r = await call('tokB', { action: 'admin', a: 'm', v: 100000 }); assert.strictEqual(r.status, 403); ok('« Mes outils » (Coins, packs, cartes pour soi) : refusé à un admin');
+  r = await call('tokA', { action: 'admin', a: 'm', v: 100 }); assert.strictEqual(r.status, 200); ok('« Mes outils » : réservé au propriétaire');
   r = await call('tokA', { action: 'asetadmin', id: 'B', v: false }); r = await call('tokB', { action: 'aover' }); assert.strictEqual(r.status, 403); ok('admin retiré');
   r = await call('tokA', { action: 'alog' }); assert.ok(r.json.rows.length >= 8); assert.strictEqual(r.json.rows[0].admin, 'Alice'); ok('journal des actions admin');
   // ---------- score : doublons compris, même revendus ----------
