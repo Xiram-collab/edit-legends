@@ -932,7 +932,7 @@ function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||
  var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox zoombox"><div class="zc">'+cardHTML(i)+'</div>'+(CARDS[i][3]?'<div class="zdesc">'+esc(CARDS[i][3])+'</div>':'')+'<div class="pst" style="font-size:15px">Obtenue x'+pl+'</div><button class="btn sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick}
-function dupKeep(d){var m={},t={};if(!d)return {};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});var k={};CARDS.forEach(function(c,i){var v=Math.max(1,m[i]||0,t[i]||0);if(v>1)k[i]=v});return k}
+function dupKeep(d){var m={},t={};if(!d)return {};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});var k={};CARDS.forEach(function(c,i){var l=Math.max(m[i]||0,t[i]||0);if(l)k[i]=l+1});return k}
 function dupValue(){var t=0,k=dupKeep(mkData);CARDS.forEach(function(c,i){var n=S.col[i]||0,q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v});return t}
 var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
 function colNav(){return subnavH(MYCARD?COLS.concat([['mc','Ma carte']]):COLS,colSub,'data-ccs')}
