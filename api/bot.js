@@ -6,6 +6,7 @@
 const crypto = require('crypto');
 const { createDb } = require('../lib/supabaseDb');
 const { botProfile } = require('../lib/handler');
+const G = require('../lib/game');
 
 let db = null;
 const same = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); };
@@ -29,13 +30,15 @@ module.exports = async (req, res) => {
       res.status(200).json({ sort, total: await db.rankedCount(), rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened })) }); return;
     }
     if (body.action === 'boards') {
-      // /classement : collection (points de rareté des cartes différentes, puis cartes, puis mythiques, puis ancienneté) et runs, 20 premiers de chaque
+      // /classement : collection (points de rareté des cartes différentes, puis cartes, puis mythiques, puis ancienneté) et runs de la semaine, 20 premiers de chaque
       const catalog = (await db.getCards()).filter((c) => c && !c[5]).length;
       const coll = (await db.leaderboard('coll', 20, 0))
         .map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, cscore: r.cscore || 0, score: r.score, opened: r.opened }));
-      const rb = (await db.runsBoard()).slice(0, 20);
-      const pr = rb.length ? await db.getProfiles(rb.map((r) => r.id)) : {};
-      const runs = rb.map((r, i) => ({ rank: i + 1, name: (pr[r.id] || {}).name || 'Joueur', owned: r.owned, mythics: r.mythics, score: r.score, runs: r.runs }));
+      // runs de la SEMAINE en cours (remis à zéro chaque lundi minuit, comme sur le site) ; cartes et score = totaux du joueur
+      const wkRows = (await db.periodBoard('week', G.parisKeys(Date.now()).wk)).filter((r) => r.runs > 0).sort((a, b) => b.runs - a.runs || (a.id < b.id ? -1 : 1)).slice(0, 20);
+      const tot = {}; if (wkRows.length) (await db.runsBoard()).forEach((r) => { tot[r.id] = r; });
+      const pr = wkRows.length ? await db.getProfiles(wkRows.map((r) => r.id)) : {};
+      const runs = wkRows.map((r, i) => { const t = tot[r.id] || r; return { rank: i + 1, name: (pr[r.id] || {}).name || 'Joueur', owned: t.owned, mythics: t.mythics, score: t.score, runs: r.runs }; });
       res.status(200).json({ catalog, total: await db.rankedCount(), coll, runs }); return;
     }
     if (body.action === 'announce') {
