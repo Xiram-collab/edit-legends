@@ -10,6 +10,7 @@ module.exports = function fakeDb(cards, validCodes) {
     tokD: { id: 'D', discordId: '444', name: 'Dana', avatar: '' },
     tokE: { id: 'E', discordId: '555', name: 'Eli', avatar: '' },
   };
+  let boardPaid = null; const bios = [];
   const sumOf = (uid) => { const r = saves.get(uid); return r && r.sum ? r.sum : null; };
   const frow = (x, y) => friends.find((f) => (f.a === x && f.b === y) || (f.a === y && f.b === x)) || null;
   return {
@@ -47,7 +48,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async getSummaries(ids) { const m = {}; ids.forEach((i) => { const s = sumOf(i); if (s) m[i] = s; }); return m; },
     _ranked(sort) {
       return [...saves.keys()].filter((id) => { const s = sumOf(id); return s && !s.hidden && s.owned > 0 && profiles.has(id); })
-        .sort((x, y) => sumOf(y)[sort] - sumOf(x)[sort] || (x < y ? -1 : 1));
+        .sort((x, y) => sort === 'coll' ? (sumOf(y).owned - sumOf(x).owned || sumOf(y).mythics - sumOf(x).mythics || (sumOf(x).cat || 0) - (sumOf(y).cat || 0) || (x < y ? -1 : 1)) : sumOf(y)[sort] - sumOf(x)[sort] || (x < y ? -1 : 1));
     },
     async leaderboard(sort, limit, offset = 0) {
       return this._ranked(sort).slice(offset, offset + limit).map((id) => Object.assign({ id, name: profiles.get(id).name, avatar: '' }, sumOf(id)));
@@ -80,6 +81,7 @@ module.exports = function fakeDb(cards, validCodes) {
         .map((id) => { const s = sumOf(id); return { id, runs: m[id], owned: s.owned || 0, mythics: s.mythics || 0, score: s.score || 0, opened: s.opened || 0 }; })
         .sort((a, b) => b.runs - a.runs || (a.id < b.id ? -1 : 1));
     },
+    async claimBoard(kind, wk) { boardPaid = boardPaid || {}; const last = boardPaid[kind]; if (last === undefined) { boardPaid[kind] = wk; return 'first'; } if (last >= wk) return false; boardPaid[kind] = wk; return true; },
     async periodBoard(period, key) {
       const kf = period === 'day' ? ['dk', 'd', 'dr'] : ['wk', 'w', 'wr'];
       return [...saves.entries()].filter(([id, r]) => { const s = sumOf(id); return s && !s.hidden && r.data.per && r.data.per[kf[0]] === key; })
@@ -131,6 +133,10 @@ module.exports = function fakeDb(cards, validCodes) {
     async marketDue(nowIso) { return market.filter((m) => (m.status === 'open' && Date.parse(m.ends_at) <= Date.parse(nowIso)) || ((m.status === 'sold' || m.status === 'expired') && (!m.card_done || !m.pay_done))).map((m) => Object.assign({}, m)); },
     async marketClaim(id, flag) { await Promise.resolve(); const m = market.find((x) => x.id === id); if (!m || m[flag]) return false; m[flag] = true; return true; },
     async marketUnclaim(id, flag) { const m = market.find((x) => x.id === id); if (m) m[flag] = false; },
+    async listBios() { return bios.map((b) => Object.assign({}, b)); },
+    async getBio(id) { const b = bios.find((x) => x.id === id); return b ? Object.assign({}, b) : null; },
+    async addBio(row) { bios.push(Object.assign({ id: bios.length + 1, status: 'pending', created_at: new Date().toISOString() }, row)); },
+    async updateBio(id, f) { Object.assign(bios.find((x) => x.id === id), f); },
     async notify(uid, text) { notes.push({ id: notes.length + 1, user_id: uid, text, created_at: new Date().toISOString() }); },
     async listNotes(uid) { return notes.filter((n) => n.user_id === uid).reverse(); },
     async readNotes(uid, ids) { for (let i = notes.length - 1; i >= 0; i--) if (notes[i].user_id === uid && ids.includes(notes[i].id)) notes.splice(i, 1); },

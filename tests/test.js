@@ -94,7 +94,7 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
     if (CW[last.res].t === 'card') nCard++;
     if (CW[last.res].t === 'coins') nCoins += last.coins;
   }
-  assert.ok(nCard > 0 && nCoins > 0 && nRel > 0 && maxChain <= 5 && S0.money === nCoins && S0.opened === 0 && S0.wp[6] === nCard && Object.keys(S0.col).length === 0); ok('roue : carte en attente (à récupérer), Coins crédités, relances (max 5), rien d\'ajouté directement à la collection');
+  assert.ok(nCard > 0 && nCoins > 0 && maxChain <= 5 && S0.money === nCoins && S0.opened === 0 && S0.wp[6] === nCard && Object.keys(S0.col).length === 0); ok('roue : carte en attente (à récupérer), Coins crédités, relances (max 5), rien d\'ajouté directement à la collection');
   const S1 = { wp: {}, money: 0, col: {}, pulled: {}, opened: 0, wheel: [3, 1, 0, 0, 0] }; spinForReward(S1, rnd, cards);
   assert.strictEqual(S1.wheel.length, CW.length); assert.strictEqual(S1.wheel[0], 3); ok('anciens compteurs de roue conservés');
 

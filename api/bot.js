@@ -31,9 +31,8 @@ module.exports = async (req, res) => {
     if (body.action === 'boards') {
       // /classement : collection (cartes, puis mythiques, puis ancienneté si connue) et runs, 20 premiers de chaque
       const catalog = (await db.getCards()).filter((c) => c && !c[5]).length;
-      const coll = (await db.leaderboard('owned', 100, 0))
-        .sort((x, y) => y.owned - x.owned || y.mythics - x.mythics || (x.cat && y.cat ? x.cat - y.cat : 0))
-        .slice(0, 20).map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened }));
+      const coll = (await db.leaderboard('coll', 20, 0))
+        .map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened }));
       const rb = (await db.runsBoard()).slice(0, 20);
       const pr = rb.length ? await db.getProfiles(rb.map((r) => r.id)) : {};
       const runs = rb.map((r, i) => ({ rank: i + 1, name: (pr[r.id] || {}).name || 'Joueur', owned: r.owned, mythics: r.mythics, score: r.score, runs: r.runs }));
