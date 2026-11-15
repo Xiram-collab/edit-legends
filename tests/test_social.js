@@ -53,6 +53,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   // Propositions de cartes par les joueurs
   r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 0, rarity: 6 }); assert.strictEqual(r.status, 400); ok('rareté inexistante refusée');
   r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 9, rarity: 1 }); assert.strictEqual(r.status, 400); ok('catégorie invalide refusée');
+  r = await call('tokC', { action: 'cardsubmit', name: 'Joueur Long', cat: 6, rarity: 1, descr: 'Bio ' + 'x'.repeat(300) + '\n§Records§\nWR 7:12\n§Passé§\nClan A' }); assert.strictEqual(r.status, 200); ok('proposition avec Biographie / Records / Passé (au-delà de 140 caractères)');
   for (const [k, nm] of [[4, 'Warrior Test'], [5, 'Builder Test'], [6, 'Mappeur Test'], [7, 'Esport Test']]) { r = await call('tokC', { action: 'cardsubmit', name: nm, cat: k, rarity: 1 }); assert.strictEqual(r.status, 200); }
   ok('nouvelles catégories (Creative Warrior, Buildfighter, Mappeur, Esport) acceptées dans les propositions');
   r = await call('tokC', { action: 'cardsubmit', name: 'Nouveau Joueur', cat: 0, rarity: 1, descr: 'Un éditeur' }); assert.strictEqual(r.status, 200); ok('un joueur propose une carte');
