@@ -26,7 +26,8 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   assert.strictEqual(r.json.cards.length, cards.length); ok('nouveau compte : 3 packs, cartes chargées');
 
   // packs gratuits : 3 puis refus
-  for (let i = 0; i < 3; i++) { r = await call('tokB', { action: 'open', kind: 'free' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.cards.length, 5); }
+  for (let i = 0; i < 1; i++) { r = await call('tokB', { action: 'open', kind: 'free' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.cards.length, 5); }
+  r = await call('tokB', { action: 'open', kind: 'free', n: 5 }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.cards.length, 10); ok('ouverture x5 limitée au stock (2 packs = 10 cartes)');
   assert.strictEqual(r.json.state.stock, 0); assert.strictEqual(r.json.state.opened, 3);
   r = await call('tokB', { action: 'open', kind: 'free' }); assert.strictEqual(r.status, 400); ok('stock gratuit épuisé refusé');
   clock += 3600000; r = await call('tokB', { action: 'me' }); assert.strictEqual(r.json.state.stock, 1); ok('+1 pack gratuit après 1 h');
