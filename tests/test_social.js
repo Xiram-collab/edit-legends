@@ -330,6 +330,7 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   }
   // tout ouvrir (packs en attente)
   {
+    for (const g of [2, 3, 4]) await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: -1000, i: g });   // d'éventuelles récompenses de classement déjà versées
     await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: 3, i: 0 }); await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: 2, i: 6 }); await call('tokA', { action: 'apact', id: 'C', a: 'wp', v: 1, i: 5 });
     const o0 = (await call('tokC', { action: 'me' })).json.state.opened;
     r = await call('tokC', { action: 'openall' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.cards.length, 3 * 5 + 2); assert.strictEqual(r.json.state.opened, o0 + 3);

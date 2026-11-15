@@ -1222,13 +1222,19 @@ function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Er
 var BR={runs:[],coll:[]};
 function rwTile(kind,rank){var w=(BR[kind]||[])[rank-1];if(!w)return '';return '<span class="rwcoin">'+fmt(w.c)+' <small>Coins</small></span>'+(w.g?'<span class="rwpk '+(w.g===3?'ep':'ra')+'">+ pack '+(w.g===3?'Épique+':'Rare+')+'</span>':'')}
 function brTxt(kind,rank){var w=(BR[kind]||[])[rank-1];return w?fmt(w.c)+' Coins'+(w.g?' + pack '+(w.g===3?'Épique+':'Rare+'):''):''}
+function monLeft(){var n=new Date(),pn=new Date(n.toLocaleString('en-US',{timeZone:'Europe/Paris'})),d=(8-pn.getDay())%7||7,t=new Date(pn.getFullYear(),pn.getMonth(),pn.getDate()+d,0,0,0);return Math.max(0,t-pn)}
+function rbTick(){clearInterval(tmT);var p=function(n){return n<10?'0'+n:''+n};
+ var draw=function(){var el=$('rbcd');if(!el||!comAlive('board')||boardScope!=='runs'){clearInterval(tmT);return}
+  var s=Math.floor(monLeft()/1000),u=[[Math.floor(s/86400),'jours'],[Math.floor(s%86400/3600),'heures'],[Math.floor(s%3600/60),'minutes'],[s%60,'secondes']];
+  el.innerHTML=u.map(function(x){return '<div><b>'+p(x[0])+'</b><span>'+x[1]+'</span></div>'}).join('')};
+ draw();tmT=setInterval(draw,1000)}
 function rBoard(){
- var isRuns=boardScope==='runs',kind=isRuns?'runs':'coll',sort=isRuns?'runs':'coll',per=isRuns?boardPer:'all',scope=boardScope==='friends'?'friends':'all';
+ var isRuns=boardScope==='runs',kind=isRuns?'runs':'coll',sort=isRuns?'runs':'coll',per=isRuns?'week':'all',scope=boardScope==='friends'?'friends':'all';
  function paint(d){if(!comAlive('board'))return;
   var val=function(r){return isRuns?r.runs+(r.runs>1?' runs':' run'):r.owned+' / '+TOT()};
-  var pers=[['all','Global'],['week','Hebdo']],P=isRuns&&per!=='all';
-  var h=(isRuns?'<div class="fl sorts pers">'+pers.map(function(x){return '<button data-bp="'+x[0]+'"'+(boardPer===x[0]?' class="on"':'')+'>'+x[1]+'</button>'}).join('')+'</div>':'')+
-   (isRuns?'<p class="runnote">Un <b>run</b> = une fois où tu as fini la map Fortnite et entré ton code de fin dans l\'onglet <b>Code</b>. '+(P?'Classement de la semaine : remis à zéro chaque lundi à minuit (heure de Paris).':'Classement global de tous les runs.')+'</p>':
+  var P=isRuns;
+  var h=(isRuns?'<div class="panel tmcd"><span class="mut sm">Remise à zéro des Runs dans</span><div class="cdg" id="rbcd"></div><span class="mut sm">Chaque lundi à minuit (heure de Paris). Les récompenses du Top 20 sont versées automatiquement juste avant.</span></div>':'')+
+   (isRuns?'<p class="runnote">Un <b>run</b> = une fois où tu as fini la map Fortnite et entré ton code de fin dans l\'onglet <b>Code</b>. '+'Classement de la semaine : seuls les runs faits depuis lundi comptent.'+'</p>':
    scope==='friends'?'':'<p class="runnote">Classement par <b>collection</b> (cartes différentes possédées). Égalité : le plus de Mythiques gagne, puis celui qui a atteint ce nombre en premier. <b>Jamais remis à zéro.</b></p>');
   if(scope!=='friends'&&(isRuns?P:true))h+='<div class="panel rwp"><b>🎁 Récompenses du Top 20</b><span class="mut sm">Versées automatiquement chaque lundi à minuit (heure de Paris).</span><div class="rwx">'+['🥇','🥈','🥉'].map(function(m,i){return '<div class="rwpod p'+(i+1)+'"><span class="rwm">'+m+'</span><b>'+(i+1)+(i?'e':'er')+'</b>'+rwTile(kind,i+1)+'</div>'}).join('')+'</div><div class="rwr">'+[[4,'4e à 5e'],[6,'6e à 10e'],[11,'11e à 20e']].map(function(r){return '<div class="rwc"><span>'+r[1]+'</span><b>'+brTxt(kind,r[0])+'</b></div>'}).join('')+'</div></div>';
   var me=d.me,mv=isRuns?(me.runs||0):me.owned;
@@ -1239,7 +1245,7 @@ function rBoard(){
   h+='<div class="panel lbx">'+(d.total?'<div class="lbhead"><b>'+(scope==='friends'?'Entre amis':'Top '+d.rows.length)+'</b><span class="mut sm">sur <b>'+d.total+'</b> joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':'')+'</span></div>':'')+(d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap">• • •<span class="mut sm">ta position</span></div>'+d.near.map(row).join(''):''):(scope==='friends'?'<p class="mut center">Ajoute des amis (onglet Communauté > Amis) pour les voir ici.</p>':'<p class="mut center">Personne au classement pour l\'instant.</p>'))+'</div>'+
    '<p class="mut sm">Le haut du classement montre les 20 premiers, puis ta position avec le joueur juste au-dessus et juste en dessous. Touche un joueur pour voir son profil.</p>';
   $('cbody').innerHTML=h;
-  bindNav('data-bp',function(v){boardPer=v;boardData=null;render()});
+  if(isRuns)rbTick();
   [].forEach.call(document.querySelectorAll('[data-pf]'),function(b){b.onclick=function(){openProfile(b.dataset.pf)}})}
  if(boardData&&boardData.sort===sort&&boardData.period===per&&(boardData.scope||'all')===scope)paint(boardData);else $('cbody').innerHTML='<div class="panel center mut">Chargement…</div>';
  api('board',{sort:sort,period:per,scope:scope}).then(function(r){boardData=r;paint(r)}).catch(function(e){if(comAlive('board'))$('cbody').innerHTML=errBox(e)})}
