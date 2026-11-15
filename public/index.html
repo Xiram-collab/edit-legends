@@ -867,7 +867,7 @@ function rHome(){
  '<div class="cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack gratuit <span class="badge">'+S.stock+'</span></button>'+multiBtns()+'<button class="btn ghost" data-t="col">Ma collection</button></div>'+
  '<div class="stats"><div><b>'+owned+'/'+TOT(S.col)+'</b><span>cartes</span></div><div><b>'+S.opened+'</b><span>packs ouverts</span></div><div><b>'+S.stock+'</b><span>packs en stock</span></div></div></div>'+
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i,{isNew:true})+'</div>'}).join('')+'<div class="orb"></div></div></section>'+
- '<div class="tick"><div class="track">'+names+names+names+names+'</div></div>'+
+ '<div class="tick"><div class="track" style="animation-duration:'+Math.max(45,tkIds.length*6)+'s">'+names+names+names+names+'</div></div>'+
  '<section class="row2"><div class="panel center"><h3>Pack gratuit</h3>'+ring()+pips()+'<p class="mut sm">1 pack offert toutes les heures · 10 en stock max</p><button class="btn big-b" id="hgo2"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack</button>'+multiBtns()+'</div>'+
  '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 2</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs et map edits, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en Coins et achète des packs à rareté garantie.</li></ol></div></section>'+
  '<section class="panel sec2"><h3>Les raretés</h3><p class="mut sm" style="margin:-4px 0 10px">Chance qu’un pack gratuit contienne au moins une carte de cette rareté</p><div class="lad">'+lad+'</div></section>';
