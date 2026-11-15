@@ -606,8 +606,9 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 nav{background:linear-gradient(180deg,#ffffffeb,#f4effcdd);border:0;border-radius:20px;padding:6px;gap:2px;box-shadow:0 4px 0 #cdbde8,0 8px 18px #0004}
 nav button{color:#6a5a8f;border-radius:14px;border:0;font-weight:800}
 nav button:hover{color:#2b1d4d;background:#ffffff99}
-nav button[aria-selected=true],body.noel #tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(180deg,#ff5f8a,#ff9a45);border:0;box-shadow:0 4px 0 #b3264f,0 6px 12px #b3264f66;transform:translateY(-1px)}
+nav button[aria-selected=true],body.noel #tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(180deg,#9b7bff,#5b3bea);border:0;box-shadow:0 4px 0 #2f1a9a,0 6px 12px #5b3bea66;transform:translateY(-1px)}
 nav button .ti{opacity:.85}
+@media(min-width:700px){nav{flex-wrap:nowrap}nav button{position:relative;padding:10px 8px;gap:5px;letter-spacing:.03em;font-size:.74rem}nav button+button::before{content:"";position:absolute;left:-1px;top:24%;bottom:24%;width:1px;background:#cfc2ea}nav button[aria-selected=true]::before,nav button[aria-selected=true]+button::before{display:none}}
 .btn{border:0;border-radius:999px;box-shadow:0 4px 0 #2a1b8f,0 7px 14px #0005;transition:transform .08s,box-shadow .08s,filter .15s}
 .btn:hover:not(:disabled){box-shadow:0 4px 0 #2a1b8f,0 7px 14px #0005}
 .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #2a1b8f}
