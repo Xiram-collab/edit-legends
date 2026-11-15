@@ -71,8 +71,8 @@ const sub = (t, o) => { const b = Object.assign({ action: 'timesubmit', time: '1
   await call('tokA', { action: 'atimedecide', id: 6, status: 'rejected' });
   clock += 60000; await call('tokD', { action: 'times', device: 'Manette' });
   clock += 40000; r = await call('tokD', { action: 'times', device: 'Manette' });
-  me = (await call('tokC', { action: 'me' })).json.state; assert.strictEqual(me.money, before.C.money + C.TIME_REWARDS[0].c); assert.strictEqual(me.wp[3], (before.C.wp[3] || 0) + 1);
-  const b2 = (await call('tokB', { action: 'me' })).json.state; assert.strictEqual(b2.money, before.B.money + C.TIME_REWARDS[1].c); assert.strictEqual(b2.wp[2], (before.B.wp[2] || 0) + 1);
+  me = (await call('tokC', { action: 'me' })).json.state; assert.strictEqual(me.money, before.C.money + C.TIME_REWARDS[0].c); assert.strictEqual(me.wp[4], (before.C.wp[4] || 0) + 1);
+  const b2 = (await call('tokB', { action: 'me' })).json.state; assert.strictEqual(b2.money, before.B.money + C.TIME_REWARDS[1].c); assert.strictEqual(b2.wp[3], (before.B.wp[3] || 0) + 1);
   const d2 = (await call('tokD', { action: 'me' })).json.state; assert.strictEqual(d2.money, before.D.money + C.TIME_REWARDS[2].c); assert.strictEqual(d2.wp[2], (before.D.wp[2] || 0) + 1); ok('récompenses versées : Coins + pack selon la place');
   for (let i = 0; i < 3; i++) { clock += 60000; await call('tokD', { action: 'times', device: 'Manette' }); }
   assert.strictEqual((await call('tokC', { action: 'me' })).json.state.money, before.C.money + C.TIME_REWARDS[0].c); ok('récompenses versées une seule fois');
