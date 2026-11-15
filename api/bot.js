@@ -1,6 +1,7 @@
 // Point d'entrée réservé au bot Discord : POST /api/bot  avec l'en-tête  x-bot-secret
 //   { action: 'profile', discordId }  ->  équipe + tier lists du joueur
 //   { action: 'board', sort }          ->  top 20 du classement
+//   { action: 'boards' }               ->  classements collection + runs (top 20 chacun)
 //   { action: 'announce', text }      ->  ajoute l'annonce dans la cloche du site
 const crypto = require('crypto');
 const { createDb } = require('../lib/supabaseDb');
@@ -26,6 +27,17 @@ module.exports = async (req, res) => {
       const sort = ['score', 'owned', 'mythics', 'opened'].includes(body.sort) ? body.sort : 'score';
       const rows = await db.leaderboard(sort, 20, 0);
       res.status(200).json({ sort, total: await db.rankedCount(), rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened })) }); return;
+    }
+    if (body.action === 'boards') {
+      // /classement : collection (cartes, puis mythiques, puis ancienneté si connue) et runs, 20 premiers de chaque
+      const catalog = (await db.getCards()).filter((c) => c && !c[5]).length;
+      const coll = (await db.leaderboard('owned', 100, 0))
+        .sort((x, y) => y.owned - x.owned || y.mythics - x.mythics || (x.cat && y.cat ? x.cat - y.cat : 0))
+        .slice(0, 20).map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened }));
+      const rb = (await db.runsBoard()).slice(0, 20);
+      const pr = rb.length ? await db.getProfiles(rb.map((r) => r.id)) : {};
+      const runs = rb.map((r, i) => ({ rank: i + 1, name: (pr[r.id] || {}).name || 'Joueur', owned: r.owned, mythics: r.mythics, score: r.score, runs: r.runs }));
+      res.status(200).json({ catalog, total: await db.rankedCount(), coll, runs }); return;
     }
     if (body.action === 'announce') {
       const text = String(body.text || '').trim().slice(0, 2000);
