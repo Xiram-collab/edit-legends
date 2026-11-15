@@ -1,6 +1,7 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
   const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
+  const acts = [];
   const friends = [], logs = [], anns = [], drafts = [], notes = [], times = [], owners = [], market = [];
   const users = {
     tokA: { id: 'A', discordId: '111', name: 'Alice', avatar: '' },
@@ -119,7 +120,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async marketInsert(row) { const id = market.length + 1; market.push(Object.assign({ id, status: 'open', bid: 0, bidder: null, bids: 0, buyer: null, final: null, closed_at: null, card_done: false, pay_done: false }, row)); return id; },
     async marketGet(id) { const m = market.find((x) => x.id === id); return m ? Object.assign({}, m) : null; },
     async marketOpen() { return market.filter((m) => m.status === 'open').sort((a, b) => Date.parse(a.ends_at) - Date.parse(b.ends_at)).map((m) => Object.assign({}, m)); },
-    async marketSold(n, sinceIso) { return market.filter((m) => m.status === 'sold' && Date.parse(m.closed_at) >= Date.parse(sinceIso)).sort((a, b) => Date.parse(b.closed_at) - Date.parse(a.closed_at)).slice(0, n).map((m) => Object.assign({}, m)); },
+    async marketSold(n, sinceIso, withTrades) { return market.filter((m) => (m.status === 'sold' || (withTrades && m.status === 'swapped')) && Date.parse(m.closed_at) >= Date.parse(sinceIso)).sort((a, b) => Date.parse(b.closed_at) - Date.parse(a.closed_at)).slice(0, n).map((m) => Object.assign({}, m)); },
     async marketCountOpen(uid) { return market.filter((m) => m.status === 'open' && m.seller === uid).length; },
     async marketUpdateIf(id, cond, fields) {
       await Promise.resolve();
@@ -143,6 +144,8 @@ module.exports = function fakeDb(cards, validCodes) {
     async listAnnouncements(n) { return anns.slice().reverse().slice(0, n).map((a) => ({ id: a.id, text: a.text, created_at: a.created_at })); },
     async addAnnouncement(text) { anns.push({ id: anns.length + 1, text, created_at: new Date(1e12).toISOString() }); },
     async deleteAnnouncement(id) { const i = anns.findIndex((a) => a.id === id); if (i >= 0) anns.splice(i, 1); },
+    async logAct(e) { acts.push(Object.assign({ id: acts.length + 1, at: new Date(Date.now()).toISOString() }, e)); },
+    async recentActs(uid, n) { return acts.filter((x) => !uid || x.user_id === uid).slice(-n).reverse().map((x) => Object.assign({}, x)); },
     async logAdmin(e) { logs.push(Object.assign({ id: logs.length + 1000 + Math.floor(Math.random() * 1e6), at: new Date(1e12).toISOString() }, e)); },
     async deleteLogs(f) { const keep = logs.filter((l) => (Array.isArray(f.ids) ? !f.ids.includes(l.id) : f.before ? !(Date.parse(l.at) < Date.parse(f.before)) : false)); logs.length = 0; keep.forEach((l) => logs.push(l)); },
     async recentLogs(n) { return logs.slice().reverse().slice(0, n); },

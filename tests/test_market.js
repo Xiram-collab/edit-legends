@@ -231,5 +231,6 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   r = await call('tokA', { action: 'alogdel', ids: [] }); assert.strictEqual(r.status, 400);
   r = await call('tokA', { action: 'alogdel', ids: [lgid] }); assert.strictEqual(r.status, 200); assert.strictEqual((await call('tokA', { action: 'alog' })).json.rows.length, nlog - 1);
   r = await call('tokA', { action: 'alogdel', all: true }); assert.strictEqual(r.status, 200); assert.strictEqual((await call('tokA', { action: 'alog' })).json.rows.length, 0); ok('journal : suppression de lignes ou de tout (propriétaire seulement)');
+  { let r2 = await call('tokA', { action: 'aacts', q: '' }); assert.strictEqual(r2.status, 200); r2 = await call('tokD', { action: 'aacts' }); assert.strictEqual(r2.status, 403); r2 = await call('tokA', { action: 'aacts', q: 'zzzinconnu' }); assert.ok(r2.json.none); ok('journal d\'activité : réservé à l\'admin, filtre par pseudo'); }
   console.log(n + ' vérifications réussies (marché / Ma carte)');
 })().catch((e) => { console.error(e); process.exit(1); });
