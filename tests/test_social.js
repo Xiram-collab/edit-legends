@@ -30,7 +30,8 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'search', q: 'car' }); assert.strictEqual(r.json.rows.length, 0); ok('un joueur caché est introuvable en recherche');
   await call('tokC', { action: 'prefs', prefs: { hide: false } });
   r = await call('tokB', { action: 'search', q: 'car' }); assert.strictEqual(r.json.rows[0].id, 'C'); ok('recherche par pseudo');
-  r = await call('tokB', { action: 'search', q: 'c' }); assert.strictEqual(r.json.rows.length, 0); ok('recherche : 2 lettres minimum');
+  r = await call('tokB', { action: 'search', q: 'c' }); assert.ok(r.json.rows.some((x) => x.id === 'C')); assert.ok(r.json.rows.every((x) => x.rel === '')); r = await call('tokB', { action: 'search', q: '' }); assert.strictEqual(r.json.rows.length, 0); ok('recherche : dès 1 lettre, avec la relation (ami, envoyée…)');
+  r = await call('tokB', { action: 'fsuggest' }); assert.ok(r.json.rows.length <= 5 && r.json.rows.every((x) => x.id !== 'B' && x.rel === '')); ok('suggestions d\'amis : 5 maximum, jamais soi-même');
 
   // ---------- amis ----------
   r = await call('tokB', { action: 'profile', id: 'C' }); assert.strictEqual(r.status, 200);
