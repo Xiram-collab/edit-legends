@@ -147,7 +147,13 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'aover' }); assert.strictEqual(r.status, 200); ok('le propriétaire nomme un admin');
   r = await call('tokB', { action: 'asetadmin', id: 'C', v: true }); assert.strictEqual(r.status, 403); ok('un admin non propriétaire ne peut pas nommer d\'admin');
   r = await call('tokB', { action: 'apact', id: 'A', a: 'm', v: 1 }); assert.strictEqual(r.status, 403); ok('le compte propriétaire est protégé');
-  r = await call('tokB', { action: 'apact', id: 'C', a: 'm', v: 10 }); assert.strictEqual(r.status, 200); ok('un admin peut agir sur un joueur normal');
+  r = await call('tokB', { action: 'apact', id: 'C', a: 'm', v: 10 }); assert.strictEqual(r.status, 403); ok('un nouvel admin n\'a pas le droit de donner par défaut');
+  r = await call('tokB', { action: 'asetperms', id: 'B', perms: ['give'] }); assert.strictEqual(r.status, 403); ok('un admin ne peut pas se donner des droits');
+  r = await call('tokA', { action: 'aadmins' }); assert.strictEqual(r.status, 200); assert.ok(r.json.admins.some((x) => x.id === 'B' && x.perms.includes('times') && !x.perms.includes('give')));
+  r = await call('tokA', { action: 'asetperms', id: 'B', perms: ['give', 'players', 'nimportequoi'] }); assert.deepStrictEqual(r.json.perms, ['give', 'players']);
+  r = await call('tokB', { action: 'apact', id: 'C', a: 'm', v: 10 }); assert.strictEqual(r.status, 200); ok('avec le droit « Donner / retirer », l\'admin peut agir sur un joueur normal');
+  r = await call('tokB', { action: 'aover' }); assert.strictEqual(r.status, 403); ok('droits précis : sans le droit « Temps », l\'admin est bloqué');
+  r = await call('tokB', { action: 'me' }); assert.deepStrictEqual(r.json.perms, ['give', 'players']);
   r = await call('tokA', { action: 'asetadmin', id: 'B', v: false }); r = await call('tokB', { action: 'aover' }); assert.strictEqual(r.status, 403); ok('admin retiré');
   r = await call('tokA', { action: 'alog' }); assert.ok(r.json.rows.length >= 8); assert.strictEqual(r.json.rows[0].admin, 'Alice'); ok('journal des actions admin');
   // ---------- score : doublons compris, même revendus ----------
