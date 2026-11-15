@@ -96,7 +96,7 @@ body.noel .card::after{content:"";position:absolute;left:0;right:0;top:0;height:
 .rwpod{min-width:0;overflow:hidden}
 @media(max-width:520px){.rwpk{font-size:.6rem;padding:2px 6px}.rwpod{padding:10px 4px}}
 #flist{margin-top:18px}
-#fres .bar{margin-bottom:2px}
+#fsug{margin-top:2px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -1358,11 +1358,11 @@ function rFriends(){
   [].forEach.call(root.querySelectorAll('[data-fx]'),function(b){twice(b,function(){api('fremove',{id:b.dataset.fx}).then(function(){friendsData=null;doPing();render()}).catch(function(e){toast(e.message)})})});
   [].forEach.call(root.querySelectorAll('[data-fadd]'),function(b){b.onclick=function(){b.disabled=true;api('fadd',{id:b.dataset.fadd}).then(function(r){b.textContent=r.rel==='friend'?'Amis':'Envoyée';friendsData=null;toast(r.rel==='friend'?'Vous êtes amis':'Demande envoyée');loadList()}).catch(function(e){b.disabled=false;toast(e.message)})}})}
  function addBtn(u){return u.rel==='friend'?'<button class="btn sm ghost" disabled>Amis</button>':u.rel==='out'?'<button class="btn sm ghost" disabled>Envoyée</button>':u.rel==='in'?'<button class="btn sm gold" data-fa="'+esc(u.id)+'">Accepter</button>':'<button class="btn sm" data-fadd="'+esc(u.id)+'">Ajouter</button>'}
- function sugH(rows){return '<h3 style="margin:12px 0 6px;font-size:.95rem">Suggestions</h3>'+(rows.length?rows.map(function(u){return row(u,addBtn(u))}).join(''):'<p class="mut sm">Pas de suggestion pour l\'instant.</p>')+'<div class="bar" style="margin-top:6px"><button class="btn sm ghost" id="fsugr">Autres suggestions</button></div>'}
- function loadSug(){api('fsuggest').then(function(r){if(!$('fres')||$('fsr').value.trim())return;$('fres').innerHTML=sugH(r.rows);bindList($('fres'));var b=$('fsugr');if(b)b.onclick=function(){b.disabled=true;loadSug()}}).catch(function(){})}
- $('cbody').innerHTML='<div class="panel"><h3>Ajouter un ami</h3><input id="fsr" class="inp" placeholder="Tape un pseudo (1 lettre suffit)" maxlength="40" autocomplete="off"><div id="fres"></div></div><div id="flist"></div>';
+ function sugH(rows){return '<h3>Suggestions</h3>'+(rows.length?rows.map(function(u){return row(u,addBtn(u))}).join(''):'<p class="mut sm" style="margin:0">Pas de suggestion pour l\'instant.</p>')+'<div class="bar" style="margin-top:6px"><button class="btn sm ghost" id="fsugr">Autres suggestions</button></div>'}
+ function loadSug(){api('fsuggest').then(function(r){var bx=$('fsug');if(!bx)return;bx.innerHTML=sugH(r.rows);bx.className='panel';bindList(bx);var b=$('fsugr');if(b)b.onclick=function(){b.disabled=true;loadSug()}}).catch(function(){})}
+ $('cbody').innerHTML='<div class="panel"><h3>Ajouter un ami</h3><input id="fsr" class="inp" placeholder="Tape un pseudo (1 lettre suffit)" maxlength="40" autocomplete="off"><div id="fres"></div></div><div id="flist"></div><div id="fsug"></div>';
  $('fsr').oninput=function(){clearTimeout(searchT);var q=this.value.trim(),seq=++searchSeq;
-  if(q.length<1){loadSug();return}
+  if(q.length<1){$('fres').innerHTML='';return}
   searchT=setTimeout(function(){api('search',{q:q}).then(function(r){if(seq!==searchSeq||!$('fres'))return;
    $('fres').innerHTML=r.rows.length?r.rows.map(function(u){return row(u,addBtn(u))}).join(''):'<p class="mut sm">Aucun joueur trouvé (le pseudo doit correspondre à son nom Discord affiché sur le site).</p>';bindList($('fres'))}).catch(function(){})},200)};
  loadSug();
