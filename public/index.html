@@ -598,23 +598,37 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;background:#6b7280}.dot.gn{background:#22e36b;box-shadow:0 0 8px #22e36b}.dot.yl{background:#ffd24a;box-shadow:0 0 6px #ffd24a88}.dot.rd{background:#ff4d5e}.dot.gy{background:#6b7280}
 .leg{display:inline-flex;align-items:center;gap:6px;font-size:.85em;color:var(--mut)}.on{color:#22e36b}
 
-/* ===== Boutons « pastille » : blanc doux + liseré bas, onglet actif rose→orange ===== */
-.mute,.purse{background:linear-gradient(180deg,#fff,#f1ecfb);border:0;color:#2b1d4d;font-weight:800;box-shadow:0 3px 0 #c9b8e6,0 6px 12px #0004}
-.purse{padding:8px 16px}
-.mute:active,.purse:active{transform:translateY(2px);box-shadow:0 1px 0 #c9b8e6,0 3px 8px #0004}
-.mute.pulse,.purse.pulse{box-shadow:0 3px 0 #c9b8e6,0 0 22px #ffd24a99}
-nav{background:linear-gradient(180deg,#ffffffeb,#f4effcdd);border:0;border-radius:20px;padding:6px;gap:2px;box-shadow:0 4px 0 #cdbde8,0 8px 18px #0004}
-nav button{color:#6a5a8f;border-radius:14px;border:0;font-weight:800}
-nav button:hover{color:#2b1d4d;background:#ffffff99}
+/* ===== Boutons « pastille » : relief, onglet actif violet ===== */
 nav button[aria-selected=true],body.noel #tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(180deg,#9b7bff,#5b3bea);border:0;box-shadow:0 4px 0 #2f1a9a,0 6px 12px #5b3bea66;transform:translateY(-1px)}
-nav button .ti{opacity:.85}
-@media(min-width:700px){nav{flex-wrap:nowrap}nav button{position:relative;padding:10px 8px;gap:5px;letter-spacing:.03em;font-size:.74rem}nav button+button::before{content:"";position:absolute;left:-1px;top:24%;bottom:24%;width:1px;background:#cfc2ea}nav button[aria-selected=true]::before,nav button[aria-selected=true]+button::before{display:none}}
+@media(min-width:700px){nav{flex-wrap:nowrap}nav button{position:relative;padding:10px 8px;gap:5px;letter-spacing:.03em;font-size:.74rem}nav button+button::before{content:"";position:absolute;left:-1px;top:24%;bottom:24%;width:1px;background:#ffffff1f}nav button[aria-selected=true]::before,nav button[aria-selected=true]+button::before{display:none}}
+/* ===== Thème clair (réglage du compte) ===== */
+body.light{--bg:#f6f3ff;--panel:#ffffff;--panel2:#efeafc;--fg:#251b4b;--mut:#6a6191;--line:#ddd4f3;--gold:#b87300;color-scheme:light;background-color:#f6f3ff;background-image:radial-gradient(900px 420px at 85% -10%,#c9b8ff66,transparent),radial-gradient(700px 420px at 0 0,#bfe6ff66,transparent)}
+body.light.noel{background-color:#f6f3ff;background-image:radial-gradient(900px 420px at 85% -10%,#ffc0d466,transparent),radial-gradient(700px 420px at 0 0,#bff0dc66,transparent)}
+body.light .mute,body.light .purse{background:linear-gradient(180deg,#fff,#f1ecfb);border:0;color:#2b1d4d;font-weight:800;box-shadow:0 3px 0 #c9b8e6,0 6px 12px #4a2fd022}
+body.light .purse{padding:8px 16px}
+body.light nav{background:linear-gradient(180deg,#ffffffeb,#f4effcdd);border:0;border-radius:20px;padding:6px;gap:2px;box-shadow:0 4px 0 #cdbde8,0 8px 18px #4a2fd022}
+body.light nav button{color:#6a5a8f;border:0}
+body.light nav button:hover{color:#2b1d4d;background:#ffffff99}
+body.light nav button+button::before{background:#cfc2ea}
+body.light nav button[aria-selected=true]{color:#fff}
+body.light .panel,body.light .pickbox{box-shadow:0 2px 0 #e3dbf6,0 8px 20px #4a2fd01a}
+body.light .tml,body.light a.tml{color:var(--fg)}
+body.light h1,body.light h2,body.light h3{color:var(--fg)}
+body.light .btn.ghost{color:var(--fg);box-shadow:0 3px 0 #ddd4f3}
+body.light .inp,body.light input,body.light select,body.light textarea{background:#fff;color:var(--fg);border-color:var(--line)}
+body.light .mut{color:var(--mut)}
+body.light .nhill{opacity:.9}
+body.light .panel{background:linear-gradient(180deg,#fff,#f7f2ff);border-color:var(--line)}
+body.light .pk{background:linear-gradient(160deg,#fff,#eee7ff);color:var(--fg)}
+body.light .btn{color:#fff}body.light .btn.ghost{color:var(--fg);background:#ffffffaa}
+body.light .card,body.light .back,body.light .pkface,body.light .cdetail{--fg:#f1eefc;--mut:#b3acd8;color:#f1eefc}
+body.light .nban,body.light .nban *{color:#fff}
 .btn{border:0;border-radius:999px;box-shadow:0 4px 0 #2a1b8f,0 7px 14px #0005;transition:transform .08s,box-shadow .08s,filter .15s}
 .btn:hover:not(:disabled){box-shadow:0 4px 0 #2a1b8f,0 7px 14px #0005}
 .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #2a1b8f}
 .btn.gold{box-shadow:0 4px 0 #6b4300,0 7px 14px #0005}.btn.gold:active:not(:disabled){box-shadow:0 1px 0 #6b4300}
 .btn.ghost{box-shadow:0 3px 0 #ffffff1f}.btn.ghost:active:not(:disabled){box-shadow:0 0 0 #0000}
-.btn.dng{box-shadow:0 3px 0 #5a1020}
+.seg{display:inline-flex;gap:6px}.btn.dng{box-shadow:0 3px 0 #5a1020}
 .btn:disabled{box-shadow:0 3px 0 #0006}
 </style>
 </head>
@@ -670,7 +684,7 @@ var PACKS=[
  {n:'Pack Légendaire+',g:4,price:2000,c:'var(--r4)',t:'1 carte Légendaire ou mieux garantie'}];
 var HOUR=3600000,MAXSTOCK=10,CUR='Coins',SPIN_PRICE=250;
 var S=null,SB=null,SESSION=null,ISADMIN=false,ISJURY=false,MYCARD=null,MKC={MIN:[20,50,200,1000,2000,3000],HOURS:12},PROFILE=null,prefT=0,netBusy=false;
-var PREFK=['vitrine','extra','team','tier','tord','tnames','jtier','jord','mute','hide','hidep','nodeco'];
+var PREFK=['vitrine','extra','team','tier','tord','tnames','jtier','jord','mute','hide','hidep','nodeco','light'];
 function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;return}
  var k=Math.floor((n-S.last)/HOUR);if(k>0){S.stock=Math.min(MAXSTOCK,S.stock+k);S.last=S.stock>=MAXSTOCK?n:S.last+k*HOUR}}
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
@@ -824,7 +838,7 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
 function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classement'],['miss','Missions'],['com','Communauté'],['shop','Boutique'],['mk','Marché'],['code','Code']];if(ISADMIN)T.push(['admin','Admin']);else if(ISJURY)T.push(['admin','Jury']);
  $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='admin'&&ISADMIN&&(NOTIF.tp+NOTIF.cp)?'<span class="nb">'+((NOTIF.tp+NOTIF.cp)>9?'9+':(NOTIF.tp+NOTIF.cp))+'</span>':'')+(t[0]==='admin'&&!ISADMIN&&NOTIF.tp?'<span class="nb">'+(NOTIF.tp>9?'9+':NOTIF.tp)+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
-function render(){if(!S)return;var qf=$('qsfix');if(qf)qf.remove();document.body.classList.toggle('xmas',tab==='admin'&&!!ISADMIN);applyDeco();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
+function render(){if(!S)return;var qf=$('qsfix');if(qf)qf.remove();document.body.classList.toggle('xmas',tab==='admin'&&!!ISADMIN);applyDeco();applyTheme();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(tab!=='mk'&&mkT){clearInterval(mkT);mkT=0}if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
  ({home:rHome,rank:rRank,col:rCol,shop:rShop,code:rCode,com:rCom,miss:rMiss,admin:rAdmin,mk:rMarket})[tab]();noelBanner()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
@@ -832,6 +846,7 @@ function ring(){var f=S.stock>=MAXSTOCK?1:Math.min(1,(Date.now()-S.last)/HOUR),C
  return '<div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="rb"/><circle cx="50" cy="50" r="44" class="rf" id="rf" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-f))+'"/></svg><div class="rt"><b id="cd">'+(S.stock>=MAXSTOCK?'PLEIN':cd())+'</b><small>prochain pack</small></div></div>'}
 function pips(){var h='';for(var i=0;i<MAXSTOCK;i++)h+='<i class="'+(i<S.stock?'on':'')+'"></i>';return '<div class="pips">'+h+'</div>'}
 /* ---------- accueil ---------- */
+function applyTheme(){var l=!!(S&&S.light);document.body.classList.toggle('light',l);try{localStorage.setItem('el_light',l?'1':'0')}catch(e){}}
 function applyDeco(){var on=!(S&&S.nodeco);document.body.classList.toggle('noel',on);try{localStorage.setItem('el_nodeco',on?'0':'1')}catch(e){}}
 function noelBanner(){var m=$('main'),o=$('nban');if(o)o.remove();if(!m||tab!=='home'||(S&&S.nodeco))return;var d=xmasDays(),e=document.createElement('div');e.id='nban';e.className='nban';e.innerHTML='<b>🎄 Joyeux Noël, Légendes ! 🎁</b><span>'+(d?'Plus que <b>'+d+' jour'+(d>1?'s':'')+'</b> avant Noël':'C\'est Noël aujourd\'hui !')+'</span><span class="nbh">Le décor te dérange ? Tu peux remettre comme avant dans Paramètres du compte (👤).</span>';m.insertBefore(e,m.firstChild)}
 function rHome(){
@@ -2009,6 +2024,7 @@ function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.
   sw('ahide',!(S&&S.hide),'Apparaître dans le classement','Décoché, seuls tes amis voient ton profil et tu n\'es plus trouvable dans la recherche.')+
   sw('apres',!(S&&S.hidep),'Montrer quand je suis en ligne','Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.')+'</section>'+
   '<section class="acs"><h3>Affichage</h3>'+
+  '<div class="setrow"><span class="atx"><b>Thème</b><span class="mut sm">Sombre (par défaut) ou clair, plus blanc et lumineux.</span></span><span class="seg"><button type="button" class="btn sm'+(S&&S.light?' ghost':'')+'" id="thd">Sombre</button><button type="button" class="btn sm'+(S&&S.light?'':' ghost')+'" id="thl">Clair</button></span></div>'+
   sw('adeco',!(S&&S.nodeco),'Décor de Noël 🎄','Décoché, le site revient comme avant (sans guirlande, sans neige ni couleurs de Noël).')+'</section>'+
   '<section class="acs danger"><h3>Compte</h3><div class="setrow"><span class="atx"><b>Se déconnecter</b><span class="mut sm">Tu pourras te reconnecter avec Discord.</span></span><button class="btn sm" id="alo">Déconnexion</button></div>'+
   '<div class="setrow"><span class="atx"><b>Supprimer mon compte</b><span class="mut sm">Efface ta collection, tes Coins et tes packs. Les codes déjà utilisés restent utilisés.</span></span><button class="btn sm ghost dng" id="adel">Supprimer</button></div></section>'+
@@ -2019,6 +2035,7 @@ function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.
  $('ansv').onclick=function(){identSave({name:$('anm').value})};
  if($('ards'))$('ards').onclick=function(){identSave({name:''})};
  $('aav').onchange=function(){identSave({noAvatar:!this.checked})};
+ var setTh=function(l){S.light=l;applyTheme();save();openAcct()};$('thd').onclick=function(){setTh(false)};$('thl').onclick=function(){setTh(true)};
  $('adeco').onchange=function(){S.nodeco=!this.checked;applyDeco();save();noelBanner();toast(S.nodeco?'Décor de Noël désactivé':'Décor de Noël activé')};
  $('apres').onchange=function(){S.hidep=!this.checked;save();toast(S.hidep?'Ta présence est cachée à tes amis':'Tes amis voient ta présence')};
  $('ahide').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')};
@@ -2039,6 +2056,6 @@ try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.a
 })();
 
 </script>
-<script>(function(){var cols=['#ff5a6e','#3ddc84','#ffd24a','#4db8ff'],g=document.getElementById('bulbs'),h='';for(var i=0;i<26;i++){var x=8+i*15.4,y=i%2?15:12;h+='<g class="bulb"><line x1="'+x+'" y1="'+(y-4)+'" x2="'+x+'" y2="'+(y-1)+'" stroke="#5c4fa3"/><ellipse cx="'+x+'" cy="'+(y+4)+'" rx="3.4" ry="5" fill="'+cols[i%4]+'"/></g>'}if(g)g.innerHTML=h;try{if(localStorage.getItem('el_nodeco')==='1')document.body.classList.remove('noel')}catch(e){}})();</script>
+<script>(function(){var cols=['#ff5a6e','#3ddc84','#ffd24a','#4db8ff'],g=document.getElementById('bulbs'),h='';for(var i=0;i<26;i++){var x=8+i*15.4,y=i%2?15:12;h+='<g class="bulb"><line x1="'+x+'" y1="'+(y-4)+'" x2="'+x+'" y2="'+(y-1)+'" stroke="#5c4fa3"/><ellipse cx="'+x+'" cy="'+(y+4)+'" rx="3.4" ry="5" fill="'+cols[i%4]+'"/></g>'}if(g)g.innerHTML=h;try{if(localStorage.getItem('el_nodeco')==='1')document.body.classList.remove('noel');if(localStorage.getItem('el_light')==='1')document.body.classList.add('light')}catch(e){}})();</script>
 </body>
 </html>
