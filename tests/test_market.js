@@ -133,7 +133,10 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const dc = await count('tokB', dd);
   r = await call('tokB', { action: 'msell', i: dd, buynow: 300 }); assert.strictEqual(r.status, 200);
   assert.strictEqual(await count('tokB', dd), dc); ok('doublon mis en vente : la collection garde le même nombre d\'exemplaires');
-  const b0 = await bank('tokB'); r = await call('tokB', { action: 'sell', i: dd }); assert.strictEqual(r.status, 200); assert.ok((await bank('tokB')) > b0); assert.strictEqual(await count('tokB', dd), dc - 1); ok('le doublon reste vendable en Coins pendant qu\'une copie est sur le marché');
+  r = await call('tokB', { action: 'sell', i: dd }); assert.strictEqual(r.status, 400); assert.strictEqual(await count('tokB', dd), dc);
+  r = await call('tokB', { action: 'sellmany', items: [[dd, dc]] }); assert.strictEqual(r.status, 400); ok('une carte proposée ne compte pas comme doublon : impossible de la vendre');
+  await give('B', dd, 1);
+  const b0 = await bank('tokB'); r = await call('tokB', { action: 'sell', i: dd }); assert.strictEqual(r.status, 200); assert.ok((await bank('tokB')) > b0); assert.strictEqual(await count('tokB', dd), dc); ok('seul le vrai doublon (en plus de la carte proposée) reste vendable');
   const offer = (await call('tokD', { action: 'mlist' })).json.open.find((x) => x.card === dd && x.mine !== true); assert.ok(offer); r = await call('tokC', { action: 'mbuy', id: offer.id }); assert.strictEqual(r.status, 200); ok('la copie en vente reste achetable');
 
   // vente rapide : doublons ou dernière copie, tout ou rien

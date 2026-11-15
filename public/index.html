@@ -699,7 +699,7 @@ function api(action,body){body=Object.assign({action:action,nc:CARDS.length},bod
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
 var qsMode=false,qsSel={};
-function qsMax(i){return S.col[i]||0}
+function qsMax(i){var k=dupKeep(mkData)[i];return Math.max(0,(S.col[i]||0)-(k||0))}
 function qsDup(i){return Math.max(0,(S.col[i]||0)-1)}
 function qsTotals(){var n=0,g=0,last=0;Object.keys(qsSel).forEach(function(k){var q=Math.min(qsSel[k],qsMax(+k));if(q>0){n+=q;g+=q*RAR[CARDS[+k][2]].v;if(q>=qsMax(+k))last++}});return {n:n,g:g,last:last}}
 function qsPanel(){var t=qsTotals(),h='<div class="panel qspan"><p class="mut sm" style="margin:0 0 8px">Touche une carte pour vendre ses doublons (une copie est gardée). Avec le bouton + tu peux aussi vendre la dernière copie.</p><div class="qsch">';
@@ -840,7 +840,8 @@ function tabs(){var T=[['home','Accueil'],['col','Collection'],['rank','Classeme
  $('tabs').innerHTML=T.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+ico(t[0])+t[1]+(t[0]==='com'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(t[0]==='admin'&&ISADMIN&&(NOTIF.tp+NOTIF.cp)?'<span class="nb">'+((NOTIF.tp+NOTIF.cp)>9?'9+':(NOTIF.tp+NOTIF.cp))+'</span>':'')+(t[0]==='admin'&&!ISADMIN&&NOTIF.tp?'<span class="nb">'+(NOTIF.tp>9?'9+':NOTIF.tp)+'</span>':'')+(t[0]==='miss'&&NOTIF.mc?'<span class="nb">'+(NOTIF.mc>9?'9+':NOTIF.mc)+'</span>':'')+'</button>'}).join('');
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
 var QUIET=false;
-function render(){if(!S)return;if(!QUIET)document.body.classList.remove('qr2');var qf=$('qsfix');if(qf)qf.remove();document.body.classList.toggle('xmas',tab==='admin'&&!!ISADMIN);applyDeco();applyTheme();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
+function ensureMk(){if(mkData||window.mkLoad||!S)return;window.mkLoad=1;api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='col'||tab==='shop')quietRender()}).catch(function(){window.mkLoad=0})}
+function render(){if(!S)return;ensureMk();if(!QUIET)document.body.classList.remove('qr2');var qf=$('qsfix');if(qf)qf.remove();document.body.classList.toggle('xmas',tab==='admin'&&!!ISADMIN);applyDeco();applyTheme();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(tab!=='mk'&&mkT){clearInterval(mkT);mkT=0}if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
  ({home:rHome,rank:rRank,col:rCol,shop:rShop,code:rCode,com:rCom,miss:rMiss,admin:rAdmin,mk:rMarket})[tab]();noelBanner()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
@@ -954,7 +955,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:n})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
-   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>1?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
+   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
@@ -965,7 +966,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('qsb').onclick=function(){qsMode=!qsMode;qsSel={};quietRender()};
  if(qsMode)bindQs();
  if(!mkData&&!window.mkLoad){window.mkLoad=1;api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='col')quietRender()}).catch(function(){})}
- [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>1)quickSellOne(i)}})}
+ [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>(dupKeep(mkData)[i]||1))quickSellOne(i)}})}
 function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q){if(x!=null&&q!==k)taken[x]=1});
  var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&!taken[i])items.push(i)});
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
