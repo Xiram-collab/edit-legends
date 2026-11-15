@@ -552,6 +552,7 @@ body.xmas table.at th{color:var(--gold)}
 .fl.subnav{gap:0;margin:0 0 16px;border-bottom:2px solid var(--line);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .fl.subnav button{background:none;border:0;border-bottom:3px solid transparent;border-radius:0;margin-bottom:-2px;padding:10px 14px;font-size:14px;font-weight:800;white-space:nowrap;color:var(--mut)}
 .fl.subnav button.on{background:none;color:#fff;border-bottom-color:#ff3d81}
+.fl.subnav button[data-rs=friends]{margin-left:auto;padding-left:22px;border-left:1px solid var(--line)}
 .ttl{display:block;overflow:hidden;text-overflow:ellipsis;font-size:.72em;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--c,#aab);line-height:1.3;margin-top:1px}
 .pf-head .ttl{font-size:.8rem;margin-top:4px}
 .mrow{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
@@ -1209,7 +1210,7 @@ function dfr(iso){return iso?new Date(iso).toLocaleDateString('fr-FR'):'?'}
 function subnavH(list,cur,attr){return '<div class="fl subnav">'+list.map(function(s){return '<button '+attr+'="'+s[0]+'"'+(cur===s[0]?' class="on"':'')+'>'+s[1]+(attr==='data-cs'&&s[0]==='friends'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(attr==='data-as'&&s[0]==='times'&&NOTIF.tp?'<span class="nb">'+NOTIF.tp+'</span>':'')+(attr==='data-as'&&s[0]==='jury'&&NOTIF.cp?'<span class="nb">'+NOTIF.cp+'</span>':'')+'</button>'}).join('')+'</div>'}
 function bindNav(attr,fn){[].forEach.call(document.querySelectorAll('['+attr+']'),function(b){b.onclick=function(){fn(b.getAttribute(attr))}})}
 function comAlive(sub){return (sub==='board'?tab==='rank':tab==='com'&&comSub===sub)&&$('cbody')}
-var RSC=[['all','Joueurs'],['friends','Amis'],['time','Temps'],['runs','Runs']];
+var RSC=[['all','Joueurs'],['runs','Runs'],['time','Temps'],['friends','Amis']];
 function rRank(){$('main').innerHTML=subnavH(RSC,boardScope,'data-rs')+'<div id="cbody"></div>';
  bindNav('data-rs',function(v){boardScope=v;boardData=null;render();scrollTo(0,0)});
  if(boardScope==='time')rTimes();else rBoard()}
