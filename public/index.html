@@ -628,7 +628,14 @@ body.light .nban,body.light .nban *{color:#fff}
 .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #2a1b8f}
 .btn.gold{box-shadow:0 4px 0 #6b4300,0 7px 14px #0005}.btn.gold:active:not(:disabled){box-shadow:0 1px 0 #6b4300}
 .btn.ghost{box-shadow:0 3px 0 #ffffff1f}.btn.ghost:active:not(:disabled){box-shadow:0 0 0 #0000}
-.seg{display:inline-flex;gap:6px}.ltag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#ffb02026;color:#ffb020;font-weight:800;font-size:.85em;white-space:nowrap}.multi{display:inline-flex;gap:8px;margin:0 8px;vertical-align:middle}.panel .multi{margin:10px 0 0;display:flex;justify-content:center}.btn.dng{box-shadow:0 3px 0 #5a1020}
+.seg{display:inline-flex;gap:6px}
+.zoombox.fifa{width:min(430px,100%);align-items:stretch;text-align:left}
+.fhead{display:flex;gap:14px;align-items:center}.fhead .zc{flex:0 0 42%;font-size:clamp(13px,3.9vw,18px)}
+.finfo{display:flex;flex-direction:column;gap:8px;min-width:0}.fnm{font-size:1.35rem;font-weight:900;line-height:1.1;overflow-wrap:anywhere}
+.fch{display:flex;flex-wrap:wrap;gap:6px}.fchip{padding:3px 10px;border-radius:8px;background:#ffffff14;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border:1px solid var(--rc,#ffffff30);color:var(--rc,var(--fg))}.fown{color:var(--mut);font-size:.85rem;font-weight:700}
+.ftabs{display:flex;gap:8px;flex-wrap:wrap}.ftab{flex:1;padding:9px 6px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--fg);font-weight:800;cursor:pointer;font-size:.85rem}.ftab.on{border-color:#9b7bff;background:#9b7bff26;box-shadow:0 0 0 2px #9b7bff44}
+.fbody{background:var(--panel2,#ffffff0d);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:90px;max-height:34vh;overflow:auto}.ftxt{line-height:1.5;overflow-wrap:anywhere}.fempty{color:var(--mut);font-style:italic}
+.mcsec{display:block;margin-top:10px}.mcsec b{display:block;margin-bottom:4px}.ltag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#ffb02026;color:#ffb020;font-weight:800;font-size:.85em;white-space:nowrap}.multi{display:inline-flex;gap:8px;margin:0 8px;vertical-align:middle}.panel .multi{margin:10px 0 0;display:flex;justify-content:center}.btn.dng{box-shadow:0 3px 0 #5a1020}
 .btn:disabled{box-shadow:0 3px 0 #0006}
 </style>
 </head>
@@ -929,10 +936,16 @@ var JN={"Bouzitournament": 10, "Ewarz": 10, "LeBouseuh": 10, "Mongraal": 9.8, "S
 var JMIN=[0,1.2,2.8,4.6,7.1,8.4];
 function jnote(i){var v=JN[CARDS[i][0]];return v==null?'':v.toFixed(1).replace('.',',')}
 function jpos(i){var p=JO.indexOf(CARDS[i][0]);return p<0?999:p}
-function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||0,n);
+var DSEC=[['bio','Biographie','Pseudo, périphérique, sensibilité…'],['rec','Records','Temps, classements, WR…'],['past','Passé','Clans, anciennes équipes…']];
+function parseDescr(t){var o={bio:'',rec:'',past:''};t=String(t||'');var p=t.split(/\n?§(Records|Passé)§\n?/);o.bio=(p[0]||'').trim();for(var k=1;k<p.length;k+=2)o[p[k]==='Records'?'rec':'past']=(p[k+1]||'').trim();return o}
+function joinDescr(o){var t=(o.bio||'').trim();if((o.rec||'').trim())t+='\n§Records§\n'+o.rec.trim();if((o.past||'').trim())t+='\n§Passé§\n'+o.past.trim();return t.trim()}
+function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||0,n),c=CARDS[i],D=parseDescr(c[3]),cur=['bio','rec','past'].filter(function(k){return D[k]})[0]||'bio';
  var d=document.createElement('div');d.id='pk';d.className='pickov';
- d.innerHTML='<div class="pickbox zoombox"><div class="zc">'+cardHTML(i)+'</div>'+(CARDS[i][3]?'<div class="zdesc">'+esc(CARDS[i][3])+'</div>':'')+'<div class="pst" style="font-size:15px">Obtenue x'+pl+'</div><button class="btn sm" id="pkx">Fermer</button></div>';
- document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick}
+ d.innerHTML='<div class="pickbox zoombox fifa"><div class="fhead"><div class="zc">'+cardHTML(i)+'</div><div class="finfo"><div class="fnm">'+esc(c[0])+'</div><div class="fch"><span class="fchip" style="--rc:'+HEX[c[2]]+'">'+RAR[c[2]].n+'</span><span class="fchip">'+(CATS[c[1]]||'')+'</span></div><div class="fown">Obtenue x'+pl+(n?'':' · pas dans ta collection')+'</div></div></div>'+
+  '<div class="ftabs">'+DSEC.map(function(s2){return '<button class="ftab'+(s2[0]===cur?' on':'')+'" data-ft="'+s2[0]+'">'+s2[1]+'</button>'}).join('')+'</div><div class="fbody" id="fbody"></div><button class="btn sm" id="pkx">Fermer</button></div>';
+ document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
+ var show=function(k){[].forEach.call(d.querySelectorAll('.ftab'),function(b){b.classList.toggle('on',b.dataset.ft===k)});var sec=DSEC.filter(function(x){return x[0]===k})[0];$('fbody').innerHTML=D[k]?'<div class="ftxt">'+esc(D[k]).replace(/\n/g,'<br>')+'</div>':'<div class="fempty">Rien de renseigné pour l\'instant.</div>'};
+ [].forEach.call(d.querySelectorAll('.ftab'),function(b){b.onclick=function(){show(b.dataset.ft)}});show(cur)}
 function listTag(i){if(!mkData)return '';var m=0,t=0;(mkData.open||[]).forEach(function(l){if(l.mine&&l.card===i)m++});(mkData.trades||[]).forEach(function(x){if(x.mine&&x.give.indexOf(i)>=0)t++});return m&&t?' <span class="ltag">Sur le marché + en échange</span>':m?' <span class="ltag">Sur le marché</span>':t?' <span class="ltag">En échange</span>':''}
 function dupKeep(d){var m={},t={};if(!d)return {};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});var k={};CARDS.forEach(function(c,i){var l=Math.max(m[i]||0,t[i]||0);if(l)k[i]=l+1});return k}
 function dupValue(){var t=0,k=dupKeep(mkData);CARDS.forEach(function(c,i){var n=S.col[i]||0,q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v});return t}
@@ -1701,16 +1714,15 @@ function openCodes(){closePick();var d=document.createElement('div');d.id='pk';d
 var myImg='';
 function rMyCard(){
  if(!MYCARD){$('main').innerHTML=colNav()+'<div class="panel center mut">Aucune carte n\'est associée à ton compte.</div>';bindColNav();return}
- var i=MYCARD.id,c=CARDS[i]||['?',0,0,'',''],left=MYCARD.logoAt&&MYCARD.logoAt>Date.now();myImg='';
+ var i=MYCARD.id,c=CARDS[i]||['?',0,0,'',''],left=MYCARD.logoAt&&MYCARD.logoAt>Date.now(),DD=parseDescr(c[3]);myImg='';
  $('main').innerHTML=colNav()+'<div class="panel mycd"><h3>Ma carte : '+esc(c[0])+'</h3><div class="mycrow"><div class="mycprev">'+cardHTML(i)+'</div><div class="mycform">'+
-  '<label>Description <small class="mut">(visible par tous les joueurs)</small><textarea id="mcd" class="inp" rows="4" maxlength="200" placeholder="Ton parcours, ton record (WR)…">'+esc(c[3]||'')+'</textarea></label><div class="mut sm" id="mcn"></div>'+
+  DSEC.map(function(x){return '<label class="mcsec"><b>'+x[1]+' <small class="mut">(visible par tous les joueurs)</small></b><textarea id="mc_'+x[0]+'" class="inp" rows="3" maxlength="400" placeholder="'+x[2]+'">'+esc(DD[x[0]])+'</textarea></label>'}).join('')+'<div class="mut sm" id="mcn"></div>'+
   '<label>Logo <small class="mut">(1 changement par mois)</small><input type="file" id="mcf" accept="image/*"'+(left?' disabled':'')+'></label><div id="mcp"></div>'+
   (left?'<p class="mut sm">Prochain changement de logo possible le '+new Date(MYCARD.logoAt).toLocaleDateString('fr-FR')+'.</p>':'')+
   '<p class="mut sm">Pas d\'obscénité, d\'insulte ni de photo sans accord : sanction possible (retrait de la carte, du compte).</p>'+
   '<div class="bar"><button class="btn gold" id="mcs">Enregistrer</button></div></div></div></div>';bindColNav();
- var cnt=function(){$('mcn').textContent=$('mcd').value.length+' / 200'};cnt();$('mcd').oninput=cnt;
  $('mcf').onchange=function(){var f=this.files[0];myImg='';$('mcp').innerHTML='';if(!f)return;pickImage(f).then(function(u){myImg=u;$('mcp').innerHTML='<img class="cprev" src="'+u+'" alt="">'}).catch(function(e){toast(e.message)})};
- $('mcs').onclick=function(){var b=this,body={};if($('mcd').value.trim()!==(c[3]||''))body.descr=$('mcd').value;if(myImg)body.image=myImg;
+ $('mcs').onclick=function(){var b=this,body={},nd=joinDescr({bio:$('mc_bio').value,rec:$('mc_rec').value,past:$('mc_past').value});if(nd!==joinDescr(DD))body.descr=nd;if(myImg)body.image=myImg;
   if(!Object.keys(body).length){toast('Rien à modifier');return}
   b.disabled=true;api('mycardsave',body).then(function(r){b.disabled=false;if(r.row)CARDS[i]=[r.row[0],r.row[1],r.row[2],r.row[3],r.row[4],r.row[5]||0];MYCARD=r.card||MYCARD;toast('Ta carte est à jour');rMyCard()}).catch(function(e){b.disabled=false;toast(e.message)})}}
 /* ---------- Admin : associer une carte à un joueur ---------- */
@@ -1986,7 +1998,7 @@ function openWaiting(){if(busy)return;closePick();var d=document.createElement('
  if($('owall'))$('owall').onclick=openAllWaiting}
 function openAllWaiting(){if(busy||netBusy)return;closePick();var prev=Object.assign({},S.col),it=packIntro();act({action:'openall'}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
 function openMythPick(){closePick();var ids=[];CARDS.forEach(function(c,i){if(c&&c[2]===5&&!c[5])ids.push(i)});var sel=null,d=document.createElement('div');d.id='pk';d.className='pickov';
- var paint=function(){d.innerHTML='<div class="pickbox"><div class="pickhd"><h3>Choisis ta carte Mythique</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">Tu as gagné une Mythique au choix : touche la carte que tu veux, puis confirme. Ce choix est définitif.</p><div class="mythpick">'+ids.map(function(i){var c=CARDS[i];return '<button class="mp'+(sel===i?' on':'')+'" data-mp="'+i+'">'+cthumb(c[4],c[0])+'<span class="mpt"><b>'+esc(c[0])+'</b><span class="mut sm">'+CATS[c[1]]+(c[3]?' · '+esc(c[3]):'')+'</span></span></button>'}).join('')+'</div><div class="bar" style="margin-top:12px"><button class="btn gold" id="mpok"'+(sel==null?' disabled':'')+'>'+(sel==null?'Choisis une carte':'Confirmer : '+esc(CARDS[sel][0]))+'</button></div></div>';
+ var paint=function(){d.innerHTML='<div class="pickbox"><div class="pickhd"><h3>Choisis ta carte Mythique</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">Tu as gagné une Mythique au choix : touche la carte que tu veux, puis confirme. Ce choix est définitif.</p><div class="mythpick">'+ids.map(function(i){var c=CARDS[i];return '<button class="mp'+(sel===i?' on':'')+'" data-mp="'+i+'">'+cthumb(c[4],c[0])+'<span class="mpt"><b>'+esc(c[0])+'</b><span class="mut sm">'+CATS[c[1]]+(c[3]?' · '+esc(parseDescr(c[3]).bio):'')+'</span></span></button>'}).join('')+'</div><div class="bar" style="margin-top:12px"><button class="btn gold" id="mpok"'+(sel==null?' disabled':'')+'>'+(sel==null?'Choisis une carte':'Confirmer : '+esc(CARDS[sel][0]))+'</button></div></div>';
   $('pkx').onclick=closePick;[].forEach.call(d.querySelectorAll('[data-mp]'),function(b){b.onclick=function(){sel=+b.dataset.mp;var y=d.querySelector('.pickbox').scrollTop;paint();d.querySelector('.pickbox').scrollTop=y}});
   $('mpok').onclick=function(){if(sel==null)return;var c=sel;closePick();openWaitingPack(5,c)}};
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};paint()}

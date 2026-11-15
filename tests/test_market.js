@@ -30,6 +30,7 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   r = await call('tokA', { action: 'aownset', card: mine, user: 'C' }); assert.strictEqual(r.status, 400); ok('une carte ne s\'associe qu\'à un seul joueur');
   r = await call('tokB', { action: 'me' }); assert.strictEqual(r.json.mycard.id, mine); ok('Bob voit sa carte dans « me »');
   r = await call('tokB', { action: 'mycardsave', descr: 'Champion, WR 1:23, depuis 2020' }); assert.strictEqual(r.status, 200); assert.strictEqual(cards[mine][3], 'Champion, WR 1:23, depuis 2020'); ok('description modifiée pour tout le monde');
+  { const full = 'Pseudo : Bob\nManette : PS5\n§Records§\nRun Edit 7:52\n§Passé§\nClan Legends'; r = await call('tokB', { action: 'mycardsave', descr: full }); assert.strictEqual(r.status, 200); assert.strictEqual(cards[mine][3], full); ok('Ma carte : biographie, records et passé sont enregistrés'); }
   r = await call('tokB', { action: 'mycardsave', descr: 'Ligne 1  \n\n\n\nLigne   2\r\n- record' }); assert.strictEqual(cards[mine][3], 'Ligne 1\n\nLigne 2\n- record'); ok('les retours à la ligne de la description sont conservés');
   await call('tokB', { action: 'mycardsave', descr: 'Champion, WR 1:23, depuis 2020' });
   r = await call('tokB', { action: 'mycardsave', descr: 'quel connard' }); assert.strictEqual(r.status, 400); assert.strictEqual(cards[mine][3], 'Champion, WR 1:23, depuis 2020'); ok('description obscène refusée');
