@@ -14,7 +14,7 @@ function imgSrc(f) {
 function page(d, origin, sid) {
   const total = d.cards.filter(Boolean).length;
   const title = 'Collection de ' + d.name + ' - Edit Legends';
-  const desc = d.owned + ' / ' + total + ' cartes' + (d.mythics ? ' dont ' + d.mythics + ' Mythique' + (d.mythics > 1 ? 's' : '') : '') + ' · score ' + num(d.score) + '. Ouvre des packs et collectionne les légendes de la scène Fortnite edit.';
+  const desc = d.owned + ' / ' + total + ' cartes' + (d.mythics ? ' dont ' + d.mythics + ' Mythique' + (d.mythics > 1 ? 's' : '') : '') + ' · score ' + num(d.score) + '. Ouvre des packs et collectionne les légendes de la scène Fortnite.';
   let body = '';
   for (let r = 5; r >= 0; r--) {
     const items = [];
