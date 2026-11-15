@@ -48,12 +48,13 @@ module.exports = function fakeDb(cards, validCodes) {
     async getSummaries(ids) { const m = {}; ids.forEach((i) => { const s = sumOf(i); if (s) m[i] = s; }); return m; },
     _ranked(sort) {
       return [...saves.keys()].filter((id) => { const s = sumOf(id); return s && !s.hidden && s.owned > 0 && profiles.has(id); })
-        .sort((x, y) => sort === 'coll' ? (sumOf(y).owned - sumOf(x).owned || sumOf(y).mythics - sumOf(x).mythics || (sumOf(x).cat || 0) - (sumOf(y).cat || 0) || (x < y ? -1 : 1)) : sumOf(y)[sort] - sumOf(x)[sort] || (x < y ? -1 : 1));
+        .sort((x, y) => sort === 'coll' ? ((sumOf(y).cscore || 0) - (sumOf(x).cscore || 0) || sumOf(y).owned - sumOf(x).owned || sumOf(y).mythics - sumOf(x).mythics || (sumOf(x).cat || 0) - (sumOf(y).cat || 0) || (x < y ? -1 : 1)) : sumOf(y)[sort] - sumOf(x)[sort] || (x < y ? -1 : 1));
     },
     async leaderboard(sort, limit, offset = 0) {
       return this._ranked(sort).slice(offset, offset + limit).map((id) => Object.assign({ id, name: profiles.get(id).name, avatar: '' }, sumOf(id)));
     },
     async rankOf(sort, v, uid) { return this._ranked(sort).indexOf(uid) + 1 || null; },
+    async backfillCscore() {},
     async rankedCount() { return this._ranked('score').length; },
     async searchProfiles(q, uid) {
       return [...profiles.values()].filter((p) => p.user_id !== uid && p.name.toLowerCase().includes(q.toLowerCase()) && !(sumOf(p.user_id) || {}).hidden)

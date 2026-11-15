@@ -29,10 +29,10 @@ module.exports = async (req, res) => {
       res.status(200).json({ sort, total: await db.rankedCount(), rows: rows.map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened })) }); return;
     }
     if (body.action === 'boards') {
-      // /classement : collection (cartes, puis mythiques, puis ancienneté si connue) et runs, 20 premiers de chaque
+      // /classement : collection (points de rareté des cartes différentes, puis cartes, puis mythiques, puis ancienneté) et runs, 20 premiers de chaque
       const catalog = (await db.getCards()).filter((c) => c && !c[5]).length;
       const coll = (await db.leaderboard('coll', 20, 0))
-        .map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, score: r.score, opened: r.opened }));
+        .map((r, i) => ({ rank: i + 1, name: r.name, owned: r.owned, mythics: r.mythics, cscore: r.cscore || 0, score: r.score, opened: r.opened }));
       const rb = (await db.runsBoard()).slice(0, 20);
       const pr = rb.length ? await db.getProfiles(rb.map((r) => r.id)) : {};
       const runs = rb.map((r, i) => ({ rank: i + 1, name: (pr[r.id] || {}).name || 'Joueur', owned: r.owned, mythics: r.mythics, score: r.score, runs: r.runs }));
