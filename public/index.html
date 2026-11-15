@@ -628,7 +628,7 @@ body.light .nban,body.light .nban *{color:#fff}
 .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #2a1b8f}
 .btn.gold{box-shadow:0 4px 0 #6b4300,0 7px 14px #0005}.btn.gold:active:not(:disabled){box-shadow:0 1px 0 #6b4300}
 .btn.ghost{box-shadow:0 3px 0 #ffffff1f}.btn.ghost:active:not(:disabled){box-shadow:0 0 0 #0000}
-.seg{display:inline-flex;gap:6px}.multi{display:inline-flex;gap:8px;margin:0 8px;vertical-align:middle}.panel .multi{margin:10px 0 0;display:flex;justify-content:center}.btn.dng{box-shadow:0 3px 0 #5a1020}
+.seg{display:inline-flex;gap:6px}.ltag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#ffb02026;color:#ffb020;font-weight:800;font-size:.85em;white-space:nowrap}.multi{display:inline-flex;gap:8px;margin:0 8px;vertical-align:middle}.panel .multi{margin:10px 0 0;display:flex;justify-content:center}.btn.dng{box-shadow:0 3px 0 #5a1020}
 .btn:disabled{box-shadow:0 3px 0 #0006}
 </style>
 </head>
@@ -933,6 +933,7 @@ function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||
  var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox zoombox"><div class="zc">'+cardHTML(i)+'</div>'+(CARDS[i][3]?'<div class="zdesc">'+esc(CARDS[i][3])+'</div>':'')+'<div class="pst" style="font-size:15px">Obtenue x'+pl+'</div><button class="btn sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick}
+function listTag(i){if(!mkData)return '';var m=0,t=0;(mkData.open||[]).forEach(function(l){if(l.mine&&l.card===i)m++});(mkData.trades||[]).forEach(function(x){if(x.mine&&x.give.indexOf(i)>=0)t++});return m&&t?' <span class="ltag">Sur le marché + en échange</span>':m?' <span class="ltag">Sur le marché</span>':t?' <span class="ltag">En échange</span>':''}
 function dupKeep(d){var m={},t={};if(!d)return {};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});var k={};CARDS.forEach(function(c,i){var l=Math.max(m[i]||0,t[i]||0);if(l)k[i]=l+1});return k}
 function dupValue(){var t=0,k=dupKeep(mkData);CARDS.forEach(function(c,i){var n=S.col[i]||0,q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v});return t}
 var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
@@ -955,7 +956,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
   h+='<div class="sec" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:n})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
-   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+'</div>'+(n>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
+   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">Obtenue x'+Math.max(S.pulled[i]||0,n)+listTag(i)+'</div>'+(n>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
