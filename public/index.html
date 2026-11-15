@@ -1239,7 +1239,7 @@ function rbTick(){clearInterval(tmT);var p=function(n){return n<10?'0'+n:''+n};
 function rBoard(){
  var isRuns=boardScope==='runs',kind=isRuns?'runs':'coll',sort=isRuns?'runs':'coll',per=isRuns?'week':'all',scope=boardScope==='friends'?'friends':'all';
  function paint(d){if(!comAlive('board'))return;
-  var val=function(r){return isRuns?r.runs+(r.runs>1?' runs':' run'):fmt(r.cscore||0)+' pts'};
+  var hasPts=d.rows.some(function(r){return r.cscore>0});var val=function(r){return isRuns?r.runs+(r.runs>1?' runs':' run'):hasPts?fmt(r.cscore||0)+' pts':r.owned+' / '+TOT()};
   var P=isRuns;
   var h=(isRuns?'<div class="panel tmcd"><span class="mut sm">Remise à zéro des Runs dans</span><div class="cdg" id="rbcd"></div><span class="mut sm">Chaque lundi à minuit (heure de Paris). Les récompenses du Top 20 sont versées automatiquement juste avant.</span></div>':'')+
    (isRuns?'<p class="runnote">Un <b>run</b> = une fois où tu as fini la map Fortnite et entré ton code de fin dans l\'onglet <b>Code</b>. '+'Classement de la semaine : seuls les runs faits depuis lundi comptent.'+'</p>':
