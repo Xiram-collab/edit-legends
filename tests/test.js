@@ -116,10 +116,19 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
 
   // distribution des raretés sur 200 000 cartes
   const { drawPack } = require('../lib/game'); const t = [0, 0, 0, 0, 0, 0];
+  const noelOn = C.NOEL.on; C.NOEL.on = false;   // sans le boost de Noël
   for (let i = 0; i < 40000; i++) drawPack(cards, 0, rnd).forEach((c) => t[cards[c][2]]++);
+  C.NOEL.on = noelOn;
   const tot = t.reduce((a, b) => a + b, 0);
   console.log('    raretés :', t.map((x, i) => (x / tot * 100).toFixed(2)).join(' / '));
   [50, 25, 17, 5.5, 2, .5].forEach((p, i) => assert.ok(Math.abs(t[i] / tot * 100 - p) < 0.5)); ok('probabilités des raretés conformes');
+
+  // pack de Noël : ~1 pack normal sur 8 boosté, jamais sur les packs Rare+, et plus de cartes hautes quand boosté
+  let nb = 0; const hi = [0, 0], N = 20000;
+  for (let i = 0; i < N; i++) { const o = drawPack(cards, 0, rnd); if (o.boost) nb++; hi[o.boost ? 1 : 0] += o.filter((c) => cards[c][2] >= 3).length; }
+  assert.ok(Math.abs(nb / N - 1 / 8) < 0.02); assert.ok(hi[1] / nb > hi[0] / (N - nb) * 1.5);
+  for (let i = 0; i < 3000; i++) assert.ok(!drawPack(cards, 2, rnd).boost);
+  ok('pack de Noël : 1 sur 8, seulement les packs normaux, plus de rares');
 
   // suppression du compte
   r = await call('tokB', { action: 'delete' }); assert.strictEqual(r.status, 200); assert.ok(!db.saves.has('B')); ok('suppression du compte');

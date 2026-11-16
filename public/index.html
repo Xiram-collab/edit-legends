@@ -107,6 +107,13 @@ body.noel .card{padding-top:1px}
 body.noel .card::after{height:6px}
 }
 .card .ds:empty{display:none}
+.over.xb .pkface{filter:hue-rotate(150deg) saturate(1.4) drop-shadow(0 0 18px #ff3b4e99)}.over.xb .pk3d{animation:xbglow 1.4s ease-in-out infinite alternate}@keyframes xbglow{to{filter:drop-shadow(0 0 26px #3ddc84aa)}}
+.xbnr{position:absolute;left:0;right:0;top:12%;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:0 16px;pointer-events:none;animation:xbin .6s cubic-bezier(.2,1.4,.4,1) both}
+.xbt{font-weight:900;font-size:clamp(18px,5vw,30px);letter-spacing:.04em;color:#fff;text-shadow:0 0 14px #ff3b4e,0 0 30px #ff3b4e88,0 2px 0 #7a0f1c;background:linear-gradient(90deg,#c4122f,#1f9d55,#c4122f);padding:6px 16px;border-radius:12px;border:2px solid #ffd24a}
+.xbs{font-size:clamp(12px,3.4vw,15px);color:#ffe9a8;font-weight:700}.xbf{font-size:12px;color:#ffffffaa}
+@keyframes xbin{from{transform:translateY(-30px) scale(.7);opacity:0}}
+.xbsn{position:absolute;inset:0;overflow:hidden;pointer-events:none}.xbsn i{position:absolute;top:-20px;font-style:normal;color:#fff;opacity:.85;animation:xbfall linear infinite}
+@keyframes xbfall{to{transform:translateY(110vh) rotate(360deg)}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -916,7 +923,10 @@ function packIntro(){busy=true;var ov=$('ov');ov.hidden=false;ov.className='over
  var it={clicked:false,t0:0};ov.onclick=function(){if(it.clicked)return;it.clicked=true;it.t0=Date.now();packRumble()};return it}
 function packAbort(){busy=false;var ov=$('ov');ov.hidden=true;ov.className='';ov.innerHTML='';ov.onclick=null}
 function multiBtns(){return '<span class="multi">'+[2,5].map(function(n){return '<button class="btn sm gold" data-mx="'+n+'"'+(S.stock<n?' disabled':'')+'>x'+n+'</button>'}).join('')+'</span>'}
-function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),it=packIntro();act(body).then(function(r){setState(r.state);reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
+function xmasBoost(n){if(!n)return;var ov=$('ov');if(!ov||ov.hidden)return;ov.classList.add('xb');var a=ov.querySelector('.aura');if(a)a.style.setProperty('--a','#ff3b4e');
+ var d=document.createElement('div');d.className='xbnr';d.innerHTML='<span class="xbt">🎄 PACK DE NOËL BOOSTÉ 🎄</span><span class="xbs">'+(n>1?n+' packs boostés · ':'')+'+3 % de chance d\'avoir une Épique, une Légendaire ou une Mythique sur chaque carte</span><span class="xbf">1 pack normal sur 8 est boosté</span>';ov.appendChild(d);
+ var sn='';for(var i=0;i<26;i++)sn+='<i style="left:'+(Math.random()*100)+'%;animation-delay:'+(Math.random()*4).toFixed(2)+'s;animation-duration:'+(3+Math.random()*3).toFixed(2)+'s">'+(i%3?'❄':'✦')+'</i>';var w=document.createElement('div');w.className='xbsn';w.innerHTML=sn;ov.appendChild(w);sfx('coin')}
+function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),it=packIntro();act(body).then(function(r){setState(r.state);xmasBoost(r.boost);reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
 /* ---------- cérémonie d'ouverture ---------- */
 function reveal(list,prev,intro){prev=prev||{};busy=true;list=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]}).map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
  list.forEach(function(i){isNew.push(!prev[i]&&!tmp[i]);tmp[i]=1;best=Math.max(best,CARDS[i][2])});
@@ -2116,14 +2126,14 @@ function openWaiting(){if(busy)return;closePick();var d=document.createElement('
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  [].forEach.call(d.querySelectorAll('[data-ow]'),function(b){b.onclick=function(){openWaitingPack(+b.dataset.ow)}});
  if($('owall'))$('owall').onclick=openAllWaiting}
-function openAllWaiting(){if(busy||netBusy)return;closePick();var prev=Object.assign({},S.col),it=packIntro();act({action:'openall'}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
+function openAllWaiting(){if(busy||netBusy)return;closePick();var prev=Object.assign({},S.col),it=packIntro();act({action:'openall'}).then(function(r){setState(r.state);wpBadge();xmasBoost(r.boost);reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
 function openMythPick(){closePick();var ids=[];CARDS.forEach(function(c,i){if(c&&c[2]===5&&!c[5])ids.push(i)});var sel=null,d=document.createElement('div');d.id='pk';d.className='pickov';
  var paint=function(){d.innerHTML='<div class="pickbox"><div class="pickhd"><h3>Choisis ta carte Mythique</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">Tu as gagné une Mythique au choix : touche la carte que tu veux, puis confirme. Ce choix est définitif.</p><div class="mythpick">'+ids.map(function(i){var c=CARDS[i];return '<button class="mp'+(sel===i?' on':'')+'" data-mp="'+i+'">'+cthumb(c[4],c[0])+'<span class="mpt"><b>'+esc(c[0])+'</b><span class="mut sm">'+CATS[c[1]]+(c[3]?' · '+esc(parseDescr(c[3]).bio):'')+'</span></span></button>'}).join('')+'</div><div class="bar" style="margin-top:12px"><button class="btn gold" id="mpok"'+(sel==null?' disabled':'')+'>'+(sel==null?'Choisis une carte':'Confirmer : '+esc(CARDS[sel][0]))+'</button></div></div>';
   $('pkx').onclick=closePick;[].forEach.call(d.querySelectorAll('[data-mp]'),function(b){b.onclick=function(){sel=+b.dataset.mp;var y=d.querySelector('.pickbox').scrollTop;paint();d.querySelector('.pickbox').scrollTop=y}});
   $('mpok').onclick=function(){if(sel==null)return;var c=sel;closePick();openWaitingPack(5,c)}};
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};paint()}
 function openWaitingPack(g,card){if(busy||netBusy||!(wpN(g)>0))return;if(g===5&&card==null&&CARDS.some(function(c){return c&&c[2]===5&&!c[5]})){openMythPick();return}closePick();var prev=Object.assign({},S.col);
- var it=packIntro();act({action:'openwp',g:g,card:card}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
+ var it=packIntro();act({action:'openwp',g:g,card:card}).then(function(r){setState(r.state);wpBadge();xmasBoost(r.boost);reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
 /* ---------- événements ---------- */
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('button'))sfx('click');var b=e.target.closest&&e.target.closest('[data-t]');if(b&&$('ov').hidden){tab=b.dataset.t;render();scrollTo(0,0)}});
 $('mute').onclick=function(){S.mute=!S.mute;save();tabs();if(!S.mute)sfx('flip')};
