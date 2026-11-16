@@ -95,6 +95,13 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
     if (CW[last.res].t === 'coins') nCoins += last.coins;
   }
   assert.ok(nCard > 0 && nCoins > 0 && maxChain <= 5 && S0.money === nCoins && S0.opened === 0 && S0.wp[6] === nCard && Object.keys(S0.col).length === 0); ok('roue : carte en attente (à récupérer), Coins crédités, relances (max 5), rien d\'ajouté directement à la collection');
+  { // stats de tirage Holo : comptées pour les vrais packs, pas pour les outils admin
+    const GS = require('../lib/game'); const T = GS.newState(1e12); T.stock = 10;
+    for (let q = 0; q < 3; q++) GS.openFree(T, cards, rnd, 1e12);
+    const d = T.hs.d.reduce((a, x) => a + x, 0); assert.strictEqual(d, 15); assert.ok(T.hs.h.reduce((a, x) => a + x, 0) <= 15);
+    GS.adminAction(T, cards, 'ph', 0, 0, rnd, 1e12); GS.adminAction(T, cards, 'ch', 1, 0, rnd, 1e12);
+    assert.strictEqual(T.hs.d.reduce((a, x) => a + x, 0), 15); ok('stats Holo : tirages comptés, outils admin ignorés');
+  }
   { // outils : pack 100 % Holo, suppression des Holo
     const GB = require('../lib/game'); const T = GB.newState(1e12); const o = GB.adminAction(T, cards, 'ph', 0, 0, rnd, 1e12);
     assert.ok(o.cards.length === 5 && o.holo.every(Boolean) && Object.keys(T.holo).length > 0);
