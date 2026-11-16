@@ -575,7 +575,7 @@ body.xmas table.at th{color:var(--gold)}
 .mrow:last-child{border-bottom:0}.mrow .mn{font-weight:800}.mrow .md{grid-column:1;font-size:.85em}.mrow .mprg{grid-column:1/-1;display:flex;align-items:center;gap:10px}
 .mrow .mprg .prog{flex:1;max-width:none;height:9px}.mrow .mprg b{min-width:64px;text-align:right;font-variant-numeric:tabular-nums;font-size:.85em}
 .mrow .mr{grid-row:1/3;grid-column:2;text-align:right;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
-.mrow.mdone .mn{color:#7be3a0}.mrow.tgot .mn{color:var(--c)}
+.mcols{display:grid;gap:0 28px;grid-template-columns:1fr}@media(min-width:900px){.mcols{grid-template-columns:1fr 1fr;align-items:start}}.mct{margin:16px 0 0;font-size:1.05em;padding-bottom:6px;border-bottom:2px solid var(--line)}.mrow.mq .rwc{font-size:.85em;white-space:nowrap}.mrow.mdone .mn{color:#7be3a0}.mrow.tgot .mn{color:var(--c)}
 .mtag{font-size:.7em;font-weight:800;padding:2px 8px;border-radius:999px;background:#ffffff14;color:var(--mut);white-space:nowrap}
 .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 4px}
 .tbar{margin-top:18px}
@@ -1193,12 +1193,14 @@ function paintMiss(){if(tab!=='miss'||!MISS)return;
   h='<div class="panel"><div class="mhead"><h2 style="margin:0">Titres</h2><span class="mut sm">'+r.nbOwn+' / '+r.titles.length+' obtenus · une fois récupéré, équipe ton titre dans Collection &gt; Titres</span></div>'+all+
    r.titles.slice().sort(function(a,b){return (b.t-a.t)||(b.ready-a.ready)||(b.own-a.own)||(b.v/b.g-a.v/a.g)}).map(titleRow).join('')+'</div>'}
  else{
-  var pk=function(m){var pc=Math.min(100,m.v/m.g*100);
-   return '<div class="mrow'+(m.claimed?' mdone':'')+'" style="--c:'+(PKC[m.rw]||'#ffc542')+'"><div class="mn">'+esc(m.n)+(m.kind==='once'&&m.steps>1?' <span class="mtag">palier '+Math.min(m.step,m.steps)+' / '+m.steps+'</span>':'')+'</div><div class="md mut">'+esc(m.d)+' · récompense : <b class="rwc" style="--c:'+(PKC[m.rw]||'#ffc542')+'">'+esc(m.rl)+'</b></div>'+
-    '<div class="mr">'+(m.claimed?'<span class="mtag">'+(m.kind==='once'?'Terminée':'Récupérée')+'</span>':m.ready?'<button class="btn gold sm" data-cl="'+m.id+'">Récupérer</button>':'')+'</div>'+
+  var pk=function(m){var pc=Math.min(100,m.v/m.g*100),col=PKC[m.rw]||'#ffc542';
+   return '<div class="mrow mq'+(m.claimed?' mdone':'')+'"><div class="mn">'+esc(m.n)+(m.kind==='once'&&m.steps>1?' <span class="mtag">palier '+Math.min(m.step,m.steps)+' / '+m.steps+'</span>':'')+'</div><div class="md mut">'+esc(m.d)+'</div>'+
+    '<div class="mr"><b class="rwc" style="--c:'+col+'">'+esc(m.rl)+'</b>'+(m.claimed?'<span class="mtag">'+(m.kind==='once'?'Terminée':'Récupérée')+'</span>':m.ready?'<button class="btn gold sm" data-cl="'+m.id+'">Récupérer</button>':'')+'</div>'+
     '<div class="mprg"><div class="prog"><i style="width:'+pc+'%"></i></div><b>'+fmt(m.v)+' / '+fmt(m.g)+'</b></div></div>'};
+  var sec=function(k,t,sub){var l=r.packs.filter(function(m){return m.kind===k});return '<h3 style="margin:14px 0 2px">'+t+' <span class="mut sm">'+sub+'</span></h3>'+l.map(pk).join('')};
   h='<div class="panel"><div class="mhead"><h2 style="margin:0">Missions</h2><span class="mut sm">Les packs récupérés arrivent dans tes packs en attente</span></div>'+all+
-   ['once','day','week'].map(function(k){var l=r.packs.filter(function(m){return m.kind===k});return '<h3 style="margin:14px 0 2px">'+kinds[k]+(k==='once'?' <span class="mut sm">un nouveau palier apparaît après chaque récompense</span>':k==='day'?' <span class="mut sm">remise à zéro à minuit (Paris)</span>':' <span class="mut sm">remise à zéro le lundi (Paris)</span>')+'</h3>'+l.map(pk).join('')}).join('')+'</div>'}
+   '<div class="mcols"><div class="mcol"><h2 class="mct">Quotidiennes</h2>'+sec('day','À faire aujourd\'hui','remise à zéro à minuit (Paris)')+sec('week','Hebdomadaires','remise à zéro le lundi (Paris)')+'</div>'+
+   '<div class="mcol"><h2 class="mct">Globales</h2>'+sec('once','Missions à paliers','un nouveau palier apparaît après chaque récompense')+'</div></div></div>'}
  $('main').innerHTML=nav+h;
  bindNav('data-ms',function(v){missSub=v;paintMiss();scrollTo(0,0)});bindEq();bindCl()}
 function rMiss(){
