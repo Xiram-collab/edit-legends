@@ -416,7 +416,7 @@ html,body,.over{touch-action:manipulation}
 .jc .ji{width:44px;height:44px;border-radius:10px;overflow:hidden;display:grid;place-items:center;background:#0006;font-weight:800;font-size:1.2em}
 .jc .ji img{width:100%;height:100%;object-fit:cover;display:block}
 .jc .jn{font-size:10px;font-weight:700;text-align:center;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.jc.nw{border-style:dashed}.jc.sel{transform:scale(1.1);box-shadow:0 0 0 3px #fff,0 0 18px var(--rc)}
+.jc .jk{font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--rc);opacity:.9;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.jc.nw{border-style:dashed}.jc.sel{transform:scale(1.1);box-shadow:0 0 0 3px #fff,0 0 18px var(--rc)}
 .lbhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 4px 10px;font-size:15px}
 .pickbox>.bkr{position:sticky;top:-16px;z-index:5;display:flex;margin:-16px -16px 10px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
 .pickbox>.bkr button{font-weight:800}
@@ -1731,7 +1731,7 @@ function jyProps(put){
   [].forEach.call(document.querySelectorAll('[data-de]'),function(b){b.onclick=function(){var x=d.drafts.filter(function(z){return z.id===+b.dataset.de})[0];if(x)openDraftEdit(x,again)}});
   [].forEach.call(document.querySelectorAll('[data-dd]'),function(b){twice(b,function(){api('acarddel',{id:+b.dataset.dd}).then(again).catch(function(e){toast(e.message)})})})
  }).catch(function(e){if(adAlive('jury'))$('abody').innerHTML=errBox(e)})}
-function jyChip(it){var c=it.cat===1?' hex':'';return '<div class="jc'+(it.draft?' nw':'')+(JY.sel===it.k?' sel':'')+'" draggable="true" data-k="'+it.k+'" style="--rc:'+HEX[it.rarity]+'" title="'+esc(it.name)+' · '+RAR[it.rarity].n+(it.draft?' (demandée)':'')+'"><span class="ji">'+(it.img?'<img src="'+esc(imgUrl(it.img))+'" alt="" draggable="false">':'<b>'+esc(it.name.charAt(0).toUpperCase())+'</b>')+'</span><span class="jn">'+esc(it.name)+'</span></div>'}
+function jyChip(it){var c=it.cat===1?' hex':'';return '<div class="jc'+(it.draft?' nw':'')+(JY.sel===it.k?' sel':'')+'" draggable="true" data-k="'+it.k+'" style="--rc:'+HEX[it.rarity]+'" title="'+esc(it.name)+' · '+esc(CATS[it.cat]||'')+' · '+RAR[it.rarity].n+(it.draft?' (demandée)':'')+'"><span class="ji">'+(it.img?'<img src="'+esc(imgUrl(it.img))+'" alt="" draggable="false">':'<b>'+esc(it.name.charAt(0).toUpperCase())+'</b>')+'</span><span class="jn">'+esc(it.name)+'</span><span class="jk">'+esc(CATS[it.cat]||'')+'</span></div>'}
 function jySet(k,lvl,before){
  JY.o=JY.o.filter(function(x){return x!==k});
  if(lvl===''||lvl==null){delete JY.t[k]}else{JY.t[k]=lvl;var at=before?JY.o.indexOf(before):-1;if(at<0)JY.o.push(k);else JY.o.splice(at,0,k)}
