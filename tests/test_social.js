@@ -136,6 +136,14 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 4, v: 2 }); assert.strictEqual(r.json.state.wp[4], 2);
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 4, v: -5 }); assert.strictEqual(r.json.state.wp[4], 0);
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 99, v: 1 }); assert.strictEqual(r.status, 400); ok('packs en attente : don, retrait, type inconnu refusé');
+  { // profil du bot : la Holo apparaît (0 normale, 1 Holo seule, 2 Holo + normale)
+    const { botProfile } = require('../lib/handler'); const mk = cards.findIndex((c) => c && c[2] === 4);
+    await call('tokA', { action: 'apact', id: 'B', a: 'ch', i: mk, v: 1 });
+    const dbB = Object.assign(Object.create(db), { getProfileByDiscord: async () => ({ user_id: 'B', name: 'Bob', avatar: '' }) }); const bp = await botProfile(dbB, '22222222');
+    { const sec = bp.collection.find((x) => x.rarity === 4); const cc = sec.cards.find((x) => x.name === cards[mk][0]); assert.strictEqual(cc.holo, 1); assert.ok(sec.holoOwned >= 1 && bp.holoTotal >= 1);
+      await call('tokA', { action: 'apact', id: 'B', a: 'c', i: mk, v: 1 }); const bp2 = await botProfile(dbB, '22222222'); assert.strictEqual(bp2.collection.find((x) => x.rarity === 4).cards.find((x) => x.name === cards[mk][0]).holo, 2); ok('bot : la Holo apparaît dans le profil (Holo seule / Holo + normale)'); }
+    await call('tokA', { action: 'apact', id: 'B', a: 'ch', i: mk, v: -1 });
+  }
   { // liste des Holo (admin) : qui possède quoi, par rareté
     const mk = (cards.findIndex((c) => c && c[2] === 5)); await call('tokA', { action: 'apact', id: 'B', a: 'ch', i: mk, v: 1 });
     r = await call('tokA', { action: 'aholo' }); assert.strictEqual(r.status, 200);
