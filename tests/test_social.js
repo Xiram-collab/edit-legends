@@ -136,6 +136,13 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 4, v: 2 }); assert.strictEqual(r.json.state.wp[4], 2);
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 4, v: -5 }); assert.strictEqual(r.json.state.wp[4], 0);
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 99, v: 1 }); assert.strictEqual(r.status, 400); ok('packs en attente : don, retrait, type inconnu refusé');
+  { // liste des Holo (admin) : qui possède quoi, par rareté
+    const mk = (cards.findIndex((c) => c && c[2] === 5)); await call('tokA', { action: 'apact', id: 'B', a: 'ch', i: mk, v: 1 });
+    r = await call('tokA', { action: 'aholo' }); assert.strictEqual(r.status, 200);
+    assert.ok(r.json.total >= 1 && r.json.byRar[5].n >= 1 && r.json.byRar[5].players >= 1 && r.json.rows.some((x) => x.id === 'B' && x.cards.some((c) => c.card === mk)));
+    r = await call('tokB', { action: 'aholo' }); assert.strictEqual(r.status, 403);
+    await call('tokA', { action: 'apact', id: 'B', a: 'ch', i: mk, v: -1 }); ok('admin : liste des Holo (qui, quoi, par rareté), refusée aux non-admins');
+  }
   r = await call('tokA', { action: 'apact', id: 'B', a: 'wp', i: 3, v: 1 });
   r = await call('tokB', { action: 'openwp', g: 3 }); assert.strictEqual(r.status, 200); ok('le joueur peut ouvrir le pack reçu');
   r = await call('tokA', { action: 'apact', id: 'B', a: 'c', i: myth, v: 1 }); assert.strictEqual(r.json.state.col[myth], 1); assert.ok(r.json.summary.mythics >= 1);
