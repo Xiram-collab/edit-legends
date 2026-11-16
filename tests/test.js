@@ -95,6 +95,13 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
     if (CW[last.res].t === 'coins') nCoins += last.coins;
   }
   assert.ok(nCard > 0 && nCoins > 0 && maxChain <= 5 && S0.money === nCoins && S0.opened === 0 && S0.wp[6] === nCard && Object.keys(S0.col).length === 0); ok('roue : carte en attente (à récupérer), Coins crédités, relances (max 5), rien d\'ajouté directement à la collection');
+  { // outils admin : +/- Holo
+    const GA = require('../lib/game'); const T = GA.newState(1e12); const i0 = cards.findIndex((c) => c);
+    GA.playerAction(T, cards, 'ch', 1, i0, 1e12); GA.playerAction(T, cards, 'ch', 1, i0, 1e12);
+    assert.strictEqual(T.col[i0], 2); assert.strictEqual(T.holo[i0], 2);
+    GA.playerAction(T, cards, 'c', -1, i0, 1e12); assert.strictEqual(T.col[i0], 1); assert.strictEqual(T.holo[i0], 1);
+    GA.playerAction(T, cards, 'ch', -1, i0, 1e12); assert.ok(!T.col[i0] && !T.holo[i0]); ok('admin : +/- Holo garde holo <= collection');
+  }
   { // « Holo au hasard » (g = 9) : une carte, toujours Holo, raretés à égalité
     const G9 = require('../lib/game'); const cnt = [0, 0, 0, 0, 0, 0]; let allHolo = true;
     for (let i = 0; i < 3000; i++) { const T = G9.newState(1e12); T.wp[9] = 1; const ids = G9.openWaiting(T, cards, 9, rnd); cnt[cards[ids[0]][2]]++; if (!(ids.length === 1 && ids.holo[0] === true && T.holo[ids[0]] === 1 && T.col[ids[0]] === 1)) allHolo = false; }
