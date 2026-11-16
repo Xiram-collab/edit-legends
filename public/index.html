@@ -2169,7 +2169,7 @@ function lpStart(){if(lpOn)return;lpOn=true;
 function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
 var SUPPORT_URL='';
-var HOLOC={p:[5,4,3,2.5,2,1.5],MARKET_MULT:4,SELL_MULT:4};
+var HOLOC={p:[5,4,3.5,3.5,4,5],MARKET_MULT:4,SELL_MULT:4};
 function applyConfig(cfg){if(cfg.HOLO)HOLOC=cfg.HOLO;if(cfg.SUPPORT_URL)SUPPORT_URL=cfg.SUPPORT_URL;if(cfg.BOARD_REWARDS)BR=cfg.BOARD_REWARDS;if(cfg.MARKET)MKC=cfg.MARKET;if(cfg.SCORE)SCORE=cfg.SCORE;if(cfg.SPIN_PRICE)SPIN_PRICE=cfg.SPIN_PRICE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
 function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PERMS=Array.isArray(r.perms)?r.perms:null;ISJURY=!!r.isJury;MYCARD=r.mycard||null;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
