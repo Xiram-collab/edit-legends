@@ -759,6 +759,7 @@ function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=t
 var qsMode=false,qsSel={};
 function HOL(i){return (S&&S.holo&&S.holo[i])||0}
 function NRM(i){return Math.max(0,((S&&S.col[i])||0)-HOL(i))}
+function DC(i){var h=HOL(i),n=NRM(i);return h&&n?Math.max(h,n):(S.col[i]||0)}   // normale + Holo = une seule carte « full Holo » : on n'affiche pas x2
 function HS(i){var h=HOL(i);return h?(NRM(i)>0?2:1):0}
 function holoCount(){var n=0;CARDS.forEach(function(c,i){if(c&&HOL(i))n++});return n}
 function qsMax(i){var k=dupKeep(mkData)[i];return Math.max(0,NRM(i)-(k||0))}
@@ -1043,8 +1044,8 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
   var tot=0,own=0,pul=0,hn=0;CARDS.forEach(function(c,i){if(c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;if(HOL(i))hn++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
   h+='<div class="sec" id="sec'+r+'" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span> <span class="secn sech">✨ '+hn+' / '+tot+'</span><i class="secbar"><i style="width:'+(tot?own/tot*100:0)+'%"></i></i></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
-   if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:n,hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
-   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n,hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
+   if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
+   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
