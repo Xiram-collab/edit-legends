@@ -153,6 +153,7 @@ main{max-width:1000px;margin:0 auto}
 .ctile .ctH{display:block;font-style:normal;font-size:.72em;color:#ffd9ff;margin-top:1px}
 .stats .hst b{background:linear-gradient(90deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#c58bff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .banner.hbn{top:auto;bottom:14vh;font-size:clamp(26px,8vw,50px);background:linear-gradient(90deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#c58bff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 14px #fff8)}
+.hprof h3{color:#ffd9ff}.hrow{display:flex;flex-wrap:wrap;gap:6px}.hch{border:1px solid var(--c);border-radius:99px;padding:3px 10px;font-size:.85em;background:#ffffff10}.hch b{color:var(--c)}
 .hsum{margin:10px 0;text-align:center;font-weight:700;color:#ffd9ff}
 .hzn{color:#ffd9ff}
 .steps .hli{color:#ffd9ff}
@@ -1366,7 +1367,7 @@ function openProfile(id){closePick();var d=document.createElement('div');d.id='p
 function paintProfile(d,p){
  var relB={none:'<button class="btn sm" data-fr="fadd">Ajouter en ami</button>',sent:'<button class="btn sm ghost" disabled>Demande envoyée</button><button class="btn sm ghost" data-fr="fremove">Annuler</button>',received:'<button class="btn sm gold" data-fr="faccept">Accepter la demande</button><button class="btn sm ghost" data-fr="fremove">Refuser</button>',friend:'<button class="btn sm ghost" data-fr="fremove">Retirer des amis</button>',self:''}[p.rel]||'';
  var h='<div class="pickhd"><h3>Profil</h3><button class="btn sm" id="pkx">Fermer</button></div><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+'</h2>'+ttag(p.title)+'<span class="mut sm">'+(p.rank?'#'+p.rank+' au classement · ':'')+'inscrit le '+dfr(p.since)+'</span></div></div>'+
-  '<div class="tiles"><div class="tile"><b>'+fmt(p.score)+'</b><span>score</span></div><div class="tile"><b>'+p.owned+' / '+TOT()+'</b><span>cartes</span></div><div class="tile"><b>'+p.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(p.opened)+'</b><span>packs ouverts</span></div></div>'+
+  '<div class="tiles"><div class="tile"><b>'+fmt(p.score)+'</b><span>score</span></div><div class="tile"><b>'+p.owned+' / '+TOT()+'</b><span>cartes</span></div><div class="tile"><b>'+p.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(p.opened)+'</b><span>packs ouverts</span></div></div>'+(p.holoRar?'<div class="panel hprof"><h3>✨ Cartes Holo : '+(p.holo||0)+' / '+TOT()+'</h3><div class="hrow">'+RAR.map(function(x,r){return {r:r,n:p.holoRar[r]||0}}).reverse().map(function(o){return '<span class="hch" style="--c:'+HEX[o.r]+'"><b>'+o.n+'</b> '+RAR[o.r].n+'</span>'}).join('')+'</div></div>':'')+
   (p.vitrine&&p.vitrine.length?'<div class="panel vitp"><h3>Vitrine</h3><div class="grid">'+p.vitrine.map(function(i){return '<div class="item">'+cardHTML(i)+'</div>'}).join('')+'</div></div>':'')+
   '<div class="bar">'+relB+(ISADMIN&&p.rel!=='self'?'<button class="btn sm gold" id="pfadm">Gérer ce joueur</button>':'')+'</div>';
  if(p.col){
