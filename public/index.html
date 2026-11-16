@@ -1181,7 +1181,7 @@ function paintMiss(){if(tab!=='miss'||!MISS)return;
  var h;
  if(missSub==='tit'){
   h='<div class="panel"><div class="mhead"><h2 style="margin:0">Titres</h2><span class="mut sm">'+r.nbOwn+' / '+r.titles.length+' obtenus · une fois récupéré, équipe ton titre dans Collection &gt; Titres</span></div>'+all+
-   r.titles.slice().sort(function(a,b){return (b.ready-a.ready)||(b.own-a.own)||(b.v/b.g-a.v/a.g)}).map(titleRow).join('')+'</div>'}
+   r.titles.slice().sort(function(a,b){return (b.t-a.t)||(b.ready-a.ready)||(b.own-a.own)||(b.v/b.g-a.v/a.g)}).map(titleRow).join('')+'</div>'}
  else{
   var pk=function(m){var pc=Math.min(100,m.v/m.g*100);
    return '<div class="mrow'+(m.claimed?' mdone':'')+'" style="--c:'+(PKC[m.rw]||'#ffc542')+'"><div class="mn">'+esc(m.n)+(m.kind==='once'&&m.steps>1?' <span class="mtag">palier '+Math.min(m.step,m.steps)+' / '+m.steps+'</span>':'')+'</div><div class="md mut">'+esc(m.d)+' · récompense : <b class="rwc" style="--c:'+(PKC[m.rw]||'#ffc542')+'">'+esc(m.rl)+'</b></div>'+
