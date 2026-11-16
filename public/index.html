@@ -107,6 +107,7 @@ body.noel .card::after{height:6px}
 @media(max-width:600px){.fl.sorts.cfl{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.fl.sorts.cfl button{padding:12px 4px;font-size:14px;overflow-wrap:anywhere}html,body{overflow-x:hidden}}
 /* résumé d'un gros lot : le bouton Continuer reste visible (collé en bas) et la page défile assez bas pour ne pas être masquée par la neige */
 .over{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}.over #ok{position:sticky;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:6;box-shadow:0 6px 22px #000a,0 0 0 4px #05030fcc;flex:none}
+@media(max-width:600px){.fl.sorts.cfl{grid-auto-flow:row!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}.fl.sorts.cfl button{padding:12px 4px;font-size:14px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -143,7 +144,7 @@ main{max-width:1000px;margin:0 auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
 /* carte */
 .card{--rc:var(--r0);position:relative;width:100%;aspect-ratio:5/7;border-radius:12px;border:3px solid var(--rc);background:linear-gradient(170deg,#241d5a,#0f0b2b);box-shadow:0 0 14px color-mix(in srgb,var(--rc) 45%,transparent);display:flex;flex-direction:column;padding:6px;gap:5px;overflow:hidden}
-.card.hx1,.card.hx2{border-color:transparent;background:linear-gradient(170deg,#241d5a,#0f0b2b) padding-box,linear-gradient(115deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#8a3dff,#ff3d81,#ffd24a) border-box;background-size:auto,300% 300%;animation:hxb 3.5s linear infinite}
+.card.hx1,.card.hx2{border-color:transparent;background:linear-gradient(170deg,#241d5a,#0f0b2b) padding-box,linear-gradient(115deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#8a3dff,#ff3d81,#ffd24a) border-box;background-origin:padding-box,border-box;background-clip:padding-box,border-box;background-size:auto,300% 300%;animation:hxb 3.5s linear infinite}
 .card.hx1.m,.card.hx2.m{animation:hxb 3.5s linear infinite,glow 2.4s ease-in-out infinite}
 @keyframes hxb{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
 .card .hxs{position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 25%,#ff3d8144 38%,#ffd24a55 46%,#3dffb044 54%,#27e0ff55 62%,transparent 75%);background-size:260% 100%;mix-blend-mode:screen;animation:hxs 3.2s ease-in-out infinite}
@@ -2037,7 +2038,7 @@ var WH=[{n:'Avant (rien)',p:0,t:'none',c:'#5a6080',c2:'#2c3050'},
 {n:'Pack Normal',l:['PACK','normal'],p:15,t:'pack',g:0,c:'#c3ccd9',c2:'#7d8799'},
 {n:'Pack Rare+',l:['RARE+','pack'],p:5,t:'pack',g:2,c:'#5aaeff',c2:'#1e63c9'},
 {n:'Pack Épique+',l:['ÉPIQUE+','pack'],p:4,t:'pack',g:3,c:'#c77dff',c2:'#7a2fd1'},
-{n:'Mythique au choix',l:['MYTHIQUE','au choix'],p:1,t:'pack',g:5,c:'#ff5c96',c2:'#c4124f'},
+{n:'Mythique au hasard',l:['MYTHIQUE','au hasard'],p:1,t:'pack',g:8,c:'#ff5c96',c2:'#c4124f'},
 {n:'Relance la roue',l:['RELANCE','tour gratuit'],p:10,t:'relance',c:'#3ddc84',c2:'#16844a'},
 {n:'Carte au hasard',l:['CARTE','au hasard'],p:60,t:'card',c:'#1fe0d0',c2:'#0a7f8c'},
 {n:'50 Coins',l:['50','Coins'],p:4,t:'coins',v:50,c:'#ffd24a',c2:'#b57800'},
@@ -2127,14 +2128,14 @@ function rCode(){
  $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);this.value=v.replace(/(.{4})(?=.)/g,'$1-')}}
 
 /* ---------- packs en attente ---------- */
-var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'},{g:6,n:'Carte au hasard',l:'C',c:'#1fe0d0'},{g:7,n:'Carte achetée au marché',l:'✓',c:'#ffc83d'}];
+var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'},{g:8,n:'Mythique au hasard',l:'M',c:'#ff3d81'},{g:6,n:'Carte au hasard',l:'C',c:'#1fe0d0'},{g:7,n:'Carte achetée au marché',l:'✓',c:'#ffc83d'}];
 function wpN(g){return g===7?((S.wc&&S.wc.length)||0):(S.wp[g]||0)}
 function wpTotal(){var t=0;WPT.forEach(function(x){t+=wpN(x.g)});return t}
 function wpBadge(){var b=$('pkb');if(!b){b=document.createElement('button');b.id='pkb';b.className='pkb';b.setAttribute('aria-label','Packs en attente');b.onclick=openWaiting;document.body.appendChild(b)}
  var n=wpTotal();b.hidden=n<1||!$('ov').hidden;
  b.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M5 8h14M9 13h6"/></svg><span class="pkt">Packs en attente</span><span class="pkn">'+n+'</span>'}
 function openWaiting(){if(busy)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
- var nAll=[0,2,3,4,6,7].reduce(function(t,g){return t+wpN(g)},0);
+ var nAll=[0,2,3,4,6,7,8].reduce(function(t,g){return t+wpN(g)},0);
  var h=WPT.filter(function(x){return wpN(x.g)>0}).map(function(x){var n=wpN(x.g);return '<div class="pk wpk" style="--c:'+x.c+'"><div class="mini" style="--c:'+x.c+'"><b class="disp">'+x.l+'</b></div><h3>'+x.n+'</h3><div class="mut">x'+n+' en attente</div><button class="btn sm" data-ow="'+x.g+'">Ouvrir</button></div>'}).join('');
  d.innerHTML='<div class="pickbox wpbox"><h2>Packs en attente</h2>'+(h?'<div class="wpl">'+h+'</div>':'<p class="mut">Aucun pack en attente.</p>')+(nAll>1?'<button class="btn gold" id="owall" style="margin-bottom:8px">Tout ouvrir ('+nAll+')</button>':'')+'<button class="btn ghost sm" id="pkx">Fermer</button></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
