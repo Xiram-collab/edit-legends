@@ -688,7 +688,7 @@ body.light .nban,body.light .nban *{color:#fff}
 <div id="toast" class="toast" hidden></div>
 <div id="login" class="lp" hidden><div class="lp-wrap">
 <div class="lp-top"><h1 class="logo disp"><img src="img/logo.png" class="lg" alt="" width="44" height="44">Edit Legends</h1><button class="dbtn ldiscord"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/></svg> Se connecter</button></div>
-<section class="lp-hero"><div class="lp-ht"><div class="v2b"><b>V2</b> 35 nouvelles cartes</div><div class="lp-kick">Le jeu de cartes de la scène Fortnite</div>
+<section class="lp-hero"><div class="lp-ht"><div class="v2b"><b>V3</b> 60 nouvelles cartes</div><div class="lp-kick">Le jeu de cartes de la scène Fortnite</div>
 <h2 class="lp-h">Collectionne<br>les <em>légendes</em><br>de l'edit</h2>
 <p class="lp-p">Ouvre des packs, trouve les éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs et joueurs esport qui font la scène Fortnite, revends tes doublons et complète ta collection. Gratuit, sans mot de passe.</p>
 <button class="dbtn lp-big ldiscord"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/></svg> Se connecter avec Discord</button>
@@ -729,7 +729,7 @@ function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;re
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
 function save(){if(!SESSION)return;clearTimeout(prefT);prefT=setTimeout(function(){var p={};PREFK.forEach(function(k){p[k]=S[k]});api('prefs',{prefs:p}).catch(function(){})},700)}
 /* nombre de cartes du catalogue : sans les cartes retirées (sauf celles que le joueur possède encore) */
-var V2_NEW=35; // nombre de cartes ajoutées en V2 (les dernières ajoutées)
+var V2_NEW=60; // nombre de cartes de la V3 (les dernières ajoutées) ; garder égal à V3_NEW de lib/config.js
 function newIds(){var o=[];for(var i=CARDS.length-1;i>=0&&o.length<V2_NEW;i--){var c=CARDS[i];if(c&&c[0]!=='?'&&!c[5])o.push(i)}return o}
 function TOT(col){var n=0;CARDS.forEach(function(c,i){if(c&&(!c[5]||(col&&col[i]>0)))n++});return n}
 function api(action,body){body=Object.assign({action:action,nc:CARDS.length},body||{});
@@ -906,7 +906,7 @@ function rHome(){
  var lad=RAR.slice().map(function(r,i){return {r:r,i:i}}).reverse().map(function(o){var q=(1-Math.pow(1-o.r.p/100,5))*100,w=Math.max(1.5,q);
   return '<div class="lr"><b style="color:'+HEX[o.i]+'">'+o.r.n+'</b><div class="lb"><i style="--w:'+w+'%;background:'+HEX[o.i]+'"></i></div><span>'+q.toFixed(1).replace('.',',')+' %</span></div>'}).join('');
  $('main').innerHTML=
- '<section class="hero"><div class="ht"><div class="v2b"><b>V2</b> '+NW.length+' nouvelles cartes</div><div class="kick">Le jeu de cartes de la scène Fortnite</div><h2 class="big">Collectionne<br>les <em>légendes</em><br>de l\'edit</h2>'+
+ '<section class="hero"><div class="ht"><div class="v2b"><b>V3</b> '+NW.length+' nouvelles cartes</div><div class="kick">Le jeu de cartes de la scène Fortnite</div><h2 class="big">Collectionne<br>les <em>légendes</em><br>de l\'edit</h2>'+
  '<p class="lead">Ouvre des packs, trouve les éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs et joueurs esport qui font la scène Fortnite, revends tes doublons en Coins et complète ta collection.</p>'+
  '<div class="cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack gratuit <span class="badge">'+S.stock+'</span></button>'+multiBtns()+'<button class="btn ghost" data-t="col">Ma collection</button></div>'+
  '<div class="stats"><div><b>'+owned+'/'+TOT(S.col)+'</b><span>cartes</span></div><div><b>'+S.opened+'</b><span>packs ouverts</span></div><div><b>'+S.stock+'</b><span>packs en stock</span></div></div></div>'+
