@@ -1180,21 +1180,21 @@ function rTest(){
  $('main').innerHTML='<div class="panel"><h2>Mes outils</h2><p class="mut">Actions sur ton propre compte (pour tester le jeu). Pour agir sur un autre joueur, va dans l\'onglet Joueurs. Tout est exécuté et vérifié par le serveur.</p>'+
  '<h3 style="margin-top:14px">Coins</h3><div class="bar">'+[100,1000,10000,100000].map(function(n){return b('+'+fmt(n),'m',n,'gold')}).join('')+b('Remettre à 0','m0',0,'ghost')+'</div>'+
  '<h3>Packs gratuits en stock</h3><div class="bar">'+[1,5,10,50].map(function(n){return b('+'+n,'s',n)}).join('')+b('Stock à 0','s0',0,'ghost')+'</div>'+
- '<h3>Ouvrir un pack directement</h3><div class="bar">'+b('Pack normal','p',0)+b('Rare+','p',2)+b('Épique+','p',3)+b('Légendaire+','p',4)+b('Ouvrir 10 packs','p10',0,'gold')+'</div>'+
- '<h3>Cartes</h3><div class="bar"><select id="gc" class="sel">'+opts+'</select>'+b('+1 carte','c',1)+b('+1 de chaque','call',1)+b('✨ +1 Holo','ch',1,'gold')+b('✨ +1 Holo de chaque','chall',1)+b('Vider la collection','creset',0,'ghost')+'</div>'+
+ '<h3>Ouvrir un pack directement</h3><div class="bar">'+b('Pack normal','p',0)+b('Rare+','p',2)+b('Épique+','p',3)+b('Légendaire+','p',4)+b('Ouvrir 10 packs','p10',0,'gold')+b('✨ Pack 100 % Holo','ph',0,'gold')+'</div>'+
+ '<h3>Cartes</h3><div class="bar"><select id="gc" class="sel">'+opts+'</select>'+b('+1 carte','c',1)+b('+1 de chaque','call',1)+b('✨ +1 Holo','ch',1,'gold')+b('✨ +1 Holo de chaque','chall',1)+b('✨ Supprimer mes Holo','hreset',0,'ghost')+b('Vider la collection','creset',0,'ghost')+'</div>'+
  '<h3>Statistiques</h3><div class="bar">'+b(rstArm?'Confirmer : tout remettre à 0':'Reset obtenues + packs ouverts','rst',0,rstArm?'gold':'ghost')+'</div>'+
  '<h3>Roue</h3><div class="bar">'+b('Tester la roue (sans code)','wt',0,'gold')+b('+1 pack en attente de chaque','wpa',0)+'</div>'+
   '<h3>Temps</h3><div class="bar">'+b('Remplir le stock à 10','sfull',10)+'</div></div>';
  [].forEach.call(document.querySelectorAll('[data-g]'),function(el){el.onclick=function(){var a=el.dataset.g,v=+el.dataset.v;
   if(a==='rst'&&!rstArm){rstArm=true;setTimeout(function(){if(rstArm){rstArm=false;if(tab==='admin')render()}},4000);render();return}
-  if(['m0','s0','creset'].indexOf(a)>=0){if(el.dataset.sure!=='1'){el.dataset.sure='1';el.dataset.o=el.textContent;el.textContent='Confirmer ?';setTimeout(function(){if(el.isConnected&&el.dataset.sure==='1'){el.dataset.sure='0';el.textContent=el.dataset.o}},4000);return}el.dataset.sure='0'}
+  if(['m0','s0','creset','hreset'].indexOf(a)>=0){if(el.dataset.sure!=='1'){el.dataset.sure='1';el.dataset.o=el.textContent;el.textContent='Confirmer ?';setTimeout(function(){if(el.isConnected&&el.dataset.sure==='1'){el.dataset.sure='0';el.textContent=el.dataset.o}},4000);return}el.dataset.sure='0'}
   if(a==='rst')rstArm=false;
-  if((a==='wt'||a==='p'||a==='p10')&&(busy||spinning))return;
+  if((a==='wt'||a==='p'||a==='p10'||a==='ph')&&(busy||spinning))return;
   var prev=Object.assign({},S.col);if(a==='wt'){tab='code';render()}
   act({action:'admin',a:a,v:v,i:+($('gc')?$('gc').value:0)}).then(function(r){setState(r.state);
    if(a==='wt'){runSpins(r.spins||[{res:r.res}],0,function(o){toast(winText(o));winEnd(o,prev)});return}
    if(r.cards){reveal(r.cards,prev,null,r.holo);return}
-   var M={m:'+'+fmt(v)+' '+CUR,m0:'Coins remis à 0',s:'+'+v+' pack'+(v>1?'s':''),s0:'Stock vidé',sfull:'Stock plein',c:'+1 carte',call:'+1 de chaque carte',creset:'Collection vidée',rst:'Obtenues et packs ouverts remis à 0',wpa:'Packs en attente ajoutés'};
+   var M={m:'+'+fmt(v)+' '+CUR,m0:'Coins remis à 0',s:'+'+v+' pack'+(v>1?'s':''),s0:'Stock vidé',sfull:'Stock plein',c:'+1 carte',call:'+1 de chaque carte',creset:'Collection vidée',hreset:'Toutes tes Holo supprimées',ch:'+1 Holo',chall:'+1 Holo de chaque carte',rst:'Obtenues et packs ouverts remis à 0',wpa:'Packs en attente ajoutés'};
    if(M[a])toast(M[a]);render()}).catch(function(){})}})}
 
 /* ---------- missions et titres ---------- */

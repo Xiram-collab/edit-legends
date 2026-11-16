@@ -95,6 +95,13 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
     if (CW[last.res].t === 'coins') nCoins += last.coins;
   }
   assert.ok(nCard > 0 && nCoins > 0 && maxChain <= 5 && S0.money === nCoins && S0.opened === 0 && S0.wp[6] === nCard && Object.keys(S0.col).length === 0); ok('roue : carte en attente (à récupérer), Coins crédités, relances (max 5), rien d\'ajouté directement à la collection');
+  { // outils : pack 100 % Holo, suppression des Holo
+    const GB = require('../lib/game'); const T = GB.newState(1e12); const o = GB.adminAction(T, cards, 'ph', 0, 0, rnd, 1e12);
+    assert.ok(o.cards.length === 5 && o.holo.every(Boolean) && Object.keys(T.holo).length > 0);
+    GB.adminAction(T, cards, 'c', 1, cards.findIndex((c) => c), rnd, 1e12);
+    GB.adminAction(T, cards, 'hreset', 0, 0, rnd, 1e12);
+    assert.deepStrictEqual(T.holo, {}); assert.ok(Object.keys(T.col).length <= 1); ok('outils : pack Holo garanti et suppression des Holo');
+  }
   { // outils admin : +/- Holo
     const GA = require('../lib/game'); const T = GA.newState(1e12); const i0 = cards.findIndex((c) => c);
     GA.playerAction(T, cards, 'ch', 1, i0, 1e12); GA.playerAction(T, cards, 'ch', 1, i0, 1e12);
