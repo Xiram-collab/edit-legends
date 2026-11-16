@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<meta name="description" content="Ouvre des packs gratuits chaque heure et collectionne les cartes des éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs, joueurs esport et map edits de la scène Fortnite. Gratuit, fait par un fan.">
+<meta name="description" content="Ouvre des packs gratuits chaque heure et collectionne les cartes des éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs, joueurs esport et maps de la scène Fortnite. Gratuit, fait par un fan.">
 <meta name="theme-color" content="#0c0a1a">
 <meta property="og:title" content="Edit Legends">
 <meta property="og:description" content="Ouvre des packs et collectionne les cartes des légendes de la scène Fortnite.">
@@ -699,7 +699,7 @@ var RAR=[
  {n:'Épique',c:'var(--r3)',p:5.5,v:40},
  {n:'Légendaire',c:'var(--r4)',p:2,v:150},
  {n:'Mythique',c:'var(--r5)',p:.3,v:600}];
-var CATS=['Éditeur','Influenceur','Map edit','Structure','Creative Warrior','Buildfighter','Mappeur','Esport'];
+var CATS=['Éditeur','Influenceur','Maps','Structure','Creative Warrior','Buildfighter','Mappeur','Esport'];
 /* Catégories « joueur » : éditeurs, influenceurs et les nouvelles (Creative Warrior, Buildfighter, Mappeur, Esport) : forme ronde, utilisables dans le Mon 11 */
 function ISP(k){return k<2||k>=4}
 // [nom, catégorie, rareté, description]
@@ -896,7 +896,7 @@ function rHome(){
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i,{isNew:true})+'</div>'}).join('')+'<div class="orb"></div></div></section>'+
  '<div class="tick"><div class="track" style="animation-duration:'+Math.max(25,tkIds.length*3)+'s">'+names+names+names+names+'</div></div>'+
  '<section class="row2"><div class="panel center"><h3>Pack gratuit</h3>'+ring()+pips()+'<p class="mut sm">1 pack offert toutes les heures · 10 en stock max</p><button class="btn big-b" id="hgo2"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack</button>'+multiBtns()+'</div>'+
- '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 2</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs, esport et map edits, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en Coins et achète des packs à rareté garantie.</li></ol></div></section>'+
+ '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 2</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs, esport et maps, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en Coins et achète des packs à rareté garantie.</li></ol></div></section>'+
  '<section class="panel dscp"><div><h3 style="margin:0 0 4px">Rejoins le serveur Discord</h3><p class="mut sm" style="margin:0">Les annonces, les sondages, les nouvelles cartes et la communauté de la scène Fortnite. Les commandes du bot (/11, /classement, /code…) sont là-bas.</p></div><a class="dbtn" href="https://discord.gg/editlegends" target="_blank" rel="noopener">'+DICO+' Rejoindre le Discord</a></section>'+
  '<section class="panel sec2"><h3>Les raretés</h3><p class="mut sm" style="margin:-4px 0 10px">Chance qu’un pack gratuit contienne au moins une carte de cette rareté</p><div class="lad">'+lad+'</div></section>';
  var g=$('hgo'),g2=$('hgo2'),go=function(){openVia({action:'open',kind:'free'})};if(g)g.onclick=go;if(g2)g2.onclick=go;[].forEach.call(document.querySelectorAll('[data-mx]'),function(b){b.onclick=function(){openVia({action:'open',kind:'free',n:+b.dataset.mx})}})}

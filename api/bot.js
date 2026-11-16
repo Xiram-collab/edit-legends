@@ -2,13 +2,14 @@
 //   { action: 'profile', discordId }  ->  équipe + tier lists du joueur
 //   { action: 'board', sort }          ->  top 20 du classement
 //   { action: 'boards' }               ->  classements collection + runs (top 20 chacun)
+//   { action: 'cardsubmit', discordId, name, cat, rarity, descr, image } ->  propose une carte (comme sur le site)
 //   { action: 'announce', text }      ->  ajoute l'annonce dans la cloche du site
 const crypto = require('crypto');
 const { createDb } = require('../lib/supabaseDb');
-const { botProfile } = require('../lib/handler');
+const { botProfile, createHandler } = require('../lib/handler');
 const G = require('../lib/game');
 
-let db = null;
+let db = null, handler = null;
 const same = (a, b) => { const x = Buffer.from(String(a)), y = Buffer.from(String(b)); return x.length === y.length && crypto.timingSafeEqual(x, y); };
 
 module.exports = async (req, res) => {
@@ -40,6 +41,16 @@ module.exports = async (req, res) => {
       const pr = wkRows.length ? await db.getProfiles(wkRows.map((r) => r.id)) : {};
       const runs = wkRows.map((r, i) => { const t = tot[r.id] || r; return { rank: i + 1, name: (pr[r.id] || {}).name || 'Joueur', owned: t.owned, mythics: t.mythics, score: t.score, runs: r.runs }; });
       res.status(200).json({ catalog, total: await db.rankedCount(), coll, runs }); return;
+    }
+    if (body.action === 'cardsubmit') {
+      // /carte sur Discord : même proposition que sur le site (catégorie, rareté, logo, bio / records / passé)
+      const p = /^\d{5,25}$/.test(String(body.discordId || '')) ? await db.getProfileByDiscord(String(body.discordId)) : null;
+      if (!p) { res.status(404).json({ error: 'no_account' }); return; }
+      if (!handler) handler = createHandler(db, { adminIds: process.env.ADMIN_DISCORD_IDS || '1413452035344306269' });
+      try {
+        await handler.submitCard(p.user_id, { name: body.name, cat: body.cat, rarity: body.rarity, descr: body.descr, image: body.image });
+      } catch (e) { res.status(e && e.code && e.code < 500 ? e.code : 500).json({ error: e && e.code && e.code < 500 ? e.message : 'Erreur serveur' }); return; }
+      res.status(200).json({ ok: true, name: p.name }); return;
     }
     if (body.action === 'announce') {
       const text = String(body.text || '').trim().slice(0, 2000);
