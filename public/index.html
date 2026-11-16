@@ -107,6 +107,7 @@ body.noel .card{padding-top:1px}
 body.noel .card::after{height:6px}
 }
 .card .ds:empty{display:none}
+@media(max-width:600px){.fl.sorts.cfl{grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))}.fl.sorts.cfl button{padding:12px 4px;font-size:14px;overflow-wrap:anywhere}html,body{overflow-x:hidden}}
 /* résumé d'un gros lot : le bouton Continuer reste visible (collé en bas) et la page défile assez bas pour ne pas être masquée par la neige */
 .over{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}.over #ok{position:sticky;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:6;box-shadow:0 6px 22px #000a,0 0 0 4px #05030fcc;flex:none}
 </style>
