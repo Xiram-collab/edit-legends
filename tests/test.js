@@ -121,6 +121,31 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   console.log('    raretés :', t.map((x, i) => (x / tot * 100).toFixed(2)).join(' / '));
   [50, 25, 17, 5.5, 2, .5].forEach((p, i) => assert.ok(Math.abs(t[i] / tot * 100 - p) < 0.5)); ok('probabilités des raretés conformes');
 
+  // ----- cartes Holo -----
+  {
+    const GM = require('../lib/game');
+    // taux Holo par rareté : plus la carte est rare, plus sa Holo l'est
+    const ids = []; for (let r = 0; r < 6; r++) for (let k = 0; k < 20000; k++) ids.push(cards.findIndex((c) => c && c[2] === r));
+    const fl = GM.rollHolo(cards, ids, rnd), rate = [0, 0, 0, 0, 0, 0];
+    fl.forEach((f, k) => { if (f) rate[Math.floor(k / 20000)]++; });
+    rate.forEach((x, r) => assert.ok(Math.abs(x / 200 - C.HOLO.p[r]) < 0.5, 'taux Holo ' + r));
+    for (let r = 1; r < 6; r++) assert.ok(C.HOLO.p[r] <= C.HOLO.p[r - 1]);
+    // points : normale seule 1x, Holo seule 1x, les deux 2x
+    const i = cards.findIndex((c) => c && c[2] === 3), pt = C.SCORE[3];
+    const S1 = GM.normalizeState({}, 0); GM.addCards(S1, [i], [false]); assert.strictEqual(GM.summary(S1, cards).cscore, pt);
+    const S2 = GM.normalizeState({}, 0); GM.addCards(S2, [i], [true]); assert.strictEqual(GM.summary(S2, cards).cscore, pt); assert.strictEqual(GM.summary(S2, cards).owned, 1); assert.strictEqual(GM.summary(S2, cards).holo, 1);
+    GM.addCards(S2, [i], [false]); assert.strictEqual(GM.summary(S2, cards).cscore, 2 * pt);
+    // vente rapide : jamais les Holo ; on garde 1 exemplaire normal
+    GM.addCards(S2, [i, i, i], [true, false, false]);   // 2 Holo + 3 normales
+    assert.strictEqual(GM.sellAll(S2, cards, null), 2 * C.RAR[3].v); assert.strictEqual(S2.col[i], 2 + 1); assert.strictEqual(S2.holo[i], 2);
+    assert.throws(() => GM.sellMany(S2, cards, [[i, 2]]), /normaux/);
+    assert.throws(() => GM.sellOne(S2, cards, i), /doublon/);
+    const S3 = GM.normalizeState({}, 0); GM.addCards(S3, [i], [true]);
+    assert.throws(() => GM.releaseCard(S3, i), /Holo/);   // une Holo seule ne se met pas au marché / en échange
+    GM.releaseCard(S3, i, true); assert.ok(!S3.col[i] && !S3.holo[i]);
+  }
+  ok('cartes Holo : taux, points x2, vente protégée');
+
   // suppression du compte
   r = await call('tokB', { action: 'delete' }); assert.strictEqual(r.status, 200); assert.ok(!db.saves.has('B')); ok('suppression du compte');
   assert.strictEqual(db.codes.get('AAAA2222').used, true); ok('un code déjà utilisé reste utilisé après suppression');

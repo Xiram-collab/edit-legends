@@ -143,6 +143,20 @@ main{max-width:1000px;margin:0 auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}
 /* carte */
 .card{--rc:var(--r0);position:relative;width:100%;aspect-ratio:5/7;border-radius:12px;border:3px solid var(--rc);background:linear-gradient(170deg,#241d5a,#0f0b2b);box-shadow:0 0 14px color-mix(in srgb,var(--rc) 45%,transparent);display:flex;flex-direction:column;padding:6px;gap:5px;overflow:hidden}
+.card.hx1,.card.hx2{border-color:transparent;background:linear-gradient(170deg,#241d5a,#0f0b2b) padding-box,linear-gradient(115deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#8a3dff,#ff3d81,#ffd24a) border-box;background-size:auto,300% 300%;animation:hxb 3.5s linear infinite}
+.card.hx1.m,.card.hx2.m{animation:hxb 3.5s linear infinite,glow 2.4s ease-in-out infinite}
+@keyframes hxb{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
+.card .hxs{position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 25%,#ff3d8144 38%,#ffd24a55 46%,#3dffb044 54%,#27e0ff55 62%,transparent 75%);background-size:260% 100%;mix-blend-mode:screen;animation:hxs 3.2s ease-in-out infinite}
+@keyframes hxs{0%{background-position:130% 0}100%{background-position:-130% 0}}
+.hcn{margin-left:8px;font-size:.85em;color:#ffd9ff;white-space:nowrap}
+.secn.sech{color:#ffd9ff}
+.ctile .ctH{display:block;font-style:normal;font-size:.72em;color:#ffd9ff;margin-top:1px}
+.stats .hst b{background:linear-gradient(90deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#c58bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.banner.hbn{top:auto;bottom:14vh;font-size:clamp(26px,8vw,50px);background:linear-gradient(90deg,#ff3d81,#ffd24a,#3dffb0,#27e0ff,#c58bff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 14px #fff8)}
+.hsum{margin:10px 0;text-align:center;font-weight:700;color:#ffd9ff}
+.hzn{color:#ffd9ff}
+.steps .hli{color:#ffd9ff}
+
 .card.m{animation:glow 2.4s ease-in-out infinite}
 @keyframes glow{50%{box-shadow:0 0 28px var(--rc),0 0 6px var(--rc)}}
 .card .top{display:flex;justify-content:space-between;gap:4px;font-size:.56em;font-weight:700;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
@@ -735,8 +749,12 @@ function api(action,body){body=Object.assign({action:action,nc:CARDS.length},bod
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
 var qsMode=false,qsSel={};
-function qsMax(i){var k=dupKeep(mkData)[i];return Math.max(0,(S.col[i]||0)-(k||0))}
-function qsDup(i){return Math.max(0,(S.col[i]||0)-1)}
+function HOL(i){return (S&&S.holo&&S.holo[i])||0}
+function NRM(i){return Math.max(0,((S&&S.col[i])||0)-HOL(i))}
+function HS(i){var h=HOL(i);return h?(NRM(i)>0?2:1):0}
+function holoCount(){var n=0;CARDS.forEach(function(c,i){if(c&&HOL(i))n++});return n}
+function qsMax(i){var k=dupKeep(mkData)[i];return Math.max(0,NRM(i)-(k||0))}
+function qsDup(i){return Math.max(0,NRM(i)-1)}
 function qsTotals(){var n=0,g=0,last=0;Object.keys(qsSel).forEach(function(k){var q=Math.min(qsSel[k],qsMax(+k));if(q>0){n+=q;g+=q*RAR[CARDS[+k][2]].v;if(q>=qsMax(+k))last++}});return {n:n,g:g,last:last}}
 function qsPanel(){var t=qsTotals(),h='<div class="panel qspan"><p class="mut sm" style="margin:0 0 8px">Touche une carte pour vendre ses doublons (une copie est gardée). Avec le bouton + tu peux aussi vendre la dernière copie.</p><div class="qsch">';
  for(var r=RAR.length-1;r>=0;r--){var g=0,c=0;CARDS.forEach(function(cd,i){if(cd[2]===r&&qsDup(i)>0){c+=qsDup(i);g+=qsDup(i)*RAR[r].v}});if(c)h+='<button class="btn sm" data-qr="'+r+'" style="border-color:'+HEX[r]+'">'+RAR[r].n+' · '+c+' doublon'+(c>1?'s':'')+' (+'+fmt(g)+')</button>'}
@@ -759,7 +777,7 @@ function qsGo2(){if(netBusy)return;var items=[],undo=[],t=0,n=0;Object.keys(qsSe
 function guardSell(plan,go){
  if(netBusy||!plan.length)return;
  var check=function(d){var need={},m={};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});var t={};(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});
-  var bad=[];plan.forEach(function(p){var i=p[0],left=(S.col[i]||0)-p[1],nm=m[i]||0,nt=t[i]||0;if(left<Math.max(nm,nt))bad.push({i:i,m:left<nm,t:left<nt})});
+  var bad=[];plan.forEach(function(p){var i=p[0],left=NRM(i)-p[1],nm=m[i]||0,nt=t[i]||0;if(left<Math.max(nm,nt))bad.push({i:i,m:left<nm,t:left<nt})});
   if(!bad.length){go();return}
   closePick();var o=document.createElement('div');o.id='pk';o.className='pickov';
   o.innerHTML='<div class="pickbox wpbox"><h2>Carte déjà proposée</h2>'+bad.map(function(b){return '<p style="margin:6px 0"><b style="color:'+HEX[CARDS[b.i][2]]+'">'+esc(CARDS[b.i][0])+'</b> est '+(b.m&&b.t?'sur le marché et dans un échange':b.m?'sur le marché':'dans un échange')+'.</p>'}).join('')+'<p class="qsw" style="font-size:14px">Voulez-vous vraiment la vendre alors qu\'elle est '+(bad.length>1?'proposée':'proposée')+' ? Tu n\'en auras plus assez : l\'offre sera retirée.</p><div class="bar" style="justify-content:center"><button class="btn ghost" id="gsno">Annuler</button><button class="btn gold" id="gsyes">Vendre quand même</button></div></div>';
@@ -776,9 +794,9 @@ function quietRender(){var m=$('main'),y=window.scrollY,h=m?m.offsetHeight:0;if(
  setTimeout(function(){document.body.classList.remove('qr')},450)}
 // vente instantanée : l'écran se met à jour tout de suite (sans réanimation), le serveur confirme ensuite
 var sellQ=Promise.resolve(),sellN=0;
-function quickSellOne2(i){var v=RAR[CARDS[i][2]].v;if(!(S.col[i]>1))return;S.col[i]--;S.money+=v;sellN++;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
+function quickSellOne2(i){var v=RAR[CARDS[i][2]].v;if(!(NRM(i)>1))return;S.col[i]--;S.money+=v;sellN++;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
  sellQ=sellQ.then(function(){return act({action:'sell',i:i})}).then(function(r){sellN--;if(sellN>0)return;var sig=S.money+'|'+JSON.stringify(S.col);setState(r.state);if(sig!==S.money+'|'+JSON.stringify(S.col))quietRender()},function(){sellN--;S.col[i]++;S.money-=v;quietRender()})}
-function quickSellAll2(keep){if(netBusy)return;keep=keep||{};var undo=[],t=0,kept=0;CARDS.forEach(function(c,i){var n=S.col[i]||0,q=keep[i]||1;if(c&&n>q){t+=(n-q)*RAR[c[2]].v;undo.push([i,n]);S.col[i]=q}else if(c&&n>1)kept+=n-1});if(!t){if(kept)toast('Tes doublons sont tous sur le marché ou en échange');return}S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR+(kept?' · '+kept+' doublon'+(kept>1?'s':'')+' gardé'+(kept>1?'s':'')+' (marché/échange)':''));quietRender();
+function quickSellAll2(keep){if(netBusy)return;keep=keep||{};var undo=[],t=0,kept=0;CARDS.forEach(function(c,i){var n=NRM(i),q=keep[i]||1;if(c&&n>q){t+=(n-q)*RAR[c[2]].v;undo.push([i,S.col[i]]);S.col[i]=q+HOL(i)}else if(c&&n>1)kept+=n-1});if(!t){if(kept)toast('Tes doublons sont tous sur le marché ou en échange');return}S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR+(kept?' · '+kept+' doublon'+(kept>1?'s':'')+' gardé'+(kept>1?'s':'')+' (marché/échange)':''));quietRender();
  act({action:'sell',all:true,except:exRar}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]=u[1]});S.money-=t;quietRender()})}
 function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]});if(typeof schedPing==='function')schedPing()}
 function schedPing(){if(pingT)return;pingT=setTimeout(function(){pingT=0;doPing()},2500)}
@@ -798,10 +816,10 @@ function art(c){if(!c[4]){var shp=['','hex','rect','sq'][c[1]]||'';return '<div 
  (sil?sil:c[1]===3?'<path d="M50 28 L82 38 V64 Q82 86 50 98 Q18 86 18 64 V38Z" fill="url(#pb)" stroke="#0d1f6b" stroke-width="1.6"/><path d="M50 28 L82 38 V64 Q82 86 50 98Z" fill="#1d3fb0" opacity=".55"/><path d="M55 40 L38 68 H49 L44 88 L64 58 H52Z" fill="#fff" stroke="#0d1f6b" stroke-width="1" stroke-linejoin="round"/><path d="M26 44 L50 36 L74 44" fill="none" stroke="#fff" stroke-width="1.6" opacity=".5"/>':c[1]===2?'<path d="M14 88 L50 70 L86 88 L50 100Z" fill="url(#pb)" stroke="#0d1f6b" stroke-width="1.2"/><path d="M14 88 L14 80 L50 62 L50 70Z" fill="#1d3fb0"/><path d="M86 88 L86 80 L50 62 L50 70Z" fill="#2a56e8"/><path d="M50 62 L50 48" stroke="#fff" stroke-width="2"/><path d="M50 48 Q50 24 50 24 C 36 24 30 36 50 62 C 70 36 64 24 50 24Z" fill="url(#pb)" stroke="#0d1f6b" stroke-width="1.2"/><circle cx="50" cy="38" r="6" fill="#fff" opacity=".9"/>':'<path d="M17 100 Q17 66 50 64 Q83 66 83 100Z" fill="url(#pb)" stroke="#0d1f6b" stroke-width="1.2"/>'+
  '<circle cx="50" cy="40" r="16" fill="url(#pb)" stroke="#0d1f6b" stroke-width="1.2"/>'+
  '<path d="M38 34 Q44 26 55 27" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".35"/>')+'</svg>'}
-function cardHTML(i,o){o=o||{};var c=CARDS[i];return '<div class="card'+(c[2]==5?' m':'')+'" style="--rc:'+RAR[c[2]].c+'">'+
+function cardHTML(i,o){o=o||{};var c=CARDS[i];var hs=o.hs||0;return '<div class="card'+(c[2]==5?' m':'')+(hs?' hx'+hs:'')+'" style="--rc:'+RAR[c[2]].c+'">'+(hs==2?'<i class="hxs"></i>':'')+
  '<div class="top"><span class="cat">'+CATS[c[1]]+'</span><span class="rar">'+RAR[c[2]].n+'</span></div>'+
  (o.isNew?'<span class="new">NEW</span>':'')+(o.count>1?'<span class="cnt">x'+o.count+'</span>':'')+
- '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]?'Clique pour voir la description':'')+'</div></div>'}
+ '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+(hs?' ✨':'')+'</div></div><div class="ds">'+(c[3]?'Clique pour voir la description':'')+'</div></div>'}
 function firstSent(t){t=String(t||'').split(/\n/).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean)[0]||'';var m=t.match(/^.*?[.!?…](?=\s|$)/);return m?m[0]:t}
 var LOGO='<img src="img/logo.png" class="bl" alt="" width="512" height="512">';(new Image()).src='img/logo.png';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
@@ -906,11 +924,11 @@ function rHome(){
  '<section class="hero"><div class="ht"><div class="v2b"><b>V3</b> '+NW.length+' nouvelles cartes</div><div class="kick">Le jeu de cartes de la scène Fortnite</div><h2 class="big">Collectionne<br>les <em>légendes</em><br>de l\'edit</h2>'+
  '<p class="lead">Ouvre des packs, trouve les éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs et joueurs esport qui font la scène Fortnite, revends tes doublons en Coins et complète ta collection.</p>'+
  '<div class="cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack gratuit <span class="badge">'+S.stock+'</span></button>'+multiBtns()+'<button class="btn ghost" data-t="col">Ma collection</button></div>'+
- '<div class="stats"><div><b>'+owned+'/'+TOT(S.col)+'</b><span>cartes</span></div><div><b>'+S.opened+'</b><span>packs ouverts</span></div><div><b>'+S.stock+'</b><span>packs en stock</span></div></div></div>'+
+ '<div class="stats"><div><b>'+owned+'/'+TOT(S.col)+'</b><span>cartes</span></div><div class="hst"><b>✨ '+holoCount()+'/'+TOT(S.col)+'</b><span>Holo</span></div><div><b>'+S.opened+'</b><span>packs ouverts</span></div><div><b>'+S.stock+'</b><span>packs en stock</span></div></div></div>'+
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i,{isNew:true})+'</div>'}).join('')+'<div class="orb"></div></div></section>'+
  '<div class="tick"><div class="track" style="animation-duration:'+Math.max(25,tkIds.length*3)+'s">'+names+names+names+names+'</div></div>'+
  '<section class="row2"><div class="panel center"><h3>Pack gratuit</h3>'+ring()+pips()+'<p class="mut sm">1 pack offert toutes les heures · 10 en stock max</p><button class="btn big-b" id="hgo2"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack</button>'+multiBtns()+'</div>'+
- '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 3</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs, esport et maps, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en Coins et achète des packs à rareté garantie.</li></ol></div></section>'+
+ '<div class="panel"><h3>Comment ça marche</h3><p class="v1"><b>Version 3</b> : de nouvelles cartes seront ajoutées chaque mois.</p><ol class="steps"><li><b>Ouvre</b> un pack de 5 cartes, gratuit chaque heure.</li><li><b>Collectionne</b> éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs, esport et maps, du Commun au Mythique.</li><li><b>Revends</b> tes doublons en Coins et achète des packs à rareté garantie.</li><li class="hli"><b>✨ Holo</b> : chaque carte tirée peut être brillante (rare !). Pas de nouvelle carte : ta carte brille. Une Holo vaut autant de points qu\'une normale, et avoir les deux = points x2. Tes doublons Holo ne sont jamais vendus par le bouton « tout vendre ».</li></ol></div></section>'+
  '<section class="panel dscp"><div><h3 style="margin:0 0 4px">Rejoins le serveur Discord</h3><p class="mut sm" style="margin:0">Les annonces, les sondages, les nouvelles cartes et la communauté de la scène Fortnite. Les commandes du bot (/11, /classement, /code…) sont là-bas.</p></div><a class="dbtn" href="https://discord.gg/editlegends" target="_blank" rel="noopener">'+DICO+' Rejoindre le Discord</a></section>'+
  '<section class="panel sec2"><h3>Les raretés</h3><p class="mut sm" style="margin:-4px 0 10px">Chance qu’un pack gratuit contienne au moins une carte de cette rareté</p><div class="lad">'+lad+'</div></section>';
  var g=$('hgo'),g2=$('hgo2'),go=function(){openVia({action:'open',kind:'free'})};if(g)g.onclick=go;if(g2)g2.onclick=go;[].forEach.call(document.querySelectorAll('[data-mx]'),function(b){b.onclick=function(){openVia({action:'open',kind:'free',n:+b.dataset.mx})}})}
@@ -920,9 +938,9 @@ function packIntro(){busy=true;var ov=$('ov');ov.hidden=false;ov.className='over
  var it={clicked:false,t0:0};ov.onclick=function(){if(it.clicked)return;it.clicked=true;it.t0=Date.now();packRumble()};return it}
 function packAbort(){busy=false;var ov=$('ov');ov.hidden=true;ov.className='';ov.innerHTML='';ov.onclick=null}
 function multiBtns(){return '<span class="multi">'+[2,5].map(function(n){return '<button class="btn sm gold" data-mx="'+n+'"'+(S.stock<n?' disabled':'')+'>x'+n+'</button>'}).join('')+'</span>'}
-function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),it=packIntro();act(body).then(function(r){setState(r.state);reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
+function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),it=packIntro();act(body).then(function(r){setState(r.state);reveal(r.cards,prev,it,r.holo)}).catch(function(){packAbort()})}
 /* ---------- cérémonie d'ouverture ---------- */
-function reveal(list,prev,intro){prev=prev||{};busy=true;list=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]}).map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
+function reveal(list,prev,intro,hol){prev=prev||{};busy=true;var pr=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]});var hfl=pr.map(function(x){return !!(hol&&hol[x[1]])});list=pr.map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
  list.forEach(function(i){isNew.push(!prev[i]&&!tmp[i]);tmp[i]=1;best=Math.max(best,CARDS[i][2])});
  var ov=$('ov'),started=true;
  if(!intro){ov.hidden=false;ov.className='over';ov.innerHTML=packHTML(true,'Ouverture…');sfx('tear');timer=setTimeout(burst,1900)}
@@ -931,7 +949,7 @@ function reveal(list,prev,intro){prev=prev||{};busy=true;list=list.map(function(
  function burst(){if(phase!=='pack')return;phase='cards';clearTimeout(timer);sfx('boom');var pk=$('pk3d');if(pk)pk.classList.add('split');flash('#fff');burstFx(innerWidth/2,innerHeight/2,'#27e0ff',90,16);setTimeout(show,650)}
  function show(){flipped=false;var c=CARDS[list[step]],r=c[2];
   ov.className='over';
-  ov.innerHTML='<div class="hdr">Carte '+(step+1)+' / '+list.length+'</div><div class="cstage" style="--a:'+HEX[r]+'"><div class="rays"></div><div class="fc enter" style="--a:'+HEX[r]+'"><div class="fi"><div class="face back'+(r>=3?' rbk':'')+'"><div class="bk"><div class="bkin"><div class="sun"></div><div class="emb">'+LOGO+'</div><div class="bkt"><i></i><b>EDIT LEGENDS</b><i></i></div><div class="bks">★ ★ ★</div></div></div></div><div class="face front">'+cardHTML(list[step],{isNew:isNew[step]})+'</div></div></div></div><div class="hint" id="hint">Touche la carte pour la retourner</div><button class="skip" id="skip">Tout révéler ▸▸</button>';if(r>=3){var fcd0=ov.querySelector('.face.front .card');if(fcd0)fcd0.dataset.st='0'}}
+  ov.innerHTML='<div class="hdr">Carte '+(step+1)+' / '+list.length+'</div><div class="cstage" style="--a:'+HEX[r]+'"><div class="rays"></div><div class="fc enter" style="--a:'+HEX[r]+'"><div class="fi"><div class="face back'+(r>=3?' rbk':'')+'"><div class="bk"><div class="bkin"><div class="sun"></div><div class="emb">'+LOGO+'</div><div class="bkt"><i></i><b>EDIT LEGENDS</b><i></i></div><div class="bks">★ ★ ★</div></div></div></div><div class="face front">'+cardHTML(list[step],{isNew:isNew[step],hs:hfl[step]?2:0})+'</div></div></div></div><div class="hint" id="hint">Touche la carte pour la retourner</div><button class="skip" id="skip">Tout révéler ▸▸</button>';if(r>=3){var fcd0=ov.querySelector('.face.front .card');if(fcd0)fcd0.dataset.st='0'}}
  function doFlip(){flipped=true;ready=false;var my=step,fc=ov.querySelector('.fc'),st=ov.querySelector('.cstage'),r=CARDS[list[step]][2],big=r>=3,col=HEX[r],pre=[0,0,0,1600,2400,3200][r],dur=[520,520,520,1700,2200,2700][r],g=null;
   var h0=$('hint');if(h0)h0.textContent='';
   function alive(){return phase==='cards'&&step===my&&ov.querySelector('.fc')===fc}
@@ -943,7 +961,7 @@ function reveal(list,prev,intro){prev=prev||{};busy=true;list=list.map(function(
     if(big){var bn=document.createElement('div');bn.className='banner';bn.style.setProperty('--a',col);bn.textContent=RAR[r].n;ov.appendChild(bn);setTimeout(function(){bn.remove()},2700)}
     if(r>=4)flash(col);if(r>=4){ov.classList.add('shake');setTimeout(function(){ov.classList.remove('shake')},r===5?1200:900)}
     if(r===5){[220,440].forEach(function(t,k){setTimeout(function(){if(!alive())return;flash(k?'#ffd24a':'#fff');burstFx(cx,cy,k?'#ffd24a':'#fff',140,20)},t)})}}if(!big)climax();
-    var fcd=fc.querySelector('.card'),nextTxt=(step<list.length-1?'Touche pour la suite':'Touche pour le résumé');
+    if(hfl[my]){var hb=document.createElement('div');hb.className='banner hbn';hb.textContent='✨ HOLO ✨';ov.appendChild(hb);setTimeout(function(){hb.remove()},2700)}var fcd=fc.querySelector('.card'),nextTxt=(step<list.length-1?'Touche pour la suite':'Touche pour le résumé');
     function fin(){fastFwd=null;if(fcd)fcd.dataset.st='2';ready=true;var h=$('hint');if(h)h.textContent=nextTxt}
     if(big&&fcd){var t1=[1100,1300,1600][r-3],t2=[1300,1400,1600][r-3],ta,tb;
      fastFwd=function(){clearTimeout(ta);clearTimeout(tb);if(alive())fin()};
@@ -957,7 +975,7 @@ function reveal(list,prev,intro){prev=prev||{};busy=true;list=list.map(function(
    for(var t=0;t<pre-250;t+=Math.max(230,560-t/6)){(function(t){setTimeout(function(){if(alive())sfx('beat')},t)})(t)}
    setTimeout(go,pre)}else go()}
  function summary(){phase='sum';var tot=0,bestI=list[0];list.forEach(function(i){if(CARDS[i][2]>CARDS[bestI][2])bestI=i});
-  ov.className='over';ov.innerHTML='<h2 class="disp sumt">Résumé du pack</h2><div class="sum">'+list.map(function(i,k){return '<div class="sw" data-zi="'+i+'" style="animation-delay:'+(k*.12)+'s">'+cardHTML(i,{isNew:isNew[k]})+'</div>'}).join('')+'</div><div class="mut">Meilleure carte : <b style="color:'+HEX[CARDS[bestI][2]]+'">'+CARDS[bestI][0]+'</b></div><button class="btn big-b" id="ok">Continuer</button>';
+  ov.className='over';ov.innerHTML='<h2 class="disp sumt">Résumé du pack</h2><div class="sum">'+list.map(function(i,k){return '<div class="sw" data-zi="'+i+'" style="animation-delay:'+(k*.12)+'s">'+cardHTML(i,{isNew:isNew[k],hs:hfl[k]?2:0})+'</div>'}).join('')+'</div>'+(hfl.some(Boolean)?'<div class="hsum">✨ '+hfl.filter(Boolean).length+' carte'+(hfl.filter(Boolean).length>1?'s':'')+' Holo dans ce pack !</div>':'')+'<div class="mut">Meilleure carte : <b style="color:'+HEX[CARDS[bestI][2]]+'">'+CARDS[bestI][0]+'</b></div><button class="btn big-b" id="ok">Continuer</button>';
   burstFx(innerWidth/2,innerHeight*.3,HEX[best],40,10)}
  ov.onclick=function(e){
   if(phase==='pack'){if(!started){started=true;packRumble();timer=setTimeout(burst,1900);return}burst();return}
@@ -976,9 +994,9 @@ function parseDescr(t){var o={bio:'',rec:'',past:''};t=String(t||'');var p=t.spl
 function joinDescr(o){var t=(o.bio||'').trim();if((o.rec||'').trim())t+='\n§Records§\n'+o.rec.trim();if((o.past||'').trim())t+='\n§Passé§\n'+o.past.trim();return t.trim()}
 function openCardZoom(i){closePick();var n=S.col[i]||0,pl=Math.max(S.pulled[i]||0,n),c=CARDS[i],D=parseDescr(c[3]),cur=['bio','rec','past'].filter(function(k){return D[k]})[0]||'bio';
  var d=document.createElement('div');d.id='pk';d.className='pickov';
- d.innerHTML='<div class="pickbox zoombox fifa"><div class="fhead"><div class="zc">'+cardHTML(i)+'</div><div class="finfo"><div class="fnm">'+esc(c[0])+'</div><div class="fch"><span class="fchip" style="--rc:'+HEX[c[2]]+'">'+RAR[c[2]].n+'</span><span class="fchip">'+(CATS[c[1]]||'')+'</span></div><div class="fown">Obtenue x'+pl+(n?'':' · pas dans ta collection')+'</div></div></div>'+
+ d.innerHTML='<div class="pickbox zoombox fifa"><div class="fhead"><div class="zc">'+cardHTML(i,{hs:HS(i)})+'</div><div class="finfo"><div class="fnm">'+esc(c[0])+'</div><div class="fch"><span class="fchip" style="--rc:'+HEX[c[2]]+'">'+RAR[c[2]].n+'</span><span class="fchip">'+(CATS[c[1]]||'')+'</span></div><div class="fown">Obtenue x'+pl+(n?'':' · pas dans ta collection')+'</div>'+(n?'<div class="fown hzn">'+(NRM(i)?'Normale x'+NRM(i):'Pas de version normale')+' · '+(HOL(i)?'✨ Holo x'+HOL(i):'pas de Holo')+'</div>':'')+(HOL(i)>1?'<button class="btn gold sm" id="shsell">Vendre 1 Holo en double (+'+fmt(RAR[c[2]].v*(HOLOC.SELL_MULT||4))+')</button>':'')+'</div></div>'+
   '<div class="ftabs">'+DSEC.map(function(s2){return '<button class="ftab'+(s2[0]===cur?' on':'')+'" data-ft="'+s2[0]+'">'+s2[1]+'</button>'}).join('')+'</div><div class="fbody" id="fbody"></div><button class="btn sm" id="pkx">Fermer</button></div>';
- document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
+ document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;if($('shsell'))$('shsell').onclick=function(){if(netBusy)return;act({action:'sellholo',i:i}).then(function(r){setState(r.state);sfx('coin');toast('+'+fmt(r.gain||0)+' '+CUR);closePick();quietRender()}).catch(function(){})};
  var show=function(k){[].forEach.call(d.querySelectorAll('.ftab'),function(b){b.classList.toggle('on',b.dataset.ft===k)});var sec=DSEC.filter(function(x){return x[0]===k})[0];var cursec=k;$('fbody').innerHTML=(D[k]?'<div class="ftxt">'+esc(D[k]).replace(/\n/g,'<br>')+'</div>':'<div class="fempty">Rien de renseigné pour l\'instant.</div>')+(ISOWNER?'<div style="margin-top:10px"><button class="btn sm" id="fedit">Modifier</button></div>':'');
   if(ISOWNER&&$('fedit'))$('fedit').onclick=function(){$('fbody').innerHTML='<textarea id="fta" rows="6" style="width:100%" maxlength="1500">'+esc(D[k]||'')+'</textarea><div style="margin-top:8px;display:flex;gap:8px"><button class="btn gold sm" id="fsave">Enregistrer</button><button class="btn sm" id="fcancel">Annuler</button></div>';
    $('fcancel').onclick=function(){show(k)};
@@ -991,31 +1009,31 @@ var exRar=[];
 function dupKeepX(d){var k=dupKeep(d);CARDS.forEach(function(c,i){if(c&&exRar.indexOf(c[2])>=0)k[i]=1e9});return k}
 function exH(){return ''}
 function bindEx(){}
-function dupValue(){var t=0,k=dupKeepX(mkData);CARDS.forEach(function(c,i){var n=S.col[i]||0,q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v});return t}
+function dupValue(){var t=0,k=dupKeepX(mkData);CARDS.forEach(function(c,i){var n=NRM(i),q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v});return t}
 var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
 function colNav(){return subnavH(COLS.concat([['mc','Ma carte']]),colSub,'data-ccs')}
 function bindColNav(){bindNav('data-ccs',function(v){colSub=v;render();scrollTo(0,0)})}
 function vitH(){if(!S.vitrine)S.vitrine=[null,null,null];
  return '<div class="panel vitp"><h3>Ma vitrine</h3><p class="mut sm">Choisis 3 cartes : c’est tout ce que verront les joueurs qui cliquent sur ton nom dans le classement (tes amis voient aussi ta collection).</p><div class="vitrow">'+[0,1,2].map(function(k){var i=S.vitrine[k];return '<button class="vslot'+(i==null||!S.col[i]?' empty':'')+'" data-vs="'+k+'">'+(i!=null&&S.col[i]?cardHTML(i):'<span class="plus">+</span>')+'</button>'}).join('')+'</div></div>'}
 var colF=dupOnly?'own':'all';
-function colKeep(c,i,n){if(colF==='own')return n>0;if(colF==='miss')return n===0&&!c[5];if(colF==='dup')return n>(dupKeep(mkData)[i]||1);if(colF==='mk')return n>0&&!!listTag(i);return n||!c[5]}
-function colTiles(){return '<div class="ctiles">'+RAR.map(function(x,r){var tot=0,own=0;CARDS.forEach(function(c,i){if(c&&c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++}});return {r:r,own:own,tot:tot}}).reverse().map(function(o){return '<button class="ctile'+(o.own>=o.tot&&o.tot?' full':'')+'" data-jr="'+o.r+'" style="--c:'+HEX[o.r]+'"><span>'+RAR[o.r].n+'</span><b>'+o.own+' / '+o.tot+'</b><i><i style="width:'+(o.tot?o.own/o.tot*100:0)+'%"></i></i></button>'}).join('')+'</div>'}
-function colFilt(){return '<div class="fl sorts cfl">'+[['all','Toutes'],['own','Possédées'],['miss','Manquantes'],['dup','Doublons'],['mk','Sur le marché']].map(function(x){return '<button data-cf="'+x[0]+'"'+(colF===x[0]?' class="on"':'')+'>'+x[1]+'</button>'}).join('')+'</div>'}
+function colKeep(c,i,n){if(colF==='own')return n>0;if(colF==='miss')return n===0&&!c[5];if(colF==='dup')return NRM(i)>(dupKeep(mkData)[i]||1);if(colF==='hol')return HOL(i)>0;if(colF==='mk')return n>0&&!!listTag(i);return n||!c[5]}
+function colTiles(){return '<div class="ctiles">'+RAR.map(function(x,r){var tot=0,own=0,hn=0;CARDS.forEach(function(c,i){if(c&&c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;if(HOL(i))hn++}});return {r:r,own:own,tot:tot,hn:hn}}).reverse().map(function(o){return '<button class="ctile'+(o.own>=o.tot&&o.tot?' full':'')+'" data-jr="'+o.r+'" style="--c:'+HEX[o.r]+'"><span>'+RAR[o.r].n+'</span><b>'+o.own+' / '+o.tot+'</b><em class="ctH">✨ '+o.hn+'</em><i><i style="width:'+(o.tot?o.own/o.tot*100:0)+'%"></i></i></button>'}).join('')+'</div>'}
+function colFilt(){return '<div class="fl sorts cfl">'+[['all','Toutes'],['own','Possédées'],['miss','Manquantes'],['dup','Doublons'],['hol','✨ Holo'],['mk','Sur le marché']].map(function(x){return '<button data-cf="'+x[0]+'"'+(colF===x[0]?' class="on"':'')+'>'+x[1]+'</button>'}).join('')+'</div>'}
 function rCol(){
  if(colSub==='mc'){rMyCard();return}
  if(colSub==='vit'){$('main').innerHTML=colNav()+vitH();bindColNav();[].forEach.call(document.querySelectorAll('[data-vs]'),function(b){b.onclick=function(){openVit(+b.dataset.vs)}});return}
  if(colSub==='tit'){rTitles();return}
 var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
- var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes</b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div>'+
+ var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes <span class="hcn">✨ '+holoCount()+' / '+TOT(S.col)+'</span></b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div>'+
  '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn qsbtn'+(qsMode?' on':'')+'" id="qsb">'+(qsMode?'✕ Quitter la vente rapide':'⚡ Vente rapide')+'</button><button class="btn sm" id="shcol">Partager ma collection</button></div>'+colTiles()+colFilt()+exH()+(qsMode?qsPanel():'');
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&colKeep(c,i,n))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
-  var tot=0,own=0,pul=0;CARDS.forEach(function(c,i){if(c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
-  h+='<div class="sec" id="sec'+r+'" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span><i class="secbar"><i style="width:'+(tot?own/tot*100:0)+'%"></i></i></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
+  var tot=0,own=0,pul=0,hn=0;CARDS.forEach(function(c,i){if(c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;if(HOL(i))hn++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
+  h+='<div class="sec" id="sec'+r+'" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span> <span class="secn sech">✨ '+hn+' / '+tot+'</span><i class="secbar"><i style="width:'+(tot?own/tot*100:0)+'%"></i></i></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
-   if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:n})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
-   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n})+'<div class="pst">'+listTag(i)+'</div>'+(n>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
+   if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:n,hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
+   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:n,hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
@@ -1026,7 +1044,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('qsb').onclick=function(){qsMode=!qsMode;qsSel={};quietRender()};
  if(qsMode)bindQs();
  if(!mkData&&!window.mkLoad){window.mkLoad=1;api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='col')quietRender()}).catch(function(){})}
- [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(S.col[i]>(dupKeep(mkData)[i]||1))quickSellOne(i)}})}
+ [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(NRM(i)>(dupKeep(mkData)[i]||1))quickSellOne(i)}})}
 function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q){if(x!=null&&q!==k)taken[x]=1});
  var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&!taken[i])items.push(i)});
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
@@ -1164,7 +1182,7 @@ function rTest(){
   var prev=Object.assign({},S.col);if(a==='wt'){tab='code';render()}
   act({action:'admin',a:a,v:v,i:+($('gc')?$('gc').value:0)}).then(function(r){setState(r.state);
    if(a==='wt'){runSpins(r.spins||[{res:r.res}],0,function(o){toast(winText(o));winEnd(o,prev)});return}
-   if(r.cards){reveal(r.cards,prev);return}
+   if(r.cards){reveal(r.cards,prev,null,r.holo);return}
    var M={m:'+'+fmt(v)+' '+CUR,m0:'Coins remis à 0',s:'+'+v+' pack'+(v>1?'s':''),s0:'Stock vidé',sfull:'Stock plein',c:'+1 carte',call:'+1 de chaque carte',creset:'Collection vidée',rst:'Obtenues et packs ouverts remis à 0',wpa:'Packs en attente ajoutés'};
    if(M[a])toast(M[a]);render()}).catch(function(){})}})}
 
@@ -2121,14 +2139,14 @@ function openWaiting(){if(busy)return;closePick();var d=document.createElement('
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  [].forEach.call(d.querySelectorAll('[data-ow]'),function(b){b.onclick=function(){openWaitingPack(+b.dataset.ow)}});
  if($('owall'))$('owall').onclick=openAllWaiting}
-function openAllWaiting(){if(busy||netBusy)return;closePick();var prev=Object.assign({},S.col),it=packIntro();act({action:'openall'}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
+function openAllWaiting(){if(busy||netBusy)return;closePick();var prev=Object.assign({},S.col),it=packIntro();act({action:'openall'}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it,r.holo)}).catch(function(){packAbort()})}
 function openMythPick(){closePick();var ids=[];CARDS.forEach(function(c,i){if(c&&c[2]===5&&!c[5])ids.push(i)});var sel=null,d=document.createElement('div');d.id='pk';d.className='pickov';
  var paint=function(){d.innerHTML='<div class="pickbox"><div class="pickhd"><h3>Choisis ta carte Mythique</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">Tu as gagné une Mythique au choix : touche la carte que tu veux, puis confirme. Ce choix est définitif.</p><div class="mythpick">'+ids.map(function(i){var c=CARDS[i];return '<button class="mp'+(sel===i?' on':'')+'" data-mp="'+i+'">'+cthumb(c[4],c[0])+'<span class="mpt"><b>'+esc(c[0])+'</b><span class="mut sm">'+CATS[c[1]]+(c[3]?' · '+esc(parseDescr(c[3]).bio):'')+'</span></span></button>'}).join('')+'</div><div class="bar" style="margin-top:12px"><button class="btn gold" id="mpok"'+(sel==null?' disabled':'')+'>'+(sel==null?'Choisis une carte':'Confirmer : '+esc(CARDS[sel][0]))+'</button></div></div>';
   $('pkx').onclick=closePick;[].forEach.call(d.querySelectorAll('[data-mp]'),function(b){b.onclick=function(){sel=+b.dataset.mp;var y=d.querySelector('.pickbox').scrollTop;paint();d.querySelector('.pickbox').scrollTop=y}});
   $('mpok').onclick=function(){if(sel==null)return;var c=sel;closePick();openWaitingPack(5,c)}};
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};paint()}
 function openWaitingPack(g,card){if(busy||netBusy||!(wpN(g)>0))return;if(g===5&&card==null&&CARDS.some(function(c){return c&&c[2]===5&&!c[5]})){openMythPick();return}closePick();var prev=Object.assign({},S.col);
- var it=packIntro();act({action:'openwp',g:g,card:card}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it)}).catch(function(){packAbort()})}
+ var it=packIntro();act({action:'openwp',g:g,card:card}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it,r.holo)}).catch(function(){packAbort()})}
 /* ---------- événements ---------- */
 document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('button'))sfx('click');var b=e.target.closest&&e.target.closest('[data-t]');if(b&&$('ov').hidden){tab=b.dataset.t;render();scrollTo(0,0)}});
 $('mute').onclick=function(){S.mute=!S.mute;save();tabs();if(!S.mute)sfx('flip')};
@@ -2146,7 +2164,8 @@ function lpStart(){if(lpOn)return;lpOn=true;
 function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
 var SUPPORT_URL='';
-function applyConfig(cfg){if(cfg.SUPPORT_URL)SUPPORT_URL=cfg.SUPPORT_URL;if(cfg.BOARD_REWARDS)BR=cfg.BOARD_REWARDS;if(cfg.MARKET)MKC=cfg.MARKET;if(cfg.SCORE)SCORE=cfg.SCORE;if(cfg.SPIN_PRICE)SPIN_PRICE=cfg.SPIN_PRICE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
+var HOLOC={p:[5,4,3,2.5,2,1.5],MARKET_MULT:4,SELL_MULT:4};
+function applyConfig(cfg){if(cfg.HOLO)HOLOC=cfg.HOLO;if(cfg.SUPPORT_URL)SUPPORT_URL=cfg.SUPPORT_URL;if(cfg.BOARD_REWARDS)BR=cfg.BOARD_REWARDS;if(cfg.MARKET)MKC=cfg.MARKET;if(cfg.SCORE)SCORE=cfg.SCORE;if(cfg.SPIN_PRICE)SPIN_PRICE=cfg.SPIN_PRICE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
 function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PERMS=Array.isArray(r.perms)?r.perms:null;ISJURY=!!r.isJury;MYCARD=r.mycard||null;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
