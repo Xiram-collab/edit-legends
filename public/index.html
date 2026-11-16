@@ -772,7 +772,11 @@ function guardSell(plan,go){
 function qsGo(){var plan=[];Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0)plan.push([i,q])});guardSell(plan,qsGo2)}
 function quickSellOne(i){guardSell([[i,1]],function(){quickSellOne2(i)})}
 function quickSellAll(){if(netBusy)return;var go=function(d){quickSellAll2(dupKeepX(d))};if(mkData&&Date.now()-(mkData.at+mkData.now)<10000)go(mkData);else api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;go(d)}).catch(function(){go(mkData)})}
-function quietRender(){document.body.classList.add('qr','qr2');QUIET=true;try{render()}finally{QUIET=false}setTimeout(function(){document.body.classList.remove('qr')},450)}
+function quietRender(){var m=$('main'),y=window.scrollY,h=m?m.offsetHeight:0;if(m&&h)m.style.minHeight=h+'px';   /* la page ne se raccourcit pas pendant le rendu : pas de saut ni de clignotement */
+ document.body.classList.add('qr','qr2');QUIET=true;try{render()}finally{QUIET=false}
+ if(window.scrollY!==y)window.scrollTo(0,y);
+ requestAnimationFrame(function(){requestAnimationFrame(function(){if(m)m.style.minHeight='';if(window.scrollY!==y&&document.documentElement.scrollHeight>y)window.scrollTo(0,y)})});
+ setTimeout(function(){document.body.classList.remove('qr')},450)}
 // vente instantanée : l'écran se met à jour tout de suite (sans réanimation), le serveur confirme ensuite
 var sellQ=Promise.resolve(),sellN=0;
 function quickSellOne2(i){var v=RAR[CARDS[i][2]].v;if(!(S.col[i]>1))return;S.col[i]--;S.money+=v;sellN++;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
