@@ -106,6 +106,7 @@ body.noel .card::after{content:"";position:absolute;left:0;right:0;top:0;height:
 body.noel .card{padding-top:1px}
 body.noel .card::after{height:6px}
 }
+.card .ds:empty{display:none}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
@@ -796,7 +797,7 @@ function art(c){if(!c[4]){var shp=['','hex','rect','sq'][c[1]]||'';return '<div 
 function cardHTML(i,o){o=o||{};var c=CARDS[i];return '<div class="card'+(c[2]==5?' m':'')+'" style="--rc:'+RAR[c[2]].c+'">'+
  '<div class="top"><span class="cat">'+CATS[c[1]]+'</span><span class="rar">'+RAR[c[2]].n+'</span></div>'+
  (o.isNew?'<span class="new">NEW</span>':'')+(o.count>1?'<span class="cnt">x'+o.count+'</span>':'')+
- '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]?'Clique pour voir la description':'&nbsp;')+'</div></div>'}
+ '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]?'Clique pour voir la description':'')+'</div></div>'}
 function firstSent(t){t=String(t||'').split(/\n/).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean)[0]||'';var m=t.match(/^.*?[.!?…](?=\s|$)/);return m?m[0]:t}
 var LOGO='<img src="img/logo.png" class="bl" alt="" width="512" height="512">';(new Image()).src='img/logo.png';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
