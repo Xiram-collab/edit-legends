@@ -1050,7 +1050,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
   h+='<div class="sec" id="sec'+r+'" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span> <span class="secn sech">✨ '+hn+' / '+tot+'</span><i class="secbar"><i style="width:'+(tot?own/tot*100:0)+'%"></i></i></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
-   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?'<button class="btn gold sm" data-s="'+i+'">Vendre 1 (+'+fmt(RAR[CARDS[i][2]].v)+')</button>':'')+'</div>'}).join('')+'</div></div>'}
+   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?(function(){var q=NRM(i)-(dupKeep(mkData)[i]||1);return '<button class="btn gold sm" data-s="'+i+'">'+(q>1?'Vendre les '+q+' doublons':'Vendre 1')+' (+'+fmt(q*RAR[CARDS[i][2]].v)+')</button>'})():'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
@@ -1061,7 +1061,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('qsb').onclick=function(){qsMode=!qsMode;qsSel={};quietRender()};
  if(qsMode)bindQs();
  if(!mkData&&!window.mkLoad){window.mkLoad=1;api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='col')quietRender()}).catch(function(){})}
- [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;if(NRM(i)>(dupKeep(mkData)[i]||1))quickSellOne(i)}})}
+ [].forEach.call(document.querySelectorAll('[data-s]'),function(b){b.onclick=function(){var i=+b.dataset.s;var q=NRM(i)-(dupKeep(mkData)[i]||1);if(q>1)guardSell([[i,q]],function(){qsSel={};qsSel[i]=q;qsGo2()});else if(q>0)quickSellOne(i)}})}
 function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q){if(x!=null&&q!==k)taken[x]=1});
  var items=[];CARDS.forEach(function(c,i){if(S.col[i]&&!taken[i])items.push(i)});
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
