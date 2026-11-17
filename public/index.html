@@ -522,6 +522,11 @@ main#main{min-height:60vh}
 .wheel.spin .bulb:nth-child(odd){animation-delay:.14s}
 .wheel.won .bulb{animation:blb .35s infinite}
 @keyframes blb{0%,100%{opacity:1;filter:drop-shadow(0 0 3px #ffd24a)}50%{opacity:.25;filter:none}}
+.wheel .hx{pointer-events:none;transition:opacity .5s}
+.wheel .sg.dim+.hx{opacity:.3}
+.wheel .wsp{transform-box:fill-box;transform-origin:center;animation:wsp 1.6s ease-in-out infinite;filter:drop-shadow(0 0 2px #fff)}
+@keyframes wsp{0%,100%{opacity:0;transform:scale(.2) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+.wleg i.hl{background:linear-gradient(115deg,#c58bff 30%,#fff 48%,#7cf8ff 55%,#ff7ce2 65%,#c58bff 80%)!important;background-size:250% 100%;animation:holo 2.4s linear infinite;box-shadow:0 0 6px #c58bff}
 .wheel .sg.dim{opacity:.35;transition:opacity .5s}
 .wheel .sg.win{animation:wpulse .6s ease-in-out infinite alternate}
 @keyframes wpulse{from{filter:brightness(1)}to{filter:brightness(1.5) drop-shadow(0 0 6px #fff)}}
@@ -2076,7 +2081,14 @@ function codeHash_unused(c){var b=new TextEncoder().encode('EL1:'+c);return cryp
 function wheelSvg(){var seg='',lab='',defs='',pegs='',bulbs='',R=100,k;
  SL.forEach(function(wi,i){var w=WH[wi];defs+='<radialGradient id="wgd'+i+'" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="'+w.c2+'"/><stop offset=".5" stop-color="'+w.c2+'"/><stop offset="1" stop-color="'+w.c+'"/></radialGradient>'});
  SL.forEach(function(wi,i){var w=WH[wi],a0=i*SA,a1=a0+SA,r0=(a0-90)*Math.PI/180,r1=(a1-90)*Math.PI/180;
-  seg+='<path class="sg" id="sg'+i+'" d="M0 0L'+(R*Math.cos(r0)).toFixed(2)+' '+(R*Math.sin(r0)).toFixed(2)+'A'+R+' '+R+' 0 0 1 '+(R*Math.cos(r1)).toFixed(2)+' '+(R*Math.sin(r1)).toFixed(2)+'Z" fill="url(#wgd'+i+')" stroke="#0c0a1a" stroke-width="1.2"/>';
+  var sd='M0 0L'+(R*Math.cos(r0)).toFixed(2)+' '+(R*Math.sin(r0)).toFixed(2)+'A'+R+' '+R+' 0 0 1 '+(R*Math.cos(r1)).toFixed(2)+' '+(R*Math.sin(r1)).toFixed(2)+'Z';
+  seg+='<path class="sg" id="sg'+i+'" d="'+sd+'" fill="url(#wgd'+i+')" stroke="#0c0a1a" stroke-width="1.2"/>';
+  if(w.g===9){/* case Holo : reflet arc-en-ciel qui balaie + étincelles */
+   var hm=(a0+SA/2-90)*Math.PI/180,hc=Math.cos(hm),hs=Math.sin(hm),tx=-hs,ty=hc,st='';
+   [[.5,.34,3.2,0],[.78,.62,2.4,.5],[.34,.72,2.6,1],[.9,.3,2,1.5],[.62,.88,2.2,.8]].forEach(function(q){var rr=100*(.28+q[0]*.62),aa=a0+SA*q[1],ar=(aa-90)*Math.PI/180,x=rr*Math.cos(ar),y=rr*Math.sin(ar),z=q[2];
+    st+='<g transform="translate('+x.toFixed(1)+' '+y.toFixed(1)+')"><path class="wsp" style="animation-delay:'+q[3]+'s" d="M0 '+(-z*2)+'L'+(z*.5)+' '+(-z*.5)+'L'+(z*2)+' 0L'+(z*.5)+' '+(z*.5)+'L0 '+(z*2)+'L'+(-z*.5)+' '+(z*.5)+'L'+(-z*2)+' 0L'+(-z*.5)+' '+(-z*.5)+'Z" fill="#fff"/></g>'});
+   defs+='<linearGradient id="wholo" gradientUnits="userSpaceOnUse" x1="'+(60*hc-tx*34).toFixed(1)+'" y1="'+(60*hs-ty*34).toFixed(1)+'" x2="'+(60*hc+tx*34).toFixed(1)+'" y2="'+(60*hs+ty*34).toFixed(1)+'"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".3" stop-color="#7cf8ff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset=".7" stop-color="#ff7ce2" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/><animateTransform attributeName="gradientTransform" type="translate" from="'+(-tx*95).toFixed(1)+' '+(-ty*95).toFixed(1)+'" to="'+(tx*95).toFixed(1)+' '+(ty*95).toFixed(1)+'" dur="2.6s" repeatCount="indefinite"/></linearGradient>';
+   seg+='<g class="hx"><path d="'+sd+'" fill="url(#wholo)" style="mix-blend-mode:screen"/>'+st+'</g>'}
   var mm=a0+SA/2,m=(mm-90)*Math.PI/180,rot=mm-90+(mm>180?180:0),dark=w.t==='coins',big=w.l[0].length>6?7.4:(w.t==='coins'?10.5:9);
   lab+='<text transform="translate('+(60*Math.cos(m)).toFixed(1)+' '+(60*Math.sin(m)).toFixed(1)+') rotate('+rot.toFixed(1)+')" text-anchor="middle" dominant-baseline="middle" fill="'+(dark?'#2a1c00':'#fff')+'" font-weight="800" style="'+(dark?'':'paint-order:stroke;stroke:#000a;stroke-width:1.8px;')+'letter-spacing:.02em"><tspan x="0" dy="-3" font-size="'+big+'">'+w.l[0]+'</tspan><tspan x="0" dy="9" font-size="5.6" font-weight="700" fill-opacity=".9">'+w.l[1]+'</tspan></text>';
   pegs+='<circle cx="'+(103*Math.cos(r0)).toFixed(1)+'" cy="'+(103*Math.sin(r0)).toFixed(1)+'" r="2.6" fill="#ffe28a" stroke="#6a4b00" stroke-width=".6"/>'});
@@ -2120,7 +2132,7 @@ function winEnd(o,prev){var W=WH[o.res];
  else if(W.t==='coins'){sfx('coin');toast('+'+fmt(o.coins||W.v)+' '+CUR);setTimeout(render,900)}
  else setTimeout(render,900)}
 function rCode(){
- var leg=WH.filter(function(w){return w.p>0}).sort(function(x,y){return x.p-y.p}).map(function(w){return '<span><i style="background:'+w.c+'"></i>'+w.n+' '+w.p+' %</span>'}).join('')+'<span class="mut">Pack ou carte gagnés : à récupérer dans tes packs en attente. La rareté de la carte suit les probabilités des packs.</span>';
+ var leg=WH.filter(function(w){return w.p>0}).sort(function(x,y){return x.p-y.p}).map(function(w){return '<span><i'+(w.g===9?' class="hl"':'')+' style="background:'+w.c+'"></i>'+w.n+' '+w.p+' %</span>'}).join('')+'<span class="mut">Pack ou carte gagnés : à récupérer dans tes packs en attente. La rareté de la carte suit les probabilités des packs.</span>';
  var pend=false?'<button class="btn gold" id="wclaim">Récupérer ma récompense : '+WH[S.wpend].n+'</button>':'';
  var ICO='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>';
  var dbox='<aside class="dbox"><h3>'+ICO+' Tu as ton code de fin de map ? Voici quoi faire</h3><ol class="dsteps">'+
