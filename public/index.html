@@ -1026,7 +1026,7 @@ var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
 function colNav(){return subnavH(COLS.concat([['mc','Ma carte']]),colSub,'data-ccs')}
 function bindColNav(){bindNav('data-ccs',function(v){colSub=v;render();scrollTo(0,0)})}
 function vitH(){if(!S.vitrine)S.vitrine=[null,null,null];
- return '<div class="panel vitp"><h3>Ma vitrine</h3><p class="mut sm">Choisis 3 cartes : c’est tout ce que verront les joueurs qui cliquent sur ton nom dans le classement (tes amis voient aussi ta collection).</p><div class="vitrow">'+[0,1,2].map(function(k){var i=S.vitrine[k];return '<button class="vslot'+(i==null||!S.col[i]?' empty':'')+'" data-vs="'+k+'">'+(i!=null&&S.col[i]?cardHTML(i):'<span class="plus">+</span>')+'</button>'}).join('')+'</div></div>'}
+ return '<div class="panel vitp"><h3>Ma vitrine</h3><p class="mut sm">Choisis 3 cartes : c’est tout ce que verront les joueurs qui cliquent sur ton nom dans le classement (tes amis voient aussi ta collection).</p><div class="vitrow">'+[0,1,2].map(function(k){var i=S.vitrine[k];return '<button class="vslot'+(i==null||!S.col[i]?' empty':'')+'" data-vs="'+k+'">'+(i!=null&&S.col[i]?cardHTML(i,{hs:HS(i)}):'<span class="plus">+</span>')+'</button>'}).join('')+'</div></div>'}
 var colF=dupOnly?'own':'all';
 function colKeep(c,i,n){if(colF==='own')return n>0;if(colF==='miss')return n===0&&!c[5];if(colF==='dup')return NRM(i)>(dupKeep(mkData)[i]||1);if(colF==='hol')return HOL(i)>0;if(colF==='mk')return n>0&&!!listTag(i);return n||!c[5]}
 function colTiles(){return '<div class="ctiles">'+RAR.map(function(x,r){var tot=0,own=0,hn=0;CARDS.forEach(function(c,i){if(c&&c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;if(HOL(i))hn++}});return {r:r,own:own,tot:tot,hn:hn}}).reverse().map(function(o){return '<button class="ctile'+(o.own>=o.tot&&o.tot?' full':'')+'" data-jr="'+o.r+'" style="--c:'+HEX[o.r]+'"><span>'+RAR[o.r].n+'</span><b>'+o.own+' / '+o.tot+'</b><em class="ctH">✨ '+o.hn+'</em><i><i style="width:'+(o.tot?o.own/o.tot*100:0)+'%"></i></i></button>'}).join('')+'</div>'}
@@ -1062,7 +1062,7 @@ function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q)
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
  var h='<div class="pickbox"><div class="pickhd"><h3>Vitrine : carte '+(k+1)+'</h3><button class="btn sm" id="pkx">Fermer</button></div>'+
  (v[k]!=null?'<div style="margin:0 0 10px"><button class="btn sm gold" id="pkrm">Retirer '+CARDS[v[k]][0]+'</button></div>':'')+
- (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i)+'</button>'}).join('')+'</div>':'<p class="mut">Tu n’as encore aucune carte.</p>')+'</div>';
+ (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i,{hs:HS(i)})+'</button>'}).join('')+'</div>':'<p class="mut">Tu n’as encore aucune carte.</p>')+'</div>';
  var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML=h;document.body.appendChild(d);
  d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  if($('pkrm'))$('pkrm').onclick=function(){S.vitrine[k]=null;save();closePick();render()};
@@ -1092,7 +1092,7 @@ function openPick(k){closePick();
  var h='<div class="pickbox"><div class="pickhd"><h3>'+PN[k]+'</h3><button class="btn sm" id="pkx">Fermer</button></div>'+
  '<div class="fl">'+[-1,0,1,4,5,6,7].filter(function(f){return f<2||CARDS.some(function(c,i){return c&&c[1]===f&&S.col[i]})}).map(function(f){return '<button data-f="'+f+'"'+(f===pkF?' class="on"':'')+'>'+(f<0?'Tous':CATS[f])+'</button>'}).join('')+'</div>'+
  (t[k]!=null?'<div style="margin:0 0 10px"><button class="btn sm gold" id="pkrm">Retirer '+CARDS[t[k]][0]+'</button></div>':'')+
- (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i)+'</button>'}).join('')+'</div>':'<p class="mut">Aucun éditeur ou influenceur disponible.</p>')+'</div>';
+ (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i,{hs:HS(i)})+'</button>'}).join('')+'</div>':'<p class="mut">Aucun éditeur ou influenceur disponible.</p>')+'</div>';
  var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML=h;document.body.appendChild(d);
  d.onclick=function(e){if(e.target===d)closePick()};
  $('pkx').onclick=closePick;
@@ -1105,7 +1105,7 @@ function openPickX(key){closePick();var E=S.extra,taken={};S.team.forEach(functi
  items.sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||CARDS[a][0].localeCompare(CARDS[b][0])});
  var h='<div class="pickbox"><div class="pickhd"><h3>'+EXN[key]+'</h3><button class="btn sm" id="pkx">Fermer</button></div><p class="mut sm" style="margin:0 0 10px">'+EXH[key]+'</p>'+
  (E[key]!=null?'<div style="margin:0 0 10px"><button class="btn sm gold" id="pkrm">Retirer '+esc(CARDS[E[key]][0])+'</button></div>':'')+
- (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i)+'</button>'}).join('')+'</div>':'<p class="mut">Aucune carte de ce type dans ta collection pour l\'instant.</p>')+'</div>';
+ (items.length?'<div class="pgrid">'+items.map(function(i){return '<button class="pitem" data-pi="'+i+'">'+cardHTML(i,{hs:HS(i)})+'</button>'}).join('')+'</div>':'<p class="mut">Aucune carte de ce type dans ta collection pour l\'instant.</p>')+'</div>';
  var d=document.createElement('div');d.id='pk';d.className='pickov';d.innerHTML=h;document.body.appendChild(d);
  d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  if($('pkrm'))$('pkrm').onclick=function(){E[key]=null;save();closePick();render()};
@@ -1379,7 +1379,7 @@ function paintProfile(d,p){
  var relB={none:'<button class="btn sm" data-fr="fadd">Ajouter en ami</button>',sent:'<button class="btn sm ghost" disabled>Demande envoyée</button><button class="btn sm ghost" data-fr="fremove">Annuler</button>',received:'<button class="btn sm gold" data-fr="faccept">Accepter la demande</button><button class="btn sm ghost" data-fr="fremove">Refuser</button>',friend:'<button class="btn sm ghost" data-fr="fremove">Retirer des amis</button>',self:''}[p.rel]||'';
  var h='<div class="pickhd"><h3>Profil</h3><button class="btn sm" id="pkx">Fermer</button></div><div class="pf-head">'+uav(p,true)+'<div><h2 style="margin:0">'+esc(p.name)+'</h2>'+ttag(p.title)+'<span class="mut sm">'+(p.rank?'#'+p.rank+' au classement · ':'')+'inscrit le '+dfr(p.since)+'</span></div></div>'+
   '<div class="tiles"><div class="tile"><b>'+fmt(p.score)+'</b><span>score</span></div><div class="tile"><b>'+p.owned+' / '+TOT()+'</b><span>cartes</span></div><div class="tile"><b>'+p.mythics+'</b><span>Mythiques</span></div><div class="tile"><b>'+fmt(p.opened)+'</b><span>packs ouverts</span></div></div>'+(p.holoRar?'<div class="panel hprof"><h3>✨ Cartes Holo : '+(p.holo||0)+' / '+TOT()+'</h3><div class="hrow">'+RAR.map(function(x,r){return {r:r,n:p.holoRar[r]||0}}).reverse().map(function(o){return '<span class="hch" style="--c:'+HEX[o.r]+'"><b>'+o.n+'</b> '+RAR[o.r].n+'</span>'}).join('')+'</div></div>':'')+
-  (p.vitrine&&p.vitrine.length?'<div class="panel vitp"><h3>Vitrine</h3><div class="grid">'+p.vitrine.map(function(i){return '<div class="item">'+cardHTML(i)+'</div>'}).join('')+'</div></div>':'')+
+  (p.vitrine&&p.vitrine.length?'<div class="panel vitp"><h3>Vitrine</h3><div class="grid">'+p.vitrine.map(function(i,q){return '<div class="item">'+cardHTML(i,{hs:(p.vitrineHs||[])[q]||0})+'</div>'}).join('')+'</div></div>':'')+
   '<div class="bar">'+relB+(ISADMIN&&p.rel!=='self'?'<button class="btn sm gold" id="pfadm">Gérer ce joueur</button>':'')+'</div>';
  if(p.col){
   var t=p.team||[],names=function(a){return a.map(function(i){var c=t[i]!=null&&CARDS[t[i]];return c?'<span class="tn2" style="--rc:'+HEX[c[2]]+'">'+esc(c[0])+'</span>':'<span class="tn2 mut">—</span>'}).join('')};
