@@ -1692,6 +1692,7 @@ function lineTool(host,st,setImg){host.innerHTML='<div class="bar"><button class
  var t=0,run=function(){if(!st.base){toast('Aucune image à convertir');return}clearTimeout(t);t=setTimeout(function(){lineArt(st.base,+$('ltr').value).then(setImg).catch(function(e){toast(e.message)})},120)};
  $('ltb').onclick=run;$('ltr').oninput=function(){if(st.on)run()};$('ltb').addEventListener('click',function(){st.on=true})}
 function adCatF(v){[].forEach.call(document.querySelectorAll('#atcards tr[data-cat]'),function(r){r.style.display=(v==='-1'||r.dataset.cat===v)?'':'none'})}
+window.adCatF=adCatF;
 function cthumb(img,name){return img?'<img class="cth" src="'+esc(imgUrl(img))+'" alt="">':'<span class="cth">'+esc((name||'?').charAt(0).toUpperCase())+'</span>'}
 function openRefuse(x,done){closePick();var dv=document.createElement('div');dv.id='pk';dv.className='pickov';
  dv.innerHTML='<div class="pickbox wpbox"><h2>Refuser « '+esc(x.name)+' »</h2><p class="mut sm">'+esc(x.by)+' recevra une notification avec ta raison.</p><textarea id="rrs" class="inp" rows="4" maxlength="300" placeholder="Raison du refus (facultatif)" style="width:100%"></textarea><div class="bar"><button class="btn gold" id="rok">Refuser et prévenir</button><button class="btn ghost" id="rno">Annuler</button></div></div>';
