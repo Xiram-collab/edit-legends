@@ -695,6 +695,9 @@ body.light .nban,body.light .nban *{color:#fff}
 .sum .sw{min-width:0;display:flex}.sum .sw .card{min-width:0;flex:1}
 .sum .card .nm,.sum .card .nm.long{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.7em;height:1.7em}
 .sum .card .ds,.sum .card .ds:empty{display:block;min-height:2.4em}
+/* Écran de pack : le bouton Continuer reste toujours collé en bas de l'écran (jamais sur une carte), et le défilement ne remonte plus à la page derrière */
+.over{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+.over #ok{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30}
 </style>
 </head>
 <body class="noel">
@@ -998,7 +1001,7 @@ function reveal(list,prev,intro,hol){prev=prev||{};busy=true;var pr=list.map(fun
    for(var t=0;t<pre-250;t+=Math.max(230,560-t/6)){(function(t){setTimeout(function(){if(alive())sfx('beat')},t)})(t)}
    setTimeout(go,pre)}else go()}
  function summary(){phase='sum';var tot=0,bestI=list[0];list.forEach(function(i){if(CARDS[i][2]>CARDS[bestI][2])bestI=i});
-  ov.className='over';ov.innerHTML='<h2 class="disp sumt">Résumé du pack</h2><div class="sum">'+list.map(function(i,k){return '<div class="sw" data-zi="'+i+'" style="animation-delay:'+(k*.12)+'s">'+cardHTML(i,{isNew:isNew[k],hs:hfl[k]?2:0})+'</div>'}).join('')+'</div>'+(hfl.some(Boolean)?'<div class="hsum">✨ '+hfl.filter(Boolean).length+' carte'+(hfl.filter(Boolean).length>1?'s':'')+' Holo dans ce pack !</div>':'')+'<div class="mut">Meilleure carte : <b style="color:'+HEX[CARDS[bestI][2]]+'">'+CARDS[bestI][0]+'</b></div><button class="btn big-b" id="ok">Continuer</button>';
+  ov.className='over';ov.innerHTML='<h2 class="disp sumt">Résumé du pack</h2><div class="sum">'+list.map(function(i,k){return '<div class="sw" data-zi="'+i+'" style="animation-delay:'+(k*.05)+'s">'+cardHTML(i,{isNew:isNew[k],hs:hfl[k]?2:0})+'</div>'}).join('')+'</div>'+(hfl.some(Boolean)?'<div class="hsum">✨ '+hfl.filter(Boolean).length+' carte'+(hfl.filter(Boolean).length>1?'s':'')+' Holo dans ce pack !</div>':'')+'<div class="mut">Meilleure carte : <b style="color:'+HEX[CARDS[bestI][2]]+'">'+CARDS[bestI][0]+'</b></div><button class="btn big-b" id="ok">Continuer</button>';
   burstFx(innerWidth/2,innerHeight*.3,HEX[best],40,10)}
  ov.onclick=function(e){
   if(phase==='pack'){if(!started){started=true;packRumble();timer=setTimeout(burst,1900);return}burst();return}
