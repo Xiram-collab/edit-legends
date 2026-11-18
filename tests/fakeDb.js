@@ -20,6 +20,8 @@ module.exports = function fakeDb(cards, validCodes) {
       const p = profiles.get(u.id) || { user_id: u.id, created_at: new Date(1e12).toISOString() };
       profiles.set(u.id, Object.assign(p, { name: p.custom_name || u.name, avatar: p.no_avatar ? '' : u.avatar, d_name: u.name, d_avatar: u.avatar, discord_id: u.discordId, last_seen: new Date().toISOString() }, isAdmin ? { is_admin: true } : {}));
     },
+    async markActive(uid, day) { (this._act = this._act || new Set()).add(uid + '|' + day); },
+    async activeByDay(fromDay) { const out = {}; [...(this._act || [])].forEach((k) => { const d = k.split('|')[1]; if (d >= fromDay) out[d] = (out[d] || 0) + 1; }); return out; },
     async setIdentity(uid, customName, noAvatar) {
       const p = profiles.get(uid); if (!p) return null;
       Object.assign(p, { custom_name: customName || null, no_avatar: !!noAvatar, name: customName || p.d_name || p.name, avatar: noAvatar ? '' : (p.d_avatar || '') });
