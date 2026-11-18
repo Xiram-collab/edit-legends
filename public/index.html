@@ -1044,7 +1044,7 @@ function rCol(){
  if(colSub==='tit'){rTitles();return}
 var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes <span class="hcn">✨ '+holoCount()+' / '+TOT(S.col)+'</span></b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div>'+
- '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn qsbtn'+(qsMode?' on':'')+'" id="qsb">'+(qsMode?'✕ Quitter la vente rapide':'⚡ Vente rapide')+'</button><button class="btn sm" id="shcol">Partager ma collection</button></div>'+colTiles()+colFilt()+exH()+(qsMode?qsPanel():'');
+ '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn qsbtn'+(qsMode?' on':'')+'" id="qsb">'+(qsMode?'✕ Quitter la vente rapide':'⚡ Vente rapide')+'</button></div>'+colTiles()+colFilt()+exH()+(qsMode?qsPanel():'');
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&colKeep(c,i,n))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
@@ -1058,7 +1058,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  $('main').innerHTML=colNav()+h;bindColNav();
  [].forEach.call(document.querySelectorAll('[data-cf]'),function(b){b.onclick=function(){colF=b.dataset.cf;quietRender()}});[].forEach.call(document.querySelectorAll('[data-jr]'),function(b){b.onclick=function(){var e=document.getElementById('sec'+b.dataset.jr);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}});
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
- $('shcol').onclick=shareCollection;
+
  $('sellall').onclick=function(){quickSellAll()};bindEx();
  $('qsb').onclick=function(){qsMode=!qsMode;qsSel={};quietRender()};
  if(qsMode)bindQs();
@@ -1267,7 +1267,7 @@ function rTitles(){
 /* ================= COMMUNAUTÉ ================= */
 var SCORE=[1,2,4,10,25,60],ISOWNER=false,PERMS=null;
 var comSub='friends',boardScope='all',timeData=null,boardSort='score',boardPer='all',boardData=null,friendsData=null,searchT=0,searchSeq=0;
-var COMS=[['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Partage'],['add','Ajouter une carte'],['prob','Probabilités']];
+var COMS=[['friends','Amis'],['team','Mon 11'],['tier','Tier list'],['share','Confidentialité'],['add','Ajouter une carte'],['prob','Probabilités']];
 function ttag(t){return t&&t.n?'<span class="ttl" style="--c:'+HEX[t.t]+'">'+esc(t.n)+'</span>':''}
 function uav(u,big){var c='uav'+(big?' big':'');return u&&u.avatar?'<img class="'+c+'" src="'+esc(u.avatar)+'" alt="" referrerpolicy="no-referrer" onerror="this.outerHTML=\'<span class=&quot;'+c+' ph2&quot;>?</span>\'">':'<span class="'+c+' ph2">'+esc(((u&&u.name)||'?').charAt(0).toUpperCase())+'</span>'}
 function ago(iso){if(!iso)return 'jamais';var s=Math.max(0,(Date.now()-Date.parse(iso))/1000);if(s<90)return 'à l\'instant';if(s<3600)return 'il y a '+Math.round(s/60)+' min';if(s<86400)return 'il y a '+Math.round(s/3600)+' h';return 'il y a '+Math.round(s/86400)+' j'}
@@ -1455,12 +1455,9 @@ function rAdd(){
   api('cardsubmit',body).then(function(){toast('Carte envoyée, merci !');rAdd()}).catch(function(e){b.disabled=false;m.textContent=e.message;m.style.color='#ff7a8a'})};
  mine()}
 function rShare(){
- var owned=0,my=0;CARDS.forEach(function(c,i){if(S.col[i]){owned++;if(c[2]===5)my++}});
- $('cbody').innerHTML='<div class="panel"><h2>Partager ma collection</h2><p class="mut">Un lien public vers ta collection : tes cartes, ton score et tes Mythiques. Tes Coins et tes packs ne sont jamais montrés.</p>'+
-  '<div class="tiles"><div class="tile"><b>'+owned+' / '+TOT(S.col)+'</b><span>cartes</span></div><div class="tile"><b>'+my+'</b><span>Mythiques</span></div></div>'+
-  '<div class="bar"><button class="btn gold" id="shb">Partager ma collection</button></div></div>'+
-  '<div class="panel"><h3>Confidentialité</h3><label class="chk"><input type="checkbox" id="shh"'+(S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:8px 0 0">Ton pseudo et ton avatar Discord sont visibles des autres joueurs connectés. Décoché, seuls tes amis (et l\'administrateur) peuvent voir ton profil. Le lien de partage reste actif tant que tu ne supprimes pas ton compte.</p></div>';
- $('shb').onclick=shareCollection;
+ 
+ $('cbody').innerHTML='<div class="panel"><h3>Confidentialité</h3><label class="chk"><input type="checkbox" id="shh"'+(S.hide?'':' checked')+'> Apparaître dans le classement et dans la recherche d\'amis</label><p class="mut sm" style="margin:8px 0 0">Ton pseudo et ton avatar Discord sont visibles des autres joueurs connectés. Décoché, seuls tes amis (et l\'administrateur) peuvent voir ton profil.</p></div>';
+
  $('shh').onchange=function(){S.hide=!this.checked;save();boardData=null;toast(S.hide?'Tu es caché du classement':'Tu apparais dans le classement')}}
 
 /* ================= ADMINISTRATION ================= */
