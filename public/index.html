@@ -691,6 +691,10 @@ body.light .nban,body.light .nban *{color:#fff}
 .fbody{background:var(--panel2,#ffffff0d);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:90px;max-height:34vh;overflow:auto}.ftxt{line-height:1.5;overflow-wrap:anywhere}.fempty{color:var(--mut);font-style:italic}
 .mcsec{display:block;margin-top:10px}.mcsec b{display:block;margin-bottom:4px}.ltag{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;background:#ffb02026;color:#ffb020;font-weight:800;font-size:.85em;white-space:nowrap}.multi{display:inline-flex;gap:8px;margin:0 8px;vertical-align:middle}.panel .multi{margin:10px 0 0;display:flex;justify-content:center}.btn.dng{box-shadow:0 3px 0 #5a1020}
 .btn:disabled{box-shadow:0 3px 0 #0006}
+/* Résumé du pack : toutes les cartes à la même taille et bien alignées (un nom long ne doit plus élargir la carte) */
+.sum .sw{min-width:0;display:flex}.sum .sw .card{min-width:0;flex:1}
+.sum .card .nm,.sum .card .nm.long{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.7em;height:1.7em}
+.sum .card .ds,.sum .card .ds:empty{display:block;min-height:2.4em}
 </style>
 </head>
 <body class="noel">
