@@ -784,12 +784,12 @@ function bindQs(){var old=$('qsfix');if(old)old.remove();var bar=document.create
 function qsConfirm(){var t=qsTotals();if(!t.n)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox wpbox"><h2>Vendre définitivement ?</h2><p style="font-size:17px;margin:6px 0"><b>'+t.n+' carte'+(t.n>1?'s':'')+'</b> pour <b>+'+fmt(t.g)+' '+CUR+'</b></p>'+(t.last?'<p class="qsw" style="font-size:14px">⚠ '+t.last+' carte'+(t.last>1?'s ne seront':' ne sera')+' plus dans ta collection (dernier exemplaire).</p>':'')+'<p class="mut sm">Cette vente est définitive : tu ne pourras pas revenir en arrière.</p><div class="bar" style="justify-content:center"><button class="btn ghost" id="qsno">Annuler</button><button class="btn gold" id="qsyes">Vendre définitivement</button></div></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('qsno').onclick=closePick;$('qsyes').onclick=function(){closePick();qsGo()}}
-function qsGo2(){if(netBusy)return;var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){items.push([i,q]);undo.push([i,q]);t+=q*RAR[CARDS[i][2]].v;n+=q}});if(!items.length)return;
+function qsGo2(n){n=n||0;if(netBusy){if(n<12)setTimeout(function(){qsGo2(n+1)},250);return}var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){items.push([i,q]);undo.push([i,q]);t+=q*RAR[CARDS[i][2]].v;n+=q}});if(!items.length)return;
  undo.forEach(function(u){S.col[u[0]]-=u[1]});S.money+=t;qsMode=false;qsSel={};sfx('coin');toast(n+' carte'+(n>1?'s':'')+' vendue'+(n>1?'s':'')+' · +'+fmt(t)+' '+CUR);quietRender();
  act({action:'sellmany',items:items}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]+=u[1]});S.money-=t;quietRender()})}
 // Avant de vendre : si une carte vendue est aussi proposée au marché ou en échange et qu'il n'en restera pas assez, on demande confirmation
-function guardSell(plan,go){
- if(netBusy||!plan.length)return;
+function guardSell(plan,go,n){n=n||0;
+ if(!plan.length)return;if(netBusy){if(n<12)setTimeout(function(){guardSell(plan,go,n+1)},250);return}
  var check=function(d){var need={},m={};(d.open||[]).forEach(function(l){if(l.mine)m[l.card]=(m[l.card]||0)+1});var t={};(d.trades||[]).forEach(function(x){if(x.mine)x.give.forEach(function(c){t[c]=(t[c]||0)+1})});
   var bad=[];plan.forEach(function(p){var i=p[0],left=NRM(i)-p[1],nm=m[i]||0,nt=t[i]||0;if(left<Math.max(nm,nt))bad.push({i:i,m:left<nm,t:left<nt})});
   if(!bad.length){go();return}
@@ -1060,6 +1060,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
 
  $('sellall').onclick=function(){quickSellAll()};bindEx();
+ if(!mkData||Date.now()-(mkData.at+mkData.now)>60000)api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now}).catch(function(){});   /* on prépare la liste du marché à l'avance : la vente part tout de suite au premier appui */
  $('qsb').onclick=function(){qsMode=!qsMode;qsSel={};quietRender()};
  if(qsMode)bindQs();
  if(!mkData&&!window.mkLoad){window.mkLoad=1;api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='col')quietRender()}).catch(function(){})}
