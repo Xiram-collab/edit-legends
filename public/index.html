@@ -796,11 +796,13 @@ function guardSell(plan,go){
   closePick();var o=document.createElement('div');o.id='pk';o.className='pickov';
   o.innerHTML='<div class="pickbox wpbox"><h2>Carte déjà proposée</h2>'+bad.map(function(b){return '<p style="margin:6px 0"><b style="color:'+HEX[CARDS[b.i][2]]+'">'+esc(CARDS[b.i][0])+'</b> est '+(b.m&&b.t?'sur le marché et dans un échange':b.m?'sur le marché':'dans un échange')+'.</p>'}).join('')+'<p class="qsw" style="font-size:14px">Voulez-vous vraiment la vendre alors qu\'elle est '+(bad.length>1?'proposée':'proposée')+' ? Tu n\'en auras plus assez : l\'offre sera retirée.</p><div class="bar" style="justify-content:center"><button class="btn ghost" id="gsno">Annuler</button><button class="btn gold" id="gsyes">Vendre quand même</button></div></div>';
   document.body.appendChild(o);o.onclick=function(e){if(e.target===o)closePick()};$('gsno').onclick=closePick;$('gsyes').onclick=function(){closePick();go()}};
- if(mkData&&Date.now()-(mkData.at+mkData.now)<10000)check(mkData);
+ if(mkData&&Date.now()-(mkData.at+mkData.now)<120000)check(mkData);
  else api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;check(d)}).catch(function(){go()})}
 function qsGo(){var plan=[];Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0)plan.push([i,q])});guardSell(plan,qsGo2)}
 function quickSellOne(i){guardSell([[i,1]],function(){quickSellOne2(i)})}
-function quickSellAll(){if(netBusy)return;var go=function(d){quickSellAll2(dupKeepX(d))};if(mkData&&Date.now()-(mkData.at+mkData.now)<10000)go(mkData);else api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;go(d)}).catch(function(){go(mkData)})}
+function quickSellAll(n){n=n||0;if(netBusy){if(n<12)setTimeout(function(){quickSellAll(n+1)},250);return}   /* une action est en cours : on réessaie tout seul au lieu d'ignorer le bouton */
+ quickSellAll2(dupKeepX(mkData));   /* vente immédiate (le serveur protège de toute façon les cartes proposées au marché / en échange) */
+ if(!mkData||Date.now()-(mkData.at+mkData.now)>60000)api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now}).catch(function(){})}
 function quietRender(){var m=$('main'),y=window.scrollY,h=m?m.offsetHeight:0;if(m&&h)m.style.minHeight=h+'px';   /* la page ne se raccourcit pas pendant le rendu : pas de saut ni de clignotement */
  document.body.classList.add('qr','qr2');QUIET=true;try{render()}finally{QUIET=false}
  if(window.scrollY!==y)window.scrollTo(0,y);
