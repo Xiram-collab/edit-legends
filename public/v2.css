@@ -1,0 +1,115 @@
+/* ===== Edit Legends — design V2 (activé par la classe html.v2) ===== */
+@font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:swap;src:url(fonts/inter-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-weight:500;font-style:normal;font-display:swap;src:url(fonts/inter-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-weight:600;font-style:normal;font-display:swap;src:url(fonts/inter-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter";font-weight:700 900;font-style:normal;font-display:swap;src:url(fonts/inter-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Space Grotesk";font-weight:500 600;font-style:normal;font-display:swap;src:url(fonts/space-grotesk-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Space Grotesk";font-weight:700 900;font-style:normal;font-display:swap;src:url(fonts/space-grotesk-latin-700-normal.woff2) format("woff2")}
+
+html.v2{--bg:#0A0B14;--panel:#12141F;--panel2:#1A1D2B;--fg:#F2F3F7;--mut:#9CA3B5;--line:#242839;--acc:#FF5FB8;--acc2:#8FEAFF;--gold:#FFB020;
+ --v2-hi:#1E2233;--v2-txt2:#B4BACB;--v2-on:#1A0612}
+
+/* base */
+html.v2 body{background:var(--bg);background-image:none;font:15px/1.5 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+html.v2 h1,html.v2 h2,html.v2 h3,html.v2 .disp{font-family:"Space Grotesk","Inter",sans-serif;text-transform:none;letter-spacing:-.01em;font-weight:700}
+html.v2 h3{font-size:1.2em}
+html.v2 .mut{color:var(--mut)}
+html.v2 a{color:var(--acc)}
+html.v2 ::selection{background:#FF5FB855}
+html.v2 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* en-tête */
+html.v2 header{max-width:1240px;padding:6px 0}
+html.v2 .logo{font-size:22px;background:none;-webkit-background-clip:initial;background-clip:initial;color:var(--fg);display:flex;align-items:center;gap:10px;letter-spacing:-.01em}
+html.v2 .logo .lg{width:40px;height:40px;border-radius:10px}
+html.v2 .purse{background:#151827;border:1px solid #2B2F44;color:var(--fg);font-weight:600;padding:7px 14px}
+html.v2 .supb{background:#151827!important;border:1px solid #2B2F44!important;box-shadow:none!important;color:var(--fg)!important;border-radius:999px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important}
+html.v2 .mute,html.v2 .bell{background:#151827;border:1px solid #2B2F44;box-shadow:none}
+
+/* navigation principale */
+html.v2 nav{max-width:1240px;margin:12px auto 20px;padding:4px;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:none}
+html.v2 nav button{font-family:"Inter",sans-serif;font-size:14.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--v2-txt2);padding:10px 14px;border-radius:10px;border:0;box-shadow:none}
+html.v2 nav button:hover{background:#ffffff0a;color:var(--fg)}
+html.v2 nav button[aria-selected=true]{background:var(--v2-hi);color:var(--fg);border:0;box-shadow:inset 0 -2px 0 var(--acc)}
+html.v2 nav button .ti{opacity:.9}
+
+/* contenu */
+html.v2 main,html.v2 #main{max-width:1240px}
+html.v2 .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:none}
+html.v2 .panel h3{margin-bottom:6px}
+
+/* boutons */
+html.v2 .btn{background:var(--acc);color:var(--v2-on);border:0;border-radius:12px;padding:11px 20px;font-weight:700;text-transform:none;letter-spacing:0;box-shadow:none;transition:filter .15s,transform .1s}
+html.v2 .btn:hover:not(:disabled){filter:brightness(1.08)}
+html.v2 .btn:active:not(:disabled){transform:scale(.98)}
+html.v2 .btn.gold{background:var(--gold);color:#241600;border:0}
+html.v2 .btn.ghost{background:transparent;color:var(--fg);border:1px solid #33384F}
+html.v2 .btn.sm{padding:6px 12px;border-radius:9px;font-size:13.5px}
+html.v2 .btn.big-b{animation:none;padding:14px 28px;font-size:16px}
+html.v2 .btn.big-b::after{display:none}
+html.v2 .btn .badge,html.v2 .badge{background:var(--v2-on);color:#FF8ACB;border:0}
+html.v2 .qsbtn{background:#1A1D2B;color:var(--fg);border:1px solid #33384F;box-shadow:none;text-transform:none;letter-spacing:0;font-weight:700;font-size:15px;padding:12px 18px}
+html.v2 .qsbtn.on{background:var(--acc);color:var(--v2-on);border-color:var(--acc)}
+html.v2 .dbtn{background:#5865F2!important;color:#fff!important;border:0!important;border-radius:12px!important;box-shadow:none!important;text-transform:none!important;letter-spacing:0!important}
+
+/* sous-onglets */
+html.v2 .subnav{border-bottom:1px solid var(--line)}
+html.v2 .subnav button{font-weight:600;font-size:14.5px;text-transform:none;letter-spacing:0;color:var(--mut);border-bottom:2px solid transparent;margin-bottom:-1px}
+html.v2 .subnav button.on{color:var(--fg);border-bottom-color:var(--acc)}
+
+/* champs */
+html.v2 input,html.v2 select,html.v2 textarea{font-family:"Inter",sans-serif}
+html.v2 input:not([type=checkbox]):not([type=radio]):not([type=range]),html.v2 select,html.v2 textarea{background:#12141F;border:1px solid #2B2F44;border-radius:10px;color:var(--fg)}
+
+/* accueil */
+html.v2 .hero{gap:40px;padding:28px 0 20px}
+html.v2 .big{font-size:clamp(40px,6.4vw,64px);line-height:1.03;letter-spacing:-.03em}
+html.v2 .big em{background:none;-webkit-background-clip:initial;background-clip:initial;color:var(--acc);animation:none}
+html.v2 .kick{color:var(--mut);text-transform:none;letter-spacing:0;font-weight:600}
+html.v2 .lead{color:var(--v2-txt2);font-size:1.08em}
+html.v2 .v2b{border:1px solid #2B2F44;background:#1A1D2B;color:#D5D9E5}
+html.v2 .v2b b{background:var(--acc);color:var(--v2-on)}
+html.v2 .stats>div{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+html.v2 .tick{background:var(--panel);border-color:var(--line)}
+html.v2 .orb{display:none}
+html.v2 .lb{background:#1E2233}
+html.v2 .steps li::marker{color:var(--acc)}
+
+/* cartes */
+html.v2 .card{background:#121524;box-shadow:0 6px 18px #0007;border-width:2px;border-radius:14px}
+html.v2 .card .cat{background:#ffffff12}
+html.v2 .card .art{border-color:#ffffff14}
+html.v2 .card .nm{font-family:"Space Grotesk","Inter",sans-serif;letter-spacing:0}
+
+/* fenêtres, listes, tableaux */
+html.v2 .over{background:#05060Ce6}
+html.v2 .modal,html.v2 .sheet,html.v2 .dlg{background:var(--panel);border:1px solid #2B2F44;border-radius:20px}
+html.v2 table th{color:var(--mut);font-weight:600;text-transform:none;letter-spacing:0}
+html.v2 .toast,html.v2 #toast{background:#1E2233;border:1px solid #33384F;color:var(--fg);border-radius:12px;box-shadow:0 10px 30px #0008}
+
+/* pied de page */
+html.v2 .ft2{border-top:1px solid var(--line);background:transparent}
+html.v2 .ft2-b{letter-spacing:-.01em}
+
+/* téléphone */
+@media(max-width:640px){
+ html.v2 nav{flex-wrap:nowrap;border-radius:12px}
+ html.v2 nav button{flex:0 0 auto;padding:10px 12px;font-size:14px}
+ html.v2 .big{font-size:40px}
+ html.v2 .panel{padding:16px}
+}
+
+/* --- corrections de priorité (onglets, filtres, logo, stats) --- */
+html.v2 .logo{-webkit-text-fill-color:currentColor}
+html.v2 #tabs button,html.v2 body.noel #tabs button{font-family:"Inter",sans-serif;font-size:14.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--v2-txt2);background:transparent;border:0;box-shadow:none;transform:none}
+html.v2 #tabs button:hover{background:#ffffff0a;color:var(--fg)}
+html.v2 #tabs button[aria-selected=true],html.v2 body.noel #tabs button[aria-selected="true"]{background:var(--v2-hi);color:var(--fg);border:0;box-shadow:inset 0 -2px 0 var(--acc);transform:none}
+html.v2 #tabs button::before{display:none}
+html.v2 .fl button{background:transparent;border:1px solid #2B2F44;color:var(--v2-txt2);font-weight:600;font-size:13.5px;padding:7px 14px}
+html.v2 .fl button.on{background:var(--v2-hi);color:var(--fg);border-color:var(--acc)}
+html.v2 .stats{gap:12px}
+html.v2 .stats>div{padding:12px 16px;min-width:120px}
+html.v2 .stats b{font-family:"Space Grotesk","Inter",sans-serif;letter-spacing:-.01em;word-spacing:0;font-size:1.6em}
+html.v2 .stats span{text-transform:none;letter-spacing:0;font-size:.85em}
+html.v2 .stats .hst b{background:none;-webkit-background-clip:initial;background-clip:initial;color:#8FEAFF;-webkit-text-fill-color:#8FEAFF}
+@media(max-width:640px){html.v2 .logo{font-size:0;gap:0}html.v2 header{gap:8px}}
