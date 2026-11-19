@@ -43,7 +43,7 @@ body.noel .ndeco{display:block}
 .ngar .bulb{animation:ntw 2s ease-in-out infinite alternate}
 .ngar .bulb:nth-child(3n+2){animation-delay:.5s}.ngar .bulb:nth-child(3n){animation-delay:1s}
 @keyframes ntw{from{opacity:.55}to{opacity:1}}
-body.noel header,body.noel .top{padding-top:30px}
+body.noel header,body.noel .top{padding-top:30px}body.noel .card .top{padding-top:0}.slot .card .top{display:none}
 /* panneaux : liseré bonbon + bordures */
 body.noel .panel{position:relative;border-color:#4d4396;box-shadow:0 0 0 1px #ffffff0a inset,0 8px 22px #0006}
 body.noel .panel::before{content:"";position:absolute;top:-1px;left:18px;right:18px;height:4px;border-radius:0 0 4px 4px;background:repeating-linear-gradient(135deg,#e0253f 0 7px,#fff 7px 14px);opacity:.9;pointer-events:none}
@@ -979,6 +979,7 @@ function reveal(list,prev,intro,hol){prev=prev||{};busy=true;var pr=list.map(fun
   ov.className='over';
   ov.innerHTML='<div class="hdr">Carte '+(step+1)+' / '+list.length+'</div><div class="cstage" style="--a:'+HEX[r]+'"><div class="rays"></div><div class="fc enter" style="--a:'+HEX[r]+'"><div class="fi"><div class="face back'+(r>=3?' rbk':'')+(hfl[step]?' hback':'')+'">'+(hfl[step]?'<i class="hbr"></i><i class="hbs"></i><i class="hsp" style="--x:12%;--y:18%;--d:0s"></i><i class="hsp" style="--x:82%;--y:12%;--d:.3s"></i><i class="hsp" style="--x:70%;--y:46%;--d:.7s"></i><i class="hsp" style="--x:20%;--y:60%;--d:.5s"></i><i class="hsp" style="--x:55%;--y:84%;--d:.9s"></i><i class="hsp" style="--x:88%;--y:76%;--d:.15s"></i>':'')+'<div class="bk"><div class="bkin"><div class="sun"></div><div class="emb">'+LOGO+'</div><div class="bkt"><i></i><b>EDIT LEGENDS</b><i></i></div><div class="bks">★ ★ ★</div></div></div></div><div class="face front">'+cardHTML(list[step],{isNew:isNew[step],hs:hfl[step]?2:0})+'</div></div></div></div><div class="hint" id="hint">Touche la carte pour la retourner</div><button class="skip" id="skip">Tout révéler ▸▸</button>';if(r>=3){var fcd0=ov.querySelector('.face.front .card');if(fcd0)fcd0.dataset.st='0'}}
  function doFlip(){flipped=true;ready=false;var my=step,fc=ov.querySelector('.fc'),st=ov.querySelector('.cstage'),r=CARDS[list[step]][2],big=r>=3,col=HEX[r],pre=[0,0,0,1600,2400,3200][r],dur=[520,520,520,1700,2200,2700][r],g=null;
+  if(!fc){flipped=false;ready=true;return}
   var h0=$('hint');if(h0)h0.textContent='';
   function alive(){return phase==='cards'&&step===my&&ov.querySelector('.fc')===fc}
   function go(){if(!alive())return;if(g){g.className='chgfx out';var gg=g;setTimeout(function(){gg.remove()},700)}
@@ -1084,9 +1085,14 @@ function openVit(k){closePick();var v=S.vitrine,taken={};v.forEach(function(x,q)
  d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  if($('pkrm'))$('pkrm').onclick=function(){S.vitrine[k]=null;save();closePick();render()};
  [].forEach.call(d.querySelectorAll('[data-pi]'),function(b){b.onclick=function(){S.vitrine[k]=+b.dataset.pi;save();sfx('flip');closePick();render()}})}
-function rShop(){var dv=dupValue();$('main').innerHTML='<p class="mut">Les packs payants n\'utilisent pas ton stock gratuit. Vends tes doublons pour gagner des '+CUR+'.</p><div class="panel center" style="margin-bottom:14px"><button class="btn gold" id="shopsell"'+(dv?'':' disabled')+'>Revendre mes doublons'+(dv?' (+'+fmt(dv)+' '+CUR+')':'')+'</button>'+exH()+'<p class="mut sm" style="margin:8px 0 0">'+(dv?'Tu gardes un exemplaire de chaque carte, seuls les doublons sont vendus.':'Tu n\'as aucun doublon à revendre pour l\'instant.')+'</p></div><div class="shop">'+
- PACKS.map(function(p,k){var col=HEX[p.g];return '<div class="pk" style="--c:'+col+'"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div><h3>'+p.n+'</h3><div>'+p.t+'</div><div class="mut">5 cartes</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(S.money<p.price?' disabled':'')+'>Acheter et ouvrir</button></div>'}).join('')+'</div>'+
- '<div class="pk wheelpk"><div class="mini" style="--c:#ffd24a"><b class="disp">★</b></div><h3>Roue</h3><div>Un tour de roue sans code</div><div class="mut">Packs, cartes ou Coins. Jusqu\'à une Mythique au choix.</div><div style="color:var(--gold);font-weight:700;font-size:1.2em">'+fmt(SPIN_PRICE)+' '+CUR+'</div><button class="btn gold" id="shopwheel"'+(S.money<SPIN_PRICE?' disabled':'')+'>Tourner la roue</button></div>';
+function rShop(){var dv=dupValue();
+ var miss=function(pr){return S.money<pr?'Il te manque '+fmt(pr-S.money)+' '+CUR:''};
+ var wcols=WH.filter(function(w){return w.p>0}),wacc=0,wtot=wcols.reduce(function(t,w){return t+w.p},0)||1,wgrad=wcols.map(function(w){var a=wacc/wtot*360;wacc+=w.p;return w.c+' '+a.toFixed(1)+'deg '+(wacc/wtot*360).toFixed(1)+'deg'}).join(',');
+ $('main').innerHTML='<div class="shhead"><div><h2>Boutique</h2><p class="mut" style="margin:4px 0 0">Les packs payants n\'utilisent pas ton stock gratuit.</p></div><div class="shbal"><span class="mut sm">Ton solde</span><b><i class="coin">C</i>'+fmt(S.money)+' '+CUR+'</b></div></div>'+
+ '<div class="panel shsell"><div class="shsx"><b>Revends tes doublons</b><span class="mut sm">'+(dv?'Tu gardes un exemplaire de chaque carte (et une Holo), le reste est vendu.':'Tu n\'as aucun doublon à revendre pour l\'instant.')+'</span></div><button class="btn gold" id="shopsell"'+(dv?'':' disabled')+'>Revendre'+(dv?' · +'+fmt(dv)+' '+CUR:'')+'</button>'+exH()+'</div>'+
+ '<div class="shop">'+PACKS.map(function(p,k){var col=HEX[p.g],m=miss(p.price);return '<div class="pk" style="--c:'+col+'"><div class="pkart"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div></div><h3>'+p.n+'</h3><ul class="pkf"><li>5 cartes</li><li>'+p.t+'</li></ul><div class="pkp">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(m?' disabled':'')+'>'+(m||'Acheter et ouvrir')+'</button></div>'}).join('')+'</div>'+
+ '<div class="pk wheelpk"><div class="minw" style="background:conic-gradient('+wgrad+')"><i></i></div><div class="wtx"><h3>Roue de la chance</h3><p>Un tour sans code de map : packs, cartes, Coins… jusqu\'à une Mythique au choix.</p><p class="mut sm">Tu as un code de fin de map ? Il donne un tour gratuit dans l\'onglet Code.</p></div><div class="wact"><div class="pkp">'+fmt(SPIN_PRICE)+' '+CUR+'</div><button class="btn gold" id="shopwheel"'+(S.money<SPIN_PRICE?' disabled':'')+'>'+(miss(SPIN_PRICE)||'Tourner la roue')+'</button><button class="btn ghost sm" id="shopcode">J\'ai un code</button></div></div>';
+ var sc=$('shopcode');if(sc)sc.onclick=function(){tab='code';render();scrollTo(0,0)};
  var sw=$('shopwheel');if(sw)twice(sw,function(){if(S.money<SPIN_PRICE||busy)return;autoPay=true;tab='code';render();scrollTo(0,0)},'Confirmer : '+fmt(SPIN_PRICE)+' '+CUR);
  var ss=$('shopsell');if(ss)ss.onclick=function(){quickSellAll()};bindEx();
  [].forEach.call(document.querySelectorAll('[data-b]'),function(b){twice(b,function(){var p=PACKS[+b.dataset.b];if(S.money<p.price||busy)return;sfx('buy');openVia({action:'open',kind:'buy',g:p.g})},'Confirmer l\'achat')})}
@@ -2276,5 +2282,13 @@ try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.a
 
 </script>
 <script>(function(){var cols=['#ff5a6e','#3ddc84','#ffd24a','#4db8ff'],g=document.getElementById('bulbs'),h='';for(var i=0;i<26;i++){var x=8+i*15.4,y=i%2?15:12;h+='<g class="bulb"><line x1="'+x+'" y1="'+(y-4)+'" x2="'+x+'" y2="'+(y-1)+'" stroke="#5c4fa3"/><ellipse cx="'+x+'" cy="'+(y+4)+'" rx="3.4" ry="5" fill="'+cols[i%4]+'"/></g>'}if(g)g.innerHTML=h;try{if(localStorage.getItem('el_nodeco')==='1')document.body.classList.remove('noel');if(localStorage.getItem('el_light')==='1')document.body.classList.add('light')}catch(e){}})();</script>
+<script>(function(){if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;var cur=null;
+function off(c){c.classList.remove('tilt');c.classList.add('tilt-out');c.style.removeProperty('--trx');c.style.removeProperty('--try');setTimeout(function(){c.classList.remove('tilt-out')},450)}
+document.addEventListener('pointermove',function(e){if(!document.documentElement.classList.contains('v2'))return;var c=e.target.closest&&e.target.closest('.card');if(c&&c.closest('.fc,.pitch'))c=null;if(cur&&cur!==c){off(cur);cur=null}if(!c)return;
+ if(!c.querySelector('.v2glare')){var g=document.createElement('i');g.className='v2glare';c.appendChild(g)}
+ var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+ c.style.setProperty('--try',((x-.5)*16).toFixed(2)+'deg');c.style.setProperty('--trx',((.5-y)*16).toFixed(2)+'deg');c.style.setProperty('--gx',(x*100).toFixed(1)+'%');c.style.setProperty('--gy',(y*100).toFixed(1)+'%');
+ if(cur!==c){c.classList.remove('tilt-out');c.classList.add('tilt');cur=c}},{passive:true});
+document.addEventListener('pointerleave',function(){if(cur){off(cur);cur=null}});})();</script>
 </body>
 </html>

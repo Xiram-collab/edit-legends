@@ -348,8 +348,8 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
     r = await call('tokB', { action: 'claim' }); assert.strictEqual(r.status, 200); assert.ok(r.json.got.packs.some((p) => p.id === 'm_vente')); mv = r.json.packs.find((m) => m.id === 'm_vente'); assert.strictEqual(mv.step, 3); assert.strictEqual(mv.g, 400); ok('« Tout récupérer » : palier 2 obtenu, palier 3 (400) affiché');
     // une mission quotidienne se renouvelle le lendemain (heure de Paris)
     const base = clock; clock = Date.UTC(2026, 5, 20, 10);
-    await call('tokA', { action: 'apact', id: 'B', a: 'wp', v: 6, i: 0 });
-    for (let k = 0; k < 5; k++) await call('tokB', { action: 'openwp', g: 0 });
+    await call('tokA', { action: 'apact', id: 'B', a: 'wp', v: 12, i: 0 });
+    for (let k = 0; k < 10; k++) await call('tokB', { action: 'openwp', g: 0 });
     r = await call('tokB', { action: 'missions' }); assert.ok(r.json.packs.find((m) => m.id === 'q_packs').ready);
     await call('tokB', { action: 'claim', ids: ['q_packs'] }); r = await call('tokB', { action: 'missions' }); assert.ok(r.json.packs.find((m) => m.id === 'q_packs').claimed);
     clock = Date.UTC(2026, 5, 21, 10); r = await call('tokB', { action: 'missions' }); const q = r.json.packs.find((m) => m.id === 'q_packs'); assert.ok(!q.claimed && q.v === 0); ok('mission quotidienne remise à zéro le lendemain');
