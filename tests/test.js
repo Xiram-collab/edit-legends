@@ -161,9 +161,9 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
     const S1 = GM.normalizeState({}, 0); GM.addCards(S1, [i], [false]); assert.strictEqual(GM.summary(S1, cards).cscore, pt);
     const S2 = GM.normalizeState({}, 0); GM.addCards(S2, [i], [true]); assert.strictEqual(GM.summary(S2, cards).cscore, pt); assert.strictEqual(GM.summary(S2, cards).owned, 1); assert.strictEqual(GM.summary(S2, cards).holo, 1);
     GM.addCards(S2, [i], [false]); assert.strictEqual(GM.summary(S2, cards).cscore, 2 * pt);
-    // vente rapide : jamais les Holo ; on garde 1 exemplaire normal
+    // vente rapide : 1 normale gardée, et les Holo en double vendues au prix x SELL_MULT (une Holo gardée)
     GM.addCards(S2, [i, i, i], [true, false, false]);   // 2 Holo + 3 normales
-    assert.strictEqual(GM.sellAll(S2, cards, null), 2 * C.RAR[3].v); assert.strictEqual(S2.col[i], 2 + 1); assert.strictEqual(S2.holo[i], 2);
+    assert.strictEqual(GM.sellAll(S2, cards, null), 2 * C.RAR[3].v + C.RAR[3].v * C.HOLO.SELL_MULT); assert.strictEqual(S2.col[i], 1 + 1); assert.strictEqual(S2.holo[i], 1);
     assert.throws(() => GM.sellMany(S2, cards, [[i, 2]]), /normaux/);
     assert.throws(() => GM.sellOne(S2, cards, i), /doublon/);
     const S3 = GM.normalizeState({}, 0); GM.addCards(S3, [i], [true]);

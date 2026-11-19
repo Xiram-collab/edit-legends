@@ -819,8 +819,8 @@ function quietRender(){var m=$('main'),y=window.scrollY,h=m?m.offsetHeight:0;if(
 var sellQ=Promise.resolve(),sellN=0;
 function quickSellOne2(i){var v=RAR[CARDS[i][2]].v;if(!(NRM(i)>1))return;S.col[i]--;S.money+=v;sellN++;sfx('coin');toast('+'+fmt(v)+' '+CUR);quietRender();
  sellQ=sellQ.then(function(){return act({action:'sell',i:i})}).then(function(r){sellN--;if(sellN>0)return;var sig=S.money+'|'+JSON.stringify(S.col);setState(r.state);if(sig!==S.money+'|'+JSON.stringify(S.col))quietRender()},function(){sellN--;S.col[i]++;S.money-=v;quietRender()})}
-function quickSellAll2(keep){if(netBusy)return;keep=keep||{};var undo=[],t=0,kept=0;CARDS.forEach(function(c,i){var n=NRM(i),q=keep[i]||1;if(c&&n>q){t+=(n-q)*RAR[c[2]].v;undo.push([i,S.col[i]]);S.col[i]=q+HOL(i)}else if(c&&n>1)kept+=n-1});if(!t){if(kept)toast('Tes doublons sont tous sur le marché ou en échange');return}S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR+(kept?' · '+kept+' doublon'+(kept>1?'s':'')+' gardé'+(kept>1?'s':'')+' (marché/échange)':''));quietRender();
- act({action:'sell',all:true,except:exRar}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]=u[1]});S.money-=t;quietRender()})}
+function quickSellAll2(keep){if(netBusy)return;keep=keep||{};var undo=[],t=0,kept=0,hm=(window.HOLOC&&HOLOC.SELL_MULT)||2;CARDS.forEach(function(c,i){var n=NRM(i),q=keep[i]||1,h0=HOL(i);undo.push([i,S.col[i],S.holo&&S.holo[i]]);if(c&&n>q){t+=(n-q)*RAR[c[2]].v;S.col[i]=q+h0}else if(c&&n>1)kept+=n-1;if(c&&h0>1&&!(keep[i]>=1e9)){t+=(h0-1)*RAR[c[2]].v*hm;S.col[i]-=h0-1;S.holo[i]=1}});if(!t){if(kept)toast('Tes doublons sont tous sur le marché ou en échange');return}S.money+=t;sfx('coin');toast('+'+fmt(t)+' '+CUR+(kept?' · '+kept+' doublon'+(kept>1?'s':'')+' gardé'+(kept>1?'s':'')+' (marché/échange)':''));quietRender();
+ act({action:'sell',all:true,except:exRar}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]=u[1];if(u[2])S.holo[u[0]]=u[2]});S.money-=t;quietRender()})}
 function setState(st){var keep={};if(S)PREFK.forEach(function(k){keep[k]=S[k]});S=st;if(keep.team)PREFK.forEach(function(k){S[k]=keep[k]});if(typeof schedPing==='function')schedPing()}
 function schedPing(){if(pingT)return;pingT=setTimeout(function(){pingT=0;doPing()},2500)}
 function fmt(n){return n.toLocaleString('fr-FR')}
@@ -1035,7 +1035,7 @@ var exRar=[];
 function dupKeepX(d){var k=dupKeep(d);CARDS.forEach(function(c,i){if(c&&exRar.indexOf(c[2])>=0)k[i]=1e9});return k}
 function exH(){return ''}
 function bindEx(){}
-function dupValue(){var t=0,k=dupKeepX(mkData);CARDS.forEach(function(c,i){var n=NRM(i),q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v});return t}
+function dupValue(){var t=0,k=dupKeepX(mkData),hm=(window.HOLOC&&HOLOC.SELL_MULT)||2;CARDS.forEach(function(c,i){var n=NRM(i),q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v;if(c&&HOL(i)>1&&!(k[i]>=1e9))t+=(HOL(i)-1)*RAR[c[2]].v*hm});return t}
 var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
 function colNav(){return subnavH(COLS.concat([['mc','Ma carte']]),colSub,'data-ccs')}
 function bindColNav(){bindNav('data-ccs',function(v){colSub=v;render();scrollTo(0,0)})}
