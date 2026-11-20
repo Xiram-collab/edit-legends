@@ -979,10 +979,10 @@ function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),
 function reveal(list,prev,intro,hol){prev=prev||{};busy=true;var pr=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]});var hfl=pr.map(function(x){return !!(hol&&hol[x[1]])});list=pr.map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
  list.forEach(function(i){isNew.push(!prev[i]&&!tmp[i]);tmp[i]=1;best=Math.max(best,CARDS[i][2])});
  var ov=$('ov'),started=true;
- if(!intro){ov.hidden=false;ov.className='over';ov.innerHTML=packHTML(true,'Ouverture…');sfx('tear');timer=setTimeout(burst,1900)}
- else{started=intro.clicked;if(started)timer=setTimeout(burst,Math.max(250,1900-(Date.now()-intro.t0)))}
+ if(!intro){ov.hidden=false;ov.className='over';ov.innerHTML=packHTML(true,'Ouverture…');sfx('tear');timer=setTimeout(burst,1150)}
+ else{started=intro.clicked;if(started)timer=setTimeout(burst,Math.max(200,1150-(Date.now()-intro.t0)))}
  function flash(col){var f=document.createElement('div');f.className='flash';f.style.setProperty('--a',col);ov.appendChild(f);setTimeout(function(){f.remove()},900)}
- function burst(){if(phase!=='pack')return;phase='cards';clearTimeout(timer);sfx('boom');var pk=$('pk3d');if(pk)pk.classList.add('split');flash('#fff');burstFx(innerWidth/2,innerHeight/2,'#27e0ff',90,16);setTimeout(show,650)}
+ function burst(){if(phase!=='pack')return;phase='cards';clearTimeout(timer);sfx('boom');var pk=$('pk3d');if(pk)pk.classList.add('split');flash('#fff');burstFx(innerWidth/2,innerHeight/2,'#27e0ff',70,16);setTimeout(show,420)}
  function show(){flipped=false;var c=CARDS[list[step]],r=c[2];
   ov.className='over';
   ov.innerHTML='<div class="hdr">Carte '+(step+1)+' / '+list.length+'</div><div class="cstage" style="--a:'+HEX[r]+'"><div class="rays"></div><div class="fc enter" style="--a:'+HEX[r]+'"><div class="fi"><div class="face back'+(r>=3?' rbk':'')+(hfl[step]?' hback':'')+'">'+(hfl[step]?'<i class="hbr"></i><i class="hbs"></i><i class="hsp" style="--x:12%;--y:18%;--d:0s"></i><i class="hsp" style="--x:82%;--y:12%;--d:.3s"></i><i class="hsp" style="--x:70%;--y:46%;--d:.7s"></i><i class="hsp" style="--x:20%;--y:60%;--d:.5s"></i><i class="hsp" style="--x:55%;--y:84%;--d:.9s"></i><i class="hsp" style="--x:88%;--y:76%;--d:.15s"></i>':'')+'<div class="bk"><div class="bkin"><div class="sun"></div><div class="emb">'+LOGO+'</div><div class="bkt"><i></i><b>EDIT LEGENDS</b><i></i></div><div class="bks">★ ★ ★</div></div></div></div><div class="face front">'+cardHTML(list[step],{isNew:isNew[step],hs:hfl[step]?2:0})+'</div></div></div></div><div class="hint" id="hint">Touche la carte pour la retourner</div><button class="skip" id="skip">Tout révéler ▸▸</button>';if(r>=3){var fcd0=ov.querySelector('.face.front .card');if(fcd0)fcd0.dataset.st='0'}}
@@ -2290,13 +2290,18 @@ try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.a
 
 </script>
 <script>(function(){var cols=['#ff5a6e','#3ddc84','#ffd24a','#4db8ff'],g=document.getElementById('bulbs'),h='';for(var i=0;i<26;i++){var x=8+i*15.4,y=i%2?15:12;h+='<g class="bulb"><line x1="'+x+'" y1="'+(y-4)+'" x2="'+x+'" y2="'+(y-1)+'" stroke="#5c4fa3"/><ellipse cx="'+x+'" cy="'+(y+4)+'" rx="3.4" ry="5" fill="'+cols[i%4]+'"/></g>'}if(g)g.innerHTML=h;try{if(localStorage.getItem('el_nodeco')==='1')document.body.classList.remove('noel');if(localStorage.getItem('el_light')==='1')document.body.classList.add('light')}catch(e){}})();</script>
-<script>(function(){if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;var cur=null;
-function off(c){c.classList.remove('tilt');c.classList.add('tilt-out');c.style.removeProperty('--trx');c.style.removeProperty('--try');setTimeout(function(){c.classList.remove('tilt-out')},450)}
-document.addEventListener('pointermove',function(e){if(!document.documentElement.classList.contains('v2'))return;var c=e.target.closest&&e.target.closest('.card');if(c&&c.closest('.fc,.pitch'))c=null;if(cur&&cur!==c){off(cur);cur=null}if(!c)return;
+<script>(function(){var cur=null,touchOn=false;
+function off(c){c.classList.remove('tilt');c.classList.add('tilt-out');c.style.removeProperty('--trx');c.style.removeProperty('--try');setTimeout(function(){c.classList.remove('tilt-out')},400)}
+function move(e){if(!document.documentElement.classList.contains('v2'))return;if(e.pointerType!=='mouse'&&!touchOn)return;var c=e.target.closest&&e.target.closest('.card');if(c&&c.closest('.fc,.pitch,.slot'))c=null;if(cur&&cur!==c){off(cur);cur=null}if(!c)return;
  if(!c.querySelector('.v2glare')){var g=document.createElement('i');g.className='v2glare';c.appendChild(g)}
- var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
- c.style.setProperty('--try',((x-.5)*16).toFixed(2)+'deg');c.style.setProperty('--trx',((.5-y)*16).toFixed(2)+'deg');c.style.setProperty('--gx',(x*100).toFixed(1)+'%');c.style.setProperty('--gy',(y*100).toFixed(1)+'%');
- if(cur!==c){c.classList.remove('tilt-out');c.classList.add('tilt');cur=c}},{passive:true});
-document.addEventListener('pointerleave',function(){if(cur){off(cur);cur=null}});})();</script>
+ var r=c.getBoundingClientRect(),x=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y=Math.min(1,Math.max(0,(e.clientY-r.top)/r.height));
+ c.style.setProperty('--try',((x-.5)*18).toFixed(2)+'deg');c.style.setProperty('--trx',((.5-y)*18).toFixed(2)+'deg');c.style.setProperty('--gx',(x*100).toFixed(1)+'%');c.style.setProperty('--gy',(y*100).toFixed(1)+'%');
+ if(cur!==c){c.classList.remove('tilt-out');c.classList.add('tilt');cur=c}}
+document.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse'){touchOn=true;move(e)}},{passive:true});
+document.addEventListener('pointermove',move,{passive:true});
+function end(){touchOn=false;if(cur){off(cur);cur=null}}
+document.addEventListener('pointerup',function(e){if(e.pointerType!=='mouse')end()},{passive:true});
+document.addEventListener('pointercancel',end,{passive:true});
+document.addEventListener('pointerleave',end);})();</script>
 </body>
 </html>

@@ -266,7 +266,6 @@ html.v2 .fc.flipped .face.front::after{animation:v2sweep .9s ease-out .55s forwa
 html.v2 .fc::before{content:"";position:absolute;left:50%;top:50%;width:100%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;border:3px solid var(--a,#fff);opacity:0;pointer-events:none;z-index:-1}
 html.v2 .fc.flipped::before{animation:v2wave .9s cubic-bezier(.2,.7,.3,1) .5s}
 @keyframes v2wave{0%{opacity:.9;scale:.4;box-shadow:0 0 30px var(--a,#fff)}100%{opacity:0;scale:1.9;box-shadow:0 0 0 var(--a,#fff)}}
-html.v2 .fc.flipped .fi{filter:drop-shadow(0 18px 40px #000a)}
 
 /* survol : inclinaison 3D + reflet qui suit le curseur (souris uniquement) */
 @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
@@ -425,3 +424,98 @@ html.v2 .ftab.on{background:var(--panel3)!important;color:var(--fg)!important}
 html.v2 .fbody{background:var(--bg);border:1px solid var(--line);border-radius:14px}
 html.v2 #pkx{width:100%;background:transparent;color:var(--fg);border:1px solid var(--line2);box-shadow:none;min-height:44px}
 html.v2 #pkx:hover{background:var(--panel2)}
+
+/* =====================================================================
+   V2.1 — police d'affichage, 3D, fluidité
+   ===================================================================== */
+@font-face{font-family:"Unbounded";font-weight:500 600;font-style:normal;font-display:swap;src:url(fonts/unbounded-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Unbounded";font-weight:700 900;font-style:normal;font-display:swap;src:url(fonts/unbounded-latin-800-normal.woff2) format("woff2")}
+html.v2{--fd:"Unbounded","Space Grotesk","Inter",sans-serif;--acc-d:#B8337E;--gold-d:#A86A00}
+
+/* ---- typographie ---- */
+html.v2 .big{font-family:var(--fd);font-weight:800;letter-spacing:-.04em;line-height:1.04;font-size:clamp(34px,5.2vw,62px);
+ text-shadow:0 1px 0 #d9dbe6,0 2px 0 #b7bacb,0 3px 0 #9599ad,0 4px 0 #73778d,0 10px 22px #000b}
+html.v2 .big em{text-shadow:0 1px 0 #ff9fd3,0 2px 0 #e0559f,0 3px 0 #c13f84,0 4px 0 #9b2e69,0 10px 24px #FF5FB855}
+html.v2 main h2,html.v2 .shhead h2,html.v2 .hsh h3,html.v2 .mhead h2{font-family:var(--fd);font-weight:700;letter-spacing:-.03em}
+html.v2 .logo{font-family:var(--fd);font-weight:800;font-size:17px;letter-spacing:-.03em}
+html.v2 .hs b,html.v2 .ctile b,html.v2 .pkp,html.v2 .purse{font-family:var(--fd);font-weight:700;letter-spacing:-.03em}
+html.v2 .hs b{font-size:21px}
+html.v2 .sec h3{font-family:var(--fd);font-weight:700;font-size:18px;letter-spacing:-.03em}
+html.v2 .hpk-t b{font-family:var(--fd);font-size:16px;letter-spacing:-.02em}
+
+/* ---- boutons en relief (touche 3D) ---- */
+html.v2 .btn{box-shadow:0 1px 0 #ffffff55 inset,0 4px 0 var(--acc-d),0 8px 18px #FF5FB838;transform:translateY(0);transition:transform .1s var(--ease),box-shadow .1s var(--ease),background .15s}
+html.v2 .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 1px 0 #ffffff55 inset,0 5px 0 var(--acc-d),0 12px 22px #FF5FB845}
+html.v2 .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #ffffff40 inset,0 1px 0 var(--acc-d),0 3px 8px #FF5FB830}
+html.v2 .btn.gold{box-shadow:0 1px 0 #ffffff66 inset,0 4px 0 var(--gold-d),0 8px 18px #FFB02033}
+html.v2 .btn.gold:hover:not(:disabled){box-shadow:0 1px 0 #ffffff66 inset,0 5px 0 var(--gold-d),0 12px 22px #FFB02040}
+html.v2 .btn.gold:active:not(:disabled){box-shadow:0 1px 0 #ffffff55 inset,0 1px 0 var(--gold-d),0 3px 8px #FFB02030}
+html.v2 .btn.ghost,html.v2 .qsbtn,html.v2 .pickbox>.bkr .btn,html.v2 #pkx{box-shadow:0 3px 0 #05060c,0 0 0 0 transparent}
+html.v2 .btn.ghost:active:not(:disabled),html.v2 .qsbtn:active,html.v2 #pkx:active{transform:translateY(2px);box-shadow:0 1px 0 #05060c}
+html.v2 .btn:disabled{box-shadow:0 3px 0 #0a0b12;transform:none}
+html.v2 .dbtn{box-shadow:0 4px 0 #3a43b8,0 8px 18px #5865F238!important;transition:transform .1s var(--ease)}
+html.v2 .dbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #3a43b8!important}
+
+/* ---- tuiles en relief ---- */
+html.v2 .hs,html.v2 .ctile,html.v2 .hsteps li,html.v2 .shop .pk,html.v2 .wheelpk{box-shadow:0 1px 0 #ffffff08 inset,0 4px 0 #07080e,0 12px 24px #0005}
+html.v2 button.hs:active,html.v2 .ctile:active,html.v2 .shop .pk:active{transform:translateY(2px) scale(.99);box-shadow:0 1px 0 #ffffff08 inset,0 1px 0 #07080e,0 6px 12px #0005}
+
+/* ---- accueil : éventail de cartes en 3D ---- */
+html.v2 .fanw{perspective:1100px;perspective-origin:50% 40%}
+html.v2 .fanw>.fan{transform-style:preserve-3d}
+@media (prefers-reduced-motion:no-preference){
+ html.v2 .fanw{animation:none}
+ html.v2 .fanw .fan{animation:v2sway 7s ease-in-out infinite}
+ html.v2 .fanw .f1{animation-delay:-2.3s}html.v2 .fanw .f2{animation-delay:-4.6s}
+}
+@keyframes v2sway{0%,100%{translate:0 0;rotate:y -6deg}50%{translate:0 -10px;rotate:y 6deg}}
+
+/* ---- résumé du pack : arrivée en 3D ---- */
+html.v2 .sum{perspective:900px}
+@media (prefers-reduced-motion:no-preference){html.v2 .sum .sw{animation:v2flipin .45s var(--ease) both}}
+html.v2 .sum .sw:nth-child(2){animation-delay:.05s}html.v2 .sum .sw:nth-child(3){animation-delay:.1s}html.v2 .sum .sw:nth-child(4){animation-delay:.15s}html.v2 .sum .sw:nth-child(5){animation-delay:.2s}
+@keyframes v2flipin{from{opacity:0;transform:rotateY(-70deg) translateY(16px) scale(.9)}}
+
+/* ---- inclinaison 3D aussi au toucher (pendant l'appui) ---- */
+html.v2 .tilt{transform:perspective(700px) rotateX(var(--trx,0deg)) rotateY(var(--try,0deg)) scale(1.04);transition:transform .08s linear;z-index:3}
+html.v2 .tilt-out{transition:transform .4s var(--ease)}
+html.v2 .card .v2glare{position:absolute;inset:0;z-index:9;pointer-events:none;border-radius:inherit;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),#ffffff40,transparent 55%);opacity:0;transition:opacity .2s;mix-blend-mode:screen}
+html.v2 .tilt .v2glare{opacity:1}
+
+/* ---- barre du bas : icône active qui rebondit ---- */
+@media(max-width:640px) and (prefers-reduced-motion:no-preference){
+ html.v2 #tabs button[aria-selected=true] .ti{animation:v2hop .35s var(--ease)}
+}
+@keyframes v2hop{40%{transform:translateY(-4px) scale(1.12)}}
+
+/* ---- fluidité ---- */
+html.v2 body{background-attachment:scroll}
+html.v2 .sec{content-visibility:auto;contain-intrinsic-size:auto 520px}
+html.v2 #main.enter>*{animation-duration:.32s}
+html.v2 #main.enter>*:nth-child(n+2){animation-delay:.03s}html.v2 #main.enter>*:nth-child(n+3){animation-delay:.06s}html.v2 #main.enter>*:nth-child(n+4){animation-delay:.09s}
+@media(max-width:640px){
+ html.v2 nav#tabs{backdrop-filter:none;-webkit-backdrop-filter:none;background:#0E0F18}
+ html.v2 .over{backdrop-filter:none;-webkit-backdrop-filter:none;background:#05060Cf2}
+ html.v2 .card{box-shadow:0 6px 14px #0007}
+ html.v2 .big{text-shadow:0 1px 0 #d9dbe6,0 2px 0 #9599ad,0 3px 0 #73778d,0 8px 16px #000b}
+ html.v2 .big em{text-shadow:0 1px 0 #ff9fd3,0 2px 0 #c13f84,0 3px 0 #9b2e69,0 8px 16px #FF5FB840}
+}
+html.v2 .big{font-weight:600;letter-spacing:-.025em}
+html.v2 main h2,html.v2 .shhead h2,html.v2 .hsh h3,html.v2 .mhead h2,html.v2 .sec h3{font-weight:600;letter-spacing:-.02em}
+html.v2 .hs b,html.v2 .ctile b,html.v2 .pkp,html.v2 .purse,html.v2 .logo{font-weight:600;letter-spacing:-.02em}
+@media(max-width:640px){
+ html.v2 .logo{font-size:0;gap:0}
+ html.v2 header{flex-wrap:nowrap}
+ html.v2 .purse{font-size:13px;padding:0 10px}
+ html.v2 .big{font-size:31px;line-height:1.1}
+ html.v2 .hsteps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin:0 -14px;padding:0 14px 6px;scrollbar-width:none}
+ html.v2 .hsteps::-webkit-scrollbar{display:none}
+ html.v2 .hsteps li{flex:0 0 76%;scroll-snap-align:center}
+ html.v2 .hsh{flex-direction:column;align-items:flex-start;gap:2px}
+ html.v2 .hsh h3{font-size:19px}
+ html.v2 main h2,html.v2 .shhead h2,html.v2 .mhead h2{font-size:21px}
+}
+html.v2 input.tn{min-height:0!important;height:auto;padding:2px 0!important;background:transparent!important;border:0!important;border-bottom:1px dashed #1a103366!important;border-radius:0!important;color:#1a1033!important;box-shadow:none!important;text-align:center;font-weight:800;font:800 10.5px/1.2 "Inter",sans-serif!important;letter-spacing:0!important;text-overflow:ellipsis}
+html.v2 main#main{min-height:calc(100vh - 260px)}
+@media(max-width:640px){html.v2 .trow .tl{flex-basis:88px;padding:4px}}
+@media(max-width:640px){html.v2 .sum .sw{flex:0 1 calc((100% - 20px)/3)}}
