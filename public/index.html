@@ -957,8 +957,10 @@ function rHome(){
  $('main').innerHTML=
  '<section class="hx"><div class="hx-l"><div class="v2b"><b>V3</b> '+NW.length+' nouvelles cartes</div><h2 class="big">Collectionne les <em>légendes</em> de l\'edit</h2>'+
  '<p class="lead">Le jeu de cartes de la scène Fortnite : éditeurs, mappeurs, influenceurs, Creative Warriors, Buildfighters et esport, du Commun au Mythique.</p>'+
- '<div class="hpack"><div class="hring">'+ring()+'</div><div class="hpk-r"><div class="hpk-t"><b>'+(S.stock>0?S.stock+' pack'+(S.stock>1?'s':'')+' gratuit'+(S.stock>1?'s':'')+' prêt'+(S.stock>1?'s':''):'Pas de pack pour l\'instant')+'</b><span class="mut sm">1 pack offert chaque heure · 10 en réserve max</span></div>'+pips()+
- '<div class="cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack</button>'+multiBtns()+'</div></div></div></div>'+
+ '<div class="hpack"><div class="hpk-art" aria-hidden="true">'+(S.stock>2?'<i class="hpk-b hpk-b2"></i>':'')+(S.stock>1?'<i class="hpk-b hpk-b1"></i>':'')+'<div class="hpk-pk'+(S.stock<1?' off':'')+'"><img src="img/logo.png" alt="" width="80" height="80"><b>PACK</b><span>5 cartes</span></div></div>'+
+ '<div class="hpk-r"><div class="hpk-k">Packs gratuits</div><div class="hpk-n"><b>'+S.stock+'</b><span>/ '+MAXSTOCK+'</span><em>'+(S.stock>0?'prêt'+(S.stock>1?'s':'')+' à ouvrir':'aucun pour l\'instant')+'</em></div>'+pips()+
+ '<div class="hpk-t2"><span>'+(S.stock>=MAXSTOCK?'Réserve pleine':'Prochain pack dans')+'</span><b id="cd">'+(S.stock>=MAXSTOCK?'—':cd())+'</b></div><div class="hbar"><i id="rfb" style="width:'+((S.stock>=MAXSTOCK?1:Math.min(1,(Date.now()-S.last)/HOUR))*100).toFixed(1)+'%"></i></div></div>'+
+ '<div class="hpk-cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>Ouvrir un pack</button>'+multiBtns()+'</div></div></div>'+
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i,{isNew:true})+'</div>'}).join('')+'</div></section>'+
  '<section class="hstats"><button class="hs" data-t="col"><i>'+ICO.col+'</i><span><b>'+owned+' <small>/ '+TOT(S.col)+'</small></b><em>cartes trouvées</em></span></button><button class="hs hst" data-t="col"><i>'+ICO.star+'</i><span><b>'+holoCount()+' <small>/ '+TOT(S.col)+'</small></b><em>cartes Holo</em></span></button><div class="hs"><i>'+ICO.pk+'</i><span><b>'+S.opened+'</b><em>packs ouverts</em></span></div><button class="hs" data-t="shop"><i>'+ICO.coin+'</i><span><b>'+fmt(S.money)+'</b><em>'+CUR+'</em></span></button></section>'+
  '<div class="tick"><div class="track" style="animation-duration:'+Math.max(25,tkIds.length*3)+'s">'+names+names+names+names+'</div></div>'+
@@ -2281,7 +2283,7 @@ boot();
 setInterval(function(){if(!document.hidden)doPing()},60000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)doPing()});
 setInterval(function(){if(!S||$('ov').hidden===false)return;var old=S.stock;regen();if(S.stock!==old){render();return}
- var el=$('cd');if(el&&S.stock<MAXSTOCK){el.textContent=cd();var rf=$('rf');if(rf){var C=2*Math.PI*44;rf.setAttribute('stroke-dashoffset',C*(1-Math.min(1,(Date.now()-S.last)/HOUR)))}}},1000);
+ var el=$('cd');if(el&&S.stock<MAXSTOCK){el.textContent=cd();var rf=$('rf');if(rf){var C=2*Math.PI*44;rf.setAttribute('stroke-dashoffset',C*(1-Math.min(1,(Date.now()-S.last)/HOUR)))};var rfb=$('rfb');if(rfb)rfb.style.width=(Math.min(1,(Date.now()-S.last)/HOUR)*100).toFixed(1)+'%'}},1000);
 /* flèche retour en haut de chaque fenêtre (plus besoin de descendre pour fermer) */
 try{new MutationObserver(function(ms){ms.forEach(function(m){[].forEach.call(m.addedNodes,function(n){
  if(n.nodeType!==1||!n.classList||!n.classList.contains('pickov'))return;
