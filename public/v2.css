@@ -908,3 +908,16 @@ html.v2 .wpk .spk{width:96px;height:134px}
 html.v2 .wpk .spk img{width:46px;height:46px}
 html.v2 .wpk .spk span{font-size:11px;letter-spacing:.06em}
 html.v2 .wpbox h2{text-align:center}
+/* fenêtre de récompenses : défilement fiable sur téléphone, titres compacts */
+.rwov{display:block;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:calc(20px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px))}
+.rwbox{max-height:none;overflow:visible;margin:0 auto}
+.rwsec .rwgrid:has(.rwt){display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.rwit:has(.rwt){width:auto}
+.rwit:has(.rwt) em{display:none}
+.rwt{width:100%;height:auto;min-height:64px;flex-direction:row;justify-content:flex-start;gap:10px;padding:10px 12px;border-radius:12px;text-align:left}
+.rwt span{display:none}
+.rwt::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.rwt b{font-size:17px;overflow-wrap:normal;word-break:normal;hyphens:auto}
+.rwsec .rwgrid:has(.rwt){display:flex;flex-wrap:wrap;justify-content:center}
+.rwit:has(.rwt){flex:1 1 140px;max-width:220px}
+.rwt{justify-content:center}
