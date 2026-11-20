@@ -164,10 +164,10 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
     // vente rapide : 1 normale gardée, et les Holo en double vendues au prix x SELL_MULT (une Holo gardée)
     GM.addCards(S2, [i, i, i], [true, false, false]);   // 2 Holo + 3 normales
     assert.strictEqual(GM.sellAll(S2, cards, null), 2 * C.RAR[3].v + C.RAR[3].v * C.HOLO.SELL_MULT); assert.strictEqual(S2.col[i], 1 + 1); assert.strictEqual(S2.holo[i], 1);
-    assert.throws(() => GM.sellMany(S2, cards, [[i, 2]]), /une Holo est toujours gardée/);
+    assert.throws(() => GM.sellMany(S2, cards, [[i, 2]]), /normaux/);
     { const S4 = GM.normalizeState({}, 0); GM.addCards(S4, [i, i, i], [true, true, false]);   // 1 normale + 2 Holo -> 2 vendables
-      assert.throws(() => GM.sellMany(S4, cards, [[i, 3]]), /Holo/);
-      const r4 = GM.sellMany(S4, cards, [[i, 2]]); assert.strictEqual(r4.gain, C.RAR[3].v + C.RAR[3].v * C.HOLO.SELL_MULT); assert.strictEqual(S4.col[i], 1); assert.strictEqual(S4.holo[i], 1); }
+      assert.throws(() => GM.sellMany(S4, cards, [[i, 3, 2]]), /Holo/); assert.throws(() => GM.sellMany(S4, cards, [[i, 2]]), /normaux/);
+      const r4 = GM.sellMany(S4, cards, [[i, 2, 1]]); assert.strictEqual(r4.gain, C.RAR[3].v + C.RAR[3].v * C.HOLO.SELL_MULT); assert.strictEqual(S4.col[i], 1); assert.strictEqual(S4.holo[i], 1); }
     assert.throws(() => GM.sellOne(S2, cards, i), /doublon/);
     const S3 = GM.normalizeState({}, 0); GM.addCards(S3, [i], [true]);
     assert.throws(() => GM.releaseCard(S3, i), /Holo/);   // une Holo seule ne se met pas au marché / en échange
