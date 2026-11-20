@@ -141,7 +141,7 @@ html.v2 .prog>i,html.v2 .prog i{display:block;height:100%;border-radius:999px;ba
 /* interrupteurs */
 html.v2 .sw input{background:var(--well);border:1px solid var(--line)}
 html.v2 .sw input:checked{background:var(--ok)}
-html.v2 .setrow:has(#adeco){display:none!important}
+
 
 /* ---------- ACCUEIL ---------- */
 html.v2 .hx{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:36px;align-items:center;padding:10px 0 30px}
@@ -943,3 +943,126 @@ html.v2 .over .sum .card{font-size:11px}
 html.v2 .sum .sw:only-child{flex:0 1 200px}
 html.v2 .sum .card{aspect-ratio:5/7;height:auto}
 @media(max-width:640px){html.v2 .sum .sw{flex:0 0 calc((100% - 20px)/3)!important}html.v2 .sum{gap:10px}}
+
+/* =====================================================================
+   THÈME CLAIR (V2)
+   ===================================================================== */
+html.v2 body.light{--fg:#0E1630;--fg2:#33405E;--mut:#5E6A87;--line:#D5DCEA;--line2:#C3CCDF;--well:#EEF2F9;
+ color:#0E1630;background:#EEF2F8;background-image:radial-gradient(1100px 520px at 50% -180px,#DCE6FF 0%,transparent 70%)}
+html.v2 body.light :is(h1,h2,h3,h4,.disp,.phead h1,.hpk-n b,.hs b,.ctile b,.lbme-s b,.lbl-h b,.val2 b,.who2 b,.rwbox h2,.lbd summary,.mrow .mn,.shop .pk h3,.wheelpk h3,.tcard b){color:#0E1630;text-shadow:none}
+html.v2 body.light .big{color:#0E1630;text-shadow:0 1px 0 #C9D3EA,0 2px 0 #B6C2DE,0 3px 0 #A3B1D2,0 12px 24px #0E163022}
+html.v2 body.light .big em{color:#C98A00;-webkit-text-fill-color:#C98A00;text-shadow:0 1px 0 #F2D27A,0 2px 0 #E2B84A,0 3px 0 #C99A2C,0 12px 24px #C98A0022}
+html.v2 body.light :is(.lead,.hsh p,.phead p,.md,.hs em,.pkf,.lbd-b,.rwhint,.mut){color:#5E6A87}
+html.v2 body.light :is(.panel,.hpack,.hs,.hsteps li,.ctile,.shop .pk,.wheelpk,.mrow,.lbme,.lbl,.lbd,.tcard,.wpk,.pickbox,.modal,.sheet,.dlg,.rwbox,.mshp,.fbody){
+ background:#FFFFFF;border-color:#D5DCEA;color:#0E1630;box-shadow:0 1px 0 #ffffff inset,0 8px 24px -10px #1B2A5533,0 1px 3px #1B2A551a}
+html.v2 body.light .ctile{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 12%,#fff),#fff 70%)}
+html.v2 body.light :is(.shop .pk,.wheelpk,.wpk){background:linear-gradient(180deg,color-mix(in srgb,var(--c,#EDB72F) 12%,#fff),#fff 70%)}
+html.v2 body.light .mrow.mready{background:linear-gradient(180deg,#E6FBEF,#fff);border-color:#7AD9A3}
+html.v2 body.light .lbme{background:linear-gradient(180deg,#FFF7DE,#fff)}
+html.v2 body.light :is(.hs i,.lbme-r,.lbrw div,.mring b,.lbgap2,.tick){background:#F2F5FB;border-color:#D5DCEA}
+html.v2 body.light .mring b{color:#0E1630}
+html.v2 body.light .tick .track span{color:#33405E!important}
+html.v2 body.light :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea,.inp){background:#fff;border-color:#C3CCDF;color:#0E1630}
+html.v2 body.light :is(.prog,.lb,.secbar,.hbar,.ctile>i){background:#E3E8F2;box-shadow:none}
+html.v2 body.light :is(.btn.ghost,.qsbtn,#pkx,.pickbox>.bkr .btn){background:#fff;color:#0E1630;border:1px solid #C3CCDF;box-shadow:0 2px 0 #C3CCDF}
+html.v2 body.light .btn:disabled{background:#E7ECF4;color:#8A95AE;border-color:#D5DCEA}
+html.v2 body.light :is(.fl button,.fl.msub button){background:#fff;border-color:#D5DCEA;color:#33405E}
+html.v2 body.light .fl button.on{background:#0E1630;color:#fff;border-color:#0E1630}
+html.v2 body.light #main .fl.subnav{background:#E7ECF4;border-color:#D5DCEA}
+html.v2 body.light #main .fl.subnav button{color:#5E6A87}
+html.v2 body.light #main .fl.subnav button.on{background:#fff;color:#0E1630;box-shadow:0 1px 3px #1B2A5522,inset 0 -2px 0 #EDB72F}
+html.v2 body.light nav#tabs::before{background:#FFFFFFf2;border-bottom-color:#D5DCEA}
+html.v2 body.light #tabs button{color:#5E6A87;text-shadow:none}
+html.v2 body.light #tabs button[aria-selected=true]{color:#0E1630}
+html.v2 body.light :is(.mute,.bell,.supb,.purse){background:#fff!important;border-color:#D5DCEA!important;color:#0E1630!important}
+html.v2 body.light .logo{color:#0E1630}
+html.v2 body.light .lbr2{color:#0E1630;border-bottom-color:#EEF1F7}
+html.v2 body.light .lbr2.me{background:linear-gradient(90deg,#FFF3C9,transparent 70%)}
+html.v2 body.light .lbl-c{border-color:#D5DCEA}
+html.v2 body.light .ft2{background:#E4E9F3;border-color:#D5DCEA}
+html.v2 body.light .ft2-c a,html.v2 body.light .ft2-c h4,html.v2 body.light .ft2-b{color:#0E1630;-webkit-text-fill-color:#0E1630}
+html.v2 body.light .over,html.v2 body.light .rwov{background:#0E1630d9}
+html.v2 body.light .over :is(h1,h2,h3,.hdr,.hint){color:#fff}
+html.v2 body.light .card :is(h1,h2,h3,.nm){color:#fff}
+html.v2 body.light .item .pst{color:#5E6A87}
+@media(max-width:640px){
+ html.v2 body.light nav#tabs{background:#FFFFFF;border-top-color:#D5DCEA}
+ html.v2 body.light #tabs button[aria-selected=true],html.v2 body.light #tabs .tmore[aria-selected=true]{background:#FFF3C9;color:#9A6A00;box-shadow:inset 0 2px 0 #EDB72F}
+ html.v2 body.light #tabs .tmore{color:#5E6A87;text-shadow:none}
+ html.v2 body.light .mshp button{background:#F2F5FB;border-color:#D5DCEA;color:#0E1630;text-shadow:none}
+}
+
+/* =====================================================================
+   THÈME DE NOËL (V2) — body.v2noel, activable dans le compte
+   ===================================================================== */
+html.v2 body.v2noel{--xr:#D7263D;--xr2:#A3132A;--xg:#1F8A5B;--xs:#F4F7FF}
+/* ciel d'hiver + aurores */
+html.v2 body.v2noel:not(.light){background-color:#06101F;background-image:
+ radial-gradient(700px 360px at 12% -60px,#1F8A5B33,transparent 70%),
+ radial-gradient(700px 360px at 88% -60px,#D7263D2e,transparent 70%),
+ linear-gradient(180deg,#0B1A33 0,#081326 700px,#060E1C 1600px)}
+/* neige : 3 couches qui tombent à des vitesses différentes */
+html.v2 body.v2noel::before,html.v2 body.v2noel::after{content:"";position:fixed;inset:-100vh 0 0;z-index:3;pointer-events:none;
+ background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 140px 80px,#ffffffcc,transparent),radial-gradient(1.5px 1.5px at 90px 160px,#fff,transparent),radial-gradient(2.5px 2.5px at 200px 120px,#ffffffdd,transparent),radial-gradient(1.5px 1.5px at 260px 40px,#fff,transparent);
+ background-size:280px 200px;opacity:.75;animation:xsnow 14s linear infinite}
+html.v2 body.v2noel::after{background-size:420px 300px;opacity:.45;filter:blur(1px);animation-duration:24s}
+html.v2 body.v2noel.light::before,html.v2 body.v2noel.light::after{background-image:radial-gradient(2px 2px at 20px 30px,#9FB4E0,transparent),radial-gradient(2px 2px at 140px 80px,#B7C7EA,transparent),radial-gradient(2px 2px at 200px 120px,#9FB4E0,transparent);opacity:.6}
+@keyframes xsnow{to{transform:translateY(100vh)}}
+@media (prefers-reduced-motion:reduce){html.v2 body.v2noel::before,html.v2 body.v2noel::after{animation:none}}
+/* guirlande lumineuse sous la navigation */
+html.v2 body.v2noel nav#tabs::after{content:"";position:absolute;left:0;right:0;bottom:-14px;height:14px;pointer-events:none;
+ background:
+  radial-gradient(circle at 12px 9px,#FF4D5E 0 3.5px,#FF4D5E66 4.5px,transparent 8px),
+  radial-gradient(circle at 42px 9px,#FFD24A 0 3.5px,#FFD24A66 4.5px,transparent 8px),
+  radial-gradient(circle at 72px 9px,#3DF08C 0 3.5px,#3DF08C66 4.5px,transparent 8px),
+  radial-gradient(circle at 102px 9px,#5CB8FF 0 3.5px,#5CB8FF66 4.5px,transparent 8px),
+  linear-gradient(#2A3A2E,#2A3A2E) 0 3px/100% 1.5px no-repeat;
+ background-size:120px 14px,120px 14px,120px 14px,120px 14px,100% 1.5px;background-repeat:repeat-x;animation:xtw 2.4s steps(2) infinite}
+@keyframes xtw{50%{filter:brightness(.55) saturate(.7)}}
+@media(max-width:640px){html.v2 body.v2noel nav#tabs::after{display:none}html.v2 body.v2noel header::after{content:"";position:absolute;left:0;right:0;bottom:-12px;height:14px;pointer-events:none;background:radial-gradient(circle at 12px 9px,#FF4D5E 0 3px,#FF4D5E66 4px,transparent 7px),radial-gradient(circle at 42px 9px,#FFD24A 0 3px,#FFD24A66 4px,transparent 7px),radial-gradient(circle at 72px 9px,#3DF08C 0 3px,#3DF08C66 4px,transparent 7px),radial-gradient(circle at 102px 9px,#5CB8FF 0 3px,#5CB8FF66 4px,transparent 7px);background-size:120px 14px;background-repeat:repeat-x;animation:xtw 2.4s steps(2) infinite}}
+/* bonnet sur le logo */
+html.v2 body.v2noel .logo{position:relative}
+html.v2 body.v2noel .logo::before{content:"";position:absolute;left:-10px;top:-16px;width:38px;height:29px;background:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2048%22%3E%3Cpath%20d%3D%22M8%2038%20C14%2018%2030%204%2046%208%20C54%2010%2058%2018%2060%2026%20L52%2028%20C50%2020%2044%2016%2038%2018%20C30%2020%2024%2030%2022%2038Z%22%20fill%3D%22%23D7263D%22%2F%3E%3Cpath%20d%3D%22M8%2038%20C14%2018%2030%204%2046%208%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff55%22%20stroke-width%3D%222%22%2F%3E%3Crect%20x%3D%222%22%20y%3D%2234%22%20width%3D%2234%22%20height%3D%2210%22%20rx%3D%225%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2258%22%20cy%3D%2230%22%20r%3D%226%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E') center/contain no-repeat;transform:rotate(-18deg);z-index:2;filter:drop-shadow(0 2px 2px #0007)}
+/* neige posée sur les blocs principaux */
+html.v2 body.v2noel :is(.hpack,.lbme,.phead+main .panel:first-child,.shop .pk,.wheelpk){position:relative;overflow:visible}
+html.v2 body.v2noel :is(.hpack,.lbme,.shop .pk,.wheelpk)::after{content:"";position:absolute;left:10px;right:10px;top:-7px;height:14px;pointer-events:none;border-radius:10px 10px 6px 6px;z-index:2;
+ background:radial-gradient(14px 10px at 10% 100%,#fff 60%,transparent 62%),radial-gradient(18px 12px at 30% 100%,#fff 60%,transparent 62%),radial-gradient(16px 11px at 55% 100%,#fff 60%,transparent 62%),radial-gradient(20px 12px at 78% 100%,#fff 60%,transparent 62%),radial-gradient(14px 10px at 95% 100%,#fff 60%,transparent 62%),linear-gradient(#fff,#E8EEFA);
+ background-size:100% 100%,100% 100%,100% 100%,100% 100%,100% 100%,100% 7px;background-repeat:no-repeat;background-position:0 0,0 0,0 0,0 0,0 0,0 0;
+ filter:drop-shadow(0 2px 2px #0005);clip-path:inset(0 0 0 0 round 8px)}
+/* bouton principal façon sucre d'orge */
+html.v2 body.v2noel #hgo{background:repeating-linear-gradient(-45deg,#E8283F 0 14px,#C81E33 14px 28px);color:#fff;border:1px solid #ffffff33;box-shadow:inset 0 1px 0 #ffffff66,0 3px 0 #7A0F1E,0 10px 24px #D7263D44;text-shadow:0 1px 2px #0007}
+html.v2 body.v2noel .hpk-cta .multi .btn{background:linear-gradient(180deg,#2FAE77,#1F8A5B);color:#fff;box-shadow:inset 0 1px 0 #ffffff55,0 3px 0 #0E4E33;text-shadow:0 1px 2px #0006}
+/* pack de l'accueil emballé comme un cadeau */
+html.v2 body.v2noel .hpk-pk{background:
+  linear-gradient(90deg,transparent 44%,#FFD24A 44% 56%,transparent 56%),
+  linear-gradient(0deg,transparent 58%,#FFD24A 58% 66%,transparent 66%),
+  linear-gradient(160deg,#E8283F 0%,#A3132A 60%,#5E0A18 100%)}
+html.v2 body.v2noel .hpk-pk::before{content:"";position:absolute;top:56%;left:50%;width:44px;height:26px;translate:-50% -60%;z-index:2;
+ background:radial-gradient(ellipse 11px 9px at 30% 50%,transparent 45%,#FFD24A 47% 70%,transparent 72%),radial-gradient(ellipse 11px 9px at 70% 50%,transparent 45%,#FFD24A 47% 70%,transparent 72%),radial-gradient(circle 5px at 50% 50%,#F2B705 90%,transparent 100%)}
+html.v2 body.v2noel .hpk-pk img{position:relative;z-index:3}
+html.v2 body.v2noel .hpk-b{background:linear-gradient(160deg,#1F8A5B,#0E4E33);border-color:#3DF08C55}
+/* titres et barre active */
+html.v2 body.v2noel .phead h1::after{content:" ✦";color:#FFD24A;font-size:.6em;vertical-align:.35em}
+html.v2 body.v2noel #tabs button[aria-selected=true]{box-shadow:inset 0 -2px 0 #E8283F}
+@media(max-width:640px){html.v2 body.v2noel #tabs button[aria-selected=true],html.v2 body.v2noel #tabs .tmore[aria-selected=true]{color:#FF5A6E;box-shadow:inset 0 2px 0 #E8283F;background:#2A1220}}
+html.v2 body.v2noel.light #tabs button[aria-selected=true]{background:#FFE3E7}
+html.v2 body.v2noel .tick{background:repeating-linear-gradient(-45deg,#0F1B33 0 18px,#11203B 18px 36px);border-color:#E8283F55}
+html.v2 body.v2noel.light .tick{background:repeating-linear-gradient(-45deg,#FFF 0 18px,#FFF1F3 18px 36px)}
+html.v2 body.v2noel .tick .nw{background:#E8283F;color:#fff}
+/* clair : éléments encore blancs */
+html.v2 body.light .v2b{background:#fff;color:#0E1630;border-color:#D5DCEA}
+html.v2 body.light #main .fl button:not(.on){background:#fff!important;color:#33405E!important;border:1px solid #D5DCEA!important}
+html.v2 body.light #main .fl:not(.subnav) button.on{background:#0E1630!important;color:#fff!important}
+html.v2 body.light #main .fl.subnav button.on{background:#fff!important;color:#0E1630!important}
+html.v2 body.light #main .fl.subnav button:not(.on){background:transparent!important;border:0!important}
+html.v2 body.light :is(.hcn,.sech,.ctH,.hs.hst i){color:#0A7F96!important}
+html.v2 body.light :is(.secn,.secp,.mtag){background:#fff;color:#33405E;border-color:#D5DCEA}
+html.v2 body.light #main>.bar>b,html.v2 body.light .sec h3{color:#0E1630;text-shadow:none}
+html.v2 body.light .tcard{color:#0E1630}
+html.v2 body.light .lbme-r b{color:#B07A00}
+html.v2 body.light .lbme-w{background:#FFF6D6;border-color:#F1D27A;color:#33405E}
+html.v2 body.light .lbme-w b,html.v2 body.light .rw2,html.v2 body.light .pkp,html.v2 body.light .hpk-t2 b{color:#B07A00}
+html.v2 body.light .hpk-n em{color:#178A4C}
+@media(max-width:640px){html.v2 body.light #tabs .tmore,html.v2 body.light #tabs button{color:#5E6A87!important}html.v2 body.light #tabs button[aria-selected=true]{color:#9A6A00!important}html.v2 body.light.v2noel #tabs button[aria-selected=true]{color:#C81E33!important;background:#FFE3E7}}
+
+html.v2 body.v2noel :is(.hpack,.lbme,.shop .pk,.wheelpk)::after{background:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%2016%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%209%20Q6%202%2014%205%20Q22%200%2032%204%20Q40%201%2048%205%20Q58%200%2070%204%20Q80%202%2088%205%20Q98%200%20110%204%20Q120%201%20130%205%20Q140%200%20152%204%20Q162%202%20172%205%20Q182%200%20192%204%20Q197%203%20200%206%20L200%209%20Q190%2012%20180%2010%20Q170%2015%20160%2011%20Q150%2014%20140%2010%20Q128%2015%20118%2011%20Q108%2013%2098%2010%20Q86%2015%2076%2011%20Q66%2013%2056%2010%20Q44%2015%2034%2011%20Q24%2014%2014%2010%20Q6%2013%200%2011%20Z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E') center/100% 100% no-repeat!important;height:16px;top:-9px;left:6px;right:6px;clip-path:none;border-radius:0;filter:drop-shadow(0 2px 2px #0006)}

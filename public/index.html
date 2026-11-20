@@ -940,7 +940,7 @@ function pips(){var h='';for(var i=0;i<MAXSTOCK;i++)h+='<i class="'+(i<S.stock?'
 function applyTheme(){var l=!!(S&&S.light);document.body.classList.toggle('light',l);try{localStorage.setItem('el_light',l?'1':'0')}catch(e){}}
 function isV2(){return document.documentElement.classList.contains('v2')}
 window.elApplyDeco=function(){applyDeco();noelBanner()};
-function applyDeco(){var on=!(S&&S.nodeco)&&!isV2();document.body.classList.toggle('noel',on);try{localStorage.setItem('el_nodeco',on?'0':'1')}catch(e){}}
+function applyDeco(){var on0=!(S&&S.nodeco),on=on0&&!isV2();document.body.classList.toggle('noel',on);document.body.classList.toggle('v2noel',on0&&isV2());try{localStorage.setItem('el_nodeco',on?'0':'1')}catch(e){}}
 function noelBanner(){var m=$('main'),o=$('nban');if(o)o.remove();if(!m||tab!=='home'||(S&&S.nodeco)||isV2())return;var d=xmasDays(),e=document.createElement('div');e.id='nban';e.className='nban';e.innerHTML='<b>🎄 Joyeux Noël, Légendes ! 🎁</b><span>'+(d?'Plus que <b>'+d+' jour'+(d>1?'s':'')+'</b> avant Noël':'C\'est Noël aujourd\'hui !')+'</span><span class="nbh">Le décor te dérange ? Tu peux remettre comme avant dans Paramètres du compte (👤).</span>';m.insertBefore(e,m.firstChild)}
 var DICO='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>';
 function rHome(){
