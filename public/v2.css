@@ -1240,3 +1240,22 @@ html.v2 body.light .lbr3 .ch.gn{background:#FFF6D6;border-color:#EDCB6A;color:#8
 html.v2 .lbr2.lbr3{grid-template-areas:"rk av who val" "rk av st val"}
 html.v2 .lbr3 .ch{gap:0}
 @media(max-width:640px){html.v2 .lbr2.lbr3{grid-template-areas:"rk av who val" "st st st st"}}
+/* classement compact : stats en une ligne sous le pseudo, pas de gain (il est dans « Récompenses du top 20 ») */
+html.v2 .lbr2.lbr3,html.v2 .lbr2.lbr3{grid-template-columns:30px 40px minmax(0,1fr) auto;grid-template-areas:"rk av who val";row-gap:0;padding:10px 14px}
+html.v2 .lbr3 .who2{gap:2px}
+html.v2 .lbr3 .who2 .lbs{display:flex;flex-wrap:nowrap;gap:5px;margin-top:3px;overflow:hidden}
+html.v2 .lbr3 .ch{padding:1px 6px;font-size:11px;line-height:1.5}
+html.v2 .lbr3 .ch b{font-size:12.5px}
+@media(max-width:640px){
+ html.v2 .lbr2.lbr3{grid-template-columns:24px 34px minmax(0,1fr) auto;grid-template-areas:"rk av who val";column-gap:9px;padding:10px 10px}
+ html.v2 .lbr3>.uav,html.v2 .lbr3>img,html.v2 .lbr3>span:nth-child(2){width:34px;height:34px}
+ html.v2 .lbr3 .who2 b{font-size:15px}
+ html.v2 .lbr3 .val2 b{font-size:19px}
+ html.v2 .lbr3 .ch{padding:1px 5px;font-size:10.5px}html.v2 .lbr3 .ch b{font-size:12px}
+ html.v2 .lbr3 .who2 .lbs{gap:4px}
+}
+@media(max-width:400px){html.v2 .lbr3 .ch:first-child{letter-spacing:-.01em}}
+html.v2 .lbr3 .who2{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+html.v2 .lbr3 .who2 .lbs{justify-content:flex-start;align-self:stretch;flex-wrap:wrap;overflow:visible;row-gap:4px}
+html.v2 .lbr3 .ch{border-radius:6px}
+html.v2 .lbr3 .who2 .lbs{padding-left:0!important;grid-area:auto;margin-left:0}
