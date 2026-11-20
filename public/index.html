@@ -1361,12 +1361,14 @@ function rBoard(){
    (me.hidden?'<p class="lbme-n">Tu es caché du classement (réglage dans ton compte).</p>':(!me.rank?'<p class="lbme-n">'+(isRuns?'Fais la map et entre ton code de fin pour apparaître ici.':'Ouvre un pack pour entrer au classement.')+'</p>':''))+'</div>';
   /* 2. la liste */
   var row=function(r){var rw=scope!=='friends'&&r.rank<=20?(BR[kind]||[])[r.rank-1]:null;
-   return '<button class="lbr2'+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+uav(r)+
-    '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+(isRuns?'':'<small class="lbst"><span>'+r.owned+'<i>/'+TOT()+'</i></span><span class="lbh">'+(r.holo||0)+'✨</span><span class="lbm">'+r.mythics+'M</span></small>')+'</span>'+
-    '<span class="val2"><b>'+(isRuns?r.runs:fmt(hasPts?(r.cscore||0):r.owned))+'</b><small>'+(isRuns?(r.runs>1?'runs':'run'):hasPts?'pts':'cartes')+'</small></span>'+
-    (rw?'<span class="rw2'+(rw.g?' g'+rw.g:'')+'" title="'+esc(brTxt(kind,r.rank))+'"><i></i>'+fmt(rw.c)+(rw.g?'<em>+ pack</em>':'')+'</span>':'<span class="rw2 none"></span>')+'</button>'};
+   var st=isRuns?'':'<i class="ch"><b>'+r.owned+'</b>&nbsp;/ '+TOT()+' cartes</i><i class="ch ho"><b>'+(r.holo||0)+'</b>&nbsp;Holo</i><i class="ch my"><b>'+r.mythics+'</b>&nbsp;Mythique'+(r.mythics>1?'s':'')+'</i>';
+   if(rw)st+='<i class="ch gn">Gain :&nbsp;<b>'+fmt(rw.c)+'</b>&nbsp;Coins'+(rw.g?' + pack '+({2:'Rare+',3:'Épique+',4:'Légendaire+'}[rw.g]||'Rare+'):'')+'</i>';
+   return '<button class="lbr2 lbr3'+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+uav(r)+
+    '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+'</span>'+
+    '<span class="val2"><b>'+(isRuns?r.runs:fmt(hasPts?(r.cscore||0):r.owned))+'</b><small>'+(isRuns?(r.runs>1?'runs':'run'):hasPts?'points':'cartes')+'</small></span>'+
+    (st?'<span class="lbs">'+st+'</span>':'')+'</button>'};
   h+='<div class="lbl"><div class="lbl-h"><b>'+(scope==='friends'?'Entre amis':(d.rows.length?'Top '+d.rows.length:'Top 20'))+'</b><span>'+(d.total?d.total+' joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':''):'')+'</span></div>'+
-   (scope!=='friends'?'<div class="lbl-c"><span>#</span><span>Joueur</span><span>'+(isRuns?'Runs':'Score')+'</span><span>Gain</span></div>':'')+
+   
    (d.rows.length?d.rows.map(row).join('')+(d.near?'<div class="lbgap2">Autour de toi</div>'+d.near.map(row).join(''):''):'<p class="mut center" style="padding:20px">'+(scope==='friends'?'Ajoute des amis (Communauté › Amis) pour les voir ici.':'Personne au classement pour l\'instant.')+'</p>')+'</div>';
   /* 3. infos repliées */
   if(scope!=='friends')h+='<details class="lbd"><summary>Récompenses du top 20</summary><div class="lbd-b"><div class="lbrw">'+[[1,'1er'],[2,'2e'],[3,'3e'],[4,'4e – 5e'],[6,'6e – 10e'],[11,'11e – 20e']].map(function(r){return '<div><span>'+r[1]+'</span><b>'+brTxt(kind,r[0])+'</b></div>'}).join('')+'</div><p>Versées automatiquement chaque lundi à minuit (heure de Paris).</p></div></details>';

@@ -1216,3 +1216,27 @@ html.v2 .item>.dupsl{align-self:stretch;width:auto}
 @keyframes v7in{from{opacity:0;transform:translateY(8px)}}
 @keyframes v7fade{from{opacity:0}}
 @keyframes v7box{from{opacity:0;transform:translateY(10px) scale(.98)}}
+/* ===== Classement : ligne lisible (nom + titre, points à droite, infos en pastilles dessous) ===== */
+html.v2 .lbr2.lbr3{grid-template-columns:30px 40px minmax(0,1fr) auto;grid-template-areas:"rk av who val" "rk av st st";column-gap:12px;row-gap:8px;padding:12px 14px;min-height:0;align-items:center}
+html.v2 .lbr3 .rk2{grid-area:rk;align-self:center}
+html.v2 .lbr3>.uav,html.v2 .lbr3>img,html.v2 .lbr3>span:nth-child(2){grid-area:av;width:40px;height:40px;align-self:center}
+html.v2 .lbr3 .who2{grid-area:who;gap:3px}
+html.v2 .lbr3 .who2 b{font-size:16px}
+html.v2 .lbr3 .who2 .ttl{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;line-height:1.2}
+html.v2 .lbr3 .val2{grid-area:val;align-self:center}
+html.v2 .lbr3 .val2 b{font-size:22px}
+html.v2 .lbr3 .lbs{grid-area:st;display:flex;flex-wrap:wrap;gap:6px}
+html.v2 .lbr3 .ch{display:inline-flex;align-items:baseline;gap:3px;padding:3px 8px;border-radius:999px;background:#0E1630;border:1px solid var(--line);font:500 11.5px "Inter",sans-serif;font-style:normal;color:var(--mut);white-space:nowrap}
+html.v2 .lbr3 .ch b{font:700 13px var(--fd);letter-spacing:.02em;color:#fff}
+html.v2 .lbr3 .ch.ho b{color:#8FE3FF}html.v2 .lbr3 .ch.my b{color:#FF6B9A}
+html.v2 .lbr3 .ch.gn{background:#2A2208;border-color:#EDB72F55;color:#E8C66A}html.v2 .lbr3 .ch.gn b{color:#FFD84A}
+html.v2 body.light .lbr3 .ch{background:#F2F5FB;border-color:#D5DCEA;color:#5A6580}html.v2 body.light .lbr3 .ch b{color:#0E1630}
+html.v2 body.light .lbr3 .ch.ho b{color:#0A7FB5}html.v2 body.light .lbr3 .ch.my b{color:#C21E5A}
+html.v2 body.light .lbr3 .ch.gn{background:#FFF6D6;border-color:#EDCB6A;color:#8A6400}html.v2 body.light .lbr3 .ch.gn b{color:#7A5200}
+@media(max-width:640px){html.v2 .lbr2.lbr3{grid-template-columns:26px 36px minmax(0,1fr) auto;column-gap:10px;padding:12px 10px}
+ html.v2 .lbr3>.uav,html.v2 .lbr3>img,html.v2 .lbr3>span:nth-child(2){width:36px;height:36px}
+ html.v2 .lbr2.lbr3{grid-template-areas:"rk av who val" "st st st st"}html.v2 .lbr3 .lbs{padding-left:72px}}
+@media(max-width:380px){html.v2 .lbr3 .lbs{padding-left:0}}
+html.v2 .lbr2.lbr3{grid-template-areas:"rk av who val" "rk av st val"}
+html.v2 .lbr3 .ch{gap:0}
+@media(max-width:640px){html.v2 .lbr2.lbr3{grid-template-areas:"rk av who val" "st st st st"}}
