@@ -1104,7 +1104,7 @@ function rShop(){var dv=dupValue();
  var wcols=WH.filter(function(w){return w.p>0}),wacc=0,wtot=wcols.reduce(function(t,w){return t+w.p},0)||1,wgrad=wcols.map(function(w){var a=wacc/wtot*360;wacc+=w.p;return w.c+' '+a.toFixed(1)+'deg '+(wacc/wtot*360).toFixed(1)+'deg'}).join(',');
  $('main').innerHTML='<div class="shhead"><div><h2>Boutique</h2><p class="mut" style="margin:4px 0 0">Les packs payants n\'utilisent pas ton stock gratuit.</p></div><div class="shbal"><span class="mut sm">Ton solde</span><b><i class="coin">C</i>'+fmt(S.money)+' '+CUR+'</b></div></div>'+
  '<div class="panel shsell"><div class="shsx"><b>Revends tes doublons</b><span class="mut sm">'+(dv?'Tu gardes un exemplaire de chaque carte (et une Holo), le reste est vendu.':'Tu n\'as aucun doublon à revendre pour l\'instant.')+'</span></div><button class="btn gold" id="shopsell"'+(dv?'':' disabled')+'>Revendre'+(dv?' · +'+fmt(dv)+' '+CUR:'')+'</button>'+exH()+'</div>'+
- '<div class="shop">'+PACKS.map(function(p,k){var col=HEX[p.g],m=miss(p.price);return '<div class="pk" style="--c:'+col+'"><div class="pkart"><div class="mini" style="--c:'+col+'"><b class="disp">'+['','','R+','É+','L+'][p.g]+'</b></div></div><h3>'+p.n+'</h3><ul class="pkf"><li>5 cartes</li><li>'+p.t+'</li></ul><div class="pkp">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(m?' disabled':'')+'>'+(m||'Acheter et ouvrir')+'</button></div>'}).join('')+'</div>'+
+ '<div class="shop">'+PACKS.map(function(p,k){var col=HEX[p.g],m=miss(p.price);return '<div class="pk" style="--c:'+col+'"><div class="pkart">'+packArt(col,['','','RARE+','ÉPIQUE+','LÉGENDAIRE+'][p.g],'garanti')+'</div><h3>'+p.n+'</h3><ul class="pkf"><li>5 cartes</li><li>'+p.t+'</li></ul><div class="pkp">'+fmt(p.price)+' '+CUR+'</div><button class="btn" data-b="'+k+'"'+(m?' disabled':'')+'>'+(m||'Acheter et ouvrir')+'</button></div>'}).join('')+'</div>'+
  '<div class="pk wheelpk"><div class="minw" style="background:conic-gradient('+wgrad+')"><i></i></div><div class="wtx"><h3>Roue de la chance</h3><p>Un tour sans code de map : packs, cartes, Coins… jusqu\'à une Mythique au choix.</p><p class="mut sm">Tu as un code de fin de map ? Il donne un tour gratuit dans l\'onglet Code.</p></div><div class="wact"><div class="pkp">'+fmt(SPIN_PRICE)+' '+CUR+'</div><button class="btn gold" id="shopwheel"'+(S.money<SPIN_PRICE?' disabled':'')+'>'+(miss(SPIN_PRICE)||'Tourner la roue')+'</button><button class="btn ghost sm" id="shopcode">J\'ai un code</button></div></div>';
  var sc=$('shopcode');if(sc)sc.onclick=function(){tab='code';render();scrollTo(0,0)};
  var sw=$('shopwheel');if(sw)twice(sw,function(){if(S.money<SPIN_PRICE||busy)return;autoPay=true;tab='code';render();scrollTo(0,0)},'Confirmer : '+fmt(SPIN_PRICE)+' '+CUR);
@@ -1241,13 +1241,20 @@ function pctTxt(p){return p<=0?'0 %':p<0.1?'moins de 0,1 %':String(p).replace('.
 function setMc(n){NOTIF.mc=n||0;tabs()}
 function loadMiss(cb,err){api('missions',{}).then(function(r){MISS=r;if(r.state)setState(r.state);setMc(r.mc);cb(r)}).catch(function(e){err(e)})}
 function rewardTxt(r){var a=[];(r.got.packs||[]).forEach(function(p){a.push(p.label)});(r.got.titles||[]).forEach(function(t){a.push('titre '+t.n)});return a.join(', ')}
+function packArt(col,lab,sub){return '<div class="spk" style="--c:'+col+'"><i class="spk-g"></i><img src="img/logo.png" alt="" width="64" height="64"><b>'+lab+'</b>'+(sub?'<span>'+sub+'</span>':'')+'</div>'}
+function rewardShow(packs,titles){var o=document.createElement('div');o.className='rwov';
+ var it=packs.map(function(m){var col=PKC[m.rw]||'#EDB72F',lab=String(m.rl||'').replace(/^pack\s*/i,'');return '<div class="rwit">'+(/carte/i.test(m.rl||'')?'<div class="spk spk-c" style="--c:'+col+'"><i class="spk-g"></i><b>?</b><span>carte</span></div>':packArt(col,lab,'pack'))+'<em style="color:'+col+'">'+esc(m.rl)+'</em></div>'}).join('')+
+  titles.map(function(t){var col=HEX[t.t]||'#EDB72F';return '<div class="rwit"><div class="rwt" style="--c:'+col+'"><span>Titre</span><b>'+esc(t.n)+'</b></div><em style="color:'+col+'">Nouveau titre</em></div>'}).join('');
+ o.innerHTML='<div class="rwbox" role="dialog" aria-label="Récompenses"><h2>Récompenses récupérées</h2><div class="rwgrid">'+it+'</div><p class="mut sm">'+(packs.length?'Tes packs t\'attendent dans tes packs en attente. ':'')+(titles.length?'Équipe ton titre dans Collection › Titres.':'')+'</p><div class="rwbtn">'+(titles.length?'<button class="btn ghost" data-rgo="tit">Voir mes titres</button>':'')+'<button class="btn" data-rok>Super !</button></div></div>';
+ document.body.appendChild(o);var close=function(){o.classList.add('out');setTimeout(function(){o.remove()},200)};
+ o.onclick=function(e){if(e.target===o||e.target.closest('[data-rok]'))close();var g=e.target.closest('[data-rgo]');if(g){close();tab='col';colSub='tit';render();scrollTo(0,0)}}}
 function doClaim(ids){
  // affichage immédiat : la réponse du serveur remplace ensuite l'état
  var rdy=MISS.packs.filter(function(m){return m.ready&&(!ids||ids.indexOf(m.id)>=0)}),rt=MISS.titles.filter(function(t){return t.ready&&(!ids||ids.indexOf(t.id)>=0)});
  if(!rdy.length&&!rt.length)return;
  rdy.forEach(function(m){m.ready=false;m.claimed=true});rt.forEach(function(t){t.ready=false;t.own=true});
  MISS.mc=Math.max(0,MISS.mc-rdy.length-rt.length);setMc(MISS.mc);sfx('coin');
- toast('Récupéré : '+rdy.map(function(m){return m.rl}).concat(rt.map(function(t){return 'titre '+t.n})).join(', ')+(rt.length?' · équipe-le dans Collection > Titres':'')+(rdy.length?' · packs dans tes packs en attente':''));paintMiss();
+ rewardShow(rdy,rt);paintMiss();
  api('claim',ids?{ids:ids}:{}).then(function(r){MISS=r;setState(r.state);setMc(r.mc);paintMiss();wpBadge()}).catch(function(e){toast(e.message);loadMiss(paintMiss,function(){})})}
 function missSubH(){return subnavH(MSUBS,missSub,'data-ms').replace(/(data-ms="tit"[^>]*>Titres)/,'$1')}
 function titleRow(t){

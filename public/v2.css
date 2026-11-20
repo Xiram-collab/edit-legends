@@ -835,3 +835,49 @@ html.v2 .tmcd{text-align:center}
  html.v2 .hs b{font-size:21px}
 }
 html.v2 .lbl-c span:last-child{text-align:right}
+
+/* =====================================================================
+   V3.6 — packs en vrai visuel, fenêtre de récompenses
+   ===================================================================== */
+.spk{--c:#3b9cff;position:relative;width:104px;height:146px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;overflow:hidden;
+ background:
+  repeating-linear-gradient(90deg,#ffffff24 0 2px,transparent 2px 6px) top/100% 8px no-repeat,
+  repeating-linear-gradient(90deg,#ffffff24 0 2px,transparent 2px 6px) bottom/100% 8px no-repeat,
+  radial-gradient(120% 70% at 50% 0,color-mix(in srgb,var(--c) 80%,#fff 20%) 0%,var(--c) 35%,color-mix(in srgb,var(--c) 45%,#050914) 100%);
+ border:1px solid color-mix(in srgb,var(--c) 60%,#fff 25%);
+ box-shadow:inset 0 1px 0 #ffffff80,inset 0 -3px 0 #00000055,0 18px 30px -10px #000d,0 0 26px color-mix(in srgb,var(--c) 45%,transparent);
+ transform:perspective(600px) rotateY(-14deg) rotateX(5deg);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.spk::before{content:"";position:absolute;inset:14px 8px;border-radius:8px;border:1px solid #ffffff33;pointer-events:none}
+.spk .spk-g{position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff55 47%,transparent 62%);background-size:260% 100%;background-position:130% 0;pointer-events:none}
+.spk img{width:54px;height:54px;border-radius:12px;box-shadow:0 6px 14px #0009;position:relative}
+.spk b{position:relative;font:700 15px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;color:#fff;text-shadow:0 2px 4px #0009;text-align:center;padding:0 6px}
+.spk span{position:relative;font:600 9.5px "Inter",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#ffffffcc}
+.spk-c b{font-size:44px}
+@media (prefers-reduced-motion:no-preference){.spk .spk-g{animation:v6foil 3.8s ease-in-out infinite}}
+@keyframes v6foil{0%,55%{background-position:130% 0}100%{background-position:-60% 0}}
+html.v2 .pkart{padding:12px 0 6px}
+html.v2 .shop .pk:hover .spk{transform:perspective(600px) rotateY(8deg) rotateX(3deg) translateY(-4px)}
+html.v2 .shop .pk .mini{display:none}
+@media(max-width:640px){html.v2 .shop .pk .spk{width:84px;height:118px}html.v2 .shop .pk .spk img{width:42px;height:42px}html.v2 .shop .pk .spk b{font-size:13px}html.v2 .shop .pk{grid-template-columns:100px minmax(0,1fr)}}
+
+/* fenêtre de récompenses */
+.rwov{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 40%,#14213Fee,#050914f5);animation:v6in .22s ease both}
+.rwov.out{animation:v6out .2s ease forwards}
+.rwbox{width:min(520px,100%);max-height:calc(100vh - 40px);overflow:auto;padding:22px 20px 18px;border-radius:22px;border:1px solid #33436A;background:linear-gradient(180deg,#1C2847,#121B31);box-shadow:0 30px 70px #000c;text-align:center;color:#fff;animation:v6pop .35s cubic-bezier(.2,.8,.2,1) both}
+.rwbox h2{margin:0 0 18px;font:700 26px "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.rwgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px 14px;margin-bottom:16px}
+.rwit{display:flex;flex-direction:column;align-items:center;gap:8px;width:118px;animation:v6card .5s cubic-bezier(.2,.8,.2,1) both}
+.rwit:nth-child(2){animation-delay:.08s}.rwit:nth-child(3){animation-delay:.16s}.rwit:nth-child(4){animation-delay:.24s}.rwit:nth-child(n+5){animation-delay:.3s}
+.rwit em{font:700 13px/1.15 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.05em;text-transform:uppercase;font-style:normal}
+.rwit .spk{transform:none}
+.rwt{width:118px;height:146px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;
+ background:radial-gradient(110% 70% at 50% 0,color-mix(in srgb,var(--c) 45%,#1C2847),#0E1630);border:1px solid var(--c);box-shadow:0 0 24px color-mix(in srgb,var(--c) 40%,transparent),inset 0 1px 0 #ffffff33}
+.rwt span{font:600 10px "Inter",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ffffffaa}
+.rwt b{font:700 21px/1.05 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase;color:var(--c);text-shadow:0 0 14px color-mix(in srgb,var(--c) 60%,transparent);overflow-wrap:anywhere}
+.rwbox>p{margin:0 0 16px}
+.rwbtn{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.rwbtn .btn{flex:1 1 140px}
+@keyframes v6in{from{opacity:0}}@keyframes v6out{to{opacity:0}}
+@keyframes v6pop{from{opacity:0;transform:translateY(16px) scale(.96)}}
+@keyframes v6card{from{opacity:0;transform:perspective(600px) rotateY(-80deg) scale(.85)}}
+.spk b{text-transform:uppercase}
