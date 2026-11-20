@@ -708,3 +708,39 @@ html.v2 .hpk-cta .multi .btn:disabled{color:#56627F;background:#141D36}
  html.v2 .hs{flex-direction:column;align-items:flex-start;gap:10px;padding:14px}
  html.v2 .hs em{white-space:nowrap}
 }
+
+/* =====================================================================
+   V3.4 — ergonomie : en-tête de page, onglets secondaires fixes
+   ===================================================================== */
+.phead[hidden]{display:none}
+html.v2 .phead{max-width:1200px;margin:0 auto;padding:28px 20px 0;display:flex;flex-direction:column;gap:4px}
+html.v2 .phead h1{margin:0;font:700 40px/1 var(--fd);letter-spacing:.02em;text-transform:uppercase;color:#fff}
+html.v2 .phead p{margin:0;color:var(--mut);font-size:14.5px;max-width:620px}
+html.v2 .phead+main#main{padding-top:18px}
+html.v2 body[data-tab=shop] .shhead>div:first-child,html.v2 body[data-tab=miss] #main>.panel>.mhead>h2,html.v2 body[data-tab=code] #main>.panel>h2:first-child{display:none}
+html.v2 body[data-tab=shop] .shhead{justify-content:flex-end}
+
+/* onglets secondaires : contrôle segmenté, jamais de défilement */
+html.v2 #main .fl.subnav{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:4px;padding:4px;margin:0 0 22px;border:1px solid var(--line);border-radius:14px;background:#0B1222;overflow:visible;flex-wrap:wrap}
+html.v2 #main .fl.subnav button,html.v2 body.xmas #main .fl.subnav button{height:42px;margin:0;padding:0 8px;border:0;border-radius:10px;background:transparent;color:var(--mut);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.v2 #main .fl.subnav button:hover{color:#fff;background:#ffffff08}
+html.v2 #main .fl.subnav button.on,html.v2 body.xmas #main .fl.subnav button.on{background:linear-gradient(180deg,#22325A,#1B2849);color:#fff;border:0;box-shadow:inset 0 1px 0 #ffffff1a,0 2px 6px #0007,inset 0 -2px 0 var(--yel2)}
+html.v2 #main .fl.subnav .nb{top:2px;right:4px}
+@media(min-width:900px){html.v2 #main .fl.subnav{display:inline-grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(120px,auto)}}
+@media(max-width:640px){
+ html.v2 .phead{padding:18px 14px 0}
+ html.v2 .phead h1{font-size:32px}
+ html.v2 .phead p{font-size:13.5px}
+ html.v2 #main .fl.subnav{margin:0 0 18px;padding:4px;grid-template-columns:repeat(auto-fit,minmax(84px,1fr))}
+ html.v2 #main .fl.subnav button{font-size:15px;height:40px}
+}
+html.v2 #main .fl.subnav:has(>button:nth-child(2):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+html.v2 #main .fl.subnav:has(>button:nth-child(3):last-child){grid-template-columns:repeat(3,minmax(0,1fr))}
+html.v2 #main .fl.subnav:has(>button:nth-child(4):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}
+html.v2 #main .fl.subnav:has(>button:nth-child(5)){grid-template-columns:repeat(3,minmax(0,1fr))}
+html.v2 #main .fl.subnav button{white-space:normal;line-height:1.05;text-overflow:clip}
+@media(max-width:640px){
+ html.v2 #main .fl.subnav button{font-size:14px;height:44px;padding:0 4px;letter-spacing:.03em}
+ html.v2 .fl.cfl,html.v2 .fl.sorts:not(.subnav):not(.msub){flex-wrap:wrap;overflow:visible;margin-left:0;margin-right:0;padding:0}
+ html.v2 .fl.cfl button,html.v2 .fl.sorts:not(.subnav) button{flex:1 1 auto;min-height:38px;padding:0 10px;font-size:14px}
+}
