@@ -881,3 +881,19 @@ html.v2 .shop .pk .mini{display:none}
 @keyframes v6pop{from{opacity:0;transform:translateY(16px) scale(.96)}}
 @keyframes v6card{from{opacity:0;transform:perspective(600px) rotateY(-80deg) scale(.85)}}
 .spk b{text-transform:uppercase}
+/* fenêtre de récompenses : sections séparées */
+.rwsec{padding:16px 0 18px;border-top:1px solid #26334F}
+.rwsec:first-of-type{border-top:0;padding-top:4px}
+.rwsec h3{margin:0 0 14px;font:700 17px "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#C7D0E6;display:flex;align-items:center;gap:10px}
+.rwsec h3::before,.rwsec h3::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,#33436A)}
+.rwsec h3::after{background:linear-gradient(270deg,transparent,#33436A)}
+.rwsec .rwgrid{margin-bottom:12px}
+.rwhint{margin:0 0 12px;font-size:13.5px;color:#9AA7C7}.rwhint b{color:#fff}
+.rwsec .btn{width:100%}
+.rwclose{width:100%;margin-top:4px}
+/* bouton Packs en attente : au-dessus de la barre du bas, style V2 */
+html.v2 .pkb{border:1px solid #EDB72F;background:linear-gradient(180deg,#22325A,#16213D);box-shadow:0 10px 26px #000b,0 0 20px #EDB72F55;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+html.v2 .pkb::before{border-color:#EDB72F}
+html.v2 .pkb svg{color:#EDB72F}
+html.v2 .pkb .pkn{background:#EDB72F;color:#1C1300}
+@media(max-width:640px){html.v2 .pkb{bottom:calc(86px + env(safe-area-inset-bottom,0px));height:48px;padding:0 16px 0 12px}}

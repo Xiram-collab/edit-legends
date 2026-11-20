@@ -1245,9 +1245,13 @@ function packArt(col,lab,sub){return '<div class="spk" style="--c:'+col+'"><i cl
 function rewardShow(packs,titles){var o=document.createElement('div');o.className='rwov';
  var it=packs.map(function(m){var col=PKC[m.rw]||'#EDB72F',lab=String(m.rl||'').replace(/^pack\s*/i,'');return '<div class="rwit">'+(/carte/i.test(m.rl||'')?'<div class="spk spk-c" style="--c:'+col+'"><i class="spk-g"></i><b>?</b><span>carte</span></div>':packArt(col,lab,'pack'))+'<em style="color:'+col+'">'+esc(m.rl)+'</em></div>'}).join('')+
   titles.map(function(t){var col=HEX[t.t]||'#EDB72F';return '<div class="rwit"><div class="rwt" style="--c:'+col+'"><span>Titre</span><b>'+esc(t.n)+'</b></div><em style="color:'+col+'">Nouveau titre</em></div>'}).join('');
- o.innerHTML='<div class="rwbox" role="dialog" aria-label="Récompenses"><h2>Récompenses récupérées</h2><div class="rwgrid">'+it+'</div><p class="mut sm">'+(packs.length?'Tes packs t\'attendent dans tes packs en attente. ':'')+(titles.length?'Équipe ton titre dans Collection › Titres.':'')+'</p><div class="rwbtn">'+(titles.length?'<button class="btn ghost" data-rgo="tit">Voir mes titres</button>':'')+'<button class="btn" data-rok>Super !</button></div></div>';
+ var ip=it.split('<div class="rwit"><div class="rwt"')[0],itl=titles.length?'<div class="rwit"><div class="rwt"'+it.split('<div class="rwit"><div class="rwt"').slice(1).join('<div class="rwit"><div class="rwt"'):'';
+ o.innerHTML='<div class="rwbox" role="dialog" aria-label="Récompenses"><h2>Récompenses récupérées</h2>'+
+  (packs.length?'<section class="rwsec"><h3>'+packs.length+(packs.length>1?' packs gagnés':' pack gagné')+'</h3><div class="rwgrid">'+ip+'</div><p class="rwhint">Ils sont rangés dans <b>Packs en attente</b> : le bouton doré en bas à droite de l\'écran.</p><button class="btn" data-rpk>Ouvrir mes packs maintenant</button></section>':'')+
+  (titles.length?'<section class="rwsec"><h3>'+titles.length+(titles.length>1?' titres gagnés':' titre gagné')+'</h3><div class="rwgrid">'+itl+'</div><p class="rwhint">Un titre s\'affiche sous ton pseudo. Choisis-le dans <b>Collection › Titres</b>.</p><button class="btn ghost" data-rgo="tit">Choisir mon titre</button></section>':'')+
+  '<button class="btn ghost rwclose" data-rok>Fermer</button></div>';
  document.body.appendChild(o);var close=function(){o.classList.add('out');setTimeout(function(){o.remove()},200)};
- o.onclick=function(e){if(e.target===o||e.target.closest('[data-rok]'))close();var g=e.target.closest('[data-rgo]');if(g){close();tab='col';colSub='tit';render();scrollTo(0,0)}}}
+ o.onclick=function(e){if(e.target===o||e.target.closest('[data-rok]'))close();if(e.target.closest('[data-rpk]')){close();setTimeout(openWaiting,220)}var g=e.target.closest('[data-rgo]');if(g){close();tab='col';colSub='tit';render();scrollTo(0,0)}}}
 function doClaim(ids){
  // affichage immédiat : la réponse du serveur remplace ensuite l'état
  var rdy=MISS.packs.filter(function(m){return m.ready&&(!ids||ids.indexOf(m.id)>=0)}),rt=MISS.titles.filter(function(t){return t.ready&&(!ids||ids.indexOf(t.id)>=0)});
