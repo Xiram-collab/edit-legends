@@ -897,3 +897,14 @@ html.v2 .pkb::before{border-color:#EDB72F}
 html.v2 .pkb svg{color:#EDB72F}
 html.v2 .pkb .pkn{background:#EDB72F;color:#1C1300}
 @media(max-width:640px){html.v2 .pkb{bottom:calc(86px + env(safe-area-inset-bottom,0px));height:48px;padding:0 16px 0 12px}}
+/* packs en attente */
+html.v2 .wpl{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin:14px 0}
+html.v2 .wpk{width:auto;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px;border-radius:16px;border:1px solid var(--line);
+ background:linear-gradient(180deg,color-mix(in srgb,var(--c) 20%,#1C2847),#121B31 75%);box-shadow:inset 0 1px 0 #ffffff14,0 10px 22px -10px #000b;color:#fff;text-align:center}
+html.v2 .wpk h3{margin:4px 0 0;font-size:18px;color:var(--c)}
+html.v2 .wpk .mut{font-size:13px}
+html.v2 .wpk .btn{width:100%}
+html.v2 .wpk .spk{width:96px;height:134px}
+html.v2 .wpk .spk img{width:46px;height:46px}
+html.v2 .wpk .spk span{font-size:11px;letter-spacing:.06em}
+html.v2 .wpbox h2{text-align:center}
