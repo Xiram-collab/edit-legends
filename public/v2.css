@@ -921,3 +921,11 @@ html.v2 .wpbox h2{text-align:center}
 .rwsec .rwgrid:has(.rwt){display:flex;flex-wrap:wrap;justify-content:center}
 .rwit:has(.rwt){flex:1 1 140px;max-width:220px}
 .rwt{justify-content:center}
+/* bouton Ouvrir un pack : retour au style net d'avant */
+html.v2 .btn.big-b::after,html.v2 #hgo::after{display:none!important;animation:none}
+html.v2 #hgo{background:linear-gradient(180deg,#FFE27A,#EDB72F);color:#1C1300;box-shadow:inset 0 1px 0 #ffffffaa,0 3px 0 #8F6A0F,0 10px 22px #EDB72F33}
+html.v2 .hpk-cta{flex-direction:row!important;align-items:stretch}
+html.v2 .hpk-cta .multi{width:auto!important;display:flex;gap:8px}
+html.v2 .hpk-cta .multi .btn{flex:none;min-width:54px;min-height:52px;padding:0 10px;font-size:17px;background:linear-gradient(180deg,#F2994A,#D9762B);color:#2A1300;border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff55,0 3px 0 #8A4513}
+html.v2 .hpk-cta .multi .btn:disabled{background:#172038;color:#56627F;box-shadow:none;border-color:var(--line)}
+@media(max-width:640px){html.v2 #hgo{min-height:52px;font-size:18px}html.v2 .hpk-cta .multi .btn{min-width:50px;min-height:52px}}
