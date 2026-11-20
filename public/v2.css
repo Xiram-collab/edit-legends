@@ -1259,3 +1259,14 @@ html.v2 .lbr3 .who2{display:flex;flex-direction:column;align-items:flex-start;mi
 html.v2 .lbr3 .who2 .lbs{justify-content:flex-start;align-self:stretch;flex-wrap:wrap;overflow:visible;row-gap:4px}
 html.v2 .lbr3 .ch{border-radius:6px}
 html.v2 .lbr3 .who2 .lbs{padding-left:0!important;grid-area:auto;margin-left:0}
+html.v2 .lbr3 .who2 .lbs{flex-wrap:nowrap!important}
+html.v2 .lbr3 .who2{overflow:hidden}
+html.v2 .lbr3 .ls{display:none}
+@media(max-width:400px){
+ html.v2 .lbr3 .lw{display:none}html.v2 .lbr3 .ls{display:inline;margin-left:1px}
+ html.v2 .lbr3 .ch.my .ls{color:#FF6B9A;font-weight:700}
+ html.v2 .lbr2.lbr3{grid-template-columns:22px 30px minmax(0,1fr) auto;column-gap:7px}
+ html.v2 .lbr3>.uav,html.v2 .lbr3>img,html.v2 .lbr3>span:nth-child(2){width:30px;height:30px}
+ html.v2 .lbr3 .rk2{font-size:13px}html.v2 .lbr2.lbr3.t1 .rk2,html.v2 .lbr2.lbr3.t2 .rk2,html.v2 .lbr2.lbr3.t3 .rk2{width:22px;height:22px;font-size:12px}
+}
+@media(max-width:340px){html.v2 .lbr3 .ch{padding:1px 3px;font-size:9px}html.v2 .lbr3 .ch b{font-size:10.5px}html.v2 .lbr3 .who2 .lbs{gap:3px}html.v2 .lbr3 .val2 b{font-size:15px}html.v2 .lbr2.lbr3{padding:10px 6px;column-gap:6px}}

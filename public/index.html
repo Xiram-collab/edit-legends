@@ -1361,7 +1361,7 @@ function rBoard(){
    (me.hidden?'<p class="lbme-n">Tu es caché du classement (réglage dans ton compte).</p>':(!me.rank?'<p class="lbme-n">'+(isRuns?'Fais la map et entre ton code de fin pour apparaître ici.':'Ouvre un pack pour entrer au classement.')+'</p>':''))+'</div>';
   /* 2. la liste */
   var row=function(r){var rw=scope!=='friends'&&r.rank<=20?(BR[kind]||[])[r.rank-1]:null;
-   var st=isRuns?'':'<i class="ch"><b>'+r.owned+'</b>&nbsp;/ '+TOT()+' cartes</i><i class="ch ho"><b>'+(r.holo||0)+'</b>&nbsp;Holo</i><i class="ch my"><b>'+r.mythics+'</b>&nbsp;Myth.</i>';
+   var st=isRuns?'':'<i class="ch"><b>'+r.owned+'</b>/'+TOT()+'<span class="cw">&nbsp;cartes</span></i><i class="ch ho"><b>'+(r.holo||0)+'</b><span class="lw">&nbsp;Holo</span><span class="ls">✨</span></i><i class="ch my"><b>'+r.mythics+'</b><span class="lw">&nbsp;Myth.</span><span class="ls">M</span></i>';
    return '<button class="lbr2 lbr3'+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+uav(r)+
     '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+(st?'<span class="lbs">'+st+'</span>':'')+'</span>'+
     '<span class="val2"><b>'+(isRuns?r.runs:fmt(hasPts?(r.cscore||0):r.owned))+'</b><small>'+(isRuns?(r.runs>1?'runs':'run'):hasPts?'points':'cartes')+'</small></span>'+'</button>'};
