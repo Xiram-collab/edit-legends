@@ -1124,3 +1124,15 @@ html.v2 body.v2noel .back .bkin::after{left:calc(50% - 50px);top:5%;width:100px;
 html.v2,html.v2 body{overflow-x:clip;max-width:100%}
 html.v2 .item{min-width:0}
 html.v2 .item>.btn[data-s]{display:block;width:100%;max-width:100%;box-sizing:border-box;white-space:normal;overflow-wrap:anywhere;line-height:1.15;min-height:34px;padding:6px 8px;font-size:12px}
+/* vente rapide : compteur − x/y + dans la carte, barre au-dessus du menu du bas */
+html.v2 .qsc{width:100%;box-sizing:border-box;gap:6px;justify-content:space-between}
+html.v2 .qsc .btn{flex:0 0 36px;width:36px;min-width:0;height:36px;min-height:0;padding:0;font-size:18px;line-height:1;border-radius:10px}
+html.v2 .qsc b{flex:1;min-width:0;font-size:15px;text-align:center;white-space:nowrap}
+html.v2 .qsbar{z-index:55;background:linear-gradient(180deg,#1B2849f5,#121B36f5);border:1px solid var(--line2);box-shadow:0 10px 30px #000a;padding:10px 12px}
+html.v2 .qsbar .bar{margin:0;flex-wrap:nowrap}
+@media(max-width:640px){
+ html.v2 .qsbar{left:8px;right:8px;bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+ html.v2 body:has(#qsfix){padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+}
+html.v2 .qsbar .bar{width:100%;gap:8px}html.v2 .qsbar .bar .btn{flex:1 1 0;min-height:44px}
+html.v2 .qsc .btn{flex-basis:32px;width:32px;height:32px}

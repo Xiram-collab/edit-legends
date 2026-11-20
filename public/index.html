@@ -778,11 +778,11 @@ function NRM(i){return Math.max(0,((S&&S.col[i])||0)-HOL(i))}
 function DC(i){var h=HOL(i),n=NRM(i);return h&&n?Math.max(h,n):(S.col[i]||0)}   // normale + Holo = une seule carte « full Holo » : on n'affiche pas x2
 function HS(i){var h=HOL(i);return h?(NRM(i)>0?2:1):0}
 function holoCount(){var n=0;CARDS.forEach(function(c,i){if(c&&HOL(i))n++});return n}
-function qsMax(i){var k=dupKeep(mkData)[i];return Math.max(0,NRM(i)-(k||0))}
-function qsDup(i){return Math.max(0,NRM(i)-1)}
-function qsTotals(){var n=0,g=0,last=0;Object.keys(qsSel).forEach(function(k){var q=Math.min(qsSel[k],qsMax(+k));if(q>0){n+=q;g+=q*RAR[CARDS[+k][2]].v;if(q>=qsMax(+k))last++}});return {n:n,g:g,last:last}}
+function qsHx(i){var k=dupKeep(mkData)[i];return k>=1e9?0:Math.max(0,HOL(i)-1)}function qsMax(i){var k=dupKeep(mkData)[i];return Math.max(0,NRM(i)-(k||0))+qsHx(i)}function qsVal(i,q){var v=RAR[CARDS[i][2]].v,a=Math.min(q,NRM(i)),hm=(window.HOLOC&&HOLOC.SELL_MULT)||2;return a*v+(q-a)*v*hm}function qsLast(i,q){return HOL(i)===0&&q>=S.col[i]}
+function qsDup(i){return Math.min(qsMax(i),Math.max(0,NRM(i)-(HOL(i)>0?0:1))+qsHx(i))}
+function qsTotals(){var n=0,g=0,last=0;Object.keys(qsSel).forEach(function(k){var q=Math.min(qsSel[k],qsMax(+k));if(q>0){n+=q;g+=qsVal(+k,q);if(qsLast(+k,q))last++}});return {n:n,g:g,last:last}}
 function qsPanel(){var t=qsTotals(),h='<div class="panel qspan"><p class="mut sm" style="margin:0 0 8px">Touche une carte pour vendre ses doublons (une copie est gardée). Avec le bouton + tu peux aussi vendre la dernière copie.</p><div class="qsch">';
- for(var r=RAR.length-1;r>=0;r--){var g=0,c=0;CARDS.forEach(function(cd,i){if(cd[2]===r&&qsDup(i)>0){c+=qsDup(i);g+=qsDup(i)*RAR[r].v}});if(c)h+='<button class="btn sm" data-qr="'+r+'" style="border-color:'+HEX[r]+'">'+RAR[r].n+' · '+c+' doublon'+(c>1?'s':'')+' (+'+fmt(g)+')</button>'}
+ for(var r=RAR.length-1;r>=0;r--){var g=0,c=0;CARDS.forEach(function(cd,i){if(cd[2]===r&&qsDup(i)>0){c+=qsDup(i);g+=qsVal(i,qsDup(i))}});if(c)h+='<button class="btn sm" data-qr="'+r+'" style="border-color:'+HEX[r]+'">'+RAR[r].n+' · '+c+' doublon'+(c>1?'s':'')+' (+'+fmt(g)+')</button>'}
  return h+'</div></div>'}
 function qsBar(){var t=qsTotals();return '<div><b>'+t.n+' carte'+(t.n>1?'s':'')+'</b> · +'+fmt(t.g)+' '+CUR+'</div><div class="bar"><button class="btn sm ghost" id="qsc">Tout décocher</button><button class="btn gold" id="qsgo"'+(t.n?'':' disabled')+'>Vendre</button></div>'}
 function bindQs(){var old=$('qsfix');if(old)old.remove();var bar=document.createElement('div');bar.id='qsfix';bar.className='qsbar';bar.innerHTML=qsBar();document.body.appendChild(bar);
@@ -795,9 +795,9 @@ function bindQs(){var old=$('qsfix');if(old)old.remove();var bar=document.create
 function qsConfirm(){var t=qsTotals();if(!t.n)return;closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
  d.innerHTML='<div class="pickbox wpbox"><h2>Vendre définitivement ?</h2><p style="font-size:17px;margin:6px 0"><b>'+t.n+' carte'+(t.n>1?'s':'')+'</b> pour <b>+'+fmt(t.g)+' '+CUR+'</b></p>'+(t.last?'<p class="qsw" style="font-size:14px">⚠ '+t.last+' carte'+(t.last>1?'s ne seront':' ne sera')+' plus dans ta collection (dernier exemplaire).</p>':'')+'<p class="mut sm">Cette vente est définitive : tu ne pourras pas revenir en arrière.</p><div class="bar" style="justify-content:center"><button class="btn ghost" id="qsno">Annuler</button><button class="btn gold" id="qsyes">Vendre définitivement</button></div></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('qsno').onclick=closePick;$('qsyes').onclick=function(){closePick();qsGo()}}
-function qsGo2(n){n=n||0;if(netBusy){if(n<12)setTimeout(function(){qsGo2(n+1)},250);return}var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){items.push([i,q]);undo.push([i,q]);t+=q*RAR[CARDS[i][2]].v;n+=q}});if(!items.length)return;
- undo.forEach(function(u){S.col[u[0]]-=u[1]});S.money+=t;qsMode=false;qsSel={};sfx('coin');toast(n+' carte'+(n>1?'s':'')+' vendue'+(n>1?'s':'')+' · +'+fmt(t)+' '+CUR);quietRender();
- act({action:'sellmany',items:items}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]+=u[1]});S.money-=t;quietRender()})}
+function qsGo2(n){n=n||0;if(netBusy){if(n<12)setTimeout(function(){qsGo2(n+1)},250);return}var items=[],undo=[],t=0,n=0;Object.keys(qsSel).forEach(function(k){var i=+k,q=Math.min(qsSel[k],qsMax(i));if(q>0){var b=Math.max(0,q-NRM(i));items.push([i,q]);undo.push([i,q,b]);t+=qsVal(i,q);n+=q}});if(!items.length)return;
+ undo.forEach(function(u){S.col[u[0]]-=u[1];if(u[2]){S.holo[u[0]]-=u[2]}});S.money+=t;qsMode=false;qsSel={};sfx('coin');toast(n+' carte'+(n>1?'s':'')+' vendue'+(n>1?'s':'')+' · +'+fmt(t)+' '+CUR);quietRender();
+ act({action:'sellmany',items:items}).then(function(r){setState(r.state);quietRender()}).catch(function(){undo.forEach(function(u){S.col[u[0]]+=u[1];if(u[2])S.holo[u[0]]=(S.holo[u[0]]||0)+u[2]});S.money-=t;quietRender()})}
 // Avant de vendre : si une carte vendue est aussi proposée au marché ou en échange et qu'il n'en restera pas assez, on demande confirmation
 function guardSell(plan,go,n){n=n||0;
  if(!plan.length)return;if(netBusy){if(n<12)setTimeout(function(){guardSell(plan,go,n+1)},250);return}
@@ -1075,7 +1075,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
   var tot=0,own=0,pul=0,hn=0;CARDS.forEach(function(c,i){if(c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;if(HOL(i))hn++;pul+=Math.max(S.pulled[i]||0,S.col[i]||0)}});
   h+='<div class="sec" id="sec'+r+'" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span> <span class="secn sech">✨ '+hn+' / '+tot+'</span><i class="secbar"><i style="width:'+(tot?own/tot*100:0)+'%"></i></i></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
-   if(qsMode){var q=Math.min(qsSel[i]||0,n);return '<div class="item qsi'+(q?' qsel':'')+(q&&q>=n?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+n+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(q&&q>=n?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
+   if(qsMode){var mx=qsMax(i),q=Math.min(qsSel[i]||0,mx),la=q&&qsLast(i,q);return '<div class="item qsi'+(q?' qsel':'')+(la?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+mx+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(la?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
    return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?(function(){var q=NRM(i)-(dupKeep(mkData)[i]||1);return '<button class="btn gold sm" data-s="'+i+'">'+(q>1?'Vendre les '+q+' doublons':'Vendre 1')+' (+'+fmt(q*RAR[CARDS[i][2]].v)+')</button>'})():'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
