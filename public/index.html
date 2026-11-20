@@ -1054,6 +1054,7 @@ var exRar=[];
 function dupKeepX(d){var k=dupKeep(d);CARDS.forEach(function(c,i){if(c&&exRar.indexOf(c[2])>=0)k[i]=1e9});return k}
 function exH(){return ''}
 function bindEx(){}
+function dupCount(){var t=0,k=dupKeepX(mkData);CARDS.forEach(function(c,i){if(!c)return;var n=NRM(i),q=k[i]||1;if(n>q)t+=n-q;if(HOL(i)>1&&!(k[i]>=1e9))t+=HOL(i)-1});return t}
 function dupValue(){var t=0,k=dupKeepX(mkData),hm=(window.HOLOC&&HOLOC.SELL_MULT)||2;CARDS.forEach(function(c,i){var n=NRM(i),q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v;if(c&&HOL(i)>1&&!(k[i]>=1e9))t+=(HOL(i)-1)*RAR[c[2]].v*hm});return t}
 var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
 function colNav(){return subnavH(COLS.concat([['mc','Ma carte']]),colSub,'data-ccs')}
@@ -1070,7 +1071,7 @@ function rCol(){
  if(colSub==='tit'){rTitles();return}
 var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
  var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes <span class="hcn">✨ '+holoCount()+' / '+TOT(S.col)+'</span></b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div>'+
- '<button class="btn gold sm" id="sellall"'+(dupValue()?'':' disabled')+'>Vendre tous les doublons (+'+fmt(dupValue())+')</button><button class="btn qsbtn'+(qsMode?' on':'')+'" id="qsb">'+(qsMode?'✕ Quitter la vente rapide':'⚡ Vente rapide')+'</button></div>'+colTiles()+colFilt()+exH()+(qsMode?qsPanel():'');
+ '</div><div class="dupbar'+(dupValue()?'':' none')+'"><div class="dupi"><i class="cn"></i><div><b>'+(dupValue()?dupCount()+' doublon'+(dupCount()>1?'s':'')+' à revendre':'Aucun doublon')+'</b><span>'+(dupValue()?'+'+fmt(dupValue())+' '+CUR+' · une copie de chaque carte est gardée':'Ouvre des packs pour en obtenir')+'</span></div></div><div class="dupa"><button class="btn dupgo" id="sellall"'+(dupValue()?'':' disabled')+'>Tout vendre</button><button class="btn qsbtn'+(qsMode?' on':'')+'" id="qsb">'+(qsMode?'Quitter':'Choisir les cartes')+'</button></div></div>'+colTiles()+colFilt()+exH()+(qsMode?qsPanel():'');
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&colKeep(c,i,n))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
   if(!items.length)continue;any=true;
@@ -1078,7 +1079,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
   h+='<div class="sec" id="sec'+r+'" style="--c:'+HEX[r]+'"><h3>'+RAR[r].n+' <span class="secn">'+own+' / '+tot+'</span> <span class="secn secp">'+pul+' obtenues</span> <span class="secn sech">✨ '+hn+' / '+tot+'</span><i class="secbar"><i style="width:'+(tot?own/tot*100:0)+'%"></i></i></h3><div class="grid">'+items.map(function(i,k){var n=S.col[i];
    if(!n)return '<div class="item lock" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i)+'<div class="pst">Non obtenue</div></div>';
    if(qsMode){var mx=qsMax(i),q=Math.min(qsSel[i]||0,mx),la=q&&qsLast(i,q);return '<div class="item qsi'+(q?' qsel':'')+(la?' qsall':'')+'" data-qi="'+i+'">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="qsc"><button class="btn sm" data-qm="'+i+'">−</button><b>'+q+' / '+mx+'</b><button class="btn sm" data-qp="'+i+'">+</button></div>'+(la?'<div class="qsw">Dernière copie</div>':'')+'</div>'}
-   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?(function(){var q=NRM(i)-(dupKeep(mkData)[i]||1);return '<button class="btn gold sm" data-s="'+i+'">'+(q>1?'Vendre les '+q+' doublons':'Vendre 1')+' (+'+fmt(q*RAR[CARDS[i][2]].v)+')</button>'})():'')+'</div>'}).join('')+'</div></div>'}
+   return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?(function(){var q=NRM(i)-(dupKeep(mkData)[i]||1);return '<button class="dupsl" data-s="'+i+'" title="Vendre '+(q>1?'les '+q+' doublons':'le doublon')+'"><span>Vendre ×'+q+'</span><em><i class="cn"></i>+'+fmt(q*RAR[CARDS[i][2]].v)+'</em></button>'})():'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
  $('main').innerHTML=colNav()+h;bindColNav();
