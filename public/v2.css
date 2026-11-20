@@ -1143,3 +1143,29 @@ html.v2 .lbst .lbh{color:#8FE3FF}html.v2 .lbst .lbm{color:#FF6B9A;font-weight:70
 html.v2 body.light .lbst .lbh{color:#0A7FB5}html.v2 body.light .lbst .lbm{color:#C21E5A}
 @media(max-width:640px){html.v2 .two:has(#mkown){grid-template-columns:minmax(0,1fr)!important;display:grid;gap:8px}}
 html.v2 select.inp{text-overflow:ellipsis}
+/* Missions : un onglet par type, lignes compactes */
+html.v2 .fl.msub{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:6px;margin-bottom:12px}
+html.v2 .fl.msub button{position:relative;justify-content:center;padding:10px 4px;font-size:13px;white-space:nowrap;min-width:0}
+html.v2 .fl.msub button .nb{position:absolute;top:-6px;right:-4px}
+html.v2 .mhero{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#16213D,#101830)}
+html.v2 .mhero>div:first-child{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 220px}
+html.v2 .mhero b{font:700 18px var(--fd);text-transform:uppercase;letter-spacing:.03em;color:#fff}
+html.v2 .mhero span{font-size:13px;color:var(--mut)}
+html.v2 .mhero .bar{margin:0}
+html.v2 .mlist{display:flex;flex-direction:column;gap:8px}
+html.v2 .mlist .mrow{margin:0}
+html.v2 body.light .mhero{background:#fff;border-color:#D5DCEA}html.v2 body.light .mhero b{color:#0E1630}
+@media(max-width:640px){
+ html.v2 .fl.msub{margin-left:0;margin-right:0;padding:0;overflow:visible}
+ html.v2 .mlist .mrow{grid-template-columns:40px minmax(0,1fr) auto;grid-template-areas:"ring n r" "ring d r" "p p p";padding:10px 12px;column-gap:10px;row-gap:1px}
+ html.v2 .mlist .mring{width:40px;height:40px}html.v2 .mlist .mring b{width:31px;height:31px;font-size:11px}
+ html.v2 .mlist .mrow .mn{font-size:14.5px;gap:6px}html.v2 .mlist .mrow .md{font-size:12.5px;line-height:1.3}
+ html.v2 .mlist .mrow .mr{flex-direction:column;align-items:flex-end;justify-content:center;margin:0;gap:4px}
+ html.v2 .mlist .mrow .mr .rwc{font-size:11px;padding:3px 7px}
+ html.v2 .mlist .mrow .mr .btn{min-height:32px;padding:0 10px;font-size:13px}
+ html.v2 .mlist .mrow .mprg{margin-top:6px}html.v2 .mlist .mrow .mprg .prog{height:5px}html.v2 .mlist .mrow .mprg b{font-size:12.5px;min-width:44px}
+ html.v2 .mhero{padding:10px 12px}html.v2 .mhero b{font-size:16px}html.v2 .mhero .bar,html.v2 .mhero .bar .btn{width:100%}
+}
+html.v2 .mgh{margin:14px 0 8px;font:700 15px var(--fd);text-transform:uppercase;letter-spacing:.05em;color:var(--fg2)}
+html.v2 .mdet{margin-top:10px}html.v2 .mdet .mlist{padding:10px 0 0}
+html.v2 .mrow .mtag{white-space:nowrap}

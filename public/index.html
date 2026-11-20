@@ -1238,7 +1238,7 @@ function rTest(){
    if(M[a])toast(M[a]);render()}).catch(function(){})}})}
 
 /* ---------- missions et titres ---------- */
-var MISS=null,missSub='miss',MSUBS=[['miss','Missions'],['tit','Titres']],pingT=0;
+var MISS=null,missSub='day',MSUBS=[['day','Jour'],['week','Semaine'],['once','Paliers'],['tit','Titres']],pingT=0;
 function pctTxt(p){return p<=0?'0 %':p<0.1?'moins de 0,1 %':String(p).replace('.',',')+' %'}
 function setMc(n){NOTIF.mc=n||0;tabs()}
 function loadMiss(cb,err){api('missions',{}).then(function(r){MISS=r;if(r.state)setState(r.state);setMc(r.mc);cb(r)}).catch(function(e){err(e)})}
@@ -1274,21 +1274,25 @@ function bindCl(){[].forEach.call(document.querySelectorAll('[data-cl]'),functio
 var PKC={0:'#9aa4b2',2:'#3b9cff',3:'#b45cff',4:'#ffb020',5:'#ff3d81',6:'#1fe0d0'};
 function paintMiss(){if(tab!=='miss'||!MISS)return;
  var r=MISS,kinds={once:'Missions',day:'Quotidiennes',week:'Hebdomadaires'},nTit=r.titles.filter(function(t){return t.ready}).length,nPk=r.packs.filter(function(m){return m.ready}).length;
- var nav='<div class="fl sorts pers msub">'+MSUBS.map(function(s){var n=s[0]==='tit'?nTit:nPk;return '<button data-ms="'+s[0]+'"'+(missSub===s[0]?' class="on"':'')+'>'+s[1]+(n?'<span class="nb">'+n+'</span>':'')+'</button>'}).join('')+'</div>';
+ if(missSub==='miss')missSub='day';var nav='<div class="fl sorts pers msub">'+MSUBS.map(function(s){var n=s[0]==='tit'?nTit:r.packs.filter(function(m){return m.kind===s[0]&&m.ready&&!m.claimed}).length;return '<button data-ms="'+s[0]+'"'+(missSub===s[0]?' class="on"':'')+'>'+s[1]+(n?'<span class="nb">'+n+'</span>':'')+'</button>'}).join('')+'</div>';
  var all=(nTit+nPk)?'<div class="bar" style="margin-top:0"><button class="btn gold" id="clall">Tout récupérer ('+(nTit+nPk)+')</button></div>':'';
  var h;
  if(missSub==='tit'){
-  h='<div class="panel"><div class="mhead"><h2 style="margin:0">Titres</h2><span class="mut sm">'+r.nbOwn+' / '+r.titles.length+' obtenus · une fois récupéré, équipe ton titre dans Collection &gt; Titres</span></div>'+all+
-   r.titles.slice().sort(function(a,b){return (b.t-a.t)||(b.ready-a.ready)||(b.own-a.own)||(b.v/b.g-a.v/a.g)}).map(titleRow).join('')+'</div>'}
+  var T=r.titles.slice(),rd=T.filter(function(t){return t.ready&&!t.own}),go=T.filter(function(t){return !t.own&&!t.ready}).sort(function(a,b){return b.v/b.g-a.v/a.g}),ow=T.filter(function(t){return t.own});
+  h='<div class="mhero"><div><b>Titres · '+r.nbOwn+' / '+r.titles.length+'</b><span>Un titre s\'affiche sous ton pseudo. Une fois récupéré, équipe-le dans Collection › Titres.</span></div>'+all+'</div>'+
+   (rd.length?'<h3 class="mgh">À récupérer</h3><div class="mlist">'+rd.map(titleRow).join('')+'</div>':'')+
+   '<h3 class="mgh">Les plus proches</h3><div class="mlist">'+go.slice(0,5).map(titleRow).join('')+'</div>'+
+   (go.length>5?'<details class="lbd mdet"><summary>Voir les '+(go.length-5)+' autres titres</summary><div class="mlist">'+go.slice(5).map(titleRow).join('')+'</div></details>':'')+
+   (ow.length?'<details class="lbd mdet"><summary>Titres obtenus ('+ow.length+')</summary><div class="mlist">'+ow.map(titleRow).join('')+'</div></details>':'')}
  else{
   var pk=function(m){var pc=Math.min(100,m.v/m.g*100),col=PKC[m.rw]||'#ffc542';
    return '<div class="mrow mq'+(m.claimed?' mdone':'')+(m.ready&&!m.claimed?' mready':'')+'" style="--c:'+col+';--p:'+(m.claimed?100:pc).toFixed(1)+'"><i class="mring" aria-hidden="true"><b>'+(m.claimed?'✓':Math.floor(pc)+'%')+'</b></i><div class="mn">'+esc(m.n)+(m.kind==='once'&&m.steps>1?' <span class="mtag">palier '+Math.min(m.step,m.steps)+' / '+m.steps+'</span>':'')+'</div><div class="md mut">'+esc(m.d)+'</div>'+
     '<div class="mr"><b class="rwc" style="--c:'+col+'">'+esc(m.rl)+'</b>'+(m.claimed?'<span class="mtag">'+(m.kind==='once'?'Terminée':'Récupérée')+'</span>':m.ready?'<button class="btn gold sm" data-cl="'+m.id+'">Récupérer</button>':'')+'</div>'+
     '<div class="mprg"><div class="prog"><i style="width:'+pc+'%"></i></div><b>'+fmt(m.v)+' / '+fmt(m.g)+'</b></div></div>'};
-  var sec=function(k,t,sub){var l=r.packs.filter(function(m){return m.kind===k});return '<h3 style="margin:14px 0 2px">'+t+' <span class="mut sm">'+sub+'</span></h3>'+l.map(pk).join('')};
-  h='<div class="panel"><div class="mhead"><h2 style="margin:0">Missions</h2><span class="mut sm">Les packs récupérés arrivent dans tes packs en attente</span></div>'+all+
-   '<div class="mcols"><div class="mcol"><h2 class="mct">Quotidiennes</h2>'+sec('day','À faire aujourd\'hui','remise à zéro à minuit (Paris)')+sec('week','Hebdomadaires','remise à zéro le lundi (Paris)')+'</div>'+
-   '<div class="mcol"><h2 class="mct">Globales</h2>'+sec('once','Missions à paliers','un nouveau palier apparaît après chaque récompense')+'</div></div></div>'}
+  var INFO={day:['Missions du jour','Remise à zéro chaque nuit à minuit.'],week:['Missions de la semaine','Remise à zéro chaque lundi à minuit.'],once:['Missions à paliers','Un nouveau palier apparaît après chaque récompense.']}[missSub];
+  var l=r.packs.filter(function(m){return m.kind===missSub}).sort(function(a,b){return ((b.ready&&!b.claimed)-(a.ready&&!a.claimed))||(a.claimed-b.claimed)||(b.v/b.g-a.v/a.g)});
+  h='<div class="mhero"><div><b>'+INFO[0]+'</b><span>'+INFO[1]+' Les packs gagnés vont dans tes packs en attente.</span></div>'+all+'</div>'+
+   '<div class="mlist">'+(l.length?l.map(pk).join(''):'<p class="mut center">Aucune mission ici.</p>')+'</div>'}
  $('main').innerHTML=nav+h;
  bindNav('data-ms',function(v){missSub=v;paintMiss();scrollTo(0,0)});bindEq();bindCl()}
 function rMiss(){
