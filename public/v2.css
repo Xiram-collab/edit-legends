@@ -929,3 +929,9 @@ html.v2 .hpk-cta .multi{width:auto!important;display:flex;gap:8px}
 html.v2 .hpk-cta .multi .btn{flex:none;min-width:54px;min-height:52px;padding:0 10px;font-size:17px;background:linear-gradient(180deg,#F2994A,#D9762B);color:#2A1300;border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff55,0 3px 0 #8A4513}
 html.v2 .hpk-cta .multi .btn:disabled{background:#172038;color:#56627F;box-shadow:none;border-color:var(--line)}
 @media(max-width:640px){html.v2 #hgo{min-height:52px;font-size:18px}html.v2 .hpk-cta .multi .btn{min-width:50px;min-height:52px}}
+/* packs bien droits, inclinaison seulement au survol */
+.spk{transform:none}
+html.v2 .hpk-pk{transform:none}
+@keyframes v5pk{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+html.v2 .hpk-b1{transform:rotate(-6deg) translate(-10px,4px)}
+html.v2 .hpk-b2{transform:rotate(-11deg) translate(-20px,8px)}
