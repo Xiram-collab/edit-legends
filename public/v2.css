@@ -935,3 +935,11 @@ html.v2 .hpk-pk{transform:none}
 @keyframes v5pk{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 html.v2 .hpk-b1{transform:rotate(-6deg) translate(-10px,4px)}
 html.v2 .hpk-b2{transform:rotate(-11deg) translate(-20px,8px)}
+/* cartes : logo visible en entier, nom en bas */
+html.v2 .card .ds:empty,html.v2 .sum .card .ds:empty{display:none!important;min-height:0}
+html.v2 .card .plate{margin-top:auto;background:linear-gradient(180deg,transparent,#00000066);transform:none}
+html.v2 .card .art{flex:1 1 auto;min-height:0}
+html.v2 .over .sum .card{font-size:11px}
+html.v2 .sum .sw:only-child{flex:0 1 200px}
+html.v2 .sum .card{aspect-ratio:5/7;height:auto}
+@media(max-width:640px){html.v2 .sum .sw{flex:0 0 calc((100% - 20px)/3)!important}html.v2 .sum{gap:10px}}
