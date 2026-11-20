@@ -1136,3 +1136,10 @@ html.v2 .qsbar .bar{margin:0;flex-wrap:nowrap}
 }
 html.v2 .qsbar .bar{width:100%;gap:8px}html.v2 .qsbar .bar .btn{flex:1 1 0;min-height:44px}
 html.v2 .qsc .btn{flex-basis:32px;width:32px;height:32px}
+/* classement : 160/174 · 5✨ · 3M */
+html.v2 .lbst{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+html.v2 .lbst span{white-space:nowrap}html.v2 .lbst i{font-style:normal;opacity:.6}
+html.v2 .lbst .lbh{color:#8FE3FF}html.v2 .lbst .lbm{color:#FF6B9A;font-weight:700}
+html.v2 body.light .lbst .lbh{color:#0A7FB5}html.v2 body.light .lbst .lbm{color:#C21E5A}
+@media(max-width:640px){html.v2 .two:has(#mkown){grid-template-columns:minmax(0,1fr)!important;display:grid;gap:8px}}
+html.v2 select.inp{text-overflow:ellipsis}

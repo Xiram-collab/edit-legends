@@ -103,6 +103,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async settleWeek(week) { times.forEach((t) => { if (t.week === week && t.status === 'accepted') t.paid = true; }); },
     async recordTime(device) { const a = times.filter((t) => t.status === 'accepted' && t.device === device).sort((x, y) => y.ms - x.ms || x.id - y.id); return a[0] ? Object.assign({}, a[0]) : null; },
     async countPendingTimes() { return times.filter((t) => t.status === 'pending').length; },
+    async getHolo(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && r.data.holo) m[i] = r.data.holo; }); return m; },
     async getEquipped(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && r.data.title) m[i] = r.data.title; }); return m; },
     async titleStats() {
       const counts = {}; let total = 0;

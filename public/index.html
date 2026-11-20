@@ -1351,13 +1351,13 @@ function rBoard(){
   var unit=isRuns?'runs':'pts';
   /* 1. ma position */
   h+='<div class="lbme"><div class="lbme-r"><span>Ta place</span><b>'+(me.rank?me.rank:'—')+'</b>'+(me.rank&&d.total?'<em>sur '+d.total+'</em>':'')+'</div>'+
-   '<div class="lbme-s"><div><span>'+(isRuns?'Runs cette semaine':'Points')+'</span><b>'+fmt(mv)+'</b></div>'+(isRuns?'':'<div><span>Cartes</span><b>'+me.owned+'<small>/'+TOT()+'</small></b></div><div><span>Mythiques</span><b>'+me.mythics+'</b></div>')+'</div>'+
+   '<div class="lbme-s"><div><span>'+(isRuns?'Runs cette semaine':'Points')+'</span><b>'+fmt(mv)+'</b></div>'+(isRuns?'':'<div><span>Cartes</span><b>'+me.owned+'<small>/'+TOT()+'</small></b></div><div><span>Holo</span><b>'+CARDS.filter(function(c,i){return c&&HOL(i)>0}).length+'✨</b></div><div><span>Mythiques</span><b>'+me.mythics+'</b></div>')+'</div>'+
    (myRw?'<div class="lbme-w"><span>Si le classement s\'arrêtait maintenant, tu gagnerais</span><b>'+myRw+'</b></div>':(scope!=='friends'&&me.rank>20?'<div class="lbme-w lo"><span>Entre dans le top 20 pour gagner une récompense chaque lundi.</span></div>':''))+
    (me.hidden?'<p class="lbme-n">Tu es caché du classement (réglage dans ton compte).</p>':(!me.rank?'<p class="lbme-n">'+(isRuns?'Fais la map et entre ton code de fin pour apparaître ici.':'Ouvre un pack pour entrer au classement.')+'</p>':''))+'</div>';
   /* 2. la liste */
   var row=function(r){var rw=scope!=='friends'&&r.rank<=20?(BR[kind]||[])[r.rank-1]:null;
    return '<button class="lbr2'+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+uav(r)+
-    '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+'<small>'+(isRuns?'':r.owned+' cartes · '+r.mythics+' Myth.')+'</small></span>'+
+    '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+(isRuns?'':'<small class="lbst"><span>'+r.owned+'<i>/'+TOT()+'</i></span><span class="lbh">'+(r.holo||0)+'✨</span><span class="lbm">'+r.mythics+'M</span></small>')+'</span>'+
     '<span class="val2"><b>'+(isRuns?r.runs:fmt(hasPts?(r.cscore||0):r.owned))+'</b><small>'+(isRuns?(r.runs>1?'runs':'run'):hasPts?'pts':'cartes')+'</small></span>'+
     (rw?'<span class="rw2'+(rw.g?' g'+rw.g:'')+'" title="'+esc(brTxt(kind,r.rank))+'"><i></i>'+fmt(rw.c)+(rw.g?'<em>+ pack</em>':'')+'</span>':'<span class="rw2 none"></span>')+'</button>'};
   h+='<div class="lbl"><div class="lbl-h"><b>'+(scope==='friends'?'Entre amis':(d.rows.length?'Top '+d.rows.length:'Top 20'))+'</b><span>'+(d.total?d.total+' joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':''):'')+'</span></div>'+
