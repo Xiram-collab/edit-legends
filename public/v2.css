@@ -1386,3 +1386,4 @@ body.light .ckb{background:#fff;border-color:#D5DCEA;color:#0E1630}body.light .c
 html.ckl,html.ckl body{overflow:hidden}
 @media(max-width:640px){.ckov .ckb{bottom:auto}}
 @keyframes ckin{from{opacity:0}}@keyframes ckbox{from{opacity:0;transform:translateY(12px) scale(.97)}}
+html.v2 #lvt{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
