@@ -160,6 +160,7 @@ module.exports = function fakeDb(cards, validCodes) {
     async logAct(e) { acts.push(Object.assign({ id: acts.length + 1, at: new Date(Date.now()).toISOString() }, e)); },
     async recentActs(uid, n) { return acts.filter((x) => !uid || x.user_id === uid).slice(-n).reverse().map((x) => Object.assign({}, x)); },
     async logAdmin(e) { logs.push(Object.assign({ id: logs.length + 1000 + Math.floor(Math.random() * 1e6), at: new Date(1e12).toISOString() }, e)); },
+    async deleteActs(f) { const keep = acts.filter((l) => (Array.isArray(f.ids) ? !f.ids.includes(l.id) : f.uid ? l.user_id !== f.uid : f.before ? !(Date.parse(l.at) < Date.parse(f.before)) : false)); acts.length = 0; keep.forEach((l) => acts.push(l)); },
     async deleteLogs(f) { const keep = logs.filter((l) => (Array.isArray(f.ids) ? !f.ids.includes(l.id) : f.before ? !(Date.parse(l.at) < Date.parse(f.before)) : false)); logs.length = 0; keep.forEach((l) => logs.push(l)); },
     async recentLogs(n) { return logs.slice().reverse().slice(0, n); },
   };

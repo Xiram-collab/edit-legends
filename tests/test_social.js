@@ -375,5 +375,11 @@ const myth = cards.findIndex((c) => c[2] === 5), com = cards.findIndex((c) => c[
   r = await call('tokB', { action: 'me' }); assert.deepStrictEqual(r.json.state.col, {}); assert.strictEqual(r.json.state.stock, 10); assert.strictEqual(r.json.state.hide, true); ok('reset général : tout le monde à zéro, confidentialité conservée');
   r = await call('tokB', { action: 'ping' });
   r = await call('tokA', { action: 'adelann', id: r.json.ann[0].id }); r = await call('tokB', { action: 'ping' }); assert.strictEqual(r.json.ann.length, 0); ok('annonce supprimée');
+  await db.logAct({ user_id: 'B', action: 'open', detail: 'x' }); await db.logAct({ user_id: 'C', action: 'open', detail: 'y' });
+  r = await call('tokA', { action: 'aacts' }); assert.strictEqual(r.json.canDelete, true); const aid = r.json.rows[0].id;
+  r = await call('tokB', { action: 'aactdel', ids: [aid] }); assert.notStrictEqual(r.status, 200); ok('un joueur ne peut pas supprimer l\'activité');
+  await call('tokA', { action: 'aactdel', ids: [aid] }); r = await call('tokA', { action: 'aacts' }); assert.ok(!r.json.rows.some((x) => x.id === aid)); ok('activité : suppression d\'une ligne');
+  await call('tokA', { action: 'aactdel', all: true }); r = await call('tokA', { action: 'aacts' }); assert.strictEqual(r.json.rows.length, 0); ok('activité : tout vider');
   console.log('\n' + n + ' vérifications réussies (social/admin)');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });
+

@@ -1387,3 +1387,5 @@ html.ckl,html.ckl body{overflow:hidden}
 @media(max-width:640px){.ckov .ckb{bottom:auto}}
 @keyframes ckin{from{opacity:0}}@keyframes ckbox{from{opacity:0;transform:translateY(12px) scale(.97)}}
 html.v2 #lvt{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+html.v2 .lgh .acc{width:18px;height:18px;flex:none;accent-color:#FFD84A;cursor:pointer}
+html.v2 .acdel{flex-wrap:wrap;gap:8px;margin-bottom:10px}
