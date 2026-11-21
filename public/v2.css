@@ -1308,3 +1308,18 @@ html.v2 body.light .lbl .lbgap2{background:#F2F5FB}
  html.v2 .lbr2.lbr3.wrw.t1 .rk2,html.v2 .lbr2.lbr3.wrw.t2 .rk2,html.v2 .lbr2.lbr3.wrw.t3 .rk2{width:22px;height:22px;font-size:12px}
 }
 @media(max-width:360px){html.v2 .lbr2.lbr3.wrw{grid-template-columns:20px 42px 0 minmax(0,1fr) auto;column-gap:5px}html.v2 .lbr3.wrw>.uav,html.v2 .lbr3.wrw>img{display:none}html.v2 .lbcap{grid-template-columns:20px 42px 0 minmax(0,1fr) auto;column-gap:5px}}
+/* petite carte Holo (remplace l'emoji ✨) */
+html.v2 .hic{display:inline-block;position:relative;width:.74em;height:1.02em;margin:0 .08em;vertical-align:-.16em;border-radius:.16em;border:1.5px solid #0B1226;box-shadow:0 1px 3px #0007,inset 0 0 0 1px #ffffff55;
+ background:linear-gradient(115deg,transparent 30%,#ffffffb0 42%,transparent 54%),linear-gradient(135deg,#FF7AD9,#8FE3FF 38%,#9DFFB0 64%,#FFE27A);font-style:normal}
+html.v2 .hic::after{content:"";position:absolute;left:50%;top:50%;width:.42em;height:.42em;transform:translate(-50%,-50%);background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 1px #0B1226)}
+html.v2 .lbr3 .ls .hic{font-size:13px}
+html.v2 .lbr3 .ls .hic{font-size:11px}
+/* pages du classement */
+html.v2 .lbpg{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;border-top:1px solid var(--line)}
+html.v2 .lbpg .btn{min-height:42px;padding:0 14px;border-radius:11px;background:linear-gradient(180deg,#22325A,#1B2849);border:1px solid var(--line2);color:#fff;font:700 14px var(--fd);letter-spacing:.04em;text-transform:uppercase;box-shadow:none}
+html.v2 .lbpg .btn:disabled{opacity:.35}
+html.v2 .lbpg b{display:flex;flex-direction:column;align-items:center;font:700 17px/1.1 var(--fd);color:#fff;white-space:nowrap}
+html.v2 .lbpg b small{font:500 11px "Inter",sans-serif;color:var(--mut)}
+html.v2 .lbmine{display:block;width:calc(100% - 28px);margin:0 14px 12px;min-height:38px;border-radius:10px;border:1px dashed #EDB72F88;background:transparent;color:#FFD84A;font:700 13px var(--fd);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+html.v2 body.light .lbpg .btn{background:#fff;color:#0E1630;border-color:#C9D2E4}html.v2 body.light .lbpg b{color:#0E1630}html.v2 body.light .lbmine{color:#8A5A00}
+@media(max-width:400px){html.v2 .lbpg .btn span{display:none}html.v2 .lbpg .btn{min-width:52px;font-size:20px}}
