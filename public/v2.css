@@ -1270,3 +1270,41 @@ html.v2 .lbr3 .ls{display:none}
  html.v2 .lbr3 .rk2{font-size:13px}html.v2 .lbr2.lbr3.t1 .rk2,html.v2 .lbr2.lbr3.t2 .rk2,html.v2 .lbr2.lbr3.t3 .rk2{width:22px;height:22px;font-size:12px}
 }
 @media(max-width:340px){html.v2 .lbr3 .ch{padding:1px 3px;font-size:9px}html.v2 .lbr3 .ch b{font-size:10.5px}html.v2 .lbr3 .who2 .lbs{gap:3px}html.v2 .lbr3 .val2 b{font-size:15px}html.v2 .lbr2.lbr3{padding:10px 6px;column-gap:6px}}
+/* ===== Choix du nombre de packs à ouvrir ===== */
+html.v2 .hpk-cta{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+html.v2 .hpk-cta #hgo{flex:1 1 220px}
+html.v2 .nstep{display:flex;align-items:center;gap:4px;padding:4px;border-radius:14px;background:#0E1630;border:1px solid var(--line2);flex:0 0 auto}
+html.v2 .nstep .btn{min-width:44px;min-height:44px;height:44px;padding:0 10px;border-radius:10px;background:linear-gradient(180deg,#22325A,#1B2849);color:#fff;border:1px solid var(--line2);font:700 22px/1 var(--fd);box-shadow:none;transform:none}
+html.v2 .nstep .btn.nmax{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:#FFD84A;min-width:54px}
+html.v2 .nstep .btn:disabled{opacity:.35;cursor:default}
+html.v2 .nstep b{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:56px;font:700 26px/1 var(--fd);color:#fff;font-variant-numeric:tabular-nums}
+html.v2 .nstep b small{font:600 10px "Inter",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-top:2px}
+html.v2 .nstep.off{opacity:.55}
+html.v2 body.light .nstep{background:#F2F5FB;border-color:#D5DCEA}html.v2 body.light .nstep .btn{background:#fff;color:#0E1630;border-color:#C9D2E4}html.v2 body.light .nstep b{color:#0E1630}html.v2 body.light .nstep .btn.nmax{color:#9A6B00}
+@media(max-width:640px){html.v2 .hpk-cta #hgo{flex:1 1 100%}html.v2 .nstep{flex:1 1 100%;justify-content:space-between}html.v2 .nstep b{flex:1}}
+html.v2 .hs i.hsi{background:radial-gradient(circle at 50% 40%,#ffffff14,transparent 70%),#111A33;border-color:#ffffff1a}
+html.v2 .hs i.hsi svg{width:34px;height:34px;filter:drop-shadow(0 3px 6px #0008)}
+html.v2 body.light .hs i.hsi{background:#EEF2FA}
+/* ===== Classement complet : récompense à gauche du pseudo ===== */
+html.v2 .lbr2.lbr3.wrw{grid-template-columns:28px 58px 38px minmax(0,1fr) auto;grid-template-areas:"rk rw av who val"}
+html.v2 .lbr3.wrw>.lrw{grid-area:rw;width:auto;height:auto;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 2px;background:#2A2208;border:1px solid #EDB72F55;line-height:1}
+html.v2 .lbr3.wrw>.lrw b{font:700 15px/1 var(--fd);color:#FFD84A;letter-spacing:.02em}
+html.v2 .lbr3.wrw>.lrw small{font:600 9.5px/1.2 "Inter",sans-serif;color:#E8C66A;margin-top:2px;white-space:nowrap}
+html.v2 .lbr3.wrw>.lrw.pg2 small{color:#7CB7FF}html.v2 .lbr3.wrw>.lrw.pg3 small{color:#D59BFF}html.v2 .lbr3.wrw>.lrw.pg4 small{color:#FFD84A}
+html.v2 .lbr3.wrw>.lrw.none{background:transparent;border:0}
+html.v2 .lbr3.wrw>.uav,html.v2 .lbr3.wrw>img{grid-area:av}
+html.v2 .lbcap{display:grid;grid-template-columns:28px 58px 38px minmax(0,1fr) auto;column-gap:12px;padding:0 14px 8px;border-bottom:1px solid var(--line);font:600 10.5px "Inter",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+html.v2 .lbcap span:nth-child(1){text-align:center}html.v2 .lbcap span:nth-child(2){text-align:center}html.v2 .lbcap span:nth-child(3){grid-column:3/5}html.v2 .lbcap span:last-child{text-align:right}
+html.v2 .lbl .lbgap2{padding:10px 14px;text-align:center;font:600 11px "Inter",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);background:#0E1630;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+html.v2 body.light .lbr3.wrw>.lrw{background:#FFF6D6;border-color:#EDCB6A}html.v2 body.light .lbr3.wrw>.lrw b{color:#8A5A00}html.v2 body.light .lbr3.wrw>.lrw small{color:#8A6400}
+html.v2 body.light .lbl .lbgap2{background:#F2F5FB}
+@media(max-width:640px){
+ html.v2 .lbr2.lbr3.wrw{grid-template-columns:22px 46px 30px minmax(0,1fr) auto;grid-template-areas:"rk rw av who val";column-gap:7px;padding:10px 8px}
+ html.v2 .lbr3.wrw>.uav,html.v2 .lbr3.wrw>img{width:30px;height:30px}
+ html.v2 .lbr3.wrw>.lrw b{font-size:13px}html.v2 .lbr3.wrw>.lrw small{font-size:8.5px}
+ html.v2 .lbcap{grid-template-columns:22px 46px 30px minmax(0,1fr) auto;column-gap:7px;padding:0 8px 8px}
+ html.v2 .lbr3.wrw .cw{display:none}html.v2 .lbr3.wrw .lw{display:none}html.v2 .lbr3.wrw .ls{display:inline;margin-left:1px}
+ html.v2 .lbr3.wrw .val2 b{font-size:17px}
+ html.v2 .lbr2.lbr3.wrw.t1 .rk2,html.v2 .lbr2.lbr3.wrw.t2 .rk2,html.v2 .lbr2.lbr3.wrw.t3 .rk2{width:22px;height:22px;font-size:12px}
+}
+@media(max-width:360px){html.v2 .lbr2.lbr3.wrw{grid-template-columns:20px 42px 0 minmax(0,1fr) auto;column-gap:5px}html.v2 .lbr3.wrw>.uav,html.v2 .lbr3.wrw>img{display:none}html.v2 .lbcap{grid-template-columns:20px 42px 0 minmax(0,1fr) auto;column-gap:5px}}
