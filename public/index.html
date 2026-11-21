@@ -1368,8 +1368,8 @@ function rBoard(){
   /* 2. la liste */
   var row=function(r){var rw=scope!=='friends'&&r.rank<=20?(BR[kind]||[])[r.rank-1]:null;
    var st=isRuns?'':'<i class="ch" title="Cartes trouvées"><b>'+r.owned+'</b>/'+TOT()+'</i><i class="ch ho" title="Cartes Holo"><b>'+(r.holo||0)+'</b><i class="hic"></i></i><i class="ch my" title="Mythiques"><b>'+r.mythics+'</b><em>M</em></i>';
-   var rc=scope==='friends'?'':(rw?'<span class="lrw'+(rw.g?' pg'+rw.g:'')+'" title="Récompense lundi : '+brTxt(kind,r.rank)+'"><b>'+fmt(rw.c)+'</b><small>'+(rw.g?'+ pack':'Coins')+'</small></span>':'<span class="lrw none"></span>');
-   return '<button class="lbr2 lbr3'+(scope!=='friends'?' wrw':'')+(isRuns?'':' hs2')+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+rc+uav(r)+
+   var rc=(rw?'<span class="lrw'+(rw.g?' pg'+rw.g:'')+'" title="Récompense lundi : '+brTxt(kind,r.rank)+'"><b>'+fmt(rw.c)+'</b><small>'+(rw.g?'+ pack':'Coins')+'</small></span>':'<span class="lrw none"></span>');
+   return '<button class="lbr2 lbr3 wrw'+(isRuns?'':' hs2')+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+rc+uav(r)+
     '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+'</span>'+(st?'<span class="lbs2">'+st+'</span><i class="lsep"></i>':'')+
     '<span class="val2"><b>'+(isRuns?r.runs:fmt(hasPts?(r.cscore||0):r.owned))+'</b><small>'+(isRuns?(r.runs>1?'runs':'run'):hasPts?'points':'cartes')+'</small></span>'+'</button>'};
   h+='<div class="lbl"><div class="lbl-h"><b>'+(scope==='friends'?'Entre amis':'Classement')+'</b><span>'+(d.total?d.total+' joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':''):'')+'</span></div>'+(scope!=='friends'&&d.rows.length?'<div class="lbcap"><span>#</span><span>Gain</span><span>Joueur</span><span>'+(isRuns?'Runs':'Points')+'</span></div>':'')+
