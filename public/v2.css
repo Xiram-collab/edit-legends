@@ -1323,3 +1323,25 @@ html.v2 .lbpg b small{font:500 11px "Inter",sans-serif;color:var(--mut)}
 html.v2 .lbmine{display:block;width:calc(100% - 28px);margin:0 14px 12px;min-height:38px;border-radius:10px;border:1px dashed #EDB72F88;background:transparent;color:#FFD84A;font:700 13px var(--fd);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 html.v2 body.light .lbpg .btn{background:#fff;color:#0E1630;border-color:#C9D2E4}html.v2 body.light .lbpg b{color:#0E1630}html.v2 body.light .lbmine{color:#8A5A00}
 @media(max-width:400px){html.v2 .lbpg .btn span{display:none}html.v2 .lbpg .btn{min-width:52px;font-size:20px}}
+/* bannière de rareté à l'ouverture : plus fine */
+html.v2 .over .banner{font-family:var(--fd);font-weight:500;letter-spacing:.24em;font-size:clamp(30px,9vw,56px);-webkit-text-stroke:0;text-shadow:0 0 18px var(--a,#fff),0 2px 0 #0008}
+html.v2 .over .banner.hbn{font-weight:600;letter-spacing:.2em;font-size:clamp(22px,7vw,40px)}
+/* classement : stats à droite, séparées du score par une barre */
+html.v2 .lbr2.lbr3.wrw.hs2{grid-template-columns:28px 58px 38px minmax(0,1fr) auto 1px 70px;grid-template-areas:"rk rw av who st sep val"}
+html.v2 .lbr3 .lbs2{grid-area:st;display:flex;flex-direction:row;gap:6px;align-items:center;justify-content:flex-end}
+html.v2 .lbr3 .lbs2 .ch{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:6px;background:#0E1630;border:1px solid var(--line);font:500 11.5px "Inter",sans-serif;color:var(--mut);white-space:nowrap}
+html.v2 .lbr3 .lbs2 .ch b{font:700 13.5px var(--fd);color:#fff}
+html.v2 .lbr3 .lbs2 .ch.ho b{color:#8FE3FF}html.v2 .lbr3 .lbs2 .ch.my b,html.v2 .lbr3 .lbs2 .ch.my em{color:#FF6B9A;font-style:normal;font-weight:700}
+html.v2 .lbr3 .lbs2 .hic{font-size:12px}
+html.v2 .lbr3 .lsep{grid-area:sep;align-self:stretch;width:1px;margin:4px 0;background:linear-gradient(180deg,transparent,var(--line2),transparent)}
+html.v2 .lbr3 .val2{justify-self:end}
+html.v2 body.light .lbr3 .lbs2 .ch{background:#F2F5FB;border-color:#D5DCEA}html.v2 body.light .lbr3 .lbs2 .ch b{color:#0E1630}html.v2 body.light .lbr3 .lbs2 .ch.ho b{color:#0A7FB5}html.v2 body.light .lbr3 .lbs2 .ch.my b,html.v2 body.light .lbr3 .lbs2 .ch.my em{color:#C21E5A}
+@media(max-width:700px){
+ html.v2 .lbr2.lbr3.wrw.hs2{grid-template-columns:22px 44px 30px minmax(0,1fr) auto 1px 52px;column-gap:7px;padding:10px 8px}
+ html.v2 .lbr3 .lbs2{flex-direction:column;align-items:flex-end;gap:2px}
+ html.v2 .lbr3 .lbs2 .ch{padding:0;background:none;border:0;font-size:10px;line-height:1.15}
+ html.v2 .lbr3 .lbs2 .ch b{font-size:12.5px}
+ html.v2 .lbr3 .lbs2 .hic{font-size:11px}
+}
+@media(max-width:360px){html.v2 .lbr2.lbr3.wrw.hs2{grid-template-columns:20px 40px 0 minmax(0,1fr) auto 1px 46px;column-gap:5px}}
+@media(max-width:700px){html.v2 .lbr3.hs2 .who2 .ttl{white-space:normal;overflow:visible;line-height:1.15;font-size:10.5px}}
