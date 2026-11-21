@@ -966,7 +966,7 @@ function rHome(){
  '<div class="hpk-cta"><button class="btn big-b" id="hgo"'+(S.stock<1?' disabled':'')+'>'+openLbl(openCur())+'</button>'+multiBtns()+'</div></div></div>'+
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i,{isNew:true})+'</div>'}).join('')+'</div></section>'+
  '<section class="hstats"><button class="hs" data-t="col"><i class="hsi">'+HICO.col+'</i><span><b>'+owned+' <small>/ '+TOT(S.col)+'</small></b><em>cartes trouvées</em></span></button><button class="hs hst" data-t="col"><i class="hsi">'+HICO.holo+'</i><span><b>'+holoCount()+' <small>/ '+TOT(S.col)+'</small></b><em>cartes Holo</em></span></button><div class="hs"><i class="hsi">'+HICO.pk+'</i><span><b>'+S.opened+'</b><em>packs ouverts</em></span></div><button class="hs" data-t="shop"><i>'+ICO.coin+'</i><span><b>'+fmt(S.money)+'</b><em>'+CUR+'</em></span></button></section>'+
- '<div class="tick"><div class="track" style="animation-duration:'+Math.max(25,tkIds.length*3)+'s">'+names+names+names+names+'</div></div>'+
+ 
  '<section class="hsec"><div class="hsh"><h3>Comment ça marche</h3><p class="mut">Version 3 : de nouvelles cartes arrivent chaque mois.</p></div><ol class="hsteps">'+
  '<li><b>Ouvre des packs</b><span>5 cartes par pack, un pack offert chaque heure.</span></li>'+
  '<li><b>Complète ta collection</b><span>Six raretés, du Commun au Mythique, et chaque carte peut sortir en Holo.</span></li>'+

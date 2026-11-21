@@ -1363,3 +1363,8 @@ html.v2 body.light .lbr3 .lbs2 .ch{background:#F2F5FB;border-color:#D5DCEA}html.
  html.v2 .lbcap{display:none}
 }
 @media(max-width:360px){html.v2 .lbr2.lbr3.wrw.hs2{grid-template-columns:20px 42px minmax(0,1fr) auto 1px 46px;column-gap:6px}html.v2 .lbr3.wrw.hs2>.uav,html.v2 .lbr3.wrw.hs2>img{display:grid;place-items:center;width:30px;height:30px}}
+/* classement : plus de pastilles or/argent/bronze, juste le chiffre coloré */
+html.v2 .lbr2.lbr3.t1 .rk2,html.v2 .lbr2.lbr3.t2 .rk2,html.v2 .lbr2.lbr3.t3 .rk2,html.v2 .lbr2.lbr3.wrw.t1 .rk2,html.v2 .lbr2.lbr3.wrw.t2 .rk2,html.v2 .lbr2.lbr3.wrw.t3 .rk2{background:none!important;width:auto!important;height:auto!important;border-radius:0;box-shadow:none;font:700 20px/1 var(--fd)}
+html.v2 .lbr2.lbr3.t1 .rk2{color:#FFD84A}html.v2 .lbr2.lbr3.t2 .rk2{color:#D3DCEA}html.v2 .lbr2.lbr3.t3 .rk2{color:#E39A5B}
+html.v2 .lbr3 .rk2{text-align:center;font:700 16px/1 var(--fd);color:var(--mut)}
+html.v2 body.light .lbr2.lbr3.t1 .rk2{color:#B07A00}html.v2 body.light .lbr2.lbr3.t2 .rk2{color:#6B778F}html.v2 body.light .lbr2.lbr3.t3 .rk2{color:#A65A1E}
