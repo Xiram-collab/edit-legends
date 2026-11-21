@@ -649,7 +649,7 @@ a.btn{display:inline-block;text-decoration:none;text-align:center}
 .arows{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px}.arow{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 8px;opacity:.65}.arow.has{opacity:1;border-color:var(--c)}
 .arow .an{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.arow .ac{min-width:26px;text-align:right;font-weight:800}
 @media(max-width:520px){.lbr{grid-template-columns:28px 34px 1fr auto}.lbr .lsub{display:none}.lbr{grid-template-areas:"rk av nm lv"}}
-.dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;background:#6b7280}.dot.gn{background:#22e36b;box-shadow:0 0 8px #22e36b}.dot.yl{background:#ffd24a;box-shadow:0 0 6px #ffd24a88}.dot.rd{background:#ff4d5e}.dot.gy{background:#6b7280}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;background:#6b7280}.dot.gn{background:#22e36b;box-shadow:0 0 8px #22e36b}.dot.yl{background:#ffd24a;box-shadow:0 0 6px #ffd24a88}.dot.or{background:#ff8a2b;box-shadow:0 0 6px #ff8a2b88}.dot.rd{background:#ff4d5e}.dot.gy{background:#6b7280}
 .leg{display:inline-flex;align-items:center;gap:6px;font-size:.85em;color:var(--mut)}.on{color:#22e36b}
 
 /* ===== Boutons « pastille » : relief, onglet actif violet ===== */
@@ -1613,14 +1613,14 @@ function adGift(){
 /* ----- connectés en direct ----- */
 var frT=0,adLiveT=0,adLiveRows=[],SKEW=0;
 function nowMs(){return Date.now()+SKEW}
-function dotC(iso){var t=iso?Date.parse(iso):0;if(!t)return 'gy';var a=nowMs()-t;return a<300000?'gn':a<3600000?'yl':a>259200000?'gy':'rd'}
+function dotC(iso){var t=iso?Date.parse(iso):0;if(!t)return 'gy';var a=nowMs()-t;return a<300000?'gn':a<3600000?'yl':a<86400000?'or':a<259200000?'rd':'gy'}
 function dotH(iso){return '<i class="dot '+dotC(iso)+'"></i>'}
 function exact(iso){return iso?new Date(iso).toLocaleString('fr-FR',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'jamais'}
 function seenTxt(iso){var t=iso?Date.parse(iso):0;if(!t)return 'jamais';var a=nowMs()-t;if(a<300000)return 'En ligne';var m=Math.floor(a/60000);return m<60?'il y a '+m+' min':a<86400000?'il y a '+Math.floor(a/3600000)+' h '+('0'+(m%60)).slice(-2)+' min':'il y a '+Math.floor(a/86400000)+' j'}
 var adLiveTotal=0;
 function adLive(){
  function build(){if(!adAlive('live'))return;
-  $('abody').innerHTML='<div class="tiles" id="lvt"></div><div class="panel"><div class="bar"><b>Dernières connexions</b><span class="leg"><i class="dot gn"></i>en ligne (moins de 5 min)</span><span class="leg"><i class="dot yl"></i>moins de 1 h</span><span class="leg"><i class="dot rd"></i>plus de 1 h</span><span class="leg"><i class="dot gy"></i>plus de 3 jours</span></div>'+
+  $('abody').innerHTML='<div class="tiles" id="lvt"></div><div class="panel"><div class="bar"><b>Dernières connexions</b><span class="leg"><i class="dot gn"></i>en ligne (moins de 5 min)</span><span class="leg"><i class="dot yl"></i>moins de 1 h</span><span class="leg"><i class="dot or"></i>moins de 24 h</span><span class="leg"><i class="dot rd"></i>moins de 3 jours</span><span class="leg"><i class="dot gy"></i>plus de 3 jours</span></div>'+
    '<div class="tw"><table class="at"><tr><th></th><th>Joueur</th><th>Statut</th><th>Dernière connexion (heure exacte)</th></tr>'+
    adLiveRows.map(function(r){return '<tr class="clk" data-ap="'+esc(r.id)+'" data-ls="'+esc(r.lastSeen||'')+'"><td>'+dotH(r.lastSeen)+'</td><td><div class="who">'+uav(r)+esc(r.name)+newTag(r.createdAt)+(r.isAdmin?' <span class="tag">ADMIN</span>':'')+'</div></td><td class="lst">'+seenTxt(r.lastSeen)+'</td><td>'+exact(r.lastSeen)+'</td></tr>'}).join('')+'</table></div>'+(adLiveRows.length?'':'<p class="mut center">Personne pour l\'instant.</p>')+'<p class="mut sm" style="margin:8px 0 0">La liste montre les 150 derniers connectés. Mis à jour en direct (affichage chaque seconde, données du serveur toutes les 5 secondes). Le site envoie un signal toutes les minutes tant que la page est ouverte : « en ligne » veut dire vu il y a moins de 5 minutes.</p></div>';
   [].forEach.call(document.querySelectorAll('[data-ap]'),function(tr){tr.onclick=function(){adminTarget=tr.dataset.ap;adminSub='players';render();scrollTo(0,0)}});tick()}
