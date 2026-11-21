@@ -701,7 +701,7 @@ body.light .nban,body.light .nban *{color:#fff}
 </style>
 <link rel="stylesheet" href="v2.css">
 <script>try{if(localStorage.getItem('elv1')!=='1')document.documentElement.classList.add('v2')}catch(e){document.documentElement.classList.add('v2')}</script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});gtag('js',new Date());gtag('config','G-8D50N5DHNX');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});try{var c=JSON.parse(localStorage.getItem('el_consent')||'null');if(c&&c.a&&Date.now()-c.t<34e9)gtag('consent','update',{analytics_storage:'granted'})}catch(e){}gtag('js',new Date());gtag('config','G-8D50N5DHNX');</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8D50N5DHNX"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1952964860459948" crossorigin="anonymous"></script>
 </head>
@@ -2346,6 +2346,14 @@ function end(){touchOn=false;if(cur){off(cur);cur=null}}
 document.addEventListener('pointerup',function(e){if(e.pointerType!=='mouse')end()},{passive:true});
 document.addEventListener('pointercancel',end,{passive:true});
 document.addEventListener('pointerleave',end);})();</script>
-<script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".gcook");if(!a)return;e.preventDefault();window.googlefc=window.googlefc||{};googlefc.callbackQueue=googlefc.callbackQueue||[];googlefc.callbackQueue.push({"CONSENT_DATA_READY":function(){try{googlefc.showRevocationMessage()}catch(x){}}})});</script>
+<script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".gcook");if(!a)return;e.preventDefault();if(window.elShowConsent)elShowConsent();window.googlefc=window.googlefc||{};googlefc.callbackQueue=googlefc.callbackQueue||[];googlefc.callbackQueue.push({"CONSENT_DATA_READY":function(){try{googlefc.showRevocationMessage()}catch(x){}}})});</script>
+<div id="ckb" class="ckb" role="dialog" aria-label="Cookies" hidden><div class="ckb-t"><b>🍪 Mesure d'audience</b><p>Edit Legends utilise Google Analytics pour compter les visites et savoir quelles pages sont utilisées. Ces cookies ne sont déposés que si tu acceptes. <a href="/confidentialite.html">En savoir plus</a></p></div><div class="ckb-a"><button type="button" id="ckno">Refuser</button><button type="button" id="ckok">Accepter</button></div></div>
+<script>(function(){var b=document.getElementById('ckb');function get(){try{return JSON.parse(localStorage.getItem('el_consent')||'null')}catch(e){return null}}
+function set(a){try{localStorage.setItem('el_consent',JSON.stringify({a:a?1:0,t:Date.now()}))}catch(e){}if(window.gtag)gtag('consent','update',{analytics_storage:a?'granted':'denied'});b.hidden=true}
+function show(){if(document.querySelector('.fc-consent-root,.fc-dialog-container'))return;b.hidden=false}
+document.getElementById('ckok').onclick=function(){set(1)};document.getElementById('ckno').onclick=function(){set(0)};
+var c=get();if(!c||Date.now()-c.t>34e9)setTimeout(show,1200);
+window.elShowConsent=function(){b.hidden=false};
+new MutationObserver(function(){if(!b.hidden&&document.querySelector('.fc-consent-root,.fc-dialog-container'))b.hidden=true}).observe(document.body,{childList:true})})();</script>
 </body>
 </html>
