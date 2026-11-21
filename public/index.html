@@ -2347,13 +2347,13 @@ document.addEventListener('pointerup',function(e){if(e.pointerType!=='mouse')end
 document.addEventListener('pointercancel',end,{passive:true});
 document.addEventListener('pointerleave',end);})();</script>
 <script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".gcook");if(!a)return;e.preventDefault();if(window.elShowConsent)elShowConsent();window.googlefc=window.googlefc||{};googlefc.callbackQueue=googlefc.callbackQueue||[];googlefc.callbackQueue.push({"CONSENT_DATA_READY":function(){try{googlefc.showRevocationMessage()}catch(x){}}})});</script>
-<div id="ckb" class="ckb" role="dialog" aria-label="Cookies" hidden><div class="ckb-t"><b>🍪 Mesure d'audience</b><p>Edit Legends utilise Google Analytics pour compter les visites et savoir quelles pages sont utilisées. Ces cookies ne sont déposés que si tu acceptes. <a href="/confidentialite.html">En savoir plus</a></p></div><div class="ckb-a"><button type="button" id="ckno">Refuser</button><button type="button" id="ckok">Accepter</button></div></div>
+<div id="ckb" class="ckov" role="dialog" aria-modal="true" aria-label="Cookies" hidden><div class="ckb"><div class="ckb-t"><b>🍪 Mesure d'audience</b><p>Edit Legends utilise Google Analytics pour compter les visites et savoir quelles pages sont utilisées. Ces cookies ne sont déposés que si tu acceptes. <a href="/confidentialite.html">En savoir plus</a></p></div><div class="ckb-a"><button type="button" id="ckno">Refuser</button><button type="button" id="ckok">Accepter</button></div></div></div>
 <script>(function(){var b=document.getElementById('ckb');function get(){try{return JSON.parse(localStorage.getItem('el_consent')||'null')}catch(e){return null}}
-function set(a){try{localStorage.setItem('el_consent',JSON.stringify({a:a?1:0,t:Date.now()}))}catch(e){}if(window.gtag)gtag('consent','update',{analytics_storage:a?'granted':'denied'});b.hidden=true}
-function show(){if(document.querySelector('.fc-consent-root,.fc-dialog-container'))return;b.hidden=false}
+function set(a){try{localStorage.setItem('el_consent',JSON.stringify({a:a?1:0,t:Date.now()}))}catch(e){}if(window.gtag)gtag('consent','update',{analytics_storage:a?'granted':'denied'});b.hidden=true;document.documentElement.classList.remove('ckl')}
+function show(){if(document.querySelector('.fc-consent-root,.fc-dialog-container'))return;b.hidden=false;document.documentElement.classList.add('ckl')}
 document.getElementById('ckok').onclick=function(){set(1)};document.getElementById('ckno').onclick=function(){set(0)};
-var c=get();if(!c||Date.now()-c.t>34e9)setTimeout(show,1200);
-window.elShowConsent=function(){b.hidden=false};
-new MutationObserver(function(){if(!b.hidden&&document.querySelector('.fc-consent-root,.fc-dialog-container'))b.hidden=true}).observe(document.body,{childList:true})})();</script>
+var c=get();if(!c||Date.now()-c.t>34e9)show();
+window.elShowConsent=show;
+new MutationObserver(function(){if(!b.hidden&&document.querySelector('.fc-consent-root,.fc-dialog-container')){b.hidden=true;document.documentElement.classList.remove('ckl')}}).observe(document.body,{childList:true})})();</script>
 </body>
 </html>
