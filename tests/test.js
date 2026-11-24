@@ -8,10 +8,7 @@ C.START_STOCK = 3; // les scénarios ci-dessous partent de 3 packs
 
 let clock = 1e12;
 const db = fakeDb(cards, ['AAAA2222', 'BBBB3333', 'CCCC4444', 'DDDD5555', 'EEEE6666']);
-const { makeCode, checkCode } = require('../lib/codes');
-const CODE_NOW = Date.parse('2026-11-24T12:00:00Z');
-const MC = [1, 2, 3].map((k) => makeCode(CODE_NOW - k * 60000, 1000 + k));
-const h = createHandler(db, { adminIds: '111', now: () => clock, codeNow: () => CODE_NOW });
+const h = createHandler(db, { adminIds: '111', now: () => clock });
 const call = async (tok, body) => h(tok, body);
 let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
 
@@ -62,16 +59,10 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   assert.strictEqual(good, 3, 'réussies=' + good); assert.strictEqual(db.saves.get('B').data.stock, 0); ok('12 clics simultanés : seulement 3 packs ouverts');
 
   // codes : un code ne marche qu'une fois pour tout le site
-  assert.ok(checkCode('AP6J-L4PV-KLGE-5V').valid && new Date(checkCode('AP6J-L4PV-KLGE-5V').createdAt).toISOString() === '2026-11-12T22:02:00.000Z'); assert.ok(!checkCode('AP6J-L4PV-KLGE-5W').valid); ok('code de référence : valide (12/11 22:02 UTC), et faux si on change un caractère');
-  r = await call('tokB', { action: 'code', code: 'AP6J-L4PV-KLGE-5V' }); assert.strictEqual(r.status, 400); assert.ok(/expiré/.test(r.json.error)); ok('code trop ancien refusé');
-  r = await call('tokB', { action: 'code', code: makeCode(CODE_NOW + 3600000) }); assert.strictEqual(r.status, 400); ok('code daté du futur refusé');
-  db.saves.get('B').data.bad = 0; db.saves.get('B').version++;
-  r = await call('tokB', { action: 'code', code: MC[0].toLowerCase() }); assert.strictEqual(r.status, 200); assert.ok(r.json.res > 0 && r.json.res < require('../lib/config').WH.length && Array.isArray(r.json.spins) && r.json.spins.length >= 1); ok('code valide accepté (casse et tiret ignorés)');
-  assert.ok(db.codes.has(MC[0]) && db.codes.get(MC[0]).used); ok('code utilisé enregistré sous sa forme normalisée');
-  r = await call('tokA', { action: 'code', code: MC[0].replace(/-/g, '') }); assert.strictEqual(r.status, 400); ok('même code refusé à un autre joueur (même sans tirets)');
-  r = await call('tokB', { action: 'code', code: MC[0] }); assert.strictEqual(r.status, 400); ok('même code refusé au même joueur');
-  db.saves.get('B').data.bad = 0; db.saves.get('A').data.bad = 0; db.saves.get('B').version++; db.saves.get('A').version++;
-  const par = await Promise.all([call('tokA', { action: 'code', code: MC[1] }), call('tokB', { action: 'code', code: MC[1] })]);
+  r = await call('tokB', { action: 'code', code: 'aaaa-2222' }); assert.strictEqual(r.status, 200); assert.ok(r.json.res > 0 && r.json.res < require('../lib/config').WH.length && Array.isArray(r.json.spins) && r.json.spins.length >= 1); ok('code valide accepté (casse et tiret ignorés)');
+  r = await call('tokA', { action: 'code', code: 'AAAA2222' }); assert.strictEqual(r.status, 400); ok('même code refusé à un autre joueur');
+  r = await call('tokB', { action: 'code', code: 'AAAA2222' }); assert.strictEqual(r.status, 400); ok('même code refusé au même joueur');
+  const par = await Promise.all([call('tokA', { action: 'code', code: 'BBBB3333' }), call('tokB', { action: 'code', code: 'BBBB3333' })]);
   assert.strictEqual(par.filter((x) => x.status === 200).length, 1); ok('même code envoyé par 2 joueurs en même temps : un seul gagne');
 
   // tour de roue payant (150 Coins), sans code
@@ -82,10 +73,10 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
 
   // essais ratés : verrou
   db.saves.get('B').data.bad = 0; db.saves.get('B').data.lock = 0; db.saves.get('B').version++;
-  for (let i = 0; i < 4; i++) { r = await call('tokB', { action: 'code', code: MC[2].slice(0, -1) + 'ABCD'[i] }); assert.strictEqual(r.status, 400); assert.ok(!/attends/.test(r.json.error)); }
-  r = await call('tokB', { action: 'code', code: 'ZZZZ-4999-ZZZZ-99' }); assert.strictEqual(r.status, 400); assert.ok(/attends/.test(r.json.error));
-  r = await call('tokB', { action: 'code', code: MC[2] }); assert.strictEqual(r.status, 429); ok('5 mauvais codes : verrou 60 s');
-  clock += 61000; r = await call('tokB', { action: 'code', code: MC[2] }); assert.strictEqual(r.status, 200); ok('verrou levé après 60 s');
+  for (let i = 0; i < 4; i++) { r = await call('tokB', { action: 'code', code: 'ZZZZ' + i + '999' }); assert.strictEqual(r.status, 400); assert.ok(!/attends/.test(r.json.error)); }
+  r = await call('tokB', { action: 'code', code: 'ZZZZ4999' }); assert.strictEqual(r.status, 400); assert.ok(/attends/.test(r.json.error));
+  r = await call('tokB', { action: 'code', code: 'CCCC4444' }); assert.strictEqual(r.status, 429); ok('5 mauvais codes : verrou 60 s');
+  clock += 61000; r = await call('tokB', { action: 'code', code: 'CCCC4444' }); assert.strictEqual(r.status, 200); ok('verrou levé après 60 s');
 
   // récompenses : simulation de la roue (distribution)
   const { spinForReward, wheelPick } = require('../lib/game'); const CW = require('../lib/config').WH;
@@ -186,6 +177,6 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
 
   // suppression du compte
   r = await call('tokB', { action: 'delete' }); assert.strictEqual(r.status, 200); assert.ok(!db.saves.has('B')); ok('suppression du compte');
-  assert.strictEqual(db.codes.get(MC[0]).used, true); ok('un code déjà utilisé reste utilisé après suppression');
+  assert.strictEqual(db.codes.get('AAAA2222').used, true); ok('un code déjà utilisé reste utilisé après suppression');
   console.log('\n' + n + ' vérifications réussies');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });

@@ -41,8 +41,8 @@ module.exports = function fakeDb(cards, validCodes) {
       saves.set(uid, { data: JSON.parse(JSON.stringify(S)), version: version + 1, sum }); return true;
     },
     async getCards() { return cards; },
-    async useCode(code, uid) { const c = codes.get(code); if (c && c.used) return false; codes.set(code, { used: true, by: uid }); return true; },
-    async unuseCode(code) { codes.delete(code); },
+    async useCode(code, uid) { const c = codes.get(code); if (!c || c.used) return false; c.used = true; c.by = uid; return true; },
+    async unuseCode(code) { const c = codes.get(code); if (c) c.used = false; },
     async deleteUser(uid) { saves.delete(uid); profiles.delete(uid); for (let i = friends.length - 1; i >= 0; i--) if (friends[i].a === uid || friends[i].b === uid) friends.splice(i, 1); },
 
     async getProfile(id) { return profiles.get(id) || null; },
