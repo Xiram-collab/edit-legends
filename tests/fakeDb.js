@@ -41,8 +41,8 @@ module.exports = function fakeDb(cards, validCodes) {
       saves.set(uid, { data: JSON.parse(JSON.stringify(S)), version: version + 1, sum }); return true;
     },
     async getCards() { return cards; },
-    async useCode(code, uid) { const c = codes.get(code); if (!c || c.used) return false; c.used = true; c.by = uid; return true; },
-    async unuseCode(code) { const c = codes.get(code); if (c) c.used = false; },
+    async useCode(code, uid) { const c = codes.get(code); if (c && c.used) return false; codes.set(code, { used: true, by: uid }); return true; },
+    async unuseCode(code) { codes.delete(code); },
     async deleteUser(uid) { saves.delete(uid); profiles.delete(uid); for (let i = friends.length - 1; i >= 0; i--) if (friends[i].a === uid || friends[i].b === uid) friends.splice(i, 1); },
 
     async getProfile(id) { return profiles.get(id) || null; },
@@ -111,7 +111,7 @@ module.exports = function fakeDb(cards, validCodes) {
       return { counts, total };
     },
     async userRuns(uid) { let n = 0; codes.forEach((c) => { if (c.used && c.by === uid) n++; }); return n; },
-    async codeStats() { return { total: codes.size, used: [...codes.values()].filter((c) => c.used).length }; },
+    async codeStats() { return { total: require('../lib/config').CODE_LIMIT, used: [...codes.values()].filter((c) => c.used).length }; },
     async getPerms(uid) { const p = profiles.get(uid); if (!p || p.perms == null) return null; return JSON.parse(p.perms); },
     async setPerms(uid, perms) { const p = profiles.get(uid); if (p) p.perms = perms == null ? null : JSON.stringify(perms); },
     async listAdmins() { return [...profiles.values()].filter((p) => p.is_admin).map((p) => ({ user_id: p.user_id, name: p.name, avatar: p.avatar || '', discord_id: p.discord_id || '', last_seen: p.last_seen || null, perms: p.perms == null ? null : p.perms })); },

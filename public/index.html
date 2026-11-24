@@ -2215,12 +2215,12 @@ function rCode(){
  var ICO='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01"/></svg>';
  var dbox='<aside class="dbox"><h3>'+ICO+' Tu as ton code de fin de map ? Voici quoi faire</h3><ol class="dsteps">'+
   ''+
-  '<li class="dg">Sur la map Fortnite</li><li><span>Va jusqu\'à la fin de la map : le <b>code de fin</b> s\'affiche et reste affiché tant que la manche n\'est pas relancée.</span></li><li><span><b>Copie ou note ce code</b> avant de relancer une manche.</span></li><li class="dg">Sur Discord</li><li><span>Rejoins le serveur <b>EditLegends</b> (bouton ci-dessous).</span></li><li><span>Va dans le salon <b>code</b> (catégorie <b>Edit Legends</b>).</span></li><li><span>Tape <b>/code</b> puis colle le code de fin de la map.</span></li><li><span>Le bot te répond avec un <b>code du site</b> de 8 caractères (XXXX-XXXX) : copie-le.</span></li><li class="dg">Sur le site</li><li><span>Reviens ici, colle ce code dans la case puis clique sur <b>Tourner la roue</b>.</span></li><li><span>Ta récompense arrive tout de suite : cartes et Coins directement, packs dans tes <b>packs en attente</b>.</span></li></ol>'+
+  '<li class="dg">Sur la map Fortnite</li><li><span>Va jusqu\'à la fin de la map : le <b>code de fin</b> s\'affiche et reste affiché tant que la manche n\'est pas relancée.</span></li><li><span><b>Copie ou note ce code</b> avant de relancer une manche.</span></li><li class="dg">Sur le site</li><li><span>Colle le code de fin de la map (<b>XXXX-XXXX-XXXX-XX</b>) dans la case puis clique sur <b>Tourner la roue</b>. Un code ne marche qu'une fois et doit être utilisé dans les <b>48 h</b>.</span></li><li><span>Ta récompense arrive tout de suite : cartes et Coins directement, packs dans tes <b>packs en attente</b>.</span></li></ol>'+
   '<a class="dbtn" href="https://discord.gg/editlegends" target="_blank" rel="noopener">'+ICO+' Rejoindre le Discord</a>'+
   '<p class="mut dnote">Un code de fin de map ne donne qu\'un seul code du site, utilisable une seule fois. Chaque code utilisé compte comme un run au classement.</p></aside>';
  $('main').innerHTML='<div class="panel"><h2>Code de la map</h2><div class="mapcode"><span class="mut sm">La map Fortnite est disponible ! Code île</span><b id="mapc">0952-3205-0166</b><button class="btn sm gold" id="mapcp">Copier</button></div><p class="mut">Chaque code de fin de map te donne un tour de roue. Suis les étapes ci-dessous pour récupérer ton code du site.</p>'+
  '<div class="cgrid"><div class="wheelw"><div class="wheel"><div class="ptr"></div>'+wheelSvg()+'</div><div class="wleg">'+leg+'</div>'+
- '<label class="skipl"><input type="checkbox" id="skp"'+(skipAnim?' checked':'')+'> Passer l\'animation de la roue</label><div class="cform"><input id="cin" maxlength="9" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn" id="cgo">Tourner la roue</button></div>'+
+ '<label class="skipl"><input type="checkbox" id="skp"'+(skipAnim?' checked':'')+'> Passer l\'animation de la roue</label><div class="cform"><input id="cin" maxlength="17" placeholder="XXXX-XXXX-XXXX-XX" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn" id="cgo">Tourner la roue</button></div>'+
  '<div class="cpay"><span class="mut sm">Pas de code ? Tu peux aussi lancer la roue avec tes Coins.</span><button class="btn gold sm" id="cpay"'+(S.money<SPIN_PRICE?' disabled':'')+'>Lancer pour '+fmt(SPIN_PRICE)+' '+CUR+'</button></div>'+
  '<div class="cmsg" id="cmsg"></div>'+pend+'</div>'+dbox+'</div></div>';
  $('skp').onchange=function(){skipAnim=this.checked;try{localStorage.setItem('el_skip',skipAnim?'1':'0')}catch(e){}};
@@ -2234,14 +2234,14 @@ function rCode(){
  var pb=$('cpay');if(pb)twice(pb,function(){play({action:'spinpay'})},'Confirmer : '+fmt(SPIN_PRICE)+' '+CUR);
  if(autoPay){autoPay=false;if(S.money>=SPIN_PRICE)setTimeout(function(){play({action:'spinpay'})},400)}
  var go=function(){if(spinning||busy||netBusy)return;var c=($('cin').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-  if(c.length!==8){msg('Entre ton code de 8 caractères (celui donné par le bot)');return}
+  if(c.length!==14){msg('Entre le code de fin de la map (14 caractères, XXXX-XXXX-XXXX-XX)');return}
   $('cgo').disabled=true;msg('Vérification...',true);
   var prev=Object.assign({},S.col);
   act({action:'code',code:c}).then(function(r){msg('Bonne chance...',true);$('cin').disabled=true;
    runSpins(r.spins||[{res:r.res}],0,function(o){setState(r.state);msg(winText(o),true);winEnd(o,prev)})
   }).catch(function(e){$('cgo').disabled=false;if(e.message!=='busy')msg(e.message||'Erreur',false)})};
  $('cgo').onclick=go;$('cin').onkeydown=function(e){if(e.key==='Enter')go()};
- $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);this.value=v.replace(/(.{4})(?=.)/g,'$1-')}}
+ $('cin').oninput=function(){var v=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,14);this.value=v.replace(/^(.{4})(.{0,4})(.{0,4})(.{0,2}).*$/,function(m,a,b,c,d){return [a,b,c,d].filter(Boolean).join('-')})}}
 
 /* ---------- packs en attente ---------- */
 var WPT=[{g:0,n:'Pack Normal',l:'N',c:'#9aa4b2'},{g:2,n:'Pack Rare+',l:'R+',c:'#3b9cff'},{g:3,n:'Pack Épique+',l:'É+',c:'#b45cff'},{g:4,n:'Pack Légendaire+',l:'L+',c:'#ffb020'},{g:5,n:'Carte Mythique au choix',l:'M',c:'#ff3d81'},{g:8,n:'Mythique au hasard',l:'M',c:'#ff3d81'},{g:9,n:'Holo au hasard',l:'✨',c:'#c58bff'},{g:6,n:'Carte au hasard',l:'C',c:'#1fe0d0'},{g:7,n:'Carte achetée au marché',l:'✓',c:'#ffc83d'}];
