@@ -726,7 +726,7 @@ body.light .nban,body.light .nban *{color:#fff}
 <div id="toast" class="toast" hidden></div>
 <div id="login" class="lp" hidden><div class="lp-wrap">
 <div class="lp-top"><h1 class="logo disp"><img src="img/logo.png" class="lg" alt="" width="44" height="44">Edit Legends</h1><button class="dbtn ldiscord"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/></svg> Se connecter</button></div>
-<section class="lp-hero"><div class="lp-ht"><div class="v2b" id="lprel"><b>V3</b> 60 nouvelles cartes</div><div class="lp-kick">Le jeu de cartes de la scène Fortnite</div>
+<section class="lp-hero"><div class="lp-ht"><div class="v2b" id="lprel"><b>1.4</b> 28 nouvelles cartes</div><div class="lp-kick">Le jeu de cartes de la scène Fortnite</div>
 <h2 class="lp-h">Collectionne<br>les <em>légendes</em><br>de l'edit</h2>
 <p class="lp-p">Ouvre des packs, trouve les éditeurs, influenceurs, Creative Warriors, Buildfighters, mappeurs et joueurs esport qui font la scène Fortnite, revends tes doublons et complète ta collection. Gratuit, sans mot de passe.</p>
 <button class="dbtn lp-big ldiscord"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.5-4.6A8 8 0 1 1 21 12z"/></svg> Se connecter avec Discord</button>
@@ -767,7 +767,7 @@ function regen(){if(!S)return;var n=Date.now();if(S.stock>=MAXSTOCK){S.last=n;re
 /* Seules les préférences (équipe, tier list, son) sont envoyées. Argent, cartes et packs ne dépendent que du serveur. */
 function save(){if(!SESSION)return;clearTimeout(prefT);prefT=setTimeout(function(){var p={};PREFK.forEach(function(k){p[k]=S[k]});api('prefs',{prefs:p}).catch(function(){})},700)}
 /* nombre de cartes du catalogue : sans les cartes retirées (sauf celles que le joueur possède encore) */
-var RELS=[{v:'V3',n:60},{v:'V4',n:28,at:200}]; // versions de cartes (remplacé par RELEASES de lib/config.js)
+var RELS=[{v:'V3',lab:'1.3',n:60},{v:'V4',lab:'1.4',n:28,at:200}]; // versions de cartes (remplacé par RELEASES de lib/config.js)
 function relAct(){var n=0;CARDS.forEach(function(c){if(c&&c[0]!=='?'&&!c[5])n++});return RELS.filter(function(r){return !r.at||n>=r.at})}
 function curRel(){var a=relAct();return a.length?a[a.length-1]:{v:'',n:0}}
 function newIds(){var n=curRel().n,o=[];for(var i=CARDS.length-1;i>=0&&o.length<n;i--){var c=CARDS[i];if(c&&c[0]!=='?'&&!c[5])o.push(i)}return o}
@@ -963,7 +963,7 @@ function rHome(){
  var hpq=RAR.map(function(r,k){return (1-Math.pow(1-(r.p/hsum)*((HOLOC.p[k]||0)/100),5))*100}),hmx=Math.max.apply(null,hpq)||1;var hfm=function(v){return (v<1?v.toFixed(2):v<10?v.toFixed(1):v.toFixed(0)).replace('.',',')};var hlad=RAR.slice().map(function(r,i){return {r:r,i:i}}).reverse().map(function(o){var v=hpq[o.i];return '<div class="lr"><b style="color:'+HEX[o.i]+'">'+o.r.n+'</b><div class="lb"><i style="--w:'+Math.max(1.5,v)+'%;background:'+HEX[o.i]+'"></i></div><span>'+hfm(v)+' %</span></div>'}).join('');
  var ICO={pk:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M12 12v5"/></svg>',col:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="10" rx="2"/><rect x="14" y="4" width="7" height="10" rx="2"/><path d="M3 18h18"/></svg>',coin:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5h4.5a2 2 0 010 4H9"/></svg>',star:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>'};
  $('main').innerHTML=
- '<section class="hx"><div class="hx-l"><div class="v2b"><b>'+curRel().v+'</b> '+NW.length+' nouvelles cartes</div><h2 class="big">Collectionne les <em>légendes</em> de l\'edit</h2>'+
+ '<section class="hx"><div class="hx-l"><div class="v2b"><b>'+(curRel().lab||curRel().v)+'</b> '+NW.length+' nouvelles cartes</div><h2 class="big">Collectionne les <em>légendes</em> de l\'edit</h2>'+
  '<p class="lead">Le jeu de cartes de la scène Fortnite : éditeurs, mappeurs, influenceurs, Creative Warriors, Buildfighters et esport, du Commun au Mythique.</p>'+
  '<div class="hpack"><div class="hpk-art" aria-hidden="true">'+(S.stock>2?'<i class="hpk-b hpk-b2"></i>':'')+(S.stock>1?'<i class="hpk-b hpk-b1"></i>':'')+'<div class="hpk-pk'+(S.stock<1?' off':'')+'"><img src="img/logo.png" alt="" width="80" height="80"><b>PACK</b><span>5 cartes</span></div></div>'+
  '<div class="hpk-r"><div class="hpk-k">Packs gratuits</div><div class="hpk-n"><b>'+S.stock+'</b><span>/ '+MAXSTOCK+'</span><em>'+(S.stock>0?'prêt'+(S.stock>1?'s':'')+' à ouvrir':'aucun pour l\'instant')+'</em></div>'+pips()+
@@ -972,7 +972,7 @@ function rHome(){
  '<div class="fanw">'+top.map(function(i,k){return '<div class="fan f'+k+'">'+cardHTML(i,{isNew:true})+'</div>'}).join('')+'</div></section>'+
  '<section class="hstats"><button class="hs" data-t="col"><i class="hsi">'+HICO.col+'</i><span><b>'+owned+' <small>/ '+TOT(S.col)+'</small></b><em>cartes trouvées</em></span></button><button class="hs hst" data-t="col"><i class="hsi">'+HICO.holo+'</i><span><b>'+holoCount()+' <small>/ '+TOT(S.col)+'</small></b><em>cartes Holo</em></span></button><div class="hs"><i class="hsi">'+HICO.pk+'</i><span><b>'+S.opened+'</b><em>packs ouverts</em></span></div><button class="hs" data-t="shop"><i>'+ICO.coin+'</i><span><b>'+fmt(S.money)+'</b><em>'+CUR+'</em></span></button></section>'+
  
- '<section class="hsec"><div class="hsh"><h3>Comment ça marche</h3><p class="mut">Version '+curRel().v.replace('V','')+' : de nouvelles cartes arrivent chaque mois.</p></div><ol class="hsteps">'+
+ '<section class="hsec"><div class="hsh"><h3>Comment ça marche</h3><p class="mut">Version '+(curRel().lab||curRel().v)+' : de nouvelles cartes arrivent chaque mois.</p></div><ol class="hsteps">'+
  '<li><b>Ouvre des packs</b><span>5 cartes par pack, un pack offert chaque heure.</span></li>'+
  '<li><b>Complète ta collection</b><span>Six raretés, du Commun au Mythique, et chaque carte peut sortir en Holo.</span></li>'+
  '<li><b>Revends et achète</b><span>Tes doublons deviennent des Coins pour des packs à rareté garantie.</span></li>'+
@@ -2277,7 +2277,7 @@ document.addEventListener('pointermove',function(e){if(e.pointerType!=='mouse')r
 var lpT=[],lpOn=false;
 function lpStart(){if(lpOn)return;lpOn=true;
  fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'preview'})}).then(function(r){return r.json()}).then(function(j){
-  if(!j.cards||!j.cards.length)return;CARDS.length=0;j.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});if(j.releases)RELS=j.releases;var lr=$('lprel');if(lr){var cr=curRel();lr.innerHTML='<b>'+cr.v+'</b> '+newIds().length+' nouvelles cartes'}
+  if(!j.cards||!j.cards.length)return;CARDS.length=0;j.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});if(j.releases)RELS=j.releases;var lr=$('lprel');if(lr){var cr=curRel();lr.innerHTML='<b>'+(cr.lab||cr.v)+'</b> '+newIds().length+' nouvelles cartes'}
   [].forEach.call(document.querySelectorAll('.lp .fan'),function(el,k){var r=+el.dataset.r,pool=[];CARDS.forEach(function(c,i){if(c&&c[2]===r&&c[0]!=='?')pool.push(i)});if(!pool.length)return;
    var cur=-1,show=function(){var n;do{n=pool[Math.floor(Math.random()*pool.length)]}while(pool.length>1&&n===cur);cur=n;el.innerHTML=cardHTML(n);el.firstChild.classList.add('lpin')};
    show();setTimeout(function(){lpT.push(setInterval(show,1000))},k*330)})}).catch(function(){})}
