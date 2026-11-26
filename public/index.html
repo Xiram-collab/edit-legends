@@ -699,7 +699,7 @@ body.light .nban,body.light .nban *{color:#fff}
 .over{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
 .over #ok{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30}
 </style>
-<link rel="stylesheet" href="v2.css?v=20261126d">
+<link rel="stylesheet" href="v2.css?v=20261126e">
 <script>try{if(localStorage.getItem('elv1')!=='1')document.documentElement.classList.add('v2')}catch(e){document.documentElement.classList.add('v2')}</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});try{var c=JSON.parse(localStorage.getItem('el_consent')||'null');if(c&&c.a&&Date.now()-c.t<34e9)gtag('consent','update',{analytics_storage:'granted'})}catch(e){}gtag('js',new Date());gtag('config','G-8D50N5DHNX');</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8D50N5DHNX"></script>
@@ -1405,6 +1405,7 @@ function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(
  for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span><b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'</b></div>';
  return h+'<div class="luck"><b>Petite mise = plus de chance</b><span>3 Mythiques : '+one(Math.pow(P[5],3))+' à cette mise</span><i style="width:'+Math.round(luckOf(b)*100)+'%"></i></div>'}
 function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
+function winPop(g,up){var sl=$('slt');if(!sl)return;var o=sl.querySelector('.wpop');if(o)o.remove();var d=document.createElement('div');d.className='wpop'+(up?'':' lo');d.innerHTML='<b>+'+fmt(g)+'</b><span>'+CUR+'</span>';sl.appendChild(d);setTimeout(function(){d.remove()},2200)}
 function rSlot(){var k0=CAS();CPOOL=cpool();if(k0.cred>0)sbet=Math.min(sbet,CASC.BETS.filter(function(x){return x<=k0.cred}).pop()||10);
  $('main').innerHTML=casWrap('<section class="floor" id="fl"><div class="swrap"><div class="cab">'+lights(20,12)+'<div class="sign"><b>EDIT</b> SLOTS</div>'+
  '<div class="lcd"><div class="cr"><span>Crédits</span><b id="lcr">0</b></div><div><span>Mise par tour</span><b id="lbt">0</b></div><div><span>Dernier gain</span><b id="llw">'+fmt(slotLast)+'</b></div></div>'+
@@ -1459,6 +1460,7 @@ function spin(){if(busy||netBusy||!$('spin'))return;var k=CAS(),free=k.free>0;
     if(g>(r.wasFree?0:b)){m.className='msg win';m.textContent='Gagné ! '+fmt(g)+' crédits'+(r.wasFree?'':' (tu avais misé '+fmt(b)+')');if(mult>=18){csnd('big');party(fl,3000);rain(fl,60);cbanner(fl,mult>=100?'MÉGA GAIN':'GROS GAIN',g)}else{csnd('win');party(fl,1200);rain(fl,18)}}
     else if(g){m.className='msg';m.textContent='Tu récupères '+fmt(g)+' sur '+fmt(b);csnd('push')}
     else{m.className='msg lose';m.textContent=r.wasFree?'Rien sur ce tour gratuit':'Perdu · −'+fmt(b);csnd('lose')}
+    if(g>0)winPop(g,g>(r.wasFree?0:b));
     setTimeout(function(){if(c)c.classList.add('hit')},30)}
    var kk=CAS();if(kk.free&&!r.freeWon)m.textContent+=' · encore '+kk.free+' gratuit'+(kk.free>1?'s':'');
    $('llw').textContent=fmt(slotLast);$('shist').innerHTML=histHTML();busy=false;

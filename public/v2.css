@@ -1616,3 +1616,9 @@ html.v2 .hsep{border:0;height:2px;margin:34px 0 0;border-radius:2px;background:l
  .casx .chp{width:min(36px,9.4vw);height:min(36px,9.4vw);font-size:min(12px,3.2vw)}
  .casx .cabb{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
 }
+/* gain affiché sur les rouleaux */
+.casx .wpop{position:absolute;left:50%;top:50%;z-index:6;display:flex;align-items:baseline;gap:6px;padding:8px 18px;border-radius:999px;background:radial-gradient(circle,#2a1600ee,#120800ee);border:2px solid #ffd24a;box-shadow:0 0 24px #ffb020aa;transform:translate(-50%,-50%);pointer-events:none;animation:cx_wpop 2.2s cubic-bezier(.2,1.4,.4,1) forwards;white-space:nowrap}
+.casx .wpop b{font:800 clamp(30px,8vw,46px)/1 var(--fd);color:#ffd24a;text-shadow:0 0 14px #ff9a00}
+.casx .wpop span{font:800 clamp(14px,3.6vw,20px) var(--fd);color:#fff;text-transform:uppercase}
+.casx .wpop.lo{border-color:#9aa4b2;box-shadow:0 0 16px #0008}.casx .wpop.lo b{color:#e6e6e6;text-shadow:none}
+@keyframes cx_wpop{0%{opacity:0;transform:translate(-50%,-30%) scale(.5)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}22%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1;transform:translate(-50%,-50%)}100%{opacity:0;transform:translate(-50%,-90%)}}
