@@ -1359,7 +1359,7 @@ function rCom(){
 function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Erreur')+'</div>'}
 
 /* ----- casino : machine à sous, plus ou moins, pubs. Les tirages se font sur le serveur, la page affiche. ----- */
-var CASC={BETS:[10,25,50,100,250,500,1000],T3:[4,7,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.32,.26,.19,.12,.08,.03],SPHI:[.26,.23,.19,.14,.11,.07],CL:{lo:.13,hi:.18},HL_MARGE:.95,ADS:{coins:100,max:5,n:3,sec:5}};
+var CASC={BETS:[10,25,50,100,250,500,1000],T3:[4,7,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.275,.2375,.19,.135,.1025,.06],SPHI:[.275,.2375,.19,.135,.1025,.06],CL:{lo:.1675,hi:.1675},HL_MARGE:.95,ADS:{coins:100,max:5,n:3,sec:5}};
 var CLV='<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#3ddc84" stroke="#0b5e31" stroke-width="2"><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z" transform="rotate(90 32 32)"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z"/><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z" transform="rotate(90 32 32)"/></g><circle cx="32" cy="32" r="4" fill="#0b5e31"/></svg>';
 var CSFX={tick:function(){tone(1100+Math.random()*300,.025,'square',.025)},stop:function(){tone(160,.12,'triangle',.2);tone(80,.16,'sine',.22)},
  win:function(){[523,659,784,1047].forEach(function(f,k){tone(f,.16,'square',.06,k*.08)})},

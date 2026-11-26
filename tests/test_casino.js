@@ -21,8 +21,8 @@ const me = async (tok) => (await call(tok, { action: 'me' })).json;
   // ---------- économie : retour au joueur ----------
   const cf = K.cfgOf(null);
   const lo = K.rtp(cf, 10).rtp, hi = K.rtp(cf, 1000).rtp;
-  assert.ok(lo > 0.9 && lo < 1.0, 'petites mises ' + lo); assert.ok(hi > 0.78 && hi < 0.9, 'grosses mises ' + hi); assert.ok(lo > hi);
-  ok('machine à sous : ~' + Math.round(lo * 100) + ' % rendu à petite mise, ~' + Math.round(hi * 100) + ' % à grosse mise (la banque gagne toujours)');
+  assert.ok(Math.abs(lo - hi) < 1e-9, 'mêmes chances ' + lo + ' ' + hi); assert.ok(lo > 0.92 && lo < 0.94, 'rendu ' + lo);
+  ok('machine à sous : ~' + Math.round(lo * 1000) / 10 + ' % rendu, le même pour toutes les mises');
   assert.strictEqual(K.mult(cf, [6, 6, 2]), 2); assert.strictEqual(K.mult(cf, [5, 5, 5]), 250); assert.strictEqual(K.mult(cf, [1, 1, 4]), 1); assert.strictEqual(K.mult(cf, [0, 3, 5]), 0); ok('combinaisons : 2 trèfles ×2, 3 Mythiques ×250, paire, rien');
 
   // ---------- machine à sous ----------
