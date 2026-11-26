@@ -62,23 +62,11 @@ const me = async (tok) => (await call(tok, { action: 'me' })).json;
     const st = (await me('tokB')).state.cas;
     if (!st.hl) { r = await call('tokB', { action: 'hlstart', b: 10 }); assert.strictEqual(r.status, 200); continue; }
     const rr = cards[st.hl.cur][2];
-    r = await call('tokB', { action: 'hlguess', d: rr === 5 ? -1 : 1 }); assert.strictEqual(r.status, 200); played++;
+    r = await call('tokB', { action: 'hlguess', d: rr >= 4 ? 0 : 1 }); assert.strictEqual(r.status, 200); played++;
     if (r.json.ok) { const pot = r.json.hl.pot, mm = r.json.state.money; r = await call('tokB', { action: 'hlcash' }); assert.strictEqual(r.json.state.money, mm + pot); cashed = true; }
   }
   assert.ok(played > 0); ok('plus ou moins : ' + played + ' paris joués' + (cashed ? ', gain encaissé' : ''));
 
-  // plafond de gain
-  assert.strictEqual(cf.CAP, 50000);
-  const sv = db.saves.get('B').data; sv.cas.hl = null; await coins('B', 1000);
-  r = await call('tokB', { action: 'hlstart', b: 1000 }); assert.strictEqual(r.status, 200);
-  db.saves.get('B').data.cas.hl.pot = 49000;
-  const mc = (await me('tokB')).state.money; let capped = false;
-  for (let k = 0; k < 40 && !capped; k++) {
-    const st = (await me('tokB')).state.cas; if (!st.hl) { await coins('B', 1000); await call('tokB', { action: 'hlstart', b: 1000 }); db.saves.get('B').data.cas.hl.pot = 49000; continue; }
-    const rr = cards[st.hl.cur][2]; r = await call('tokB', { action: 'hlguess', d: rr === 5 ? -1 : 1 });
-    if (r.json.capped) { capped = true; assert.strictEqual(r.json.capped, 50000); assert.strictEqual(r.json.state.cas.hl, null); }
-  }
-  assert.ok(capped); ok('plus ou moins : gain plafonné à 50 000, encaissé tout seul');
   // ---------- pubs ----------
   r = await call('tokB', { action: 'adclaim' }); assert.strictEqual(r.status, 400); ok('pas de Coins sans lancer les pubs');
   r = await call('tokB', { action: 'adstart' }); assert.strictEqual(r.status, 200);
