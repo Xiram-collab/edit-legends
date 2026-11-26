@@ -1584,3 +1584,4 @@ html.v2 .gsw .nb{position:absolute;top:-5px;right:-5px;min-width:17px;height:17p
 #ov.adov .adsc h2{font:700 34px var(--fd);margin:0;color:#fff}#ov.adov .adsc p{color:#9aa4c8;margin:6px 0 0}
 #ov.adov .adc{font:700 26px var(--fd);color:#ffd24a}
 html.v2 .hshopw{margin:34px 0 10px}html.v2 .hshopw .shhead{margin-bottom:12px}
+html.v2 .hsep{border:0;height:2px;margin:34px 0 0;border-radius:2px;background:linear-gradient(90deg,transparent,#3a4a8a 10%,#5b6cc0 50%,#3a4a8a 90%,transparent)}html.v2 .hsep+.hshopw{margin-top:24px}
