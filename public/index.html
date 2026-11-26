@@ -1403,7 +1403,7 @@ function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(
  '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span><div><b>'+fmt(Math.floor(b*CASC.C2))+'</b></div></div>';
  for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span><b>'+fmt(Math.floor(b*CASC.T3[k]))+'</b></div>';
  for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span><b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'</b></div>';
- return h+'<div class="luck"><b>Petite mise = plus de chance</b><span>Plus ta mise est petite, plus les belles combinaisons sortent</span><i style="width:'+Math.round(luckOf(b)*100)+'%"></i></div>'}
+ return h}
 function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
 function winPop(g,up){var sl=$('slt');if(!sl)return;var o=sl.querySelector('.wpop');if(o)o.remove();var d=document.createElement('div');d.className='wpop'+(up?'':' lo');d.innerHTML='<b>+'+fmt(g)+'</b><span>'+CUR+'</span>';sl.appendChild(d);setTimeout(function(){d.remove()},2200)}
 function rSlot(){var k0=CAS();CPOOL=cpool();if(k0.cred>0)sbet=Math.min(sbet,CASC.BETS.filter(function(x){return x<=k0.cred}).pop()||10);
