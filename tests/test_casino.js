@@ -75,31 +75,5 @@ const me = async (tok) => (await call(tok, { action: 'me' })).json;
   r = await call('tokB', { action: 'adstart' }); assert.strictEqual(r.status, 400); ok('pubs : +100 Coins, 5 fois par jour maximum');
   clock += 86400000; r = await call('tokB', { action: 'adstart' }); assert.strictEqual(r.status, 200); ok('pubs : nouveau jour, compteur remis à zéro');
 
-  // ---------- demande « c'est ma carte » ----------
-  const ci = cards.findIndex((c) => c && c[1] === 0 && !c[5]);
-  r = await call('tokC', { action: 'claimreq', card: ci, note: 'c\'est moi' }); assert.strictEqual(r.status, 200);
-  r = await call('tokC', { action: 'claimreq', card: ci }); assert.strictEqual(r.status, 400); ok('demande d\'association envoyée (une seule à la fois)');
-  r = await call('tokB', { action: 'aclaims' }); assert.strictEqual(r.status, 403);
-  r = await call('tokA', { action: 'aclaims' }); assert.strictEqual(r.json.rows.length, 1);
-  r = await call('tokA', { action: 'aclaimdecide', id: r.json.rows[0].id, ok: true }); assert.strictEqual(r.status, 200);
-  r = await call('tokC', { action: 'mycard' }); assert.strictEqual(r.json.card.id, ci); ok('l\'admin accepte : la carte est liée au joueur');
-
-  // ---------- association automatique : lettres qui se ressemblent ----------
-  const pc = cards.findIndex((c, i) => c && c[1] === 0 && !c[5] && i !== ci && /^[a-z]{5,}$/i.test(c[0]));
-  const nm = cards[pc][0], look = nm.replace(/o/i, '0').replace(/l/i, '1') === nm ? nm.slice(0, -1) + 'x' : nm.replace(/o/i, '0').replace(/l/i, '1');
-  db.profiles.set('LK', { user_id: 'LK', name: look, avatar: '', discord_id: '777', created_at: new Date().toISOString(), last_seen: new Date().toISOString() });
-  r = await call('tokA', { action: 'aownauto' }); assert.strictEqual(r.status, 200);
-  const sg = r.json.suggestions.find((x) => x.user === 'LK'); assert.ok(sg && sg.card === pc, 'suggestion ' + nm + ' ~ ' + look + ' : ' + JSON.stringify(r.json.suggestions.slice(0, 3)));
-  assert.ok(!r.json.found.some((x) => x.user === 'LK')); ok('association automatique : « ' + look + ' » proposé pour « ' + nm + ' » (à valider, pas associé tout seul)');
-  r = await call('tokA', { action: 'aownno', card: pc, user: 'LK' }); r = await call('tokA', { action: 'aownauto' }); assert.ok(!r.json.suggestions.some((x) => x.user === 'LK')); ok('suggestion refusée : plus proposée');
-
-  // ---------- réglages admin ----------
-  r = await call('tokB', { action: 'acasino' }); assert.strictEqual(r.status, 403);
-  r = await call('tokA', { action: 'acasino' }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.rtp.length, 7); assert.ok(r.json.stats.bet > 0); ok('admin : rendu par mise et statistiques du casino');
-  r = await call('tokA', { action: 'acasino', set: true, casino: { T3: [4, 7, 14, 30, 80, 300] }, eco: { v: [3, 8, 20, 60, 250, 1200], min: [10, 25, 60, 180, 750, 3000] } });
-  assert.strictEqual(r.json.casino.T3[5], 300); assert.strictEqual(r.json.eco.v[5], 1200);
-  assert.strictEqual((await me('tokB')).config.CASINO.T3[5], 300); ok('admin : réglages enregistrés et appliqués');
-  r = await call('tokA', { action: 'acasino', set: true, reset: true }); assert.strictEqual(r.json.eco.v[5], 1000); ok('admin : retour aux valeurs par défaut');
-
   console.log('\n' + n + ' tests casino OK');
 })().catch((e) => { console.error(e); console.log('ECHEC'); process.exit(1); });

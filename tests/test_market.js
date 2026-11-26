@@ -58,35 +58,34 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const [cm, cr, cmy] = [idOf(0), idOf(2), idOf(5)];
   await give('B', cr, 2); await give('B', cmy, 1); await give('B', cm, 1);
   r = await call('tokB', { action: 'msell', i: cmy, buynow: 2999 }); assert.strictEqual(r.status, 400); ok('prix sous le minimum (Mythique 3000) refusé');
-  r = await call('tokB', { action: 'msell', i: cr, buynow: 59 }); assert.strictEqual(r.status, 400); ok('Rare sous 60 refusée');
-  r = await call('tokB', { action: 'msell', i: cr, buynow: 481 }); assert.strictEqual(r.status, 400); ok('Rare au-dessus de 8 × 60 refusée');
+  r = await call('tokB', { action: 'msell', i: cr, buynow: 69 }); assert.strictEqual(r.status, 400); ok('Rare sous 70 refusée');
   r = await call('tokB', { action: 'msell', i: cr }); assert.strictEqual(r.status, 400); ok('un prix est obligatoire');
   r = await call('tokC', { action: 'msell', i: cr, buynow: 300 }); assert.strictEqual(r.status, 400); ok('vente d\'une carte qu\'on ne possède pas refusée');
   const before = await count('tokB', cr);
-  r = await call('tokB', { action: 'msell', i: cr, buynow: 400 }); assert.strictEqual(r.status, 200);
+  r = await call('tokB', { action: 'msell', i: cr, buynow: 900 }); assert.strictEqual(r.status, 200);
   assert.strictEqual(await count('tokB', cr), before); ok('mise en vente : la carte reste dans la collection');
   r = await call('tokC', { action: 'mlist' }); assert.strictEqual(r.json.open.length, 1);
-  const L = r.json.open[0]; assert.strictEqual(L.seller.name, 'Bob'); assert.strictEqual(L.buynow, 400); ok('l\'offre apparaît avec le nom du vendeur et son prix');
+  const L = r.json.open[0]; assert.strictEqual(L.seller.name, 'Bob'); assert.strictEqual(L.buynow, 900); ok('l\'offre apparaît avec le nom du vendeur et son prix');
   { const GG = require('../lib/game'); const SS = GG.newState(); const cs = [null, ['x', '', 0], ['y', '', 0]]; SS.col[1] = 5; SS.col[2] = 4; SS.money = 0;
     const gain = GG.sellAll(SS, cs, { 1: 3 }); assert.strictEqual(SS.col[1], 3); assert.strictEqual(SS.col[2], 1); assert.ok(gain > 0); ok('« tout vendre » garde les exemplaires proposés au marché / en échange'); }
-  r = await call('tokC', { action: 'mbid', id: L.id, v: 450 }); assert.strictEqual(r.status, 400); assert.strictEqual(await bank('tokC'), base.C); ok('pas d\'enchères : miser est refusé');
+  r = await call('tokC', { action: 'mbid', id: L.id, v: 950 }); assert.strictEqual(r.status, 400); assert.strictEqual(await bank('tokC'), base.C); ok('pas d\'enchères : miser est refusé');
   r = await call('tokB', { action: 'mbuy', id: L.id }); assert.strictEqual(r.status, 400); ok('pas d\'achat de sa propre carte');
   await coins('D', -(await bank('tokD')) + 100);
   r = await call('tokD', { action: 'mbuy', id: L.id }); assert.strictEqual(r.status, 400); assert.strictEqual(await bank('tokD'), 100); ok('achat sans assez de Coins refusé');
   await coins('D', 9900);
   const bBefore = await bank('tokB'), cBefore = await bank('tokC');
-  r = await call('tokC', { action: 'mbuy', id: L.id }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.bought, true); assert.strictEqual(r.json.state.money, cBefore - 400);
-  { const st = (await call('tokC', { action: 'me' })).json.state; assert.strictEqual(st.col[cr] || 0, 0); assert.deepStrictEqual(st.wc, [cr]); r = await call('tokC', { action: 'openwp', g: 7 }); assert.strictEqual(r.status, 200); assert.deepStrictEqual(r.json.cards, [cr]); assert.strictEqual(await count('tokC', cr), 1); r = await call('tokC', { action: 'openwp', g: 7 }); assert.strictEqual(r.status, 400); } assert.strictEqual(await bank('tokB'), bBefore + 400); assert.strictEqual(await count('tokB', cr), before - 1); ok('achat : carte livrée dans les packs en attente puis ouverte, retirée au vendeur seulement maintenant, vendeur payé');
+  r = await call('tokC', { action: 'mbuy', id: L.id }); assert.strictEqual(r.status, 200); assert.strictEqual(r.json.bought, true); assert.strictEqual(r.json.state.money, cBefore - 900);
+  { const st = (await call('tokC', { action: 'me' })).json.state; assert.strictEqual(st.col[cr] || 0, 0); assert.deepStrictEqual(st.wc, [cr]); r = await call('tokC', { action: 'openwp', g: 7 }); assert.strictEqual(r.status, 200); assert.deepStrictEqual(r.json.cards, [cr]); assert.strictEqual(await count('tokC', cr), 1); r = await call('tokC', { action: 'openwp', g: 7 }); assert.strictEqual(r.status, 400); } assert.strictEqual(await bank('tokB'), bBefore + 900); assert.strictEqual(await count('tokB', cr), before - 1); ok('achat : carte livrée dans les packs en attente puis ouverte, retirée au vendeur seulement maintenant, vendeur payé');
   r = await call('tokD', { action: 'mlist' }); assert.strictEqual(r.json.open.length, 0); assert.strictEqual(r.json.sold.length, 1);
-  assert.strictEqual(r.json.sold[0].buyer.name, 'Carl'); assert.strictEqual(r.json.sold[0].seller.name, 'Bob'); assert.strictEqual(r.json.sold[0].price, 400); ok('« achetée par Carl » visible de tous');
+  assert.strictEqual(r.json.sold[0].buyer.name, 'Carl'); assert.strictEqual(r.json.sold[0].seller.name, 'Bob'); assert.strictEqual(r.json.sold[0].price, 900); ok('« achetée par Carl » visible de tous');
   r = await call('tokD', { action: 'mbuy', id: L.id }); assert.strictEqual(r.status, 400); ok('offre déjà vendue : plus d\'achat');
 
   // deux acheteurs en même temps : un seul gagne, l'autre est remboursé
-  r = await call('tokB', { action: 'msell', i: cm, buynow: 80 }); const id4 = (await call('tokD', { action: 'mlist' })).json.open[0].id;
+  r = await call('tokB', { action: 'msell', i: cm, buynow: 100 }); const id4 = (await call('tokD', { action: 'mlist' })).json.open[0].id;
   const [c1, d1] = [await bank('tokC'), await bank('tokD')];
   const rs = await Promise.all([call('tokC', { action: 'mbuy', id: id4 }), call('tokD', { action: 'mbuy', id: id4 })]);
   assert.strictEqual(rs.filter((x) => x.status === 200).length, 1);
-  assert.strictEqual((await bank('tokC')) + (await bank('tokD')), c1 + d1 - 80); ok('achats simultanés : un seul gagnant, l\'autre remboursé');
+  assert.strictEqual((await bank('tokC')) + (await bank('tokD')), c1 + d1 - 100); ok('achats simultanés : un seul gagnant, l\'autre remboursé');
 
   // sans acheteur après 12 h : la carte revient au vendeur
   const m0 = await count('tokB', cmy);
@@ -138,7 +137,7 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   const oldC = await db.marketInsert({ seller: 'B', card: cr, start: 50, buynow: 50, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
   const oldB = await db.marketInsert({ seller: 'x', card: cr, start: 300, buynow: 300, ends_at: new Date(clock + 3600000).toISOString(), created_at: '2026-11-14T00:00:00Z' });
   clock += 20000; await call('tokD', { action: 'mlist' });
-  assert.strictEqual((await db.marketGet(oldA)).buynow, 60); assert.strictEqual((await db.marketGet(oldC)).buynow, 60); assert.strictEqual((await db.marketGet(oldB)).buynow, 300); ok('anciennes offres au minimum recalées au nouveau seuil, les autres inchangées');
+  assert.strictEqual((await db.marketGet(oldA)).buynow, 70); assert.strictEqual((await db.marketGet(oldC)).buynow, 70); assert.strictEqual((await db.marketGet(oldB)).buynow, 300); ok('anciennes offres au minimum recalées au nouveau seuil, les autres inchangées');
 
   // doublon : une copie en vente, la collection garde x2, et le doublon reste vendable contre des Coins
   const dd = idOf(2); await give('B', dd, 2 - await count('tokB', dd) > 0 ? 2 - await count('tokB', dd) : 0);
@@ -206,7 +205,7 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   assert.strictEqual(await count('tokB', u1), 0); assert.strictEqual(await count('tokB', u2), 0); assert.strictEqual(await count('tokB', ep), 1); assert.strictEqual(await count('tokC', u1), 2); assert.strictEqual(await count('tokC', u2), 1); assert.strictEqual(await count('tokC', ep), 0); ok('échange 3 contre 1 accepté');
   // même carte au marché ET en échange : quand l'un aboutit, l'autre disparaît
   await give('C', oth, 1); await give('B', e1, 1);
-  r = await call('tokB', { action: 'msell', i: e1, buynow: 400 }); assert.strictEqual(r.status, 200, JSON.stringify(r.json));
+  r = await call('tokB', { action: 'msell', i: e1, buynow: 5000 }); assert.strictEqual(r.status, 200, JSON.stringify(r.json));
   r = await call('tokB', { action: 'tsell', give: [e1], want: oth }); assert.strictEqual(r.status, 200, JSON.stringify(r.json));
   const tx = (await call('tokB', { action: 'mlist' })).json.trades[0].id;
   r = await call('tokC', { action: 'taccept', id: tx }); assert.strictEqual(r.status, 200);
@@ -225,7 +224,7 @@ const count = async (tok, i) => ((await call(tok, { action: 'me' })).json.state.
   // ---------- tableau de bord, marché et cadeaux admin ----------
   r = await call('tokB', { action: 'adash' }); assert.strictEqual(r.status, 403);
   r = await call('tokA', { action: 'adash' }); assert.strictEqual(r.status, 200); assert.ok(r.json.users.total >= 4); assert.strictEqual(r.json.signups.length, 7); assert.ok(r.json.market && r.json.eco && Array.isArray(r.json.rich)); ok('tableau de bord admin (réservé aux admins)');
-  await give('B', cr, 1); await call('tokB', { action: 'msell', i: cr, buynow: 400 });
+  await give('B', cr, 1); await call('tokB', { action: 'msell', i: cr, buynow: 900 });
   r = await call('tokA', { action: 'amarket' }); assert.strictEqual(r.status, 200); const xo = r.json.offers.find((l) => l.card === cr); assert.ok(xo); ok('l\'admin voit les offres du marché');
   r = await call('tokB', { action: 'amcancel', id: xo.id }); assert.strictEqual(r.status, 403);
   r = await call('tokA', { action: 'amcancel', id: xo.id }); assert.strictEqual(r.status, 200); assert.ok(!(await call('tokA', { action: 'amarket' })).json.offers.some((l) => l.id === xo.id)); ok('l\'admin retire une offre, la carte reste au vendeur');
