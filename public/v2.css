@@ -1629,3 +1629,4 @@ html.v2 .acrs{display:inline-flex;gap:3px;vertical-align:middle}html.v2 .acr{dis
 .casx .pc.clv .pco{margin-right:6px}
 .casx .pco-t{grid-column:1/-1;font:600 11px Inter;color:#ff8fb1;text-align:center;padding:4px 2px}
 .casx .pc.clv .pco~div b{font-size:13px;white-space:nowrap}.casx .pc.clv .pco~div{min-width:0}
+.casx .sess:empty,.casx .hist:empty{display:none}.casx .floor>.adsb{margin-top:-4px}
