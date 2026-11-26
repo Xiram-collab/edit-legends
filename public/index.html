@@ -1399,11 +1399,11 @@ function watchAds(){if(busy||netBusy)return;act({action:'adstart'}).then(functio
 /* ----- machine à sous ----- */
 var sbet=50,slotHist=[],slotLast=0,slotSess=0,slotIns=500;
 function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(b).map(function(x){return x*(1-c)}),one=function(x){return '1 sur '+fmt(Math.max(1,Math.round(1/x)))};
- var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span><div><b>'+CASC.FREE+' tours gratuits</b><small>'+one(c*c*c)+'</small></div></div>'+
- '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span><div><b>'+fmt(Math.floor(b*CASC.C2))+'</b><small>'+one(3*c*c*(1-c))+'</small></div></div>';
- for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'" title="'+one(Math.pow(P[k],3))+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span><b>'+fmt(Math.floor(b*CASC.T3[k]))+'</b></div>';
+ var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span><div><b>'+CASC.FREE+' tours gratuits</b></div></div>'+
+ '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span><div><b>'+fmt(Math.floor(b*CASC.C2))+'</b></div></div>';
+ for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span><b>'+fmt(Math.floor(b*CASC.T3[k]))+'</b></div>';
  for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span><b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'</b></div>';
- return h+'<div class="luck"><b>Petite mise = plus de chance</b><span>3 Mythiques : '+one(Math.pow(P[5],3))+' à cette mise</span><i style="width:'+Math.round(luckOf(b)*100)+'%"></i></div>'}
+ return h+'<div class="luck"><b>Petite mise = plus de chance</b><span>Plus ta mise est petite, plus les belles combinaisons sortent</span><i style="width:'+Math.round(luckOf(b)*100)+'%"></i></div>'}
 function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
 function winPop(g,up){var sl=$('slt');if(!sl)return;var o=sl.querySelector('.wpop');if(o)o.remove();var d=document.createElement('div');d.className='wpop'+(up?'':' lo');d.innerHTML='<b>+'+fmt(g)+'</b><span>'+CUR+'</span>';sl.appendChild(d);setTimeout(function(){d.remove()},2200)}
 function rSlot(){var k0=CAS();CPOOL=cpool();if(k0.cred>0)sbet=Math.min(sbet,CASC.BETS.filter(function(x){return x<=k0.cred}).pop()||10);
@@ -1482,7 +1482,7 @@ function hDraw(){var c=$('hcur');if(!c)return;var h=CAS().hl,alive=!!h,p=alive&&
  c.innerHTML=alive&&CARDS[h.cur]?cardHTML(h.cur):HBACK;
  $('hrl').innerHTML=p?'<i style="background:'+HEX[p.r]+'"></i>'+RAR[p.r].n:'';
  var can=alive&&!busy,pc=function(x){return (x*100<1?(x*100).toFixed(1).replace('.',','):Math.round(x*100))+' %'};
- var bet=function(id,cls,lab,icn,co,ch,why){return '<button class="bt '+cls+'" data-g="'+id+'"'+(!can||!co?' disabled':'')+'><span class="ar">'+icn+'</span><b>'+lab+'</b><em>'+(co?'cote ×'+f2(co):why||'—')+'</em><small>'+(p&&co?pc(ch)+' de chance · → '+fmt(Math.floor(h.pot*co)):'&nbsp;')+'</small></button>'};
+ var bet=function(id,cls,lab,icn,co,ch,why){return '<button class="bt '+cls+'" data-g="'+id+'"'+(!can||!co?' disabled':'')+'><span class="ar">'+icn+'</span><b>'+lab+'</b><em>'+(co?'cote ×'+f2(co):why||'—')+'</em><small>'+(p&&co?'→ '+fmt(Math.floor(h.pot*co))+' '+CUR:'&nbsp;')+'</small></button>'};
  $('hbets').innerHTML=bet('1','up','Plus rare','▲',p&&p.cH,p&&p.hi,p&&p.r===5?'déjà Mythique':'')+bet('0','eq','Pareil','=',p&&p.cE,p&&p.eq)+bet('-1','dn','Moins rare','▼',p&&p.cL,p&&p.lo,p&&p.r===0?'déjà Commun':'');
  [].forEach.call($('hbets').querySelectorAll('[data-g]'),function(b){b.onclick=function(){guess(+b.dataset.g)}});
  $('hpot').innerHTML=alive?'<span>Gain en jeu</span><b>'+fmt(h.pot)+' '+CUR+'</b><span class="mut2">mise '+fmt(h.bet)+' · série '+h.n+'</span>':'<span>Mise</span><b>'+fmt(hbet)+' '+CUR+'</b>';
