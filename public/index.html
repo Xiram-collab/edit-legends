@@ -1470,7 +1470,7 @@ function spin(){if(busy||netBusy||!$('spin'))return;var k=CAS(),free=k.free>0;
 /* ----- plus ou moins (par rareté, avec des cotes) ----- */
 var hbet=50,hlTrail=[],hlMsg='';
 function rarPs(){var t=RAR.reduce(function(a,r){return a+r.p},0);return RAR.map(function(r){return r.p/t})}
-function hOdds(r){var P=rarPs(),hi=0,lo=0;P.forEach(function(q,k){if(k>r)hi+=q;else if(k<r)lo+=q});var co=function(x){return x>0&&CASC.HL_MARGE/x>=1.01?Math.max(1.01,Math.min(CASC.HL_COTE_MAX||10,Math.round(CASC.HL_MARGE/x*100)/100)):0};return {r:r,hi:hi,lo:lo,eq:P[r],cH:co(hi),cL:co(lo),cE:co(P[r])}}
+function hOdds(r){var P=rarPs(),hi=0,lo=0;P.forEach(function(q,k){if(k>r)hi+=q;else if(k<r)lo+=q});var co=function(x){return x>0?Math.max(1.01,Math.min(CASC.HL_COTE_MAX||10,Math.round(CASC.HL_MARGE/x*100)/100)):0};return {r:r,hi:hi,lo:lo,eq:P[r],cH:co(hi),cL:co(lo),cE:co(P[r])}}
 var HBACK='<div class="hbk"><img src="img/logo.png" alt=""><b>?</b></div>';
 function f2(x){return x.toFixed(2).replace('.',',')}
 function rHL(){
@@ -1484,7 +1484,7 @@ function hDraw(){var c=$('hcur');if(!c)return;var h=CAS().hl,alive=!!h,p=alive&&
  $('hrl').innerHTML=p?'<i style="background:'+HEX[p.r]+'"></i>'+RAR[p.r].n:'';
  var can=alive&&!busy,pc=function(x){return (x*100<1?(x*100).toFixed(1).replace('.',','):Math.round(x*100))+' %'};
  var bet=function(id,cls,lab,icn,co,ch,why){return '<button class="bt '+cls+'" data-g="'+id+'"'+(!can||!co?' disabled':'')+'><span class="ar">'+icn+'</span><b>'+lab+'</b><em>'+(co?'cote ×'+f2(co):why||'—')+'</em><small>'+(p&&co?(ISOWNER?pc(ch)+' · ':'')+'→ '+fmt(Math.floor(h.pot*co))+' '+CUR:'&nbsp;')+'</small></button>'};
- $('hbets').innerHTML=bet('1','up','Plus rare','▲',p&&p.cH,p&&p.hi,p&&p.r===5?'déjà Mythique':'')+bet('0','eq','Pareil','=',p&&p.cE,p&&p.eq)+bet('-1','dn','Moins rare','▼',p&&p.cL,p&&p.lo,p&&p.r===0?'déjà Commun':'trop facile');
+ $('hbets').innerHTML=bet('1','up','Plus rare','▲',p&&p.cH,p&&p.hi,p&&p.r===5?'déjà Mythique':'')+bet('0','eq','Pareil','=',p&&p.cE,p&&p.eq)+bet('-1','dn','Moins rare','▼',p&&p.cL,p&&p.lo,p&&p.r===0?'déjà Commun':'');
  [].forEach.call($('hbets').querySelectorAll('[data-g]'),function(b){b.onclick=function(){guess(+b.dataset.g)}});
  $('hpot').innerHTML=alive?'<span>Gain en jeu</span><b>'+fmt(h.pot)+' '+CUR+'</b><span class="mut2">mise '+fmt(h.bet)+' · série '+h.n+'</span>':'<span>Mise</span><b>'+fmt(hbet)+' '+CUR+'</b>';
  $('hh').innerHTML=hlTrail.slice(-14).map(function(i){return CARDS[i]?'<i style="--rc:'+HEX[CARDS[i][2]]+'" title="'+esc(CARDS[i][0])+'"></i>':''}).join('');
