@@ -1,6 +1,6 @@
 // Base de données en mémoire pour tester l'API sans Supabase (mêmes méthodes que lib/supabaseDb.js).
 module.exports = function fakeDb(cards, validCodes) {
-  const saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
+  const settings = new Map(), claims = [], saves = new Map(), profiles = new Map(), codes = new Map(validCodes.map((c) => [c, { used: false }]));
   const acts = [];
   const friends = [], logs = [], anns = [], drafts = [], notes = [], times = [], owners = [], market = [];
   const users = {
@@ -103,6 +103,9 @@ module.exports = function fakeDb(cards, validCodes) {
     async settleWeek(week) { times.forEach((t) => { if (t.week === week && t.status === 'accepted') t.paid = true; }); },
     async recordTime(device) { const a = times.filter((t) => t.status === 'accepted' && t.device === device).sort((x, y) => y.ms - x.ms || x.id - y.id); return a[0] ? Object.assign({}, a[0]) : null; },
     async countPendingTimes() { return times.filter((t) => t.status === 'pending').length; },
+    async getVitrine(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && Array.isArray(r.data.vitrine)) m[i] = r.data.vitrine.filter((x) => Number.isInteger(x)); }); return m; },
+    async getSetting(k) { return settings.has(k) ? JSON.parse(JSON.stringify(settings.get(k))) : null; },
+    async setSetting(k, v) { settings.set(k, JSON.parse(JSON.stringify(v))); },
     async getHolo(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && r.data.holo) m[i] = r.data.holo; }); return m; },
     async getEquipped(ids) { const m = {}; ids.forEach((i) => { const r = saves.get(i); if (r && r.data.title) m[i] = r.data.title; }); return m; },
     async titleStats() {
@@ -124,6 +127,9 @@ module.exports = function fakeDb(cards, validCodes) {
     async cardOwners() { return owners.map((o) => Object.assign({}, o)); },
     async cardOwnerOf(uid) { const o = owners.find((x) => x.user_id === uid); return o ? Object.assign({}, o) : null; },
     async cardOwnerSet(cardId, uid) { for (let i = owners.length - 1; i >= 0; i--) if (owners[i].user_id === uid || owners[i].card_id === cardId) owners.splice(i, 1); owners.push({ card_id: cardId, user_id: uid, img_at: null }); },
+    async claimAdd(row) { claims.push(Object.assign({ id: claims.length + 1, status: 'new', created_at: new Date().toISOString() }, row)); },
+    async claimList(f) { return claims.filter((c) => (!f || !f.status || c.status === f.status) && (!f || !f.user || c.user_id === f.user)).slice().reverse().map((c) => Object.assign({}, c)); },
+    async claimSet(id, status) { const c = claims.find((x) => x.id === id); if (c) c.status = status; },
     async cardOwnerDel(cardId) { const i = owners.findIndex((x) => x.card_id === cardId); if (i >= 0) owners.splice(i, 1); },
     async cardOwnerTouch(cardId, iso) { const o = owners.find((x) => x.card_id === cardId); if (o) o.img_at = iso; },
     async marketInsert(row) { const id = market.length + 1; market.push(Object.assign({ id, status: 'open', bid: 0, bidder: null, bids: 0, buyer: null, final: null, closed_at: null, card_done: false, pay_done: false }, row)); return id; },
