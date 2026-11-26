@@ -1604,3 +1604,15 @@ html.v2 .hsep{border:0;height:2px;margin:34px 0 0;border-radius:2px;background:l
 @media(max-width:360px){.casx .chp{width:33px;height:33px;font-size:11px}.casx .spinb{width:76px;height:76px;font-size:19px}}
 @media(max-width:640px){.casx .msg{font-size:18px;min-height:0}.casx .hlx .msg{font-size:17px}}
 .casx .hcs .lab{white-space:nowrap}@media(max-width:640px){.casx .hcs .lab{font-size:10px;letter-spacing:.06em}}
+/* casino : tout reste dans la machine (centrage iPhone) */
+.casx,.casx *,.casx *::before,.casx *::after{box-sizing:border-box}
+.casx .cab .ins{padding:14px 10px}
+.casx .insb{width:100%;max-width:360px;margin:0 auto}
+.casx .insb p{overflow-wrap:anywhere}
+.casx .insa{width:100%}.casx .insa .btn{flex:1 1 0;min-width:0;padding:0 10px;white-space:nowrap}
+@media(max-width:640px){
+ .casx .insb h3{font-size:24px}.casx .insa .btn{min-height:44px;font-size:15px}
+ .casx .chips2{flex-wrap:nowrap;gap:min(4px,1vw);width:100%;justify-content:center}
+ .casx .chp{width:min(36px,9.4vw);height:min(36px,9.4vw);font-size:min(12px,3.2vw)}
+ .casx .cabb{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+}
