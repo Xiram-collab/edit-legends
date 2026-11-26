@@ -921,7 +921,7 @@ function annSeen(){try{return +localStorage.getItem('el_ann')||0}catch(e){return
 function annUnread(){var m=annSeen();return NOTIF.ann.filter(function(a){return a.id>m}).length}
 function paintBell(){var b=$('nb');if(!b)return;var n=NOTIF.reqs+annUnread()+NOTIF.notes.length;b.hidden=!n;b.textContent=n>9?'9+':n}
 var NOTSEEN=null;
-function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;var oldt=NOTIF.tp+'/'+NOTIF.cp;NOTIF.tp=r.tp||0;NOTIF.cp=r.cp||0;NOTIF.ann=r.ann||[];var nid=(r.notes||[]).map(function(x){return x.id}),fresh=NOTSEEN&&nid.some(function(i){return NOTSEEN.indexOf(i)<0});NOTSEEN=nid;NOTIF.notes=r.notes||[];paintBell();if(fresh)api('me').then(function(m){setState(m.state);if(typeof setPurse==='function')setPurse();if(!document.querySelector('#pk')&&!qsMode&&!busy)render()}).catch(function(){});if((old!==NOTIF.reqs||oldm!==NOTIF.mc||oldt!==NOTIF.tp+'/'+NOTIF.cp)&&S)tabs()}).catch(function(){})}
+function doPing(){if(!SESSION||!S)return;api('ping').then(function(r){var old=NOTIF.reqs,oldm=NOTIF.mc;NOTIF.reqs=r.reqs||0;NOTIF.mc=r.mc||0;var oldt=NOTIF.tp+'/'+NOTIF.cp;NOTIF.tp=r.tp||0;NOTIF.cp=r.cp||0;NOTIF.ann=r.ann||[];var nid=(r.notes||[]).map(function(x){return x.id}),fresh=NOTSEEN&&nid.some(function(i){return NOTSEEN.indexOf(i)<0});NOTSEEN=nid;NOTIF.notes=r.notes||[];paintBell();if(fresh)api('me').then(function(m){setState(m.state);if(typeof setPurse==='function')setPurse();if(!document.querySelector('#pk')&&!qsMode&&!busy&&(tab==='home'||tab==='col'))render()}).catch(function(){});if((old!==NOTIF.reqs||oldm!==NOTIF.mc||oldt!==NOTIF.tp+'/'+NOTIF.cp)&&S)tabs()}).catch(function(){})}
 function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>m)m=a.id});var un=annSeen();
  var d=document.createElement('div');d.id='pk';d.className='pickov';
  var h='<div class="pickbox wpbox" style="max-height:88vh;overflow-y:auto"><h2>Notifications</h2>';
@@ -1771,7 +1771,7 @@ function adGift(){
   '<div id="gs" class="mut sm"></div><div class="bar"><button class="btn gold" id="gok">Envoyer le cadeau</button></div></div></div>';
  [].forEach.call(document.querySelectorAll('[data-gp]'),function(b){b.onclick=function(){var v=b.dataset.gp.split('|');$('gc').value=v[0];$('gp').value=v[1]==='0'&&v[2]==='0'?packs[0].g:v[1];$('gn').value=v[2]}});
  twice($('gok'),function(){var body={coins:+$('gc').value||0,pack:+$('gp').value,n:+$('gn').value||0,who:$('gw').value,msg:$('gm').value};$('gok').disabled=true;$('gs').textContent='Envoi en cours…';
-  api('agift',body).then(function(r){toast('🎁 Cadeau envoyé à '+r.players+' joueur'+(r.players>1?'s':''));$('gs').textContent='Envoyé à '+r.players+' joueur'+(r.players>1?'s':'')+'.';$('gok').disabled=false}).catch(function(e){toast(e.message);$('gs').textContent=e.message;$('gok').disabled=false})},'Confirmer l\'envoi à tout le monde ?')}
+  api('agift',body).then(function(r){api('me').then(function(m){setState(m.state);setPurse()}).catch(function(){});setTimeout(doPing,1500);toast('🎁 Cadeau envoyé à '+r.players+' joueur'+(r.players>1?'s':''));$('gs').textContent='Envoyé à '+r.players+' joueur'+(r.players>1?'s':'')+'.';$('gok').disabled=false}).catch(function(e){toast(e.message);$('gs').textContent=e.message;$('gok').disabled=false})},'Confirmer l\'envoi à tout le monde ?')}
 
 /* ----- connectés en direct ----- */
 var frT=0,adLiveT=0,adLiveRows=[],SKEW=0;
