@@ -1359,7 +1359,7 @@ function rCom(){
 function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Erreur')+'</div>'}
 
 /* ----- casino : machine à sous, plus ou moins, pubs. Les tirages se font sur le serveur, la page affiche. ----- */
-var CASC={BETS:[10,25,50,100,250,500,1000],T3:[4,7,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.275,.2375,.19,.135,.1025,.06],SPHI:[.275,.2375,.19,.135,.1025,.06],CL:{lo:.1675,hi:.1675},HL_MARGE:.95,HL_COTE_MAX:10,ADS:{coins:100,max:5,n:3,sec:5}};
+var CASC={BETS:[10,25,50,100,250,500,1000],T3:[3,6,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.275,.2375,.19,.135,.1025,.06],SPHI:[.275,.2375,.19,.135,.1025,.06],CL:{lo:.1675,hi:.1675},CL3:.5,HL_MARGE:.95,HL_COTE_MAX:10,ADS:{coins:100,max:5,n:3,sec:5}};
 var CLV='<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#3ddc84" stroke="#0b5e31" stroke-width="2"><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z" transform="rotate(90 32 32)"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z"/><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z" transform="rotate(90 32 32)"/></g><circle cx="32" cy="32" r="4" fill="#0b5e31"/></svg>';
 var CSFX={tick:function(){tone(1100+Math.random()*300,.025,'square',.025)},stop:function(){tone(160,.12,'triangle',.2);tone(80,.16,'sine',.22)},
  win:function(){[523,659,784,1047].forEach(function(f,k){tone(f,.16,'square',.06,k*.08)})},
@@ -1398,12 +1398,12 @@ function watchAds(){if(busy||netBusy)return;act({action:'adstart'}).then(functio
 
 /* ----- machine à sous ----- */
 var sbet=50,slotHist=[],slotLast=0,slotSess=0,slotIns=500;
-function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(b).map(function(x){return x*(1-c)}),one=function(x){return '1 sur '+fmt(Math.max(1,Math.round(1/x)))},op=function(x){if(!ISOWNER)return '';var v=x*100;return '<em class="pco" title="Visible par toi seul : '+one(x)+'">'+(v>=10?v.toFixed(1):v>=1?v.toFixed(2):v>=.01?v.toFixed(3):v.toFixed(4)).replace('.',',')+' %</em>'};
- var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span>'+op(c*c*c)+'<div><b>'+CASC.FREE+' tours gratuits</b></div></div>'+
- '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span>'+op(3*c*c*(1-c))+'<div><b>'+fmt(Math.floor(b*CASC.C2))+'<i class="pcn"></i></b></div></div>';
+function payCells(){var c3=CASC.CL3==null?pCl(CAS().free>0?CAS().fbet:sbet):CASC.CL3;var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(b).map(function(x){return x*(1-c)}),one=function(x){return '1 sur '+fmt(Math.max(1,Math.round(1/x)))},op=function(x){if(!ISOWNER)return '';var v=x*100;return '<em class="pco" title="Visible par toi seul : '+one(x)+'">'+(v>=10?v.toFixed(1):v>=1?v.toFixed(2):v>=.01?v.toFixed(3):v.toFixed(4)).replace('.',',')+' %</em>'};
+ var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span>'+op(c*c*c3)+'<div><b>'+CASC.FREE+' tours gratuits</b></div></div>'+
+ '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span>'+op(c*c*(1-c3)+2*c*c*(1-c))+'<div><b>'+fmt(Math.floor(b*CASC.C2))+'<i class="pcn"></i></b></div></div>';
  for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span>'+op(Math.pow(P[k],3))+'<b>'+fmt(Math.floor(b*CASC.T3[k]))+'<i class="pcn"></i></b></div>';
  for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span>'+op(3*P[k]*P[k]*(1-P[k]))+'<b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'<i class="pcn"></i></b></div>';
- if(ISOWNER){var tot=c*c*c+3*c*c*(1-c);for(k=0;k<6;k++)tot+=Math.pow(P[k],3)+3*P[k]*P[k]*(1-P[k]);h+='<div class="pco-t">Visible par toi seul · un tour sur '+fmt(Math.round(10/tot)/10)+' rapporte quelque chose ('+pctF(tot*100)+')</div>'}
+ if(ISOWNER){var tot=c*c*c3+c*c*(1-c3)+2*c*c*(1-c);for(k=0;k<6;k++)tot+=Math.pow(P[k],3)+3*P[k]*P[k]*(1-P[k]);h+='<div class="pco-t">Visible par toi seul · un tour sur '+fmt(Math.round(10/tot)/10)+' rapporte quelque chose ('+pctF(tot*100)+')</div>'}
  return h}
 function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
 function winPop(g,up){var sl=$('slt');if(!sl)return;var o=sl.querySelector('.wpop');if(o)o.remove();var d=document.createElement('div');d.className='wpop'+(up?'':' lo');d.innerHTML='<b>+'+fmt(g)+'</b><span>'+CUR+'</span>';sl.appendChild(d);setTimeout(function(){d.remove()},2200)}
