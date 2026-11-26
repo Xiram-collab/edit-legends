@@ -178,5 +178,8 @@ let n = 0; const ok = (name) => { n++; console.log('ok  ' + name); };
   // suppression du compte
   r = await call('tokB', { action: 'delete' }); assert.strictEqual(r.status, 200); assert.ok(!db.saves.has('B')); ok('suppression du compte');
   assert.strictEqual(db.codes.get('AAAA2222').used, true); ok('un code déjà utilisé reste utilisé après suppression');
+  { const M = require('../lib/missions'), cs = []; for (let i = 0; i < 203; i++) cs.push(['c' + i, 0, i % 6, '', '', 0]);
+    const S = { col: {}, pulled: {}, holo: {} }; const x = M.context(S, cs, {}, Date.now());
+    assert.strictEqual(x.v3Total, 60); assert.strictEqual(x.v4.total, 29); ok('missions et titres 1.3 / 1.4 : objectifs réels (pas 1 000 000 000)'); }
   console.log('\n' + n + ' vérifications réussies');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });
