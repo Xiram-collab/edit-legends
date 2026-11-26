@@ -85,7 +85,13 @@ const me = async (tok) => (await call(tok, { action: 'me' })).json;
   r = await call('tokC', { action: 'mycard' }); assert.strictEqual(r.json.card.id, ci); ok('l\'admin accepte : la carte est liée au joueur');
 
   // ---------- association automatique : lettres qui se ressemblent ----------
-  r = await call('tokA', { action: 'aownauto' }); assert.strictEqual(r.status, 200); assert.ok(Array.isArray(r.json.suggestions)); ok('association automatique : exacts + suggestions à valider');
+  const pc = cards.findIndex((c, i) => c && c[1] === 0 && !c[5] && i !== ci && /^[a-z]{5,}$/i.test(c[0]));
+  const nm = cards[pc][0], look = nm.replace(/o/i, '0').replace(/l/i, '1') === nm ? nm.slice(0, -1) + 'x' : nm.replace(/o/i, '0').replace(/l/i, '1');
+  db.profiles.set('LK', { user_id: 'LK', name: look, avatar: '', discord_id: '777', created_at: new Date().toISOString(), last_seen: new Date().toISOString() });
+  r = await call('tokA', { action: 'aownauto' }); assert.strictEqual(r.status, 200);
+  const sg = r.json.suggestions.find((x) => x.user === 'LK'); assert.ok(sg && sg.card === pc, 'suggestion ' + nm + ' ~ ' + look + ' : ' + JSON.stringify(r.json.suggestions.slice(0, 3)));
+  assert.ok(!r.json.found.some((x) => x.user === 'LK')); ok('association automatique : « ' + look + ' » proposé pour « ' + nm + ' » (à valider, pas associé tout seul)');
+  r = await call('tokA', { action: 'aownno', card: pc, user: 'LK' }); r = await call('tokA', { action: 'aownauto' }); assert.ok(!r.json.suggestions.some((x) => x.user === 'LK')); ok('suggestion refusée : plus proposée');
 
   // ---------- réglages admin ----------
   r = await call('tokB', { action: 'acasino' }); assert.strictEqual(r.status, 403);

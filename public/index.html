@@ -857,7 +857,7 @@ function art(c){if(!c[4]){var shp=['','hex','rect','sq'][c[1]]||'';return '<div 
 function cardHTML(i,o){o=o||{};var c=CARDS[i];var hs=o.hs||0;return '<div class="card'+(c[2]==5?' m':'')+(hs?' hx'+hs:'')+'" style="--rc:'+RAR[c[2]].c+'">'+(hs?'<i class="hxe"></i>':'')+(hs==2?'<i class="hxs"></i>':'')+
  '<div class="top"><span class="cat">'+CATS[c[1]]+'</span><span class="rar">'+RAR[c[2]].n+'</span></div>'+
  (o.isNew?'<span class="new">NEW</span>':'')+(o.count>1?'<span class="cnt">x'+o.count+'</span>':'')+
- '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+(hs?' ✨':'')+'</div></div><div class="ds">'+(c[3]?'Clique pour voir la description':'')+'</div></div>'}
+ '<div class="art">'+art(c)+(c[2]>=4?'<i class="holo"></i>':'')+'</div><div class="plate"><div class="nm'+(c[0].length>9?' long':'')+'">'+esc(c[0])+'</div><div class="stars">'+'★'.repeat(c[2]+1)+'</div></div><div class="ds">'+(c[3]?'Clique pour voir la description':'')+'</div></div>'}
 function firstSent(t){t=String(t||'').split(/\n/).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean)[0]||'';var m=t.match(/^.*?[.!?…](?=\s|$)/);return m?m[0]:t}
 var LOGO='<img src="img/logo.png" class="bl" alt="" width="512" height="512">';(new Image()).src='img/logo.png';
 var HEX=['#9aa4b2','#3ddc84','#3b9cff','#b45cff','#ffb020','#ff3d81'];
@@ -913,6 +913,7 @@ function setPurse(){var from=shown,to=S.money,t0=performance.now();if(from!==to&
  (function f(t){var k=Math.min(1,(t-t0)/600),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));$('purse').innerHTML=''+fmt(v)+' '+CUR;if(k<1)requestAnimationFrame(f);else shown=to})(t0);
  $('purse').classList.remove('pulse');void $('purse').offsetWidth;$('purse').classList.add('pulse')}
 var IC={miss:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/>',rank:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0z"/><path d="M17 5h3v2a3 3 0 01-3 3M7 5H4v2a3 3 0 003 3"/>',code:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',"home": "<path d=\"M3 11l9-8 9 8\"/><path d=\"M5 10v10h5v-6h4v6h5V10\"/>", "open": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2.5\"/><path d=\"M12 8l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8L8 10.9l2.8-.3z\"/>", "col": "<rect x=\"3\" y=\"4\" width=\"9\" height=\"13\" rx=\"2\"/><rect x=\"9\" y=\"7\" width=\"9\" height=\"13\" rx=\"2\"/><path d=\"M21 9v8\"/>", "shop": "<path d=\"M4 8h16l-1.5 11a2 2 0 01-2 1.7H7.5a2 2 0 01-2-1.7z\"/><path d=\"M8.5 8V6.5a3.5 3.5 0 017 0V8\"/>", "mk": "<path d=\"M4 9l1.5-4h13L20 9\"/><path d=\"M4 9a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0A2.7 2.7 0 0020 9\"/><path d=\"M5.5 12v8h13v-8\"/>", "prob": "<path d=\"M5 20V11M12 20V4M19 20v-7\"/>", "test": "<path d=\"M9 3h6M10 3v6l-5 9a2 2 0 001.8 3h10.4A2 2 0 0019 18l-5-9V3\"/><path d=\"M7.5 15h9\"/>"};
+IC.slot='<rect x="3" y="5" width="15" height="14" rx="2.5"/><path d="M7 9v6M10.5 9v6M14 9v6M18 10h2.5V6"/><circle cx="20.5" cy="5" r="1.2"/>';IC.hl='<path d="M12 3l4 5H8zM12 21l-4-5h8z"/><path d="M5 12h14"/>';IC['col:col']=IC.col;IC['col:tit']='<path d="M7 4h10v4a5 5 0 01-10 0z"/><path d="M12 13v4M8 21h8M9 17h6"/>';IC['col:mc']='<rect x="4" y="3" width="16" height="18" rx="2.5"/><circle cx="12" cy="10" r="3"/><path d="M7.5 18c.8-2.3 2.5-3.5 4.5-3.5s3.7 1.2 4.5 3.5"/>';IC['com:friends']='<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M19 8v6M16 11h6"/>';IC['com:tier']='<path d="M4 5h16M4 10h11M4 15h7M4 20h4"/>';IC['com:team']='<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M3 12h4M17 12h4"/><circle cx="12" cy="12" r="2.5"/>';IC['com:add']='<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M12 8.5v7M8.5 12h7"/>';
 IC.com='<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.3c3 .2 5 2.5 5 5.7"/>';IC.admin='<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>';
 function ico(k){return '<svg class="ti" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'}
 var NOTIF={reqs:0,mc:0,tp:0,cp:0,ann:[],notes:[]};
@@ -932,21 +933,23 @@ function openNotifs(){closePick();var m=0;NOTIF.ann.forEach(function(a){if(a.id>
  d.onclick=function(e){if(e.target===d)closePick()};$('nx').onclick=closePick;
  var f=$('nfr');if(f)f.onclick=function(){closePick();tab='com';comSub='friends';render();scrollTo(0,0)};
  try{if(m)localStorage.setItem('el_ann',m)}catch(e){}var ids=NOTIF.notes.map(function(x){return x.id});if(ids.length){NOTIF.notes=[];api('notread',{ids:ids}).catch(function(){})}paintBell()}
-var GRP=[['home','Accueil',['home']],['play','Joueurs',['col','rank','miss','com']],['store','Boutique',['shop','mk','code']]],GLAST={},GNAME={col:'Collection',rank:'Classement',miss:'Missions',com:'Communauté',shop:'Packs et roue',mk:'Marché',code:'Code'};
+var GRP=[['boost','Boosters',['home','shop','miss','slot','hl','code']],['colg','Collection',['col:col','col:tit','col:mc']],['play','Joueurs',['rank','com:friends','mk','com:tier','com:team','com:add']]],GLAST={},GNAME={home:'Packs',shop:'Boutique',miss:'Missions',slot:'Machine à sous',hl:'Plus ou moins',code:'Code','col:col':'Ma collection','col:tit':'Titres','col:mc':'Ma carte',rank:'Classement','com:friends':'Amis',mk:'Marché','com:tier':'Tier list','com:team':'Mon 11','com:add':'Ajouter une carte'};
+function curKey(){if(tab==='com')return 'com:'+(['tier','team','add'].indexOf(comSub)>=0?comSub:'friends');if(tab==='col')return 'col:'+(colSub==='tit'||colSub==='mc'?colSub:'col');return tab}
+function goKey(k){var p=String(k).split(':');tab=p[0];if(p[1]){if(tab==='com')comSub=p[1];else if(tab==='col')colSub=p[1]}}
 function grpOf(t){for(var k=0;k<GRP.length;k++)if(GRP[k][2].indexOf(t)>=0)return GRP[k];return null}
-function tabs(){var G=GRP.slice();if(ISADMIN)G.push(['admin',ISADMIN?'Admin':'Jury',['admin']]);else if(ISJURY)G.push(['admin','Jury',['admin']]);
- var badge=function(t){return t==='com'?NOTIF.reqs||0:t==='miss'?NOTIF.mc||0:t==='admin'?(ISADMIN?(NOTIF.tp+NOTIF.cp):NOTIF.tp)||0:0},nb=function(n){return n?'<span class="nb">'+(n>9?'9+':n)+'</span>':''};
- var cur=grpOf(tab)||(tab==='admin'?['admin','',['admin']]:GRP[0]);GLAST[cur[0]]=tab;
+function tabs(){var G=GRP.slice(),ck=curKey();if(ISADMIN)G.push(['admin',ISADMIN?'Admin':'Jury',['admin']]);else if(ISJURY)G.push(['admin','Jury',['admin']]);
+ var badge=function(t){return t==='com:friends'?NOTIF.reqs||0:t==='miss'?NOTIF.mc||0:t==='admin'?(ISADMIN?(NOTIF.tp+NOTIF.cp):NOTIF.tp)||0:0},nb=function(n){return n?'<span class="nb">'+(n>9?'9+':n)+'</span>':''};
+ var cur=grpOf(ck)||(tab==='admin'?['admin','',['admin']]:GRP[0]);GLAST[cur[0]]=ck;
  var nav=$('tabs');nav.style.setProperty('--nt',G.length);
- nav.innerHTML=G.map(function(g,k){var t=GLAST[g[0]]||g[2][0],n=g[2].reduce(function(a,x){return a+badge(x)},0);return '<button role="tab" data-t="'+t+'" style="order:'+k+'" aria-selected="'+(cur[0]===g[0])+'">'+ico(g[0]==='play'?'com':g[0]==='store'?'shop':g[0])+g[1]+nb(n)+'</button>'}).join('');
+ nav.innerHTML=G.map(function(g,k){var t=GLAST[g[0]]||g[2][0],n=g[2].reduce(function(a,x){return a+badge(x)},0);return '<button role="tab" data-t="'+t+'" style="order:'+k+'" aria-selected="'+(cur[0]===g[0])+'">'+ico(g[0]==='play'?'com':g[0]==='boost'?'open':g[0]==='colg'?'col':g[0])+g[1]+nb(n)+'</button>'}).join('');
  var gs=$('gsub');if(!gs){gs=document.createElement('div');gs.id='gsub';gs.className='gsub';var ph=$('phead');ph.parentNode.insertBefore(gs,ph)}
- if(cur[2].length>1){gs.hidden=false;gs.innerHTML='<div class="gsw" role="tablist">'+cur[2].map(function(t){return '<button role="tab" data-t="'+t+'" aria-selected="'+(t===tab)+'">'+ico(t)+'<span>'+GNAME[t]+'</span>'+nb(badge(t))+'</button>'}).join('')+'</div>'}else{gs.hidden=true;gs.innerHTML=''}
+ if(cur[2].length>1){gs.hidden=false;gs.innerHTML='<div class="gsw" role="tablist">'+cur[2].map(function(t){return '<button role="tab" data-t="'+t+'" aria-selected="'+(t===ck)+'">'+ico(t)+'<span>'+GNAME[t]+'</span>'+nb(badge(t))+'</button>'}).join('')+'</div>'}else{gs.hidden=true;gs.innerHTML=''}
  $('mute').innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>'+(S.mute?'<path d="M16 9.5l5 5M21 9.5l-5 5"/>':'<path d="M15.5 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>')+'</svg>'}
 var QUIET=false;
 function ensureMk(){if(mkData||window.mkLoad||!S)return;window.mkLoad=1;api('mlist').then(function(d){mkData=d;mkData.at=Date.now()-d.now;if(tab==='col'||tab==='shop')quietRender()}).catch(function(){window.mkLoad=0})}
 var gaTab='';function render(){if(!S)return;if(window.gtag&&tab!==gaTab){gaTab=tab;try{gtag('event','page_view',{page_title:'Edit Legends – '+tab,page_location:location.origin+'/'+tab})}catch(e){}}if(tab!=='col'&&typeof qsMode!=='undefined'&&qsMode){qsMode=false;qsSel={}}ensureMk();if(!QUIET)document.body.classList.remove('qr2');var qf=$('qsfix');if(qf)qf.remove();document.body.classList.toggle('xmas',tab==='admin'&&!!ISADMIN);applyDeco();applyTheme();regen();if(tab==='admin'&&!ISADMIN&&!ISJURY)tab='home';setPurse();tabs();wpBadge();
  var m=$('main');if(tab!=='mk'&&mkT){clearInterval(mkT);mkT=0}if(lastTab!==tab){m.className='';void m.offsetWidth;m.className='enter';lastTab=tab}
- document.body.dataset.tab=tab;(function(){var P={col:['Ma collection','Touche une carte pour voir sa fiche, vendre ses doublons ou la mettre au marché.'],rank:['Classement','Grimpe dans le top 20 : il est récompensé chaque lundi à minuit.'],miss:['Missions','Termine des objectifs pour gagner des packs et des titres.'],com:['Communauté','Tes amis, ton équipe, la tier list et tes propositions de cartes.'],shop:['Boutique','Achète des packs à rareté garantie ou tente la roue.'],mk:['Marché','Achète les cartes des autres joueurs ou vends les tiennes.'],code:['Code de la map','Entre ton code de fin de map pour tourner la roue.']}[tab],ph=$('phead');if(!ph)return;if(!P){ph.hidden=true;ph.innerHTML='';return}ph.hidden=false;ph.innerHTML='<h1>'+P[0]+'</h1><p>'+P[1]+'</p>'})();({home:rHome,rank:rRank,col:rCol,shop:rShop,code:rCode,com:rCom,miss:rMiss,admin:rAdmin,mk:rMarket})[tab]();noelBanner()}
+ document.body.dataset.tab=tab;(function(){var P={col:['Ma collection','Touche une carte pour voir sa fiche, vendre ses doublons ou la mettre au marché.'],rank:['Classement','Le classement des collections : chaque carte différente rapporte des points selon sa rareté.'],slot:['Machine à sous','Insère des Coins, choisis ta mise et fais tourner. Encaisse quand tu veux.'],hl:['Plus ou moins','La prochaine carte sera-t-elle plus rare, pareille ou moins rare ?'],miss:['Missions','Termine des objectifs pour gagner des packs et des titres.'],com:['Communauté','Tes amis, ton équipe, la tier list et tes propositions de cartes.'],shop:['Boutique','Achète des packs à rareté garantie ou tente la roue.'],mk:['Marché','Achète les cartes des autres joueurs ou vends les tiennes.'],code:['Code de la map','Entre ton code de fin de map pour tourner la roue.']}[tab],ph=$('phead');if(tab==='com')P=[GNAME[curKey()],{'com:friends':'Tes amis, leurs collections et tes réglages de confidentialité.','com:tier':'Classe les cartes à ta façon, catégorie par catégorie.','com:team':'Compose ton 11 avec un coach, un stade et un club.','com:add':'Propose une nouvelle carte : elle part au jury de l\'admin.'}[curKey()]];if(tab==='col'&&colSub!=='col')P=[GNAME[curKey()],colSub==='tit'?'Équipe un titre : il s\'affiche sous ton pseudo dans le classement.':'Ta carte, si elle est associée à ton compte.'];if(!ph)return;if(!P){ph.hidden=true;ph.innerHTML='';return}ph.hidden=false;ph.innerHTML='<h1>'+P[0]+'</h1><p>'+P[1]+'</p>'})();({home:rHome,rank:rRank,col:rCol,shop:rShop,code:rCode,com:rCom,miss:rMiss,admin:rAdmin,mk:rMarket,slot:rSlot,hl:rHL})[tab]();noelBanner()}
 function cd(){var left=Math.max(0,S.last+HOUR-Date.now()),m=Math.floor(left/60000),s=Math.floor(left/1000)%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s}
 function ring(){var f=S.stock>=MAXSTOCK?1:Math.min(1,(Date.now()-S.last)/HOUR),C=2*Math.PI*44;
  return '<div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="rb"/><circle cx="50" cy="50" r="44" class="rf" id="rf" stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-f))+'"/></svg><div class="rt"><b id="cd">'+(S.stock>=MAXSTOCK?'PLEIN':cd())+'</b><small>prochain pack</small></div></div>'}
@@ -984,7 +987,7 @@ function rHome(){
  '<li><b>Ouvre des packs</b><span>5 cartes par pack, un pack offert chaque heure.</span></li>'+
  '<li><b>Complète ta collection</b><span>Six raretés, du Commun au Mythique, et chaque carte peut sortir en Holo.</span></li>'+
  '<li><b>Revends et achète</b><span>Tes doublons deviennent des Coins pour des packs à rareté garantie.</span></li>'+
- '<li><b>Grimpe au classement</b><span>Le top 20 est récompensé chaque lundi à minuit.</span></li></ol></section>'+
+ '<li><b>Grimpe au classement</b><span>Chaque carte différente te rapporte des points selon sa rareté.</span></li></ol></section>'+
  '<section class="hduo"><div class="panel"><h3>Les raretés</h3><p class="mut sm">Chance qu’un pack gratuit contienne au moins une carte de cette rareté</p><div class="lad">'+lad+'</div></div>'+
  '<div class="panel hsec2"><h3>Les cartes Holo</h3><p class="mut sm">Chance qu\'un pack contienne au moins une Holo de cette rareté · environ <b>'+hpk.toFixed(0)+' %</b> au total</p><div class="lad">'+hlad+'</div><p class="mut sm hnote">Une Holo ne prend pas de place en plus : ta carte brille et rapporte ses propres points. Une Holo en double se revend 2 fois le prix de la carte.</p></div></section>'+
  '<section class="panel dscp"><div><h3>Rejoins le serveur Discord</h3><p class="mut sm">Annonces, sondages, nouvelles cartes et commandes du bot (/11, /classement, /code…).</p></div><a class="dbtn" href="https://discord.gg/editlegends" target="_blank" rel="noopener">'+DICO+' Rejoindre le Discord</a></section>';
@@ -1003,51 +1006,60 @@ function multiBtns(){var n=openCur(),mx=openMaxN();return '<span class="nstep'+(
 function nstepUpd(){var n=openCur(),mx=openMaxN(),b=$('nsel'),g=$('hgo');if(b)b.innerHTML=n+'<small>pack'+(n>1?'s':'')+'</small>';if(g)g.textContent=openLbl(n);[].forEach.call(document.querySelectorAll('[data-nd]'),function(x){var d=x.dataset.nd;x.disabled=d==='-1'?n<=1:n>=mx})}
 function openVia(body){if(busy||netBusy)return;var prev=Object.assign({},S.col),it=packIntro();act(body).then(function(r){setState(r.state);reveal(r.cards,prev,it,r.holo)}).catch(function(){packAbort()})}
 /* ---------- cérémonie d'ouverture ---------- */
-function reveal(list,prev,intro,hol){prev=prev||{};busy=true;var pr=list.map(function(i,k){return [i,k]}).sort(function(a,b){return CARDS[a[0]][2]-CARDS[b[0]][2]||a[1]-b[1]});var hfl=pr.map(function(x){return !!(hol&&hol[x[1]])});list=pr.map(function(x){return x[0]});var step=0,flipped=false,ready=true,phase='pack',timer=0,isNew=[],tmp={},best=0,fastFwd=null;
- list.forEach(function(i){isNew.push(!prev[i]&&!tmp[i]);tmp[i]=1;best=Math.max(best,CARDS[i][2])});
- var ov=$('ov'),started=true;
+function backHTML(r,h){return '<div class="face back'+(r>=3?' rbk':'')+(h?' hback':'')+'">'+(h?'<i class="hbr"></i><i class="hbs"></i><i class="hsp" style="--x:12%;--y:18%;--d:0s"></i><i class="hsp" style="--x:82%;--y:12%;--d:.3s"></i><i class="hsp" style="--x:70%;--y:46%;--d:.7s"></i><i class="hsp" style="--x:20%;--y:60%;--d:.5s"></i><i class="hsp" style="--x:55%;--y:84%;--d:.9s"></i><i class="hsp" style="--x:88%;--y:76%;--d:.15s"></i>':'')+'<div class="bk"><div class="bkin"><div class="sun"></div><div class="emb">'+LOGO+'</div><div class="bkt"><i></i><b>EDIT LEGENDS</b><i></i></div><div class="bks">★ ★ ★</div></div></div></div>'}
+/* Ouverture : toutes les cartes face cachée en grille (mélangées), on les retourne une par une ou « Tout révéler ».
+   Une Épique ou mieux, ou une Holo, retournée à la main a droit à la cérémonie du site. */
+function reveal(list,prev,intro,hol){prev=prev||{};busy=true;
+ var res=list.map(function(i,k){return {i:i,h:!!(hol&&hol[k])}}),tmp={};
+ for(var k=res.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1)),t=res[k];res[k]=res[j];res[j]=t}
+ res.forEach(function(x){x.nw=!prev[x.i]&&!tmp[x.i];tmp[x.i]=1});
+ var ov=$('ov'),N=res.length,many=N>5,phase='pack',cer=false,timer=0,started=true,keep=null,cerBack=null;
  if(!intro){ov.hidden=false;ov.className='over';ov.innerHTML=packHTML(true,'Ouverture…');sfx('tear');timer=setTimeout(burst,1150)}
  else{started=intro.clicked;if(started)timer=setTimeout(burst,Math.max(200,1150-(Date.now()-intro.t0)))}
  function flash(col){var f=document.createElement('div');f.className='flash';f.style.setProperty('--a',col);ov.appendChild(f);setTimeout(function(){f.remove()},900)}
- function burst(){if(phase!=='pack')return;phase='cards';clearTimeout(timer);sfx('boom');var pk=$('pk3d');if(pk)pk.classList.add('split');flash('#fff');burstFx(innerWidth/2,innerHeight/2,'#27e0ff',70,16);setTimeout(show,420)}
- function show(){flipped=false;var c=CARDS[list[step]],r=c[2];
-  ov.className='over';
-  ov.innerHTML='<div class="hdr">Carte '+(step+1)+' / '+list.length+'</div><div class="cstage" style="--a:'+HEX[r]+'"><div class="rays"></div><div class="fc enter" style="--a:'+HEX[r]+'"><div class="fi"><div class="face back'+(r>=3?' rbk':'')+(hfl[step]?' hback':'')+'">'+(hfl[step]?'<i class="hbr"></i><i class="hbs"></i><i class="hsp" style="--x:12%;--y:18%;--d:0s"></i><i class="hsp" style="--x:82%;--y:12%;--d:.3s"></i><i class="hsp" style="--x:70%;--y:46%;--d:.7s"></i><i class="hsp" style="--x:20%;--y:60%;--d:.5s"></i><i class="hsp" style="--x:55%;--y:84%;--d:.9s"></i><i class="hsp" style="--x:88%;--y:76%;--d:.15s"></i>':'')+'<div class="bk"><div class="bkin"><div class="sun"></div><div class="emb">'+LOGO+'</div><div class="bkt"><i></i><b>EDIT LEGENDS</b><i></i></div><div class="bks">★ ★ ★</div></div></div></div><div class="face front">'+cardHTML(list[step],{isNew:isNew[step],hs:hfl[step]?2:0})+'</div></div></div></div><div class="hint" id="hint">Touche la carte pour la retourner</div><button class="skip" id="skip">Tout révéler ▸▸</button>';if(r>=3){var fcd0=ov.querySelector('.face.front .card');if(fcd0)fcd0.dataset.st='0'}}
- function doFlip(){flipped=true;ready=false;var my=step,fc=ov.querySelector('.fc'),st=ov.querySelector('.cstage'),r=CARDS[list[step]][2],big=r>=3,col=HEX[r],pre=[0,0,0,1600,2400,3200][r],dur=[520,520,520,1700,2200,2700][r],g=null;
-  if(!fc){flipped=false;ready=true;return}
-  var h0=$('hint');if(h0)h0.textContent='';
-  function alive(){return phase==='cards'&&step===my&&ov.querySelector('.fc')===fc}
-  function go(){if(!alive())return;if(g){g.className='chgfx out';var gg=g;setTimeout(function(){gg.remove()},700)}
-   fc.classList.add('flipped');var fi=fc.querySelector('.fi');fi.style.setProperty('--ry','180deg');if(big){var eb=document.createElement('div');eb.className='edgebeam';eb.style.cssText='--a:'+col+';animation-duration:'+(dur/1000)+'s';st.appendChild(eb);setTimeout(function(){eb.remove()},dur+200)}fi.style.animationDuration=((big?dur:800)/1000)+'s';if(big)fc.classList.add('slowflip');fc.classList.remove('charge');var bkf=fc.querySelector('.face.back');if(bkf)setTimeout(function(){bkf.classList.add('gone')},(big?dur*.6:800*.5));sfx('flip');
-   setTimeout(function(){if(!alive())return;var b=fc.getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2;function climax(){st.classList.add('lit');sfx('rar',r);
-    for(var q=0;q<(r>=5?5:r>=4?4:r>=3?3:r>=1?1:0);q++){(function(q){setTimeout(function(){if(!alive())return;var d=document.createElement('div');d.className='shock';d.style.setProperty('--a',col);st.appendChild(d);setTimeout(function(){d.remove()},1100)},q*170)})(q)}
-    burstFx(cx,cy,col,[14,22,30,90,170,320][r],[6,7,8,12,15,19][r]);
-    if(big){var bn=document.createElement('div');bn.className='banner';bn.style.setProperty('--a',col);bn.textContent=RAR[r].n;ov.appendChild(bn);setTimeout(function(){bn.remove()},2700)}
-    if(r>=4)flash(col);if(r>=4){ov.classList.add('shake');setTimeout(function(){ov.classList.remove('shake')},r===5?1200:900)}
-    if(r===5){[220,440].forEach(function(t,k){setTimeout(function(){if(!alive())return;flash(k?'#ffd24a':'#fff');burstFx(cx,cy,k?'#ffd24a':'#fff',140,20)},t)})}}if(!big)climax();
-    if(hfl[my]){var hb=document.createElement('div');hb.className='banner hbn';hb.textContent='✨ HOLO ✨';ov.appendChild(hb);setTimeout(function(){hb.remove()},2700)}var fcd=fc.querySelector('.card'),nextTxt=(step<list.length-1?'Touche pour la suite':'Touche pour le résumé');
-    function fin(){fastFwd=null;if(fcd)fcd.dataset.st='2';ready=true;var h=$('hint');if(h)h.textContent=nextTxt}
-    if(big&&fcd){var t1=[1100,1300,1600][r-3],t2=[1300,1400,1600][r-3],ta,tb;
-     fastFwd=function(){clearTimeout(ta);clearTimeout(tb);if(alive())fin()};
-     ta=setTimeout(function(){if(!alive())return;fcd.dataset.st='1';sfx('beat')},t1);
-     tb=setTimeout(function(){if(!alive())return;climax();fin()},t1+500)}
-    else fin()},dur)}
-  if(big){var b0=fc.getBoundingClientRect(),cx0=b0.left+b0.width/2,cy0=b0.top+b0.height/2;
-   g=document.createElement('div');g.className='chgfx';g.style.cssText='--a:'+col+';--cd:'+(pre/1000)+'s';ov.appendChild(g);
-   fc.style.setProperty('--cd',(pre/1000)+'s');fc.classList.add('charge');sfx('rise',r);
-   var iv=setInterval(function(){if(!alive()){clearInterval(iv);return}suckFx(cx0,cy0,col,r>=4?5:3)},50);setTimeout(function(){clearInterval(iv)},pre);
-   for(var t=0;t<pre-250;t+=Math.max(230,560-t/6)){(function(t){setTimeout(function(){if(alive())sfx('beat')},t)})(t)}
-   setTimeout(go,pre)}else go()}
- function summary(){phase='sum';var tot=0,bestI=list[0];list.forEach(function(i){if(CARDS[i][2]>CARDS[bestI][2])bestI=i});
-  ov.className='over';ov.innerHTML='<h2 class="disp sumt">Résumé du pack</h2><div class="sum">'+list.map(function(i,k){return '<div class="sw" data-zi="'+i+'" style="animation-delay:'+(k*.05)+'s">'+cardHTML(i,{isNew:isNew[k],hs:hfl[k]?2:0})+'</div>'}).join('')+'</div>'+(hfl.some(Boolean)?'<div class="hsum">✨ '+hfl.filter(Boolean).length+' carte'+(hfl.filter(Boolean).length>1?'s':'')+' Holo dans ce pack !</div>':'')+'<div class="mut">Meilleure carte : <b style="color:'+HEX[CARDS[bestI][2]]+'">'+CARDS[bestI][0]+'</b></div><button class="btn big-b" id="ok">Continuer</button>';
-  burstFx(innerWidth/2,innerHeight*.3,HEX[best],40,10)}
+ function burst(){if(phase!=='pack')return;phase='grid';clearTimeout(timer);sfx('boom');var pk=$('pk3d');if(pk)pk.classList.add('split');flash('#fff');burstFx(innerWidth/2,innerHeight/2,'#27e0ff',70,16);setTimeout(showGrid,420)}
+ function showGrid(){ov.className='over';ov.innerHTML='<div class="hdr" id="ghd">'+(many?Math.round(N/5)+' packs · ':'')+N+' cartes</div><div class="rv3'+(many?' many':'')+'">'+res.map(function(x,k){var r=CARDS[x.i][2];return '<div class="g3" data-k="'+k+'" style="animation-delay:'+(Math.min(k,40)*(many?.025:.09))+'s"><div class="g3i">'+backHTML(r,x.h)+'<div class="face front">'+cardHTML(x.i,{isNew:x.nw,hs:x.h?2:0})+'</div></div></div>'}).join('')+'</div>'+
+  '<div class="ghint" id="ghint">Touche une carte pour la retourner</div><div class="ovb"><button class="btn big-b" id="gall">Tout révéler</button></div>'}
+ function left(){return [].slice.call(ov.querySelectorAll('.g3:not(.on)'))}
+ function flipSmall(g){var x=res[+g.dataset.k],r=CARDS[x.i][2];g.classList.add('on');sfx('flip');setTimeout(function(){var b=g.getBoundingClientRect();burstFx(b.left+b.width/2,b.top+b.height/2,HEX[r],[10,14,18,30,50,80][r],[4,5,5,7,9,11][r]);sfx('rar',r)},250);checkDone()}
+ function checkDone(){if(left().length)return;var best=0,nw=0,h=0;res.forEach(function(x){best=Math.max(best,CARDS[x.i][2]);if(x.nw)nw++;if(x.h)h++});var gh=$('ghint');if(gh)gh.innerHTML=nw+' nouvelle'+(nw>1?'s':'')+' carte'+(nw>1?'s':'')+(h?' · '+h+' Holo':'')+' · meilleure : <b style="color:'+HEX[best]+'">'+RAR[best].n+'</b>';var b=$('gall');if(b){b.id='ok';b.textContent='Continuer'}}
+ function revealAll(){var L=left();if(!L.length)return;L.forEach(function(g){g.classList.add('on','fast')});sfx('flip');var best=0;L.forEach(function(g){best=Math.max(best,CARDS[res[+g.dataset.k].i][2])});
+  setTimeout(function(){L.forEach(function(g){var r=CARDS[res[+g.dataset.k].i][2];if(r>=2){var b=g.getBoundingClientRect();burstFx(b.left+b.width/2,b.top+b.height/2,HEX[r],[0,0,10,24,40,70][r],[0,0,5,7,9,12][r])}});sfx('rar',best);if(best>=4){flash(HEX[best]);ov.classList.add('shake');setTimeout(function(){ov.classList.remove('shake')},900)}},300);checkDone()}
+ function ceremony(g){cer=true;var x=res[+g.dataset.k],i=x.i,r=CARDS[i][2],big=r>=3,col=HEX[r],hl=x.h;keep=document.createDocumentFragment();while(ov.firstChild)keep.appendChild(ov.firstChild);
+  ov.innerHTML='<div class="hdr">Carte spéciale</div><div class="cstage" style="--a:'+col+'"><div class="rays"></div><div class="fc enter" style="--a:'+col+'"><div class="fi">'+backHTML(r,hl)+'<div class="face front">'+cardHTML(i,{isNew:x.nw,hs:hl?2:0})+'</div></div></div></div><div class="hint" id="hint"></div>';
+  var fc=ov.querySelector('.fc'),st=ov.querySelector('.cstage'),fcd0=ov.querySelector('.face.front .card');if(big&&fcd0)fcd0.dataset.st='0';
+  var pre=big?[0,0,0,1600,2400,3200][r]:900,dur=big?[520,520,520,1700,2200,2700][r]:800,gfx=null,ready=false,ff=null;
+  function alive(){return cer&&ov.contains(fc)}
+  function go2(){if(!alive())return;if(gfx){gfx.className='chgfx out';var gg=gfx;setTimeout(function(){gg.remove()},700)}
+   fc.classList.add('flipped');var fi=fc.querySelector('.fi');fi.style.setProperty('--ry','180deg');if(big){var eb=document.createElement('div');eb.className='edgebeam';eb.style.cssText='--a:'+col+';animation-duration:'+(dur/1000)+'s';st.appendChild(eb);setTimeout(function(){eb.remove()},dur+200)}
+   fi.style.animationDuration=(dur/1000)+'s';if(big)fc.classList.add('slowflip');fc.classList.remove('charge');var bkf=fc.querySelector('.face.back');if(bkf)setTimeout(function(){bkf.classList.add('gone')},dur*.6);sfx('flip');
+   setTimeout(function(){if(!alive())return;var b=fc.getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2;
+    function climax(){st.classList.add('lit');sfx('rar',r);for(var q=0;q<(r>=5?5:r>=4?4:r>=3?3:1);q++)(function(q){setTimeout(function(){if(!alive())return;var d=document.createElement('div');d.className='shock';d.style.setProperty('--a',col);st.appendChild(d);setTimeout(function(){d.remove()},1100)},q*170)})(q);
+     burstFx(cx,cy,col,[14,22,30,90,170,320][r],[6,7,8,12,15,19][r]);
+     if(big){var bn=document.createElement('div');bn.className='banner';bn.style.setProperty('--a',col);bn.textContent=RAR[r].n;ov.appendChild(bn);setTimeout(function(){bn.remove()},2700)}
+     if(r>=4){flash(col);ov.classList.add('shake');setTimeout(function(){ov.classList.remove('shake')},r===5?1200:900)}
+     if(r===5)[220,440].forEach(function(t,q){setTimeout(function(){if(!alive())return;flash(q?'#ffd24a':'#fff');burstFx(cx,cy,q?'#ffd24a':'#fff',140,20)},t)})}
+    if(!big)climax();
+    if(hl){var hb=document.createElement('div');hb.className='banner hbn';hb.textContent='HOLO';ov.appendChild(hb);setTimeout(function(){hb.remove()},2700)}
+    var fcd=fc.querySelector('.card'),fin=function(){ff=null;if(fcd)fcd.dataset.st='2';ready=true;var h=$('hint');if(h)h.textContent='Touche pour revenir à tes cartes'};
+    if(big&&fcd){var t1=[1100,1300,1600][r-3],ta,tb;ff=function(){clearTimeout(ta);clearTimeout(tb);if(alive()){climax();fin()}};ta=setTimeout(function(){if(!alive())return;fcd.dataset.st='1';sfx('beat')},t1);tb=setTimeout(function(){if(!alive())return;climax();fin()},t1+500)}else fin()},dur)}
+  var b0=fc.getBoundingClientRect(),cx0=b0.left+b0.width/2,cy0=b0.top+b0.height/2;gfx=document.createElement('div');gfx.className='chgfx';gfx.style.cssText='--a:'+(big?col:'#ffd24a')+';--cd:'+(pre/1000)+'s';ov.appendChild(gfx);
+  fc.style.setProperty('--cd',(pre/1000)+'s');fc.classList.add('charge');sfx('rise',Math.max(3,r));
+  var iv=setInterval(function(){if(!alive()){clearInterval(iv);return}suckFx(cx0,cy0,big?col:'#ffd24a',r>=4?5:3)},50);setTimeout(function(){clearInterval(iv)},pre);
+  for(var t=0;t<pre-250;t+=Math.max(230,560-t/6))(function(t){setTimeout(function(){if(alive())sfx('beat')},t)})(t);
+  setTimeout(go2,pre);
+  cerBack=function(){if(!ready){if(ff)ff();return}cer=false;ov.innerHTML='';ov.appendChild(keep);g.classList.add('on','fast');checkDone()}}
+ function close(){document.removeEventListener('keydown',keyH);ov.hidden=true;ov.className='';ov.innerHTML='';ov.onclick=null;busy=false;render()}
  ov.onclick=function(e){
   if(phase==='pack'){if(!started){started=true;packRumble();timer=setTimeout(burst,1900);return}burst();return}
-  if(phase==='cards'){if(e.target.id==='skip'){summary();return}
-   if(!flipped){doFlip();return}
-   if(!ready){if(fastFwd)fastFwd();return}step++;if(step>=list.length)summary();else{show();flipped=true;ready=false;var mine=step;setTimeout(function(){if(phase==='cards'&&step===mine)doFlip()},380)};return}
-  if(phase==='sum'){var sw=e.target.closest&&e.target.closest('.sw');if(sw){openCardZoom(+sw.dataset.zi);return}}
-  if(phase==='sum'&&e.target.id==='ok'){ov.hidden=true;ov.onclick=null;busy=false;render()}}}
+  if(cer){cerBack();return}
+  if(e.target.id==='ok'){close();return}
+  if(e.target.id==='gall'){revealAll();return}
+  var g=e.target.closest&&e.target.closest('.g3');if(!g)return;
+  if(g.classList.contains('on')){if(!left().length)openCardZoom(res[+g.dataset.k].i);return}
+  var x=res[+g.dataset.k];if(CARDS[x.i][2]>=3||x.h)ceremony(g);else flipSmall(g)};
+ function keyH(e){if(e.key!==' '&&e.key!=='Enter')return;if(e.target.closest&&e.target.closest('input,textarea,select'))return;e.preventDefault();if(phase==='pack'||cer)return ov.onclick({target:ov});var n=left()[0];if(n)ov.onclick({target:n});else close()}
+ setTimeout(function(){document.addEventListener('keydown',keyH)},50)}
 /* ---------- collection / boutique / proba ---------- */
 var JN={"Bouzitournament": 10, "Ewarz": 10, "LeBouseuh": 10, "Mongraal": 9.8, "Snaz": 9.8, "Mr Brocoli": 9.6, "Traki": 9.6, "Jaguar": 9.0, "Mathor": 8.6, "DragonnP": 8.4, "E4 Marmotte": 8, "Nyxo": 8, "Tiroguale": 7.8, "aXz": 7.8, "EtherSpeedCup": 7.6, "669": 7.4, "Flew": 7.3, "Raider v4": 7.2, "Xiram": 7.2, "999": 7.1, "Nayress": 7.0, "Clow": 6.6, "Nainspeed": 6.2, "Tizeef": 6.2, "Practice Raider": 6, "Strom": 6, "Minato": 5.8, "P7": 5.8, "WaYz": 5.8, "AyanoEditz-1": 5.6, "Dono": 5.4, "Speedy": 4.6, "NayToo": 4.4, "Cryx": 4.4, "Just ZiNoX": 4.2, "TrakiFastEdit": 4, "cWix": 4, "Paulito": 3.6, "E4 Banco": 3.6, "Luminex": 3.6, "XeloMelz": 3.3, "LatiiX": 3.2, "zacduc": 2.9, "Trev": 2.8, "Meliodas": 2.8, "Srambad": 2.7, "XiramEditMap": 2.6, "IZUKI": 2.6, "Cumly": 2.4, "69": 2.2, "Coqto": 2.2, "Versa Edit Practice": 1.8, "XiRozZ": 1.8, "Editverse": 1.6, "Kwayz": 1.6, "Lakitu": 1.4, "Ocram": 1.3, "BiomeEdit": 1.2, "Ban": 1.1, "Jongalbus": 1.1, "Meliodas Structure": 1.1, "RTC": 1.1, "WayzEdit1": 1.1, "El Kino": 1.0, "Tinouska": 1.0, "ErWaX": 0.9, "Shin": 0.9, "Bill Wick": 0.4, "FuzionP": 0.4, "Itax": 0.4, "bL Crew": 0.2, "La pomme": 0.2, "Titan": 0.2, "Itax Edit Course": 0, "Itax Impossible": 0, "Itax Speed Boosts": 0, "Monks": 0, "Roi Borgne": 0, "Zyrox": 0, "nox": 0},JO=["Bouzitournament", "Ewarz", "LeBouseuh", "Mongraal", "Snaz", "Mr Brocoli", "Traki", "Jaguar", "Mathor", "DragonnP", "E4 Marmotte", "Nyxo", "Tiroguale", "aXz", "EtherSpeedCup", "669", "Flew", "Raider v4", "Xiram", "999", "Nayress", "Clow", "Nainspeed", "Tizeef", "Practice Raider", "Strom", "Minato", "P7", "WaYz", "AyanoEditz-1", "Dono", "Speedy", "NayToo", "Cryx", "Just ZiNoX", "TrakiFastEdit", "cWix", "Paulito", "E4 Banco", "Luminex", "XeloMelz", "LatiiX", "zacduc", "Trev", "Meliodas", "Srambad", "XiramEditMap", "IZUKI", "Cumly", "69", "Coqto", "Versa Edit Practice", "XiRozZ", "Editverse", "Kwayz", "Lakitu", "Ocram", "BiomeEdit", "Ban", "Jongalbus", "Meliodas Structure", "RTC", "WayzEdit1", "El Kino", "Tinouska", "ErWaX", "Shin", "Bill Wick", "FuzionP", "Itax", "bL Crew", "La pomme", "Titan", "Itax Edit Course", "Itax Impossible", "Itax Speed Boosts", "Monks", "Roi Borgne", "Zyrox", "nox"];
 var JMIN=[0,1.2,2.8,4.6,7.1,8.4];
@@ -1075,21 +1087,20 @@ function exH(){return ''}
 function bindEx(){}
 function dupCount(){var t=0,k=dupKeepX(mkData);CARDS.forEach(function(c,i){if(!c)return;var n=NRM(i),q=k[i]||1;if(n>q)t+=n-q;if(HOL(i)>1&&!(k[i]>=1e9))t+=HOL(i)-1});return t}
 function dupValue(){var t=0,k=dupKeepX(mkData),hm=(window.HOLOC&&HOLOC.SELL_MULT)||2;CARDS.forEach(function(c,i){var n=NRM(i),q=k[i]||1;if(n>q)t+=(n-q)*RAR[c[2]].v;if(c&&HOL(i)>1&&!(k[i]>=1e9))t+=(HOL(i)-1)*RAR[c[2]].v*hm});return t}
-var colSub='col',COLS=[['col','Collection'],['vit','Vitrine'],['tit','Titres']];
-function colNav(){return subnavH(COLS.concat([['mc','Ma carte']]),colSub,'data-ccs')}
+var colSub='col',COLS=[['col','Collection'],['tit','Titres'],['mc','Ma carte']];
+function colNav(){return ''}
 function bindColNav(){bindNav('data-ccs',function(v){colSub=v;render();scrollTo(0,0)})}
 function vitH(){if(!S.vitrine)S.vitrine=[null,null,null];
- return '<div class="panel vitp"><h3>Ma vitrine</h3><p class="mut sm">Choisis 3 cartes : c’est tout ce que verront les joueurs qui cliquent sur ton nom dans le classement (tes amis voient aussi ta collection).</p><div class="vitrow">'+[0,1,2].map(function(k){var i=S.vitrine[k];return '<button class="vslot'+(i==null||!S.col[i]?' empty':'')+'" data-vs="'+k+'">'+(i!=null&&S.col[i]?cardHTML(i,{hs:HS(i)}):'<span class="plus">+</span>')+'</button>'}).join('')+'</div></div>'}
+ return '<div class="panel vitp vitbig"><h3>Ma vitrine</h3><p class="mut sm">Tes 3 plus belles cartes : elles s’affichent à côté de ton nom dans le classement et sur ton profil. Touche une case pour la changer.</p><div class="vitrow">'+[0,1,2].map(function(k){var i=S.vitrine[k];return '<button class="vslot'+(i==null||!S.col[i]?' empty':'')+'" data-vs="'+k+'">'+(i!=null&&S.col[i]?cardHTML(i,{hs:HS(i)}):'<span class="plus">+</span>')+'</button>'}).join('')+'</div></div>'}
 var colF=dupOnly?'own':'all';
 function colKeep(c,i,n){if(colF==='own')return n>0;if(colF==='miss')return n===0&&!c[5];if(colF==='dup')return NRM(i)>(dupKeep(mkData)[i]||1);if(colF==='hol')return HOL(i)>0;if(colF==='mk')return n>0&&!!listTag(i);return n||!c[5]}
 function colTiles(){return '<div class="ctiles">'+RAR.map(function(x,r){var tot=0,own=0,hn=0;CARDS.forEach(function(c,i){if(c&&c[2]===r){if(!c[5]||S.col[i])tot++;if(S.col[i])own++;if(HOL(i))hn++}});return {r:r,own:own,tot:tot,hn:hn}}).reverse().map(function(o){return '<button class="ctile'+(o.own>=o.tot&&o.tot?' full':'')+'" data-jr="'+o.r+'" style="--c:'+HEX[o.r]+'"><span>'+RAR[o.r].n+'</span><b>'+o.own+' / '+o.tot+'</b><em class="ctH"><i class="hic"></i> '+o.hn+'</em><i><i style="width:'+(o.tot?o.own/o.tot*100:0)+'%"></i></i></button>'}).join('')+'</div>'}
 function colFilt(){return '<div class="fl sorts cfl">'+[['all','Toutes'],['own','Possédées'],['miss','Manquantes'],['dup','Doublons'],['hol','<i class="hic"></i> Holo'],['mk','Sur le marché']].map(function(x){return '<button data-cf="'+x[0]+'"'+(colF===x[0]?' class="on"':'')+'>'+x[1]+'</button>'}).join('')+'</div>'}
 function rCol(){
  if(colSub==='mc'){rMyCard();return}
- if(colSub==='vit'){$('main').innerHTML=colNav()+vitH();bindColNav();[].forEach.call(document.querySelectorAll('[data-vs]'),function(b){b.onclick=function(){openVit(+b.dataset.vs)}});return}
  if(colSub==='tit'){rTitles();return}
 var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
- var h='<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes <span class="hcn"><i class="hic"></i> '+holoCount()+' / '+TOT(S.col)+'</span></b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div>'+
+ var h=vitH()+'<div class="bar"><b>'+owned+' / '+TOT(S.col)+' cartes <span class="hcn"><i class="hic"></i> '+holoCount()+' / '+TOT(S.col)+'</span></b><div class="prog"><i style="width:'+(owned/TOT(S.col)*100)+'%"></i></div>'+
  '</div><div class="dupbar'+(dupValue()?'':' none')+'"><div class="dupi"><i class="cn"></i><div><b>'+(dupValue()?dupCount()+' doublon'+(dupCount()>1?'s':'')+' à revendre':'Aucun doublon')+'</b><span>'+(dupValue()?'+'+fmt(dupValue())+' '+CUR+' · une copie de chaque carte est gardée':'Ouvre des packs pour en obtenir')+'</span></div></div><div class="dupa"><button class="btn dupgo" id="sellall"'+(dupValue()?'':' disabled')+'>Tout vendre</button><button class="btn qsbtn'+(qsMode?' on':'')+'" id="qsb">'+(qsMode?'Quitter':'Choisir les cartes')+'</button></div></div>'+colTiles()+colFilt()+exH()+(qsMode?qsPanel():'');
  var any=false;
  for(var r=RAR.length-1;r>=0;r--){var items=[];CARDS.forEach(function(c,i){var n=S.col[i]||0;if(c[2]===r&&colKeep(c,i,n))items.push(i)});items.sort(function(a,b){return CARDS[a][0].localeCompare(CARDS[b][0],'fr',{sensitivity:'base',numeric:true})});
@@ -1101,7 +1112,7 @@ var owned=0;CARDS.forEach(function(c,i){if(S.col[i])owned++});
    return '<div class="item" data-zi="'+i+'" style="animation-delay:'+(k*.06)+'s">'+cardHTML(i,{count:DC(i),hs:HS(i)})+'<div class="pst">'+listTag(i)+'</div>'+(NRM(i)>(dupKeep(mkData)[i]||1)?(function(){var q=NRM(i)-(dupKeep(mkData)[i]||1);return '<button class="dupsl" data-s="'+i+'" title="Vendre '+(q>1?'les '+q+' doublons':'le doublon')+'"><span>Vendre ×'+q+'</span><em><i class="cn"></i>+'+fmt(q*RAR[CARDS[i][2]].v)+'</em></button>'})():'')+'</div>'}).join('')+'</div></div>'}
  if(qsMode)h+='<div style="height:90px"></div>';
  if(!any)h+='<div class="panel center mut">'+'Ta collection est vide. Ouvre un pack !'+'</div>';
- $('main').innerHTML=colNav()+h;bindColNav();
+ $('main').innerHTML=colNav()+h;bindColNav();[].forEach.call(document.querySelectorAll('[data-vs]'),function(b){b.onclick=function(){openVit(+b.dataset.vs)}});
  [].forEach.call(document.querySelectorAll('[data-cf]'),function(b){b.onclick=function(){colF=b.dataset.cf;quietRender()}});[].forEach.call(document.querySelectorAll('[data-jr]'),function(b){b.onclick=function(){var e=document.getElementById('sec'+b.dataset.jr);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}});
  [].forEach.call(document.querySelectorAll('.item[data-zi] .card'),function(c){c.style.cursor='zoom-in';c.onclick=function(){sfx('flip');openCardZoom(+c.parentNode.dataset.zi)}});
 
@@ -1342,17 +1353,162 @@ function dfr(iso){return iso?new Date(iso).toLocaleDateString('fr-FR'):'?'}
 function subnavH(list,cur,attr){return '<div class="fl subnav">'+list.map(function(s){return '<button '+attr+'="'+s[0]+'"'+(cur===s[0]?' class="on"':'')+'>'+s[1]+(attr==='data-cs'&&s[0]==='friends'&&NOTIF.reqs?'<span class="nb">'+NOTIF.reqs+'</span>':'')+(attr==='data-as'&&s[0]==='times'&&NOTIF.tp?'<span class="nb">'+NOTIF.tp+'</span>':'')+(attr==='data-as'&&s[0]==='jury'&&NOTIF.cp?'<span class="nb">'+NOTIF.cp+'</span>':'')+'</button>'}).join('')+'</div>'}
 function bindNav(attr,fn){[].forEach.call(document.querySelectorAll('['+attr+']'),function(b){b.onclick=function(){fn(b.getAttribute(attr))}})}
 function comAlive(sub){return (sub==='board'?tab==='rank':tab==='com'&&comSub===sub)&&$('cbody')}
-var RSC=[['all','Joueurs'],['runs','Runs'],['time','Temps'],['friends','Amis']];
-function rRank(){$('main').innerHTML=subnavH(RSC,boardScope,'data-rs')+'<div id="cbody"></div>';
+var RSC=[['all','Joueurs'],['friends','Amis'],['time','Temps de la map']];
+function rRank(){if(boardScope==='runs')boardScope='all';$('main').innerHTML=subnavH(RSC,boardScope,'data-rs')+'<div id="cbody"></div>';
  bindNav('data-rs',function(v){boardScope=v;boardData=null;render();scrollTo(0,0)});
  if(boardScope==='time')rTimes();else rBoard()}
 function rCom(){
- var nav=subnavH(COMS,comSub,'data-cs');
+ var nav=['friends','share','prob'].indexOf(comSub)>=0?subnavH([['friends','Amis'],['share','Confidentialité'],['prob','Probabilités']],comSub,'data-cs'):'';
  var bind=function(){bindNav('data-cs',function(v){comSub=v;render();scrollTo(0,0)})};
  if(comSub==='team'||comSub==='tier'){(comSub==='team'?rTeam:rTier)();$('main').insertAdjacentHTML('afterbegin',nav);bind();return}
  $('main').innerHTML=nav+'<div id="cbody"></div>';bind();
  ({friends:rFriends,share:rShare,add:rAdd,prob:rProb})[comSub]()}
 function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Erreur')+'</div>'}
+
+/* ----- casino : machine à sous, plus ou moins, pubs. Les tirages se font sur le serveur, la page affiche. ----- */
+var CASC={BETS:[10,25,50,100,250,500,1000],T3:[4,7,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.32,.26,.19,.12,.08,.03],SPHI:[.26,.23,.19,.14,.11,.07],CL:{lo:.13,hi:.18},HL_MARGE:.95,ADS:{coins:100,max:5,n:3,sec:5}};
+var CLV='<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#3ddc84" stroke="#0b5e31" stroke-width="2"><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z" transform="rotate(90 32 32)"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z"/><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z" transform="rotate(90 32 32)"/></g><circle cx="32" cy="32" r="4" fill="#0b5e31"/></svg>';
+var CSFX={tick:function(){tone(1100+Math.random()*300,.025,'square',.025)},stop:function(){tone(160,.12,'triangle',.2);tone(80,.16,'sine',.22)},
+ win:function(){[523,659,784,1047].forEach(function(f,k){tone(f,.16,'square',.06,k*.08)})},
+ big:function(){[523,659,784,1047,784,1047,1319,1568].forEach(function(f,k){tone(f,.2,'square',.06,k*.09)});for(var k=0;k<18;k++)tone(1800+Math.random()*1600,.07,'triangle',.035,.7+k*.05)},
+ lose:function(){tone(330,.18,'sawtooth',.045,0,250);tone(247,.3,'sawtooth',.045,.16,140)},coin:function(){tone(1760,.05,'square',.04);tone(2640,.12,'square',.04,.05)},
+ flip:function(){tone(500,.06,'triangle',.07,0,1400)},push:function(){tone(440,.12,'triangle',.05)},
+ clover:function(){[784,988,1175,1568,1976].forEach(function(f,k){tone(f,.25,'sine',.08,k*.1)})}};
+function csnd(k){if(!S||S.mute)return;try{actx();CSFX[k]()}catch(e){}}
+function CAS(){if(!S.cas)S.cas={cred:0,free:0,fbet:0};return S.cas}
+function cpool(){var by=[[],[],[],[],[],[]];CARDS.forEach(function(c,i){if(c&&c[0]!=='?'&&!c[5]&&by[c[2]])by[c[2]].push(i)});return by}
+function crnd(a){return a[Math.floor(Math.random()*a.length)]}
+function luckOf(b){return Math.max(0,Math.min(1,1-Math.log10(Math.max(10,b)/10)/2))}
+function pCl(b){return CASC.CL.lo+(CASC.CL.hi-CASC.CL.lo)*luckOf(b)}
+function spOf(b){var L=luckOf(b);return CASC.SPLO.map(function(x,k){return x+(CASC.SPHI[k]-x)*L})}
+function fakeReel(b){if(Math.random()<pCl(b))return 6;var P=spOf(b),t=Math.random();for(var k=0;k<6;k++){t-=P[k];if(t<0)return k}return 5}   /* seulement pour l'animation */
+function clover(){return '<div class="clv4"><i class="rays"></i><i class="gl"></i><div class="cl4">'+CLV+'</div><b>TRÈFLE</b><span>2 = gain · 3 = '+CASC.FREE+' tours</span><i class="sp s1"></i><i class="sp s2"></i><i class="sp s3"></i></div>'}
+var CPOOL=null;function csym(r){if(r===6)return clover();if(!CPOOL)CPOOL=cpool();var L=CPOOL[r];return L&&L.length?cardHTML(crnd(L)):clover()}
+function cmc(r){return '<i class="mcc" style="background:'+HEX[r]+'"></i>'}
+var cAny='<i class="mcc any">?</i>',cCl='<span class="mcl">'+CLV+'</span>';
+function bulbs(n){var h='';for(var k=0;k<n;k++)h+='<i class="cbl"></i>';return h}
+function lights(nh,nv){return '<div class="lights h t">'+bulbs(nh)+'</div><div class="lights h b">'+bulbs(nh)+'</div>'+(nv?'<div class="lights v l">'+bulbs(nv)+'</div><div class="lights v r">'+bulbs(nv)+'</div>':'')}
+function rain(el,n,cl){if(!el)return;var H=el.clientHeight+60;for(var k=0;k<n;k++){var c=document.createElement('i');c.className='coinfx'+(cl?' cl':'');if(cl)c.innerHTML=CLV;c.style.left=(Math.random()*96)+'%';c.style.setProperty('--h',H+'px');c.style.setProperty('--r',(Math.random()*900-450)+'deg');c.style.animationDuration=(1.1+Math.random()*1.3)+'s';c.style.animationDelay=(Math.random()*.9)+'s';el.appendChild(c);(function(c){setTimeout(function(){c.remove()},3500)})(c)}}
+function party(el,ms){if(!el)return;el.classList.add('party','flash');setTimeout(function(){el.classList.remove('party','flash')},ms)}
+function cbanner(el,title,amt,green){if(!el)return;var d=document.createElement('div');d.className='bigw'+(green?' g':'');d.innerHTML='<div><h3>'+title+'</h3><b></b></div>';el.appendChild(d);var b=d.querySelector('b'),t0=performance.now();
+ if(amt!=null)(function f(t){var k=Math.min(1,(t-t0)/1600);b.textContent='+'+fmt(Math.round(amt*(1-Math.pow(1-k,3))))+' '+CUR;if(k<1){if(Math.random()<.35)csnd('coin');requestAnimationFrame(f)}})(t0);else b.textContent=CASC.FREE+' tours gratuits';setTimeout(function(){d.remove()},3200)}
+function chipCol(v){return v>=1000?'#ffb020':v>=500?'#b45cff':v>=250?'#ff3d81':v>=100?'#1d1d1d':v>=50?'#3b9cff':v>=25?'#3ddc84':'#e6e6e6'}
+function chipLbl(v){return v>=1000?v/1000+'k':''+v}
+function casWrap(h){return '<div class="casx">'+h+'</div>'}
+function adBtn(){var a=(CAS().ad||{}),d=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Paris'}),n=a.d===d?a.n:0,left=Math.max(0,CASC.ADS.max-n);
+ return '<button class="adsb" id="ads"'+(left?'':' disabled')+'><span class="pl">▶</span><span><b>+'+fmt(CASC.ADS.coins)+' '+CUR+'</b>'+(left?'Regarde '+CASC.ADS.n+' pubs · '+left+' / '+CASC.ADS.max+' aujourd\'hui':'Reviens demain pour d\'autres pubs')+'</span></button>'}
+function bindAds(){var b=$('ads');if(b)b.onclick=watchAds}
+function watchAds(){if(busy||netBusy)return;act({action:'adstart'}).then(function(r){setState(r.state);busy=true;var ov=$('ov');ov.hidden=false;ov.className='adov';var k=0;
+ var one=function(){var s=CASC.ADS.sec;ov.innerHTML='<div class="adbox"><div class="kick">Publicité '+(k+1)+' / '+CASC.ADS.n+'</div><div class="adsc"><div><h2>Espace publicitaire</h2><p>Merci de soutenir Edit Legends.</p></div></div><div class="adc" id="adc">'+s+' s</div></div>';
+  var t=setInterval(function(){s--;var e=$('adc');if(e)e.textContent=s+' s';if(s<=0){clearInterval(t);k++;if(k<CASC.ADS.n)one();else{ov.innerHTML='<div class="adbox"><div class="adc">Validation…</div></div>';
+   act({action:'adclaim'}).then(function(r2){setState(r2.state);csnd('win');toast('+'+fmt(r2.got)+' '+CUR+' offerts')}).catch(function(){}).then(function(){ov.hidden=true;ov.className='';ov.innerHTML='';busy=false;render()})}}},1000)};one()}).catch(function(){})}
+
+/* ----- machine à sous ----- */
+var sbet=50,slotHist=[],slotLast=0,slotSess=0,slotIns=500;
+function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(b).map(function(x){return x*(1-c)}),one=function(x){return '1 sur '+fmt(Math.max(1,Math.round(1/x)))};
+ var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span><div><b>'+CASC.FREE+' tours gratuits</b><small>'+one(c*c*c)+'</small></div></div>'+
+ '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span><div><b>'+fmt(Math.floor(b*CASC.C2))+'</b><small>'+one(3*c*c*(1-c))+'</small></div></div>';
+ for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'" title="'+one(Math.pow(P[k],3))+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span><b>'+fmt(Math.floor(b*CASC.T3[k]))+'</b></div>';
+ for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span><b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'</b></div>';
+ return h+'<div class="luck"><b>Petite mise = plus de chance</b><span>3 Mythiques : '+one(Math.pow(P[5],3))+' à cette mise</span><i style="width:'+Math.round(luckOf(b)*100)+'%"></i></div>'}
+function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
+function rSlot(){var k0=CAS();CPOOL=cpool();if(k0.cred>0)sbet=Math.min(sbet,CASC.BETS.filter(function(x){return x<=k0.cred}).pop()||10);
+ $('main').innerHTML=casWrap('<section class="floor" id="fl"><div class="swrap"><div class="cab">'+lights(20,12)+'<div class="sign"><b>EDIT</b> SLOTS</div>'+
+ '<div class="lcd"><div class="cr"><span>Crédits</span><b id="lcr">0</b></div><div><span>Mise par tour</span><b id="lbt">0</b></div><div><span>Dernier gain</span><b id="llw">'+fmt(slotLast)+'</b></div></div>'+
+ '<div class="sreels" id="slt">'+[0,1,2].map(function(k){return '<div class="reel" id="re'+k+'"><div class="strip" id="st'+k+'">'+csym(fakeReel(sbet))+'</div></div>'}).join('')+'<i class="payline"></i></div>'+
+ '<div class="chips2" id="bets">'+CASC.BETS.map(function(v){return '<button class="chp" data-bv="'+v+'" style="--cc:'+chipCol(v)+'">'+chipLbl(v)+'</button>'}).join('')+'</div>'+
+ '<div class="cabb"><button class="cash" id="cash">Encaisser</button><button class="spinb" id="spin">SPIN</button><button class="addc" id="addc">+ Crédits</button></div><div class="ins" id="ins"></div></div>'+
+ '<div class="pt"><div class="pth"><span>Ce que tu gagnes</span><span id="pfor"></span></div><div class="ptg" id="ptg"></div><p class="ptn">Les gains vont dans tes crédits. Touche « Encaisser » pour tout récupérer dans ton porte-monnaie.</p></div></div>'+
+ '<div class="msg" id="smsg"></div><div class="sess" id="sess"></div><div class="hist" id="shist">'+histHTML()+'</div>'+adBtn()+'</section>');
+ [].forEach.call(document.querySelectorAll('[data-bv]'),function(b){b.onclick=function(){var k=CAS();if(busy||k.free)return;var v=+b.dataset.bv;if(v>k.cred&&k.cred>0)return toast('Pas assez de crédits pour miser '+fmt(v));sbet=v;csnd('tick');slotUI()}});
+ $('spin').onclick=spin;$('cash').onclick=cashOut;$('addc').onclick=function(){if(!busy)showIns(true)};bindAds();slotUI()}
+function slotUI(){if(!$('lcr'))return;var k=CAS(),c=k.cred,fr=k.free;$('lcr').textContent=fmt(c);$('lbt').textContent=fmt(fr?k.fbet:sbet);$('pfor').textContent=fr?'tours gratuits à '+fmt(k.fbet):'pour '+fmt(sbet)+' par tour';$('ptg').innerHTML=payCells();
+ [].forEach.call(document.querySelectorAll('[data-bv]'),function(b){b.classList.toggle('on',+b.dataset.bv===(fr?k.fbet:sbet));b.disabled=!!fr||(+b.dataset.bv>c&&c>0)});
+ var sp=$('spin');sp.className='spinb'+(fr?' free':'');sp.innerHTML=fr?'GRATUIT<small>'+fr+' restant'+(fr>1?'s':'')+'</small>':!c&&!busy?'<span style="font-size:.72em">INSÉRER</span><small>des '+CUR+'</small>':'SPIN<small>'+fmt(sbet)+' crédits</small>';sp.disabled=busy||(!fr&&c>0&&c<sbet);
+ $('cash').disabled=busy||!c||!!fr;$('cash').innerHTML='Encaisser<small>'+fmt(c)+'</small>';$('addc').disabled=busy||!!fr;$('slt').classList.toggle('free',!!fr);
+ var bl=slotSess+c;$('sess').innerHTML=slotSess?'Bilan de ta session : <b class="'+(bl>=0?'p':'n')+'">'+(bl>=0?'+':'−')+fmt(Math.abs(bl))+' '+CUR+'</b>':'';
+ var m=$('smsg');if(!busy&&(!m.textContent||m.dataset.def))m.className='msg',m.dataset.def='1',m.textContent=fr?'Tours gratuits : '+fr:c<sbet?(c?'Plus assez de crédits pour cette mise':'Mets des '+CUR+' dans la machine'):'Fais tourner !'}
+function showIns(add){var e=$('ins');if(!e)return;var mo=S.money;slotIns=Math.min(slotIns,Math.max(0,mo))||Math.min(100,mo);
+ var opts=[100,500,1000,5000].filter(function(v){return v<=mo});
+ e.innerHTML='<div class="insb"><h3>'+(add?'Ajouter des crédits':'Insère tes '+CUR)+'</h3><p>Tu as <b>'+fmt(mo)+'</b> '+CUR+'. Choisis combien mettre dans la machine : tu joues avec, et tu récupères tout quand tu encaisses.</p>'+
+ '<div class="insv"><button data-iv="-">−</button><b id="insv">'+fmt(slotIns)+'</b><button data-iv="+">+</button></div><div class="insq">'+opts.map(function(v){return '<button data-iq="'+v+'">'+fmt(v)+'</button>'}).join('')+'<button data-iq="all">Tout</button></div>'+
+ '<div class="insa"><button class="btn" id="insx">Annuler</button><button class="btn gold" id="insg"'+(mo<10?' disabled':'')+'>Insérer '+fmt(slotIns)+' '+CUR+'</button></div>'+(mo<10?'<p class="mut sm">Plus de '+CUR+' : revends des doublons ou regarde des pubs.</p>':'')+'</div>';
+ e.classList.add('on');var upd=function(v){slotIns=Math.max(10,Math.min(S.money,Math.round(v)));$('insv').textContent=fmt(slotIns);$('insg').textContent='Insérer '+fmt(slotIns)+' '+CUR;csnd('tick')};
+ [].forEach.call(e.querySelectorAll('[data-iv]'),function(b){b.onclick=function(){var st=slotIns>=5000?1000:slotIns>=1000?250:slotIns>=200?50:10;upd(slotIns+(b.dataset.iv==='+'?st:-st))}});
+ [].forEach.call(e.querySelectorAll('[data-iq]'),function(b){b.onclick=function(){upd(b.dataset.iq==='all'?S.money:+b.dataset.iq)}});
+ $('insx').onclick=hideIns;
+ $('insg').onclick=function(){var v=Math.min(slotIns,S.money);if(v<10)return;this.disabled=true;act({action:'casins',v:v}).then(function(r){setState(r.state);setPurse();slotSess-=v;hideIns();csnd('coin');setTimeout(function(){csnd('coin')},90);setTimeout(function(){csnd('coin')},180);
+  if(sbet>CAS().cred)sbet=CASC.BETS.filter(function(x){return x<=CAS().cred}).pop()||10;slotUI()}).catch(function(){var g=$('insg');if(g)g.disabled=false})}}
+function hideIns(){var e=$('ins');if(e){e.classList.remove('on');e.innerHTML=''}}
+function cashOut(){var k=CAS(),c=k.cred;if(!c||busy||k.free)return;act({action:'cascash'}).then(function(r){setState(r.state);setPurse();slotSess+=r.cashed;var fl=$('fl'),m=$('smsg');if(m){m.className='msg win';m.textContent='Encaissé : '+fmt(r.cashed)+' '+CUR+' dans ton porte-monnaie';m.dataset.def=''}
+ csnd('big');rain(fl,30);party(fl,1200);var net=slotSess;slotSess=0;slotUI();if(net)toast('Bilan de la session : '+(net>0?'+':'−')+fmt(Math.abs(net))+' '+CUR)}).catch(function(){})}
+document.addEventListener('keydown',function(e){if(e.key===' '&&tab==='slot'&&!busy&&$('ov').hidden&&!e.target.closest('input,select,textarea')&&$('ins')&&!$('ins').classList.contains('on')){e.preventDefault();spin()}});
+function spin(){if(busy||netBusy||!$('spin'))return;var k=CAS(),free=k.free>0;
+ if(!free&&k.cred<sbet){if(!k.cred)showIns(false);else toast('Baisse ta mise ou ajoute des crédits');return}
+ busy=true;actx();var m=$('smsg');m.dataset.def='';m.className='msg';m.textContent=free?'Tour gratuit…':'Bonne chance…';$('llw').textContent='…';
+ var b0=free?k.fbet:sbet;if(!free){k.cred-=sbet}slotUI();
+ [].forEach.call(document.querySelectorAll('.pc.hit'),function(x){x.classList.remove('hit')});
+ var tk=setInterval(function(){csnd('tick')},70),durs=[1.3,1.85,2.4],strips=[];
+ /* les rouleaux tournent pendant que le serveur tire le résultat */
+ [0,1,2].forEach(function(j){$('re'+j).classList.remove('win','cw');var st=$('st'+j);st.style.transition='none';st.style.transform='translateY(0)';var list=[];for(var q=0;q<40;q++)list.push(fakeReel(b0));st.innerHTML=list.map(csym).join('');st.classList.add('blur');void st.offsetHeight;st.style.transition='transform 6s linear';st.style.transform='translateY(-40%)';strips.push(st)});
+ var fail=function(){clearInterval(tk);busy=false;strips.forEach(function(st){st.classList.remove('blur');st.style.transition='none';st.style.transform='translateY(0)'});api('me').then(function(r){setState(r.state);slotUI()}).catch(function(){});m.textContent='Réessaie';slotUI()};
+ act({action:'casspin',b:sbet}).then(function(r){var res=r.res,b=r.bet;if(res[0]===6&&res[1]===6)durs[2]=3.4;
+  [0,1,2].forEach(function(j){var st=strips[j],n=18+j*7+(j===2&&durs[2]>3?8:0),list=[];for(var q=0;q<n;q++)list.push(fakeReel(b));list.push(res[j]);
+   st.style.transition='none';st.style.transform='translateY(0)';st.innerHTML=list.map(csym).join('');
+   var h=st.firstChild.getBoundingClientRect().height+10;void st.offsetHeight;st.style.transition='transform '+durs[j]+'s cubic-bezier(.12,.8,.25,1.04)';st.style.transform='translateY(-'+(n*h)+'px)';
+   setTimeout(function(){st.classList.remove('blur');csnd('stop');if(res[j]===6){var re=$('re'+j);if(re)re.classList.add('cw');tone(1200+j*300,.15,'sine',.07)}if(j===1&&res[0]===6&&res[1]===6)m.textContent='Encore un trèfle…';if(j===2)clearInterval(tk)},durs[j]*1000-120)});
+  setTimeout(function(){setState(r.state);var fl=$('fl');if(!fl){busy=false;return}
+   if(r.freeWon){slotHist.push('F');var q=document.querySelector('[data-pc="cl"]');if(q)q.classList.add('hit');m.className='msg free';m.textContent='3 trèfles : '+CASC.FREE+' tours gratuits à '+fmt(b)+' !';csnd('clover');party(fl,2500);rain(fl,30,true);cbanner(fl,'TRÈFLES !',null,true);slotLast=0}
+   else{var g=r.gain,mult=g/b,key='',hit=[],cl=res.filter(function(x){return x===6}).length;
+    if(cl===2){key='c2';hit=[0,1,2].filter(function(j){return res[j]===6});csnd('clover')}else{var cnt={};res.forEach(function(x){if(x<6)cnt[x]=(cnt[x]||0)+1});Object.keys(cnt).forEach(function(x){if(cnt[x]===3){key='3'+x;hit=[0,1,2]}else if(cnt[x]===2&&CASC.T2[x]){key='2'+x;hit=[0,1,2].filter(function(j){return res[j]===+x})}})}
+    hit.forEach(function(j){$('re'+j).classList.add('win')});var c=key&&document.querySelector('[data-pc="'+key+'"]');
+    var net=r.wasFree?g:g-b;slotLast=g;slotHist.push(net);
+    if(g>(r.wasFree?0:b)){m.className='msg win';m.textContent='Gagné ! '+fmt(g)+' crédits'+(r.wasFree?'':' (tu avais misé '+fmt(b)+')');if(mult>=18){csnd('big');party(fl,3000);rain(fl,60);cbanner(fl,mult>=100?'MÉGA GAIN':'GROS GAIN',g)}else{csnd('win');party(fl,1200);rain(fl,18)}}
+    else if(g){m.className='msg';m.textContent='Tu récupères '+fmt(g)+' sur '+fmt(b);csnd('push')}
+    else{m.className='msg lose';m.textContent=r.wasFree?'Rien sur ce tour gratuit':'Perdu · −'+fmt(b);csnd('lose')}
+    setTimeout(function(){if(c)c.classList.add('hit')},30)}
+   var kk=CAS();if(kk.free&&!r.freeWon)m.textContent+=' · encore '+kk.free+' gratuit'+(kk.free>1?'s':'');
+   $('llw').textContent=fmt(slotLast);$('shist').innerHTML=histHTML();busy=false;
+   if(!kk.free&&sbet>kk.cred&&kk.cred>=10)sbet=CASC.BETS.filter(function(x){return x<=kk.cred}).pop();slotUI()},durs[2]*1000+60)}).catch(fail)}
+
+/* ----- plus ou moins (par rareté, avec des cotes) ----- */
+var hbet=50,hlTrail=[],hlMsg='';
+function rarPs(){var t=RAR.reduce(function(a,r){return a+r.p},0);return RAR.map(function(r){return r.p/t})}
+function hOdds(r){var P=rarPs(),hi=0,lo=0;P.forEach(function(q,k){if(k>r)hi+=q;else if(k<r)lo+=q});var co=function(x){return x>0?Math.max(1.01,Math.round(CASC.HL_MARGE/x*100)/100):0};return {r:r,hi:hi,lo:lo,eq:P[r],cH:co(hi),cL:co(lo),cE:co(P[r])}}
+var HBACK='<div class="hbk"><img src="img/logo.png" alt=""><b>?</b></div>';
+function f2(x){return x.toFixed(2).replace('.',',')}
+function rHL(){
+ $('main').innerHTML=casWrap('<section class="hlx" id="fl"><div class="hlt">'+lights(26,0)+'<div class="hlhd"><div class="sign"><b>PLUS</b> OU <b>MOINS</b></div>'+
+ '<ol class="howto"><li>Une carte est retournée.</li><li>Parie : la <b>prochaine carte</b>, tirée au hasard comme dans un pack, sera-t-elle <b>plus rare</b>, <b>pareille</b> ou <b>moins rare</b> ?</li><li>Si tu as raison, ton gain est <b>multiplié par la cote</b>. Tu continues ou tu <b>encaisses quand tu veux</b>.</li></ol></div>'+
+ '<div class="hlcards"><div class="hcs"><div class="lab">Ta carte</div><div id="hcur"></div><div class="rlab" id="hrl"></div></div><div class="hcs"><div class="lab">Prochaine carte</div><div id="hnx">'+HBACK+'</div></div></div>'+
+ '<div class="bets" id="hbets"></div><div class="pot" id="hpot"></div><div class="trail" id="hh"></div></div>'+
+ '<div class="msg" id="hmsg"></div><div class="hctl" id="hctl"></div></section>');hDraw()}
+function hDraw(){var c=$('hcur');if(!c)return;var h=CAS().hl,alive=!!h,p=alive&&CARDS[h.cur]?hOdds(CARDS[h.cur][2]):null;
+ c.innerHTML=alive&&CARDS[h.cur]?cardHTML(h.cur):HBACK;
+ $('hrl').innerHTML=p?'<i style="background:'+HEX[p.r]+'"></i>'+RAR[p.r].n:'';
+ var can=alive&&!busy,pc=function(x){return (x*100<1?(x*100).toFixed(1).replace('.',','):Math.round(x*100))+' %'};
+ var bet=function(id,cls,lab,icn,co,ch,why){return '<button class="bt '+cls+'" data-g="'+id+'"'+(!can||!co?' disabled':'')+'><span class="ar">'+icn+'</span><b>'+lab+'</b><em>'+(co?'cote ×'+f2(co):why||'—')+'</em><small>'+(p&&co?pc(ch)+' de chance · → '+fmt(Math.floor(h.pot*co)):'&nbsp;')+'</small></button>'};
+ $('hbets').innerHTML=bet('1','up','Plus rare','▲',p&&p.cH,p&&p.hi,p&&p.r===5?'déjà Mythique':'')+bet('0','eq','Pareil','=',p&&p.cE,p&&p.eq)+bet('-1','dn','Moins rare','▼',p&&p.cL,p&&p.lo,p&&p.r===0?'déjà Commun':'');
+ [].forEach.call($('hbets').querySelectorAll('[data-g]'),function(b){b.onclick=function(){guess(+b.dataset.g)}});
+ $('hpot').innerHTML=alive?'<span>Gain en jeu</span><b>'+fmt(h.pot)+' '+CUR+'</b><span class="mut2">mise '+fmt(h.bet)+' · série '+h.n+'</span>':'<span>Mise</span><b>'+fmt(hbet)+' '+CUR+'</b>';
+ $('hh').innerHTML=hlTrail.slice(-14).map(function(i){return CARDS[i]?'<i style="--rc:'+HEX[CARDS[i][2]]+'" title="'+esc(CARDS[i][0])+'"></i>':''}).join('');
+ var m=$('hmsg');if(!m.textContent)m.textContent=alive?'Fais ton pari !':'Choisis ta mise et distribue';
+ var ct=$('hctl');
+ if(alive){ct.innerHTML='<button class="cashb" id="hgo"'+(busy?' disabled':'')+'>Encaisser '+fmt(h.pot)+' '+CUR+'</button>';$('hgo').onclick=hCash}
+ else{ct.innerHTML='<div class="chips2">'+CASC.BETS.map(function(v){return '<button class="chp'+(v===hbet?' on':'')+'" data-hb="'+v+'" style="--cc:'+chipCol(v)+'"'+(v>S.money?' disabled':'')+'>'+chipLbl(v)+'</button>'}).join('')+'</div><button class="cashb deal" id="hgo"'+(S.money<hbet||busy?' disabled':'')+'>Distribuer · '+fmt(hbet)+' '+CUR+'</button>'+adBtn();
+  [].forEach.call(ct.querySelectorAll('[data-hb]'),function(b){b.onclick=function(){hbet=+b.dataset.hb;csnd('tick');hDraw()}});$('hgo').onclick=hStart;bindAds()}}
+function hStart(){if(busy||netBusy)return;if(S.money<hbet)return toast('Pas assez de '+CUR);actx();act({action:'hlstart',b:hbet}).then(function(r){setState(r.state);setPurse();csnd('flip');hlTrail=[r.hl.cur];$('hnx').innerHTML=HBACK;var m=$('hmsg');m.className='msg';m.textContent='Ta carte est '+RAR[CARDS[r.hl.cur][2]].n+'. Fais ton pari !';hDraw()}).catch(function(){})}
+function guess(d){var h=CAS().hl;if(!h||busy||netBusy)return;var p=hOdds(CARDS[h.cur][2]),co=d>0?p.cH:d<0?p.cL:p.cE;if(!co)return;busy=true;var m=$('hmsg'),box=$('hnx'),bet0=h.bet;hDraw();
+ m.className='msg';m.textContent=(d>0?'Plus rare':d<0?'Moins rare':'Pareil')+' · cote ×'+f2(co)+'…';var tk=setInterval(function(){csnd('tick')},90);
+ act({action:'hlguess',d:d}).then(function(r){var nx=r.next,v=CARDS[nx][2];
+  box.innerHTML='<div class="hflip"><div class="hfi">'+HBACK+'<div class="hff">'+cardHTML(nx)+'</div></div></div>';
+  setTimeout(function(){clearInterval(tk);if(box.firstChild)box.firstChild.classList.add('on');csnd('flip')},600);
+  setTimeout(function(){var fl=$('fl');setState(r.state);hlTrail.push(nx);
+   if(r.ok){m.className='msg win';m.textContent=RAR[v].n+' ! Gagné · '+fmt(r.hl.pot)+' '+CUR+' en jeu';csnd('win');rain(fl,8+r.hl.n*4);if(r.hl.n>=3)party(fl,900)}
+   else{m.className='msg lose';m.textContent=RAR[v].n+' · perdu, −'+fmt(bet0)+' '+CUR;csnd('lose')}
+   setTimeout(function(){if($('hnx'))$('hnx').innerHTML=HBACK;busy=false;hDraw()},1100);busy=true;hDraw()},1200)}).catch(function(){clearInterval(tk);busy=false;hDraw()})}
+function hCash(){var h=CAS().hl;if(!h||busy||netBusy)return;act({action:'hlcash'}).then(function(r){setState(r.state);setPurse();var fl=$('fl'),g=r.cashed,m=$('hmsg');m.className='msg win';m.textContent='Encaissé : '+fmt(g)+' '+CUR+(g>h.bet?' (+'+fmt(g-h.bet)+')':'');
+ if(g>=h.bet*4){csnd('big');party(fl,2500);rain(fl,50);cbanner(fl,'GROS GAIN',g)}else{csnd('win');party(fl,1000);rain(fl,16)}hDraw()}).catch(function(){})}
 
 /* ----- classement ----- */
 var BR={runs:[],coll:[]},lbPage=0,lbKey='';
@@ -1376,19 +1532,17 @@ function rBoard(){
   /* 1. ma position */
   h+='<div class="lbme"><div class="lbme-r"><span>Ta place</span><b>'+(me.rank?me.rank:'—')+'</b>'+(me.rank&&d.total?'<em>sur '+d.total+'</em>':'')+'</div>'+
    '<div class="lbme-s"><div><span>'+(isRuns?'Runs cette semaine':'Points')+'</span><b>'+fmt(mv)+'</b></div>'+(isRuns?'':'<div><span>Cartes</span><b>'+me.owned+'<small>/'+TOT()+'</small></b></div><div><span>Holo</span><b>'+CARDS.filter(function(c,i){return c&&HOL(i)>0}).length+'<i class="hic"></i></b></div><div><span>Mythiques</span><b>'+me.mythics+'</b></div>')+'</div>'+
-   (myRw?'<div class="lbme-w"><span>Si le classement s\'arrêtait maintenant, tu gagnerais</span><b>'+myRw+'</b></div>':(scope!=='friends'&&me.rank>20?'<div class="lbme-w lo"><span>Entre dans le top 20 pour gagner une récompense chaque lundi.</span></div>':''))+
    (me.hidden?'<p class="lbme-n">Tu es caché du classement (réglage dans ton compte).</p>':(!me.rank?'<p class="lbme-n">'+(isRuns?'Fais la map et entre ton code de fin pour apparaître ici.':'Ouvre un pack pour entrer au classement.')+'</p>':''))+'</div>';
   /* 2. la liste */
-  var row=function(r){var rw=scope!=='friends'&&r.rank<=20?(BR[kind]||[])[r.rank-1]:null;
-   var st=isRuns?'':'<i class="ch" title="Cartes trouvées"><b>'+r.owned+'</b>/'+TOT()+'</i><i class="ch ho" title="Cartes Holo"><b>'+(r.holo||0)+'</b><i class="hic"></i></i><i class="ch my" title="Mythiques"><b>'+r.mythics+'</b><em>M</em></i>';
-   var rc=(rw?'<span class="lrw'+(rw.g?' pg'+rw.g:'')+'" title="Récompense lundi : '+brTxt(kind,r.rank)+'"><b>'+fmt(rw.c)+'</b><small>'+(rw.g?'+ pack':'Coins')+'</small></span>':'<span class="lrw none"></span>');
-   return '<button class="lbr2 lbr3 wrw'+(isRuns?'':' hs2')+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+rc+uav(r)+
-    '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+'</span>'+(st?'<span class="lbs2">'+st+'</span><i class="lsep"></i>':'')+
-    '<span class="val2"><b>'+(isRuns?r.runs:fmt(hasPts?(r.cscore||0):r.owned))+'</b><small>'+(isRuns?(r.runs>1?'runs':'run'):hasPts?'points':'cartes')+'</small></span>'+'</button>'};
-  h+='<div class="lbl"><div class="lbl-h"><b>'+(scope==='friends'?'Entre amis':'Classement')+'</b><span>'+(d.total?d.total+' joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':''):'')+'</span></div>'+(scope!=='friends'&&d.rows.length?'<div class="lbcap"><span>#</span><span>Gain</span><span>Joueur</span><span>'+(isRuns?'Runs':'Points')+'</span></div>':'')+
-   (d.rows.length?(function(){var key=sort+per+scope;if(lbKey!==key){lbKey=key;lbPage=0}var np=Math.ceil(d.rows.length/20);lbPage=Math.max(0,Math.min(lbPage,np-1));var sl=d.rows.slice(lbPage*20,lbPage*20+20);var mi=PROFILE?d.rows.findIndex(function(r){return r.id===PROFILE.id}):-1;var pg=np>1?'<div class="lbpg"><button class="btn" data-lp="-1"'+(lbPage<1?' disabled':'')+'>‹ <span>20 précédents</span></button><b>'+(lbPage*20+1)+' – '+(lbPage*20+sl.length)+'<small>sur '+d.rows.length+'</small></b><button class="btn" data-lp="1"'+(lbPage>=np-1?' disabled':'')+'><span>20 suivants</span> ›</button></div>'+(mi>=0&&Math.floor(mi/20)!==lbPage?'<button class="lbmine" data-lp="me" data-mp="'+Math.floor(mi/20)+'">Voir ma place ('+(mi+1)+'e)</button>':''):'';return (lbPage>0&&scope!=='friends'?'<div class="lbgap2">Pas de récompense après la 20e place</div>':'')+sl.map(row).join('')+(d.near&&mi<0?'<div class="lbgap2">Autour de toi</div>'+d.near.map(row).join(''):'')+pg})():'<p class="mut center" style="padding:20px">'+(scope==='friends'?'Ajoute des amis (Communauté › Amis) pour les voir ici.':'Personne au classement pour l\'instant.')+'</p>')+'</div>';
+  var row=function(r){
+   var st='<i class="ch" title="Cartes trouvées"><b>'+r.owned+'</b>/'+TOT()+'</i><i class="ch my" title="Mythiques"><b>'+r.mythics+'</b><em>M</em></i><i class="ch ho" title="Cartes Holo"><b>'+(r.holo||0)+'</b><i class="hic"></i></i>';
+   var vt=(r.vit||[]).filter(function(i){return CARDS[i]}).slice(0,3),vh='<span class="lvit">'+[0,1,2].map(function(k){var i=vt[k];if(i==null)return '<i class="mv e"></i>';var c=CARDS[i];return '<i class="mv'+(c[2]===5?' m':'')+'" style="--rc:'+HEX[c[2]]+'" title="'+esc(c[0])+'">'+chipImg(c)+'</i>'}).join('')+'</span>';
+   return '<button class="lbr2 lbr4'+(r.rank<=3?' t'+r.rank:'')+(PROFILE&&r.id===PROFILE.id?' me':'')+'" data-pf="'+esc(r.id)+'"><span class="rk2">'+r.rank+'</span>'+uav(r)+
+    '<span class="who2"><b>'+esc(r.name)+'</b>'+ttag(r.title)+'</span><span class="lbs4">'+st+'</span>'+vh+
+    '<span class="val2"><b>'+fmt(hasPts?(r.cscore||0):r.owned)+'</b><small>'+(hasPts?'points':'cartes')+'</small></span>'+'</button>'};
+  h+='<div class="lbl"><div class="lbl-h"><b>'+(scope==='friends'?'Entre amis':'Classement')+'</b><span>'+(d.total?d.total+' joueur'+(d.total>1?'s':'')+' classé'+(d.total>1?'s':''):'')+'</span></div>'+
+   (d.rows.length?(function(){var key=sort+per+scope;if(lbKey!==key){lbKey=key;lbPage=0}var np=Math.ceil(d.rows.length/20);lbPage=Math.max(0,Math.min(lbPage,np-1));var sl=d.rows.slice(lbPage*20,lbPage*20+20);var mi=PROFILE?d.rows.findIndex(function(r){return r.id===PROFILE.id}):-1;var pg=np>1?'<div class="lbpg"><button class="btn" data-lp="-1"'+(lbPage<1?' disabled':'')+'>‹ <span>20 précédents</span></button><b>'+(lbPage*20+1)+' – '+(lbPage*20+sl.length)+'<small>sur '+d.rows.length+'</small></b><button class="btn" data-lp="1"'+(lbPage>=np-1?' disabled':'')+'><span>20 suivants</span> ›</button></div>'+(mi>=0&&Math.floor(mi/20)!==lbPage?'<button class="lbmine" data-lp="me" data-mp="'+Math.floor(mi/20)+'">Voir ma place ('+(mi+1)+'e)</button>':''):'';return sl.map(row).join('')+(d.near&&mi<0?'<div class="lbgap2">Autour de toi</div>'+d.near.map(row).join(''):'')+pg})():'<p class="mut center" style="padding:20px">'+(scope==='friends'?'Ajoute des amis (Joueurs › Amis) pour les voir ici.':'Personne au classement pour l\'instant.')+'</p>')+'</div>';
   /* 3. infos repliées */
-  if(scope!=='friends')h+='<details class="lbd"><summary>Récompenses du top 20</summary><div class="lbd-b"><div class="lbrw">'+[[1,'1er'],[2,'2e'],[3,'3e'],[4,'4e – 5e'],[6,'6e – 10e'],[11,'11e – 20e']].map(function(r){return '<div><span>'+r[1]+'</span><b>'+brTxt(kind,r[0])+'</b></div>'}).join('')+'</div><p>Versées automatiquement chaque lundi à minuit (heure de Paris).</p></div></details>';
   if(!isRuns&&scope!=='friends')h+='<details class="lbd"><summary>Comment sont calculés les points ?</summary><div class="lbd-b"><ul><li>Chaque carte <b>différente</b> rapporte des points selon sa rareté : '+RAR.map(function(r,i){return r.n+' '+SCORE[i]}).join(' · ')+'.</li><li>Les doublons ne comptent pas.</li><li>Vendre ou échanger une carte fait baisser tes points.</li><li>Égalité : plus de cartes, puis plus de Mythiques, puis le premier arrivé.</li><li>Ce classement n\'est jamais remis à zéro.</li></ul></div></details>';
   if(isRuns)h+='<details class="lbd"><summary>C\'est quoi un run ?</summary><div class="lbd-b"><p>Un run = une fois où tu as fini la map Fortnite et entré ton code de fin dans l\'onglet Code. Seuls les runs faits depuis lundi comptent.</p></div></details>';
   $('cbody').innerHTML=h;
@@ -1552,6 +1706,7 @@ function rAdmin(){
  if(adminSub==='home')return adHome();
  if(adminSub==='market')return adMarket();
  if(adminSub==='gift')return adGift();
+ if(adminSub==='casino')return adCasino();
  if(adminSub==='live')return adLive();
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
@@ -1567,11 +1722,11 @@ function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'A
 
 
 /* ----- Panel admin : navigation par groupes, accueil, marché, cadeaux ----- */
-var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift']],['sys','⚙️','Système',['ann','log','acts','team','tools']]];
-var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
+var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift','casino']],['sys','⚙️','Système',['ann','log','acts','team','tools']]];
+var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',casino:'Casino et prix',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
 var PERM_SUB={home:'players',live:'players',players:'players',stats:'players',cards:'cards',times:'times',market:'market',ann:'announce',log:'logs',acts:'logs'};
 function can(k){return !!ISADMIN&&(ISOWNER||!PERMS||PERMS.indexOf(k)>=0)}
-function adSubOk(k){if(ISOWNER||!ISADMIN)return true;if(k==='gift'||k==='own'||k==='team'||k==='tools')return false;var p=PERM_SUB[k];return !p||can(p)}
+function adSubOk(k){if(ISOWNER||!ISADMIN)return true;if(k==='gift'||k==='casino'||k==='own'||k==='team'||k==='tools')return false;var p=PERM_SUB[k];return !p||can(p)}
 function adGroups(){return ADG.map(function(x){return [x[0],x[1],x[2],x[3].filter(adSubOk)]}).filter(function(x){return x[3].length})}
 function adNav(){
  if(!ISADMIN)return '';
@@ -1941,8 +2096,13 @@ function bindBio(){
  if(!bioRows)api('biolist').then(function(r){bioRows=r.rows;var e=$('blist');if(e)e.innerHTML=bioListH()}).catch(function(){});
  var bs=$('bsend');if(bs)bs.onclick=function(){var d=joinDescr({bio:$('bp_bio').value,rec:$('bp_rec').value,past:$('bp_past').value});bs.disabled=true;
   act({action:'biosave',card:bioCard,descr:d}).then(function(){toast('Proposition envoyée à l\'admin');bioRows=null;bioCard=null;render()}).catch(function(e){bs.disabled=false;toast(e.message)})}}
+function claimH(){var opts=CARDS.map(function(c,i){return {c:c,i:i}}).filter(function(o){return o.c&&o.c[0]!=='?'&&!o.c[5]&&ISP(o.c[1])}).sort(function(x,y){return x.c[0].localeCompare(y.c[0],'fr',{sensitivity:'base'})}).map(function(o){return '<option value="'+o.i+'">'+esc(o.c[0])+'</option>'}).join('');
+ return '<div class="panel"><h3>C\'est ta carte ?</h3><p class="mut sm">Si une carte porte ton pseudo, demande à l\'associer à ton compte. L\'administrateur vérifie puis accepte : tu pourras alors changer son logo (1 fois par mois), sa biographie, ses records et son passé.</p>'+
+  '<div class="cform plain"><label>Ma carte<select class="inp" id="clc">'+opts+'</select></label><label>Message pour l\'admin (facultatif)<input class="inp" id="cln" maxlength="300" placeholder="Ex. : c\'est moi, mon Twitter est…"></label><div class="bar"><button class="btn gold" id="clok">Envoyer la demande</button></div><div class="mut sm" id="clst"></div></div></div>'}
+function bindClaim(){var st=$('clst');api('claimmine').then(function(r){if(!st)return;var x=r.rows[0];if(x)st.innerHTML='Ta dernière demande ('+esc(CARDS[x.card]?CARDS[x.card][0]:'?')+') : <b>'+({new:'en attente',accepted:'acceptée',refused:'refusée'}[x.status]||x.status)+'</b>'}).catch(function(){});
+ $('clok').onclick=function(){var b=this;b.disabled=true;api('claimreq',{card:+$('clc').value,note:$('cln').value}).then(function(){toast('Demande envoyée à l\'admin');rMyCard()}).catch(function(e){b.disabled=false;toast(e.message)})}}
 function rMyCard(){
- if(!MYCARD){$('main').innerHTML=colNav()+'<div class="panel mut">Tu n\'as pas de carte associée à ton compte, mais tu peux quand même proposer une biographie pour n\'importe quelle carte.</div>'+bioH();bindColNav();bindBio();return}
+ if(!MYCARD){$('main').innerHTML=colNav()+claimH()+'<div class="panel mut">Pas ta carte ? Tu peux quand même proposer une biographie pour n\'importe quelle carte : l\'admin la valide avant qu\'elle apparaisse.</div>'+bioH();bindColNav();bindClaim();bindBio();return}
  var i=MYCARD.id,c=CARDS[i]||['?',0,0,'',''],left=MYCARD.logoAt&&MYCARD.logoAt>Date.now(),DD=parseDescr(c[3]);myImg='';
  $('main').innerHTML=colNav()+'<div class="panel mycd"><h3>Ma carte : '+esc(c[0])+'</h3><div class="mycrow"><div class="mycprev">'+cardHTML(i)+'</div><div class="mycform">'+
   DSEC.map(function(x){return '<label class="mcsec"><b>'+x[1]+' <small class="mut">(visible par tous les joueurs)</small></b><textarea id="mc_'+x[0]+'" class="inp" rows="3" maxlength="400" placeholder="'+x[2]+'">'+esc(DD[x[0]])+'</textarea></label>'}).join('')+'<div class="mut sm" id="mcn"></div>'+
@@ -1956,19 +2116,25 @@ function rMyCard(){
   b.disabled=true;api('mycardsave',body).then(function(r){b.disabled=false;if(r.row)CARDS[i]=[r.row[0],r.row[1],r.row[2],r.row[3],r.row[4],r.row[5]||0];MYCARD=r.card||MYCARD;toast('Ta carte est à jour');rMyCard()}).catch(function(e){b.disabled=false;toast(e.message)})}}
 /* ---------- Admin : associer une carte à un joueur ---------- */
 var ownQ='',ownCard=-1;
+function diffMark(a,b){a=String(a);b=String(b);var A=a.toLowerCase(),B=b.toLowerCase(),n=A.length,m=B.length,L=[];for(var i=0;i<=n;i++){L.push(new Array(m+1).fill(0))}
+ for(i=n-1;i>=0;i--)for(var j=m-1;j>=0;j--)L[i][j]=A[i]===B[j]?L[i+1][j+1]+1:Math.max(L[i+1][j],L[i][j+1]);
+ var ra='',rb='';i=0;j=0;while(i<n||j<m){if(i<n&&j<m&&A[i]===B[j]){ra+=esc(a[i]);rb+=esc(b[j]);i++;j++}else if(j<m&&(i>=n||L[i][j+1]>=L[i+1][j])){rb+='<mark>'+esc(b[j])+'</mark>';j++}else{ra+='<mark>'+esc(a[i])+'</mark>';i++}}return [ra,rb]}
 function adOwn(){
  if(!ISOWNER){$('abody').innerHTML='<div class="panel center mut">Réservé au propriétaire.</div>';return}
  api('aown').then(function(d){if(!adAlive('own'))return;
   var taken={};d.rows.forEach(function(r){taken[r.card]=1});if(taken[ownCard])ownCard=-1;var opts=CARDS.map(function(c,i){return {c:c,i:i}}).filter(function(o){return o.c&&!o.c[5]&&!taken[o.i]}).sort(function(a,b){return a.c[0].localeCompare(b.c[0],'fr',{sensitivity:'base'})}).map(function(o){return '<option value="'+o.i+'"'+(o.i===ownCard?' selected':'')+'>'+esc(o.c[0])+' · '+RAR[o.c[2]].n+'</option>'}).join('');
-  $('abody').innerHTML='<div class="panel"><h3>Associer une carte à un joueur</h3><p class="mut sm">Le joueur reçoit un onglet « Ma carte » (Collection) pour changer le logo (1 fois par mois) et la description de sa carte. Une carte = un joueur.</p>'+
+  $('abody').innerHTML='<div class="panel"><h3>Demandes des joueurs</h3><p class="mut sm">Un joueur dit « c\'est ma carte » : accepte pour lui donner l\'onglet Ma carte.</p><div id="oclaims" class="mut sm">Chargement…</div></div><div class="panel"><h3>Associer une carte à un joueur</h3><p class="mut sm">Le joueur reçoit un onglet « Ma carte » (Collection) pour changer le logo (1 fois par mois) et la description de sa carte. Une carte = un joueur.</p>'+
    '<div class="two"><label>Carte<select class="inp" id="ocs">'+opts+'</select></label><label>Joueur (pseudo ou ID Discord)<input class="inp" id="oq" value="'+esc(ownQ)+'" placeholder="Chercher un joueur"></label></div><div id="olist" class="mut sm" style="margin-top:8px">Tape un pseudo pour chercher.</div></div>'+
-   '<div class="panel"><h3>Association automatique</h3><p class="mut sm">Associe tout seul les cartes Éditeur et Influenceur aux joueurs dont le pseudo est exactement le même que la carte. Les pseudos proches sont seulement proposés.</p><div class="bar"><button class="btn gold" id="oauto">Associer automatiquement</button></div><div id="oares" style="margin-top:8px"></div></div>'+
+   '<div class="panel"><h3>Association automatique</h3><p class="mut sm">Les pseudos <b>identiques</b> à une carte sont associés d\'un coup avec le bouton. Les pseudos <b>qui se ressemblent</b> (0/O, 1/l/I, 3/E, 5/S, rn/m, une lettre de différence…) sont listés en dessous avec les lettres différentes surlignées : à toi de valider ou refuser.</p><div class="bar"><button class="btn gold" id="oauto">Associer automatiquement</button></div><div id="oares" style="margin-top:8px"></div></div>'+
    '<div class="panel"><h3>Associations en cours</h3>'+(d.rows.length?d.rows.map(function(r){return '<div class="nrow"><div style="flex:1"><b>'+esc(r.cardName)+'</b> ↔ '+esc(r.name)+'<div class="mut sm">Logo changé : '+(r.imgAt?dfr(r.imgAt):'jamais')+'</div></div><button class="btn sm ghost" data-od="'+r.card+'">Retirer</button></div>'}).join(''):'<p class="mut sm">Aucune association.</p>')+'</div>';
   var showAuto=function(r,done){var h='';if(done)h+='<p><b>'+r.applied.length+' carte(s) associée(s)</b>'+(r.applied.length?' : '+r.applied.map(function(x){return esc(x.cardName)+' ↔ '+esc(x.name)}).join(', '):'')+'</p>';
-   if(!done&&!r.found.length)h+='<p class="mut sm">Aucun pseudo identique trouvé.</p>';
-   if(r.suggestions.length)h+='<p class="mut sm">Pseudos proches, à valider :</p>'+r.suggestions.map(function(x){return '<div class="nrow"><div style="flex:1"><b>'+esc(x.cardName)+'</b> ↔ '+esc(x.name)+'</div><button class="btn sm gold" data-sg="'+x.card+'" data-su="'+esc(x.user)+'">Associer</button></div>'}).join('');
-   $('oares').innerHTML=h;[].forEach.call($('oares').querySelectorAll('[data-sg]'),function(b){twice(b,function(){api('aownset',{card:+b.dataset.sg,user:b.dataset.su}).then(function(){toast('Carte associée');adOwn()}).catch(function(e){toast(e.message)})},'Confirmer')})};
+   if(!done)h+=r.found.length?'<p><b>'+r.found.length+' pseudo(s) identique(s)</b>, associés quand tu touches le bouton : '+r.found.map(function(x){return esc(x.cardName)+' ↔ '+esc(x.name)}).join(', ')+'</p>':'<p class="mut sm">Aucun pseudo identique à associer.</p>';
+   h+=r.suggestions.length?'<p class="mut sm" style="margin-top:12px">'+r.suggestions.length+' doute(s), à valider :</p>'+r.suggestions.map(function(x){var d=diffMark(x.cardName,x.name);return '<div class="nrow odoubt"><div style="flex:1;min-width:0"><b class="odf">'+d[0]+'</b> <span class="mut">↔</span> <b class="odf">'+d[1]+'</b><div class="mut sm">'+esc(x.why||'')+'</div></div><button class="btn sm gold" data-sg="'+x.card+'" data-su="'+esc(x.user)+'">Valider</button><button class="btn sm ghost" data-sn="'+x.card+'" data-su="'+esc(x.user)+'">Refuser</button></div>'}).join(''):'<p class="mut sm">Aucun doute.</p>';
+   $('oares').innerHTML=h;[].forEach.call($('oares').querySelectorAll('[data-sn]'),function(b){b.onclick=function(){api('aownno',{card:+b.dataset.sn,user:b.dataset.su}).then(function(){b.closest('.nrow').remove()}).catch(function(e){toast(e.message)})}});[].forEach.call($('oares').querySelectorAll('[data-sg]'),function(b){twice(b,function(){api('aownset',{card:+b.dataset.sg,user:b.dataset.su}).then(function(){toast('Carte associée');adOwn()}).catch(function(e){toast(e.message)})},'Confirmer')})};
   twice($('oauto'),function(){api('aownauto',{apply:true}).then(function(r){toast(r.applied.length+' carte(s) associée(s)');if(r.applied.length&&!r.suggestions.length){adOwn()}else showAuto(r,true)}).catch(function(e){toast(e.message)})},'Confirmer l\'association automatique');
+  api('aownauto',{}).then(function(r){if(adAlive('own')&&$('oares'))showAuto(r,false)}).catch(function(){});
+  var loadClaims=function(){api('aclaims').then(function(c){var el=$('oclaims');if(!el)return;el.innerHTML=c.rows.length?c.rows.map(function(x){return '<div class="nrow"><div class="who" style="flex:1;min-width:0">'+uav(x)+'<div><b>'+esc(x.name)+'</b> demande <b>'+esc(x.cardName)+'</b>'+(x.note?'<div class="mut sm">« '+esc(x.note)+' »</div>':'')+'<div class="mut sm">'+ago(x.at)+'</div></div></div><button class="btn sm gold" data-ca="'+x.id+'">Accepter</button><button class="btn sm ghost" data-cr="'+x.id+'">Refuser</button></div>'}).join(''):'Aucune demande en attente.';
+   [].forEach.call(el.querySelectorAll('[data-ca],[data-cr]'),function(b){b.onclick=function(){var ok=!!b.dataset.ca;api('aclaimdecide',{id:+(b.dataset.ca||b.dataset.cr),ok:ok}).then(function(){toast(ok?'Carte associée':'Demande refusée');ok?adOwn():loadClaims()}).catch(function(e){toast(e.message)})}})}).catch(function(e){var el=$('oclaims');if(el)el.textContent=e.message})};loadClaims();
   $('ocs').onchange=function(){ownCard=+this.value};if(ownCard<0)ownCard=+$('ocs').value;else $('ocs').value=ownCard;
   var t=0;$('oq').oninput=function(){ownQ=this.value;clearTimeout(t);t=setTimeout(find,300)};
   function find(){var q=ownQ.trim();if(!q){$('olist').innerHTML='Tape un pseudo pour chercher.';return}
@@ -1977,6 +2143,29 @@ function adOwn(){
   if(ownQ)find();
   [].forEach.call(document.querySelectorAll('[data-od]'),function(b){twice(b,function(){api('aowndel',{card:+b.dataset.od}).then(function(){toast('Association retirée');adOwn()}).catch(function(e){toast(e.message)})},'Confirmer')})
  }).catch(function(e){if(adAlive('own'))$('abody').innerHTML=errBox(e)})}
+function adCasino(){
+ api('acasino').then(paint).catch(function(e){if(adAlive('casino'))$('abody').innerHTML=errBox(e)});
+ function paint(d){if(!adAlive('casino'))return;var c=d.casino,e=d.eco,st=d.stats,pc=function(x){return (Math.round(x*1000)/10).toString().replace('.',',')+' %'};
+  var num=function(id,v){return '<input class="inp anum" data-k="'+id+'" value="'+v+'" inputmode="decimal">'};
+  var row6=function(lab,g,arr,fmtv){return '<tr><th>'+lab+'</th>'+arr.map(function(v,k){return '<td>'+num(g+'.'+k,fmtv?fmtv(v):v)+'</td>'}).join('')+'</tr>'};
+  var head='<tr><th></th>'+RAR.map(function(r,k){return '<th style="color:'+HEX[k]+'">'+r.n+'</th>'}).join('')+'</tr>';
+  var bank=st.bet-st.won+st.hb-st.hw;
+  $('abody').innerHTML='<div class="panel"><h3>Bilan du casino</h3><div class="atiles" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">'+
+   [['Misé à la machine',st.bet],['Rendu par la machine',st.won],['Misé au plus ou moins',st.hb],['Rendu au plus ou moins',st.hw],['Gagné par la banque',bank],['Coins des pubs',st.ads],['Crédits dans les machines',st.cred],['Joueurs',st.players]].map(function(x){return '<div class="panel" style="margin:0;padding:10px"><div class="mut sm">'+x[0]+'</div><b style="font:700 22px var(--fd)">'+fmt(x[1]||0)+'</b></div>'}).join('')+'</div></div>'+
+   '<div class="panel"><h3>Machine à sous : rendu par mise</h3><p class="mut sm">Rendu = part des mises rendue aux joueurs en moyenne (tours gratuits compris). Sous 100 %, la banque gagne. Petite mise = plus de chance.</p><div class="tw"><table class="at"><tr><th>Mise</th><th>Rendu</th><th>Tours gagnants</th><th>3 trèfles</th></tr>'+
+   d.rtp.map(function(x){return '<tr><td>'+fmt(x.b)+'</td><td><b style="color:'+(x.rtp>1?'#ff6b9a':'#7dffb8')+'">'+pc(x.rtp)+'</b></td><td>'+pc(x.hit)+'</td><td>1 sur '+fmt(Math.round(1/x.p3))+'</td></tr>'}).join('')+'</table></div></div>'+
+   '<div class="panel"><h3>Gains de la machine (× la mise)</h3><div class="tw"><table class="at">'+head+row6('3 pareilles','T3',c.T3)+row6('2 pareilles','T2',c.T2)+'</table></div>'+
+   '<div class="two"><label>2 trèfles + n\'importe quoi (×)'+num('C2',c.C2)+'</label><label>Plus ou moins : marge (%)'+num('HL',Math.round(c.HL_MARGE*100))+'</label></div>'+
+   '<div class="two"><label>Trèfle, petites mises (%)'+num('CLhi',Math.round(c.CL.hi*1000)/10)+'</label><label>Trèfle, grosses mises (%)'+num('CLlo',Math.round(c.CL.lo*1000)/10)+'</label></div>'+
+   '<div class="two"><label>Pubs : Coins gagnés'+num('ADc',c.ADS.coins)+'</label><label>Pubs : fois par jour'+num('ADm',c.ADS.max)+'</label></div></div>'+
+   '<div class="panel"><h3>Prix des cartes</h3><p class="mut sm">Revente d\'un doublon, et prix minimum au marché (le maximum est '+e.maxMult+' fois le minimum). Les Holo valent plus (×'+(HOLOC.SELL_MULT||2)+' à la revente).</p><div class="tw"><table class="at">'+head+row6('Revente','V',e.v)+row6('Marché min.','M',e.min)+'<tr><th>Marché max.</th>'+e.min.map(function(v){return '<td class="mut">'+fmt(v*e.maxMult)+'</td>'}).join('')+'</tr></table></div></div>'+
+   '<div class="bar"><button class="btn gold" id="cssave">Enregistrer</button><button class="btn ghost" id="csreset">Valeurs par défaut</button></div><div class="cmsg" id="csmsg"></div>';
+  var val=function(k){var el=document.querySelector('[data-k="'+k+'"]');return el?parseFloat(String(el.value).replace(',','.')):NaN};
+  $('cssave').onclick=function(){var cs={T3:[0,1,2,3,4,5].map(function(k){return val('T3.'+k)}),T2:[0,1,2,3,4,5].map(function(k){return val('T2.'+k)}),C2:val('C2'),HL_MARGE:val('HL')/100,CL:{hi:val('CLhi')/100,lo:val('CLlo')/100},ADS:{coins:val('ADc'),max:val('ADm')}},
+   eco={v:[0,1,2,3,4,5].map(function(k){return val('V.'+k)}),min:[0,1,2,3,4,5].map(function(k){return val('M.'+k)})};
+   if(cs.T3.concat(cs.T2,eco.v,eco.min,[cs.C2,cs.HL_MARGE,cs.CL.hi,cs.CL.lo]).some(function(x){return !(x>=0)})){$('csmsg').textContent='Une valeur n\'est pas un nombre';return}
+   api('acasino',{set:true,casino:cs,eco:eco}).then(function(r){toast('Réglages enregistrés');CASC=r.casino;paint(r)}).catch(function(e){$('csmsg').textContent=e.message})};
+  twice($('csreset'),function(){api('acasino',{set:true,reset:true}).then(function(r){toast('Valeurs par défaut remises');CASC=r.casino;paint(r)}).catch(function(e){toast(e.message)})},'Confirmer')}}
 /* ---------- Marché (enchères entre joueurs) ---------- */
 var mkT=0,mkData=null,mkSub='offers',mkSort='new',mkOwn='all',mkRar=-1;
 function mkLeft(ms){var m=Math.max(0,Math.round((ms-Date.now())/60000)),h=Math.floor(m/60);return h>0?h+' h '+(m%60<10?'0':'')+(m%60)+' min':m+' min'}
@@ -2031,9 +2220,10 @@ function mkSellDlg(){
   '<div class="bar"><button class="btn gold" id="mso">Mettre en vente</button><button class="btn sm ghost" id="msx">Annuler</button></div></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('msx').onclick=closePick;
  var minOf=function(){return MKC.MIN[CARDS[sel][2]]};
- var clampS=function(){var m=minOf(),v=Math.floor(+$('mss').value);if(!(v>=m))v=m;$('mss').value=v;$('mss').min=m};
+ var maxOf=function(){return minOf()*(MKC.MAX_MULT||8)};
+ var clampS=function(){var m=minOf(),v=Math.floor(+$('mss').value);if(!(v>=m))v=m;if(v>maxOf())v=maxOf();$('mss').value=v;$('mss').min=m;$('mss').max=maxOf()};
  var paint=function(){[].forEach.call(d.querySelectorAll('.mkpick'),function(b){b.classList.toggle('mksel',+b.dataset.pi===sel)});
-  $('msn').innerHTML='<b style="color:'+HEX[CARDS[sel][2]]+'">'+esc(CARDS[sel][0])+'</b> · '+RAR[CARDS[sel][2]].n+' · disponibles : '+av(sel);$('mss').min=minOf();$('mss').value=minOf();$('msm').textContent='Minimum pour cette rareté : '+fmt(minOf())+' '+CUR+'. Les autres joueurs peuvent l\'acheter à ce prix, ou ne rien faire.'};
+  $('msn').innerHTML='<b style="color:'+HEX[CARDS[sel][2]]+'">'+esc(CARDS[sel][0])+'</b> · '+RAR[CARDS[sel][2]].n+' · disponibles : '+av(sel);$('mss').min=minOf();$('mss').value=minOf();$('mss').max=maxOf();$('msm').textContent='Prix autorisé pour cette rareté : de '+fmt(minOf())+' à '+fmt(maxOf())+' '+CUR+'. Les autres joueurs peuvent l\'acheter à ce prix, ou ne rien faire.'};
  [].forEach.call(d.querySelectorAll('.mkpick'),function(b){b.onclick=function(){sel=+b.dataset.pi;paint()}});
  $('mss').onchange=$('mss').onblur=clampS;
  $('mss').onkeydown=function(ev){if(ev.key==='-'||ev.key==='e'||ev.key==='.'||ev.key===','||ev.key==='+')ev.preventDefault()};
@@ -2276,7 +2466,7 @@ function openMythPick(){closePick();var ids=[];CARDS.forEach(function(c,i){if(c&
 function openWaitingPack(g,card){if(busy||netBusy||!(wpN(g)>0))return;if(g===5&&card==null&&CARDS.some(function(c){return c&&c[2]===5&&!c[5]})){openMythPick();return}closePick();var prev=Object.assign({},S.col);
  var it=packIntro();act({action:'openwp',g:g,card:card}).then(function(r){setState(r.state);wpBadge();reveal(r.cards,prev,it,r.holo)}).catch(function(){packAbort()})}
 /* ---------- événements ---------- */
-document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('button'))sfx('click');var b=e.target.closest&&e.target.closest('[data-t]');if(b&&$('ov').hidden){tab=b.dataset.t;render();scrollTo(0,0)}});
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('button'))sfx('click');var b=e.target.closest&&e.target.closest('[data-t]');if(b&&$('ov').hidden){goKey(b.dataset.t);render();scrollTo(0,0)}});
 $('mute').onclick=function(){S.mute=!S.mute;save();tabs();if(!S.mute)sfx('flip')};
 document.addEventListener('pointermove',function(e){if(e.pointerType!=='mouse')return;var c=e.target.closest&&e.target.closest('.card');
  if(!c){var t=document.querySelector('.card.tilt');if(t){t.classList.remove('tilt');t.style.transform=''}return}
@@ -2293,7 +2483,7 @@ function lpStop(){lpT.forEach(clearInterval);lpT=[]}
 function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpStart()}
 var SUPPORT_URL='';
 var HOLOC={p:[4,5,6,12,25,40],MARKET_MULT:4,SELL_MULT:2};
-function applyConfig(cfg){if(cfg.RELEASES)RELS=cfg.RELEASES;if(cfg.HOME_PIN)HPIN=cfg.HOME_PIN;if(cfg.HOME_SKIP)HSKIP=cfg.HOME_SKIP;if(cfg.HOLO)HOLOC=cfg.HOLO;if(cfg.SUPPORT_URL)SUPPORT_URL=cfg.SUPPORT_URL;if(cfg.BOARD_REWARDS)BR=cfg.BOARD_REWARDS;if(cfg.MARKET)MKC=cfg.MARKET;if(cfg.SCORE)SCORE=cfg.SCORE;if(cfg.SPIN_PRICE)SPIN_PRICE=cfg.SPIN_PRICE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
+function applyConfig(cfg){if(cfg.RELEASES)RELS=cfg.RELEASES;if(cfg.HOME_PIN)HPIN=cfg.HOME_PIN;if(cfg.HOME_SKIP)HSKIP=cfg.HOME_SKIP;if(cfg.HOLO)HOLOC=cfg.HOLO;if(cfg.SUPPORT_URL)SUPPORT_URL=cfg.SUPPORT_URL;if(cfg.BOARD_REWARDS)BR=cfg.BOARD_REWARDS;if(cfg.MARKET)MKC=cfg.MARKET;if(cfg.SCORE)SCORE=cfg.SCORE;if(cfg.CASINO)CASC=cfg.CASINO;if(cfg.SPIN_PRICE)SPIN_PRICE=cfg.SPIN_PRICE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
 function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PERMS=Array.isArray(r.perms)?r.perms:null;ISJURY=!!r.isJury;MYCARD=r.mycard||null;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
