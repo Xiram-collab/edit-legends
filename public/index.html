@@ -1359,7 +1359,7 @@ function rCom(){
 function errBox(e){return '<div class="panel center mut">'+esc(e&&e.message||'Erreur')+'</div>'}
 
 /* ----- casino : machine à sous, plus ou moins, pubs. Les tirages se font sur le serveur, la page affiche. ----- */
-var CASC={BETS:[10,25,50,100,250,500,1000],T3:[4,7,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.275,.2375,.19,.135,.1025,.06],SPHI:[.275,.2375,.19,.135,.1025,.06],CL:{lo:.1675,hi:.1675},HL_MARGE:.95,ADS:{coins:100,max:5,n:3,sec:5}};
+var CASC={BETS:[10,25,50,100,250,500,1000],T3:[4,7,14,30,80,250],T2:[.5,1,1.5,2,5,10],C2:2,FREE:5,SPLO:[.275,.2375,.19,.135,.1025,.06],SPHI:[.275,.2375,.19,.135,.1025,.06],CL:{lo:.1675,hi:.1675},CAP:50000,HL_MARGE:.95,ADS:{coins:100,max:5,n:3,sec:5}};
 var CLV='<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#3ddc84" stroke="#0b5e31" stroke-width="2"><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z" transform="rotate(90 32 32)"/><path d="M32 34C22 34 14 40 16 49s12 9 16 0c4 9 14 9 16 0s-6-15-16-15z"/><path d="M32 30C22 30 14 24 16 15s12-9 16 0c4-9 14-9 16 0s-6 15-16 15z" transform="rotate(90 32 32)"/></g><circle cx="32" cy="32" r="4" fill="#0b5e31"/></svg>';
 var CSFX={tick:function(){tone(1100+Math.random()*300,.025,'square',.025)},stop:function(){tone(160,.12,'triangle',.2);tone(80,.16,'sine',.22)},
  win:function(){[523,659,784,1047].forEach(function(f,k){tone(f,.16,'square',.06,k*.08)})},
@@ -1400,9 +1400,9 @@ function watchAds(){if(busy||netBusy)return;act({action:'adstart'}).then(functio
 var sbet=50,slotHist=[],slotLast=0,slotSess=0,slotIns=500;
 function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(b).map(function(x){return x*(1-c)}),one=function(x){return '1 sur '+fmt(Math.max(1,Math.round(1/x)))},op=function(x){if(!ISOWNER)return '';var v=x*100;return '<em class="pco" title="Visible par toi seul : '+one(x)+'">'+(v>=10?v.toFixed(1):v>=1?v.toFixed(2):v>=.01?v.toFixed(3):v.toFixed(4)).replace('.',',')+' %</em>'};
  var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span>'+op(c*c*c)+'<div><b>'+CASC.FREE+' tours gratuits</b></div></div>'+
- '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span>'+op(3*c*c*(1-c))+'<div><b>'+fmt(Math.floor(b*CASC.C2))+'<i class="pcn"></i></b></div></div>';
- for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span>'+op(Math.pow(P[k],3))+'<b>'+fmt(Math.floor(b*CASC.T3[k]))+'<i class="pcn"></i></b></div>';
- for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span>'+op(3*P[k]*P[k]*(1-P[k]))+'<b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'<i class="pcn"></i></b></div>';
+ '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span>'+op(3*c*c*(1-c))+'<div><b>'+fmt(Math.min(CASC.CAP||1e9,Math.floor(b*CASC.C2)))+'<i class="pcn"></i></b></div></div>';
+ for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span>'+op(Math.pow(P[k],3))+'<b>'+fmt(Math.min(CASC.CAP||1e9,Math.floor(b*CASC.T3[k])))+'<i class="pcn"></i></b></div>';
+ for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span>'+op(3*P[k]*P[k]*(1-P[k]))+'<b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.min(CASC.CAP||1e9,Math.floor(b*CASC.T2[k])))+'<i class="pcn"></i></b></div>';
  if(ISOWNER){var tot=c*c*c+3*c*c*(1-c);for(k=0;k<6;k++)tot+=Math.pow(P[k],3)+3*P[k]*P[k]*(1-P[k]);h+='<div class="pco-t">Visible par toi seul · un tour sur '+fmt(Math.round(10/tot)/10)+' rapporte quelque chose ('+pctF(tot*100)+')</div>'}
  return h}
 function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
@@ -1413,7 +1413,7 @@ function rSlot(){var k0=CAS();CPOOL=cpool();if(k0.cred>0)sbet=Math.min(sbet,CASC
  '<div class="sreels" id="slt">'+[0,1,2].map(function(k){return '<div class="reel" id="re'+k+'"><div class="strip" id="st'+k+'">'+csym(fakeReel(sbet))+'</div></div>'}).join('')+'<i class="payline"></i></div>'+
  '<div class="chips2" id="bets">'+CASC.BETS.map(function(v){return '<button class="chp" data-bv="'+v+'" style="--cc:'+chipCol(v)+'">'+chipLbl(v)+'</button>'}).join('')+'</div>'+
  '<div class="cabb"><button class="cash" id="cash">Encaisser</button><button class="spinb" id="spin">SPIN</button><button class="addc" id="addc">+ Crédits</button></div><div class="ins" id="ins"></div></div>'+
- '<div class="pt"><div class="pth"><span>Ce que tu gagnes</span><span id="pfor"></span></div><div class="ptg" id="ptg"></div><p class="ptn">Les gains vont dans tes crédits. Touche « Encaisser » pour tout récupérer dans ton porte-monnaie.</p></div></div>'+
+ '<div class="pt"><div class="pth"><span>Ce que tu gagnes</span><span id="pfor"></span></div><div class="ptg" id="ptg"></div><p class="ptn">Les gains vont dans tes crédits (au plus '+fmt(CASC.CAP||50000)+' par tour). Touche « Encaisser » pour tout récupérer dans ton porte-monnaie.</p></div></div>'+
  '<div class="msg" id="smsg"></div><div class="sess" id="sess"></div><div class="hist" id="shist">'+histHTML()+'</div>'+adBtn()+'</section>');
  [].forEach.call(document.querySelectorAll('[data-bv]'),function(b){b.onclick=function(){var k=CAS();if(busy||k.free)return;var v=+b.dataset.bv;if(v>k.cred&&k.cred>0)return toast('Pas assez de crédits pour miser '+fmt(v));sbet=v;csnd('tick');slotUI()}});
  $('spin').onclick=spin;$('cash').onclick=cashOut;$('addc').onclick=function(){if(!busy)showIns(true)};bindAds();slotUI()}
@@ -1475,7 +1475,7 @@ var HBACK='<div class="hbk"><img src="img/logo.png" alt=""><b>?</b></div>';
 function f2(x){return x.toFixed(2).replace('.',',')}
 function rHL(){
  $('main').innerHTML=casWrap('<section class="hlx" id="fl"><div class="hlt">'+lights(26,0)+'<div class="hlhd"><div class="sign"><b>PLUS</b> OU <b>MOINS</b></div>'+
- '<ol class="howto"><li>Une carte est retournée.</li><li>Parie : la <b>prochaine carte</b>, tirée au hasard comme dans un pack, sera-t-elle <b>plus rare</b>, <b>pareille</b> ou <b>moins rare</b> ?</li><li>Si tu as raison, ton gain est <b>multiplié par la cote</b>. Tu continues ou tu <b>encaisses quand tu veux</b>.</li></ol></div>'+
+ '<ol class="howto"><li>Une carte est retournée.</li><li>Parie : la <b>prochaine carte</b>, tirée au hasard comme dans un pack, sera-t-elle <b>plus rare</b>, <b>pareille</b> ou <b>moins rare</b> ?</li><li>Si tu as raison, ton gain est <b>multiplié par la cote</b>. Tu continues ou tu <b>encaisses quand tu veux</b> (gain maximum : '+fmt(CASC.CAP||50000)+' '+CUR+').</li></ol></div>'+
  '<div class="hlcards"><div class="hcs"><div class="lab">Ta carte</div><div id="hcur"></div><div class="rlab" id="hrl"></div></div><div class="hcs"><div class="lab">Prochaine carte</div><div id="hnx">'+HBACK+'</div></div></div>'+
  '<div class="bets" id="hbets"></div><div class="pot" id="hpot"></div><div class="trail" id="hh"></div></div>'+
  '<div class="msg" id="hmsg"></div><div class="hctl" id="hctl"></div></section>');hDraw()}
@@ -1483,7 +1483,7 @@ function hDraw(){var c=$('hcur');if(!c)return;var h=CAS().hl,alive=!!h,p=alive&&
  c.innerHTML=alive&&CARDS[h.cur]?cardHTML(h.cur):HBACK;
  $('hrl').innerHTML=p?'<i style="background:'+HEX[p.r]+'"></i>'+RAR[p.r].n:'';
  var can=alive&&!busy,pc=function(x){return (x*100<1?(x*100).toFixed(1).replace('.',','):Math.round(x*100))+' %'};
- var bet=function(id,cls,lab,icn,co,ch,why){return '<button class="bt '+cls+'" data-g="'+id+'"'+(!can||!co?' disabled':'')+'><span class="ar">'+icn+'</span><b>'+lab+'</b><em>'+(co?'cote ×'+f2(co):why||'—')+'</em><small>'+(p&&co?(ISOWNER?pc(ch)+' · ':'')+'→ '+fmt(Math.floor(h.pot*co))+' '+CUR:'&nbsp;')+'</small></button>'};
+ var bet=function(id,cls,lab,icn,co,ch,why){return '<button class="bt '+cls+'" data-g="'+id+'"'+(!can||!co?' disabled':'')+'><span class="ar">'+icn+'</span><b>'+lab+'</b><em>'+(co?'cote ×'+f2(co):why||'—')+'</em><small>'+(p&&co?(ISOWNER?pc(ch)+' · ':'')+'→ '+fmt(Math.min(CASC.CAP||1e9,Math.floor(h.pot*co)))+' '+CUR+(Math.floor(h.pot*co)>=(CASC.CAP||1e9)?' (max)':''):'&nbsp;')+'</small></button>'};
  $('hbets').innerHTML=bet('1','up','Plus rare','▲',p&&p.cH,p&&p.hi,p&&p.r===5?'déjà Mythique':'')+bet('0','eq','Pareil','=',p&&p.cE,p&&p.eq)+bet('-1','dn','Moins rare','▼',p&&p.cL,p&&p.lo,p&&p.r===0?'déjà Commun':'');
  [].forEach.call($('hbets').querySelectorAll('[data-g]'),function(b){b.onclick=function(){guess(+b.dataset.g)}});
  $('hpot').innerHTML=alive?'<span>Gain en jeu</span><b>'+fmt(h.pot)+' '+CUR+'</b><span class="mut2">mise '+fmt(h.bet)+' · série '+h.n+'</span>':'<span>Mise</span><b>'+fmt(hbet)+' '+CUR+'</b>';
@@ -1500,7 +1500,8 @@ function guess(d){var h=CAS().hl;if(!h||busy||netBusy)return;var p=hOdds(CARDS[h
   box.innerHTML='<div class="hflip"><div class="hfi">'+HBACK+'<div class="hff">'+cardHTML(nx)+'</div></div></div>';
   setTimeout(function(){clearInterval(tk);if(box.firstChild)box.firstChild.classList.add('on');csnd('flip')},600);
   setTimeout(function(){var fl=$('fl');setState(r.state);hlTrail.push(nx);
-   if(r.ok){m.className='msg win';m.textContent=RAR[v].n+' ! Gagné · '+fmt(r.hl.pot)+' '+CUR+' en jeu';csnd('win');rain(fl,8+r.hl.n*4);if(r.hl.n>=3)party(fl,900)}
+   if(r.capped){setPurse();m.className='msg win';m.textContent='Gain maximum atteint ! '+fmt(r.capped)+' '+CUR+' encaissés';csnd('big');party(fl,2500);rain(fl,60);cbanner(fl,'GAIN MAXIMUM',r.capped)}
+   else if(r.ok){m.className='msg win';m.textContent=RAR[v].n+' ! Gagné · '+fmt(r.hl.pot)+' '+CUR+' en jeu';csnd('win');rain(fl,8+r.hl.n*4);if(r.hl.n>=3)party(fl,900)}
    else{m.className='msg lose';m.textContent=RAR[v].n+' · perdu, −'+fmt(bet0)+' '+CUR;csnd('lose')}
    setTimeout(function(){if($('hnx'))$('hnx').innerHTML=HBACK;busy=false;hDraw()},1100);busy=true;hDraw()},1200)}).catch(function(){clearInterval(tk);busy=false;hDraw()})}
 function hCash(){var h=CAS().hl;if(!h||busy||netBusy)return;act({action:'hlcash'}).then(function(r){setState(r.state);setPurse();var fl=$('fl'),g=r.cashed,m=$('hmsg');m.className='msg win';m.textContent='Encaissé : '+fmt(g)+' '+CUR+(g>h.bet?' (+'+fmt(g-h.bet)+')':'');
