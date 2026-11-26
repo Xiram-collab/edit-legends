@@ -1585,3 +1585,22 @@ html.v2 .gsw .nb{position:absolute;top:-5px;right:-5px;min-width:17px;height:17p
 #ov.adov .adc{font:700 26px var(--fd);color:#ffd24a}
 html.v2 .hshopw{margin:34px 0 10px}html.v2 .hshopw .shhead{margin-bottom:12px}
 html.v2 .hsep{border:0;height:2px;margin:34px 0 0;border-radius:2px;background:linear-gradient(90deg,transparent,#3a4a8a 10%,#5b6cc0 50%,#3a4a8a 90%,transparent)}html.v2 .hsep+.hshopw{margin-top:24px}
+/* casino : cartes des rouleaux au bon format (plus d'étirement), tailles téléphone */
+.casx .reel{height:auto;aspect-ratio:5/7}
+.casx .strip{padding:0;gap:10px}
+.casx .strip .card,.casx .strip .clv4{width:100%;height:auto;aspect-ratio:5/7;flex:none;margin:0;font-size:clamp(6px,2.3vw,11px)}
+.casx .swrap{justify-items:center}
+@media(max-width:640px){
+ .casx .floor{padding:16px 8px;gap:12px}
+ .casx .cab{padding:24px 12px 20px;border-radius:22px;width:100%}
+ .casx .lcd{gap:5px}.casx .lcd div{padding:3px 4px}.casx .lcd span{font-size:8px;letter-spacing:.06em}.casx .lcd b{font-size:19px}
+ .casx .sreels{gap:5px;padding:5px}
+ .casx .clv4 b{font-size:13px}.casx .clv4 span{font-size:7px}
+ .casx .chips2{gap:4px;flex-wrap:nowrap;margin-top:10px}.casx .chp{width:36px;height:36px;font-size:12px;border-width:2px;flex:none}
+ .casx .cabb{gap:6px;margin-top:12px}.casx .spinb{width:86px;height:86px;font-size:22px}.casx .cash,.casx .addc{min-height:44px;font-size:13px;padding:0 6px}
+ .casx .swrap .pt{width:100%}
+ .casx .hlt{padding:28px 10px 18px}.casx .hcs{width:clamp(96px,30vw,140px)}
+}
+@media(max-width:360px){.casx .chp{width:33px;height:33px;font-size:11px}.casx .spinb{width:76px;height:76px;font-size:19px}}
+@media(max-width:640px){.casx .msg{font-size:18px;min-height:0}.casx .hlx .msg{font-size:17px}}
+.casx .hcs .lab{white-space:nowrap}@media(max-width:640px){.casx .hcs .lab{font-size:10px;letter-spacing:.06em}}
