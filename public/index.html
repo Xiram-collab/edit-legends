@@ -699,7 +699,7 @@ body.light .nban,body.light .nban *{color:#fff}
 .over{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
 .over #ok{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30}
 </style>
-<link rel="stylesheet" href="v2.css?v=20261126e">
+<link rel="stylesheet" href="v2.css?v=20261126g">
 <script>try{if(localStorage.getItem('elv1')!=='1')document.documentElement.classList.add('v2')}catch(e){document.documentElement.classList.add('v2')}</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});try{var c=JSON.parse(localStorage.getItem('el_consent')||'null');if(c&&c.a&&Date.now()-c.t<34e9)gtag('consent','update',{analytics_storage:'granted'})}catch(e){}gtag('js',new Date());gtag('config','G-8D50N5DHNX');</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8D50N5DHNX"></script>
@@ -1400,9 +1400,9 @@ function watchAds(){if(busy||netBusy)return;act({action:'adstart'}).then(functio
 var sbet=50,slotHist=[],slotLast=0,slotSess=0,slotIns=500;
 function payCells(){var c0=CAS(),fr=c0.free>0,b=fr?c0.fbet:sbet,c=pCl(b),P=spOf(b).map(function(x){return x*(1-c)}),one=function(x){return '1 sur '+fmt(Math.max(1,Math.round(1/x)))};
  var h='<div class="pc clv" data-pc="cl"><span class="ics">'+cCl+cCl+cCl+'</span><div><b>'+CASC.FREE+' tours gratuits</b></div></div>'+
- '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span><div><b>'+fmt(Math.floor(b*CASC.C2))+'</b></div></div>';
- for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span><b>'+fmt(Math.floor(b*CASC.T3[k]))+'</b></div>';
- for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span><b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'</b></div>';
+ '<div class="pc clv c2" data-pc="c2"><span class="ics">'+cCl+cCl+cAny+'</span><div><b>'+fmt(Math.floor(b*CASC.C2))+'<i class="pcn"></i></b></div></div>';
+ for(var k=5;k>=0;k--)h+='<div class="pc" data-pc="3'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cmc(k)+'</span><b>'+fmt(Math.floor(b*CASC.T3[k]))+'<i class="pcn"></i></b></div>';
+ for(k=5;k>=0;k--)h+='<div class="pc" data-pc="2'+k+'"><span class="ics">'+cmc(k)+cmc(k)+cAny+'</span><b'+(CASC.T2[k]<1?' class="lo"':'')+'>'+fmt(Math.floor(b*CASC.T2[k]))+'<i class="pcn"></i></b></div>';
  return h}
 function histHTML(){return slotHist.slice(-10).map(function(x){return x==='F'?'<span class="hp f">+'+CASC.FREE+' gratuits</span>':'<span class="hp'+(x>0?' w':x===0?' z':'')+'">'+(x>0?'+'+fmt(x):x===0?'0':'−'+fmt(-x))+'</span>'}).join('')}
 function winPop(g,up){var sl=$('slt');if(!sl)return;var o=sl.querySelector('.wpop');if(o)o.remove();var d=document.createElement('div');d.className='wpop'+(up?'':' lo');d.innerHTML='<b>+'+fmt(g)+'</b><span>'+CUR+'</span>';sl.appendChild(d);setTimeout(function(){d.remove()},2200)}
@@ -1416,7 +1416,7 @@ function rSlot(){var k0=CAS();CPOOL=cpool();if(k0.cred>0)sbet=Math.min(sbet,CASC
  '<div class="msg" id="smsg"></div><div class="sess" id="sess"></div><div class="hist" id="shist">'+histHTML()+'</div>'+adBtn()+'</section>');
  [].forEach.call(document.querySelectorAll('[data-bv]'),function(b){b.onclick=function(){var k=CAS();if(busy||k.free)return;var v=+b.dataset.bv;if(v>k.cred&&k.cred>0)return toast('Pas assez de crédits pour miser '+fmt(v));sbet=v;csnd('tick');slotUI()}});
  $('spin').onclick=spin;$('cash').onclick=cashOut;$('addc').onclick=function(){if(!busy)showIns(true)};bindAds();slotUI()}
-function slotUI(){if(!$('lcr'))return;var k=CAS(),c=k.cred,fr=k.free;$('lcr').textContent=fmt(c);$('lbt').textContent=fmt(fr?k.fbet:sbet);$('pfor').textContent=fr?'tours gratuits à '+fmt(k.fbet):'pour '+fmt(sbet)+' par tour';$('ptg').innerHTML=payCells();
+function slotUI(){if(!$('lcr'))return;var k=CAS(),c=k.cred,fr=k.free;$('lcr').textContent=fmt(c);$('lbt').textContent=fmt(fr?k.fbet:sbet);$('pfor').textContent=fr?'tours gratuits à '+fmt(k.fbet):'en '+CUR+', pour une mise de '+fmt(sbet);$('ptg').innerHTML=payCells();
  [].forEach.call(document.querySelectorAll('[data-bv]'),function(b){b.classList.toggle('on',+b.dataset.bv===(fr?k.fbet:sbet));b.disabled=!!fr||(+b.dataset.bv>c&&c>0)});
  var sp=$('spin');sp.className='spinb'+(fr?' free':'');sp.innerHTML=fr?'GRATUIT<small>'+fr+' restant'+(fr>1?'s':'')+'</small>':!c&&!busy?'<span style="font-size:.72em">INSÉRER</span><small>des '+CUR+'</small>':'SPIN<small>'+fmt(sbet)+' crédits</small>';sp.disabled=busy||(!fr&&c>0&&c<sbet);
  $('cash').disabled=busy||!c||!!fr;$('cash').innerHTML='Encaisser<small>'+fmt(c)+'</small>';$('addc').disabled=busy||!!fr;$('slt').classList.toggle('free',!!fr);
@@ -1703,6 +1703,7 @@ function rAdmin(){
  if(adminSub==='home')return adHome();
  if(adminSub==='market')return adMarket();
  if(adminSub==='gift')return adGift();
+ if(adminSub==='casino')return adCasino();
  if(adminSub==='live')return adLive();
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
@@ -1718,9 +1719,9 @@ function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'A
 
 
 /* ----- Panel admin : navigation par groupes, accueil, marché, cadeaux ----- */
-var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift']],['sys','⚙️','Système',['ann','log','acts','team','tools']]];
-var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
-var PERM_SUB={home:'players',live:'players',players:'players',stats:'players',cards:'cards',times:'times',market:'market',ann:'announce',log:'logs',acts:'logs'};
+var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift','casino']],['sys','⚙️','Système',['ann','log','acts','team','tools']]];
+var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',casino:'Casino',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
+var PERM_SUB={casino:'players',home:'players',live:'players',players:'players',stats:'players',cards:'cards',times:'times',market:'market',ann:'announce',log:'logs',acts:'logs'};
 function can(k){return !!ISADMIN&&(ISOWNER||!PERMS||PERMS.indexOf(k)>=0)}
 function adSubOk(k){if(ISOWNER||!ISADMIN)return true;if(k==='gift'||k==='own'||k==='team'||k==='tools')return false;var p=PERM_SUB[k];return !p||can(p)}
 function adGroups(){return ADG.map(function(x){return [x[0],x[1],x[2],x[3].filter(adSubOk)]}).filter(function(x){return x[3].length})}
@@ -2128,6 +2129,28 @@ function adOwn(){
   if(ownQ)find();
   [].forEach.call(document.querySelectorAll('[data-od]'),function(b){twice(b,function(){api('aowndel',{card:+b.dataset.od}).then(function(){toast('Association retirée');adOwn()}).catch(function(e){toast(e.message)})},'Confirmer')})
  }).catch(function(e){if(adAlive('own'))$('abody').innerHTML=errBox(e)})}
+var adCasF='all';
+function adCasino(){api('acasino').then(function(d){if(!adAlive('casino'))return;var T=d.totals,pc=function(x){return (Math.round(x*1000)/10).toString().replace('.',',')+' %'};
+ var spent=T.bet+T.hb,given=T.won+T.hw,bank=spent-given;
+ var tile=function(l,v,sub,col){return '<div class="panel" style="margin:0;padding:12px"><div class="mut sm">'+l+'</div><b style="font:700 26px var(--fd)'+(col?';color:'+col:'')+'">'+v+'</b>'+(sub?'<div class="mut sm">'+sub+'</div>':'')+'</div>'};
+ var resTxt=function(e){if(e.g==='s'){var r=String(e.r||'').split('').map(function(x){return x==='6'?'<span title="Trèfle">🍀</span>':'<i class="acr" style="background:'+HEX[+x]+'" title="'+RAR[+x].n+'"></i>'}).join('');return '<span class="acrs">'+r+'</span>'+(e.f?' <span class="mut sm">tour gratuit</span>':'')+(e.fw?' <b style="color:#3ddc84">+'+e.fw+' tours gratuits</b>':'')}
+  return '<span class="mut sm">'+(e.w?'encaissé après '+e.n+' bon'+(e.n>1?'s':'')+' pari'+(e.n>1?'s':''):'perdu au pari n°'+e.n)+'</span>'};
+ var rows=d.recent.filter(function(e){return adCasF==='all'||e.g===adCasF||(adCasF==='win'&&e.w>(e.f?0:e.b))});
+ $('abody').innerHTML='<div class="panel"><h3>Casino</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px">'+
+  tile('Misé par les joueurs',fmt(spent)+' '+CUR,'machine '+fmt(T.bet)+' · plus ou moins '+fmt(T.hb))+
+  tile('Gagné par les joueurs',fmt(given)+' '+CUR,'machine '+fmt(T.won)+' · plus ou moins '+fmt(T.hw))+
+  tile('Gagné par la banque',(bank<0?'−':'')+fmt(Math.abs(bank))+' '+CUR,spent?'les joueurs récupèrent '+pc(given/spent):'',bank>=0?'#7dffb8':'#ff6b9a')+
+  tile('Joueurs du casino',fmt(T.players),'machine '+fmt(T.slotPlayers)+' · plus ou moins '+fmt(T.hlPlayers))+
+  tile('Tours de machine',fmt(T.n),fmt(T.fs)+' tours gratuits')+
+  tile('Parties de plus ou moins',fmt(T.hn),'')+
+  tile('Crédits dans les machines',fmt(T.cred)+' '+CUR,'pas encore encaissés')+
+  tile('Coins des pubs',fmt(T.ads)+' '+CUR,'')+
+  '</div><p class="mut sm" style="margin:10px 0 0">Rendu prévu de la machine : '+d.rtp.map(function(x){return 'mise '+x.b+' → '+pc(x.rtp)}).join(' · ')+'</p></div>'+
+  '<div class="panel"><h3>Joueurs qui ont le plus joué</h3>'+(d.top.length?'<div class="tw"><table class="at"><tr><th>#</th><th>Joueur</th><th>Tours</th><th>Plus ou moins</th><th>Misé</th><th>Gagné</th><th>Bilan</th><th>En machine</th></tr>'+d.top.map(function(p,k){var net=p.won-p.bet;return '<tr class="clk" data-pl="'+esc(p.id)+'"><td>'+(k+1)+'</td><td><div class="who">'+uav(p)+esc(p.name)+'</div></td><td>'+fmt(p.n)+'</td><td>'+fmt(p.hn)+'</td><td>'+fmt(p.bet)+'</td><td>'+fmt(p.won)+'</td><td style="color:'+(net>=0?'#7dffb8':'#ff6b9a')+'">'+(net>=0?'+':'−')+fmt(Math.abs(net))+'</td><td>'+fmt(p.cred)+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Personne n\'a encore joué.</p>')+'</div>'+
+  '<div class="panel"><h3>Derniers tirages</h3><div class="fl sorts" style="margin-bottom:8px">'+[['all','Tout'],['s','Machine à sous'],['h','Plus ou moins'],['win','Gagnants']].map(function(x){return '<button data-cf2="'+x[0]+'"'+(adCasF===x[0]?' class="on"':'')+'>'+x[1]+'</button>'}).join('')+'</div>'+
+  (rows.length?'<div class="tw"><table class="at"><tr><th>Heure</th><th>Joueur</th><th>Jeu</th><th>Mise</th><th>Tirage</th><th>Gain</th></tr>'+rows.map(function(e){var up=e.w>(e.f?0:e.b);return '<tr class="clk" data-pl="'+esc(e.id)+'"><td style="white-space:nowrap">'+exact(new Date(e.t).toISOString())+'</td><td><div class="who">'+uav(e)+esc(e.name)+'</div></td><td>'+(e.g==='s'?'Machine':'Plus ou moins')+'</td><td>'+fmt(e.b)+'</td><td>'+resTxt(e)+'</td><td style="font-weight:700;color:'+(up?'#ffd24a':e.w?'#c9d1dc':'#ff6b9a')+'">'+(e.w?'+'+fmt(e.w):'0')+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Aucun tirage.</p>')+'<p class="mut sm">Les 30 derniers tirages de chaque joueur sont gardés.</p></div>';
+ [].forEach.call(document.querySelectorAll('[data-cf2]'),function(b){b.onclick=function(){adCasF=b.dataset.cf2;adCasino()}});
+ [].forEach.call(document.querySelectorAll('#abody [data-pl]'),function(r){r.onclick=function(){adminSub='players';adminTarget=r.dataset.pl;render();scrollTo(0,0)}})}).catch(function(e){if(adAlive('casino'))$('abody').innerHTML=errBox(e)})}
 /* ---------- Marché (enchères entre joueurs) ---------- */
 var mkT=0,mkData=null,mkSub='offers',mkSort='new',mkOwn='all',mkRar=-1;
 function mkLeft(ms){var m=Math.max(0,Math.round((ms-Date.now())/60000)),h=Math.floor(m/60);return h>0?h+' h '+(m%60<10?'0':'')+(m%60)+' min':m+' min'}

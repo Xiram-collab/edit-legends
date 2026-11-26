@@ -75,5 +75,9 @@ const me = async (tok) => (await call(tok, { action: 'me' })).json;
   r = await call('tokB', { action: 'adstart' }); assert.strictEqual(r.status, 400); ok('pubs : +100 Coins, 5 fois par jour maximum');
   clock += 86400000; r = await call('tokB', { action: 'adstart' }); assert.strictEqual(r.status, 200); ok('pubs : nouveau jour, compteur remis à zéro');
 
+  r = await call('tokB', { action: 'acasino' }); assert.strictEqual(r.status, 403);
+  r = await call('tokA', { action: 'acasino' }); assert.strictEqual(r.status, 200);
+  assert.ok(r.json.totals.n >= 30 && r.json.totals.players >= 1 && r.json.totals.bet > 0); assert.ok(r.json.recent.length > 0 && r.json.recent[0].name === 'Bob' && r.json.recent[0].t);
+  assert.ok(r.json.recent.some((x) => x.g === 'h')); assert.strictEqual(r.json.top[0].name, 'Bob'); ok('admin casino : totaux, derniers tirages avec le joueur et l\'heure, joueurs qui ont le plus lancé');
   console.log('\n' + n + ' tests casino OK');
 })().catch((e) => { console.error(e); console.log('ECHEC'); process.exit(1); });
