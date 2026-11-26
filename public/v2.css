@@ -1407,7 +1407,7 @@ html.v2 .gsw .nb{position:absolute;top:-5px;right:-5px;min-width:17px;height:17p
 .casx .floor::before{content:"";position:absolute;inset:-40%;background:conic-gradient(from 0deg,transparent 0 20deg,#ff3d8122 26deg,transparent 34deg 110deg,#4f8bff22 118deg,transparent 126deg 200deg,#ffd24a1e 208deg,transparent 216deg 290deg,#3df08c1a 298deg,transparent 306deg);animation:cx_beam 18s linear infinite;pointer-events:none}
 .casx .floor>*{position:relative;z-index:1}
 @keyframes cx_beam{to{transform:rotate(360deg)}}
-.casx .floor.flash::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle at 50% 40%,#ffd24a66,transparent 60%);animation:cx_flash .25s 6 alternate}
+.casx .floor.cflash::after{content:"";position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle at 50% 40%,#ffd24a66,transparent 60%);animation:cx_flash .25s 6 alternate}
 @keyframes cx_flash{from{opacity:0}to{opacity:1}}
 .casx .lights{position:absolute;display:flex;justify-content:space-between;pointer-events:none}
 .casx .lights.h{left:22px;right:22px}.casx .lights.t{top:9px}.casx .lights.b{bottom:9px}
