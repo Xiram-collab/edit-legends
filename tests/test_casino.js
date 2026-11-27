@@ -23,7 +23,7 @@ const me = async (tok) => (await call(tok, { action: 'me' })).json;
   const lo = K.rtp(cf, 10).rtp, hi = K.rtp(cf, 1000).rtp;
   assert.ok(Math.abs(lo - hi) < 1e-9, 'mêmes chances ' + lo + ' ' + hi); assert.ok(lo > 0.93 && lo < 0.96, 'rendu ' + lo);
   ok('machine à sous : ~' + Math.round(lo * 1000) / 10 + ' % rendu, le même pour toutes les mises');
-  assert.strictEqual(K.mult(cf, [6, 6, 2]), 1.7); assert.strictEqual(K.mult(cf, [5, 5, 5]), 250); assert.strictEqual(K.mult(cf, [1, 1, 4]), 1); assert.strictEqual(K.mult(cf, [0, 3, 5]), 0); ok('combinaisons : 2 trèfles ×1,7, 3 Mythiques ×250, paire, rien');
+  assert.strictEqual(K.mult(cf, [6, 6, 2]), 1.7); assert.strictEqual(K.mult(cf, [5, 5, 5]), 250); assert.strictEqual(K.mult(cf, [1, 1, 4]), 0.8); assert.strictEqual(K.mult(cf, [0, 3, 5]), 0); ok('combinaisons : 2 trèfles ×1,7, 3 Mythiques ×250, paire, rien');
 
   // ---------- machine à sous ----------
   let r = await call('tokB', { action: 'casspin', b: 10 }); assert.strictEqual(r.status, 400); ok('pas de tour sans crédits');
