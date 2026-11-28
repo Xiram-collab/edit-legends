@@ -1706,6 +1706,7 @@ function rAdmin(){
  if(adminSub==='market')return adMarket();
  if(adminSub==='gift')return adGift();
  if(adminSub==='casino')return adCasino();
+ if(adminSub==='ref')return adRef();
  if(adminSub==='live')return adLive();
  if(adminSub==='players')return adminTarget?adPlayer():adPlayers();
  if(adminSub==='stats')return adStats();
@@ -1721,9 +1722,9 @@ function role(){return '<div class="panel role"><b>'+(ISOWNER?'Propriétaire':'A
 
 
 /* ----- Panel admin : navigation par groupes, accueil, marché, cadeaux ----- */
-var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift','casino']],['sys','⚙️','Système',['ann','log','acts','team','tools']]];
-var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',casino:'Casino',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
-var PERM_SUB={casino:'players',home:'players',live:'players',players:'players',stats:'players',cards:'cards',times:'times',market:'market',ann:'announce',log:'logs',acts:'logs'};
+var ADG=[['home','🎄','Accueil',['home']],['pl','👥','Joueurs',['live','players','stats']],['ct','🎴','Contenu',['cards','jury','times','own']],['eco','🎁','Économie',['market','gift','casino','ref']],['sys','⚙️','Système',['ann','log','acts','team','tools']]];
+var ADL={home:'🎄 Tableau de bord',live:'Connectés',players:'Joueurs',stats:'Statistiques',cards:'Cartes',jury:'Jury',times:'Temps',own:'Ma carte',market:'Marché',gift:'Cadeaux',casino:'Casino',ref:'Parrainage',ann:'Annonces',log:'Journal admin',acts:'Activité joueurs',team:'Équipe (admins)',tools:'Mes outils'};
+var PERM_SUB={ref:'players',casino:'players',home:'players',live:'players',players:'players',stats:'players',cards:'cards',times:'times',market:'market',ann:'announce',log:'logs',acts:'logs'};
 function can(k){return !!ISADMIN&&(ISOWNER||!PERMS||PERMS.indexOf(k)>=0)}
 function adSubOk(k){if(ISOWNER||!ISADMIN)return true;if(k==='gift'||k==='own'||k==='team'||k==='tools')return false;var p=PERM_SUB[k];return !p||can(p)}
 function adGroups(){return ADG.map(function(x){return [x[0],x[1],x[2],x[3].filter(adSubOk)]}).filter(function(x){return x[3].length})}
@@ -2153,6 +2154,24 @@ function adCasino(){api('acasino').then(function(d){if(!adAlive('casino'))return
   (rows.length?'<div class="tw"><table class="at"><tr><th>Heure</th><th>Joueur</th><th>Jeu</th><th>Mise</th><th>Tirage</th><th>Gain</th></tr>'+rows.map(function(e){var up=e.w>(e.f?0:e.b);return '<tr class="clk" data-pl="'+esc(e.id)+'"><td style="white-space:nowrap">'+exact(new Date(e.t).toISOString())+'</td><td><div class="who">'+uav(e)+esc(e.name)+'</div></td><td>'+(e.g==='s'?'Machine':'Plus ou moins')+'</td><td>'+fmt(e.b)+'</td><td>'+resTxt(e)+'</td><td style="font-weight:700;color:'+(up?'#ffd24a':e.w?'#c9d1dc':'#ff6b9a')+'">'+(e.w?'+'+fmt(e.w):'0')+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Aucun tirage.</p>')+'<p class="mut sm">Les 30 derniers tirages de chaque joueur sont gardés.</p></div>';
  [].forEach.call(document.querySelectorAll('[data-cf2]'),function(b){b.onclick=function(){adCasF=b.dataset.cf2;adCasino()}});
  [].forEach.call(document.querySelectorAll('#abody [data-pl]'),function(r){r.onclick=function(){adminSub='players';adminTarget=r.dataset.pl;render();scrollTo(0,0)}})}).catch(function(e){if(adAlive('casino'))$('abody').innerHTML=errBox(e)})}
+function adRef(){api('aref').then(function(d){if(!adAlive('ref'))return;var c=d.counts;
+ var tile=function(l,v,sub,col){return '<div class="panel" style="margin:0;padding:12px"><div class="mut sm">'+l+'</div><b style="font:700 26px var(--fd)'+(col?';color:'+col:'')+'">'+v+'</b>'+(sub?'<div class="mut sm">'+sub+'</div>':'')+'</div>'};
+ var pct=Math.min(100,Math.round(d.players/d.goal*100));
+ var RS={'meme-appareil':'même appareil que le parrain','meme-pseudo':'pseudo trop proche du parrain','deja-parraine':'Discord déjà parrainé','meme-connexion':'même connexion','discord-recent':'Discord trop récent'};
+ var dt=function(t){return t?exact(new Date(t).toISOString()):'—'};
+ var pl=function(x){return '<div class="who clk" data-pl="'+esc(x.id)+'">'+uav(x)+esc(x.name)+'</div>'};
+ $('abody').innerHTML='<div class="panel"><h3>Parrainage</h3>'+
+  '<div style="margin:4px 0 14px"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Objectif joueurs</span><span>'+fmt(d.players)+' / '+fmt(d.goal)+'</span></div><div style="height:12px;border-radius:8px;background:#ffffff14;overflow:hidden;margin-top:6px"><i style="display:block;height:100%;width:'+pct+'%;background:linear-gradient(90deg,#FFD84A,#FF6B9A)"></i></div></div>'+
+  '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">'+
+  tile('Filleuls validés',fmt(c.ok),fmt(c.ok)+' Pack'+(c.ok>1?'s':'')+' Épique+ donnés','#7dffb8')+
+  tile('Parrains',fmt(c.parrains),'joueurs qui ont invité quelqu\'un')+
+  tile('Refusés',fmt(c.no),'doubles comptes bloqués',c.no?'#ff6b9a':'')+
+  tile('Sans code',fmt(c.skip),'« je n\'ai pas de code »')+
+  tile('Pas encore répondu',fmt(c.ask),'nouveaux comptes')+'</div></div>'+
+  '<div class="panel"><h3>Meilleurs parrains</h3>'+(d.top.length?'<div class="tw"><table class="at"><tr><th>#</th><th>Parrain</th><th>Filleuls</th><th>Dernier</th></tr>'+d.top.map(function(p,k){return '<tr><td>'+(k+1)+'</td><td>'+pl(p)+'</td><td><b>'+fmt(p.n)+'</b></td><td style="white-space:nowrap">'+dt(p.last)+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Personne n\'a encore parrainé.</p>')+'</div>'+
+  '<div class="panel"><h3>Derniers parrainages</h3>'+(d.ok.length?'<div class="tw"><table class="at"><tr><th>Date</th><th>Filleul</th><th>Parrain</th><th>Compte Discord</th></tr>'+d.ok.map(function(x){var w=x.dAge!=null&&x.dAge<30;return '<tr><td style="white-space:nowrap">'+dt(x.t)+'</td><td>'+pl(x.f)+'</td><td>'+pl(x.p)+'</td><td'+(w?' style="color:#ffb547;font-weight:700"':'')+'>'+(x.dAge==null?'—':(w?'⚠️ ':'')+x.dAge+' j')+'</td></tr>'}).join('')+'</table></div><p class="mut sm">⚠️ = compte Discord de moins de 30 jours : à vérifier si ça te paraît louche.</p>':'<p class="mut sm">Aucun parrainage pour l\'instant.</p>')+'</div>'+
+  '<div class="panel"><h3>Refusés (doubles comptes)</h3>'+(d.no.length?'<div class="tw"><table class="at"><tr><th>Date</th><th>Compte</th><th>Code de</th><th>Raison</th></tr>'+d.no.map(function(x){return '<tr><td style="white-space:nowrap">'+dt(x.t)+'</td><td>'+pl(x.f)+'</td><td>'+pl(x.p)+'</td><td>'+esc(RS[x.r]||x.r||'')+'</td></tr>'}).join('')+'</table></div>':'<p class="mut sm">Aucun refus.</p>')+'</div>';
+ [].forEach.call(document.querySelectorAll('#abody [data-pl]'),function(r){r.onclick=function(){adminSub='players';adminTarget=r.dataset.pl;render();scrollTo(0,0)}})}).catch(function(e){if(adAlive('ref'))$('abody').innerHTML=errBox(e)})}
 /* ---------- Marché (enchères entre joueurs) ---------- */
 var mkT=0,mkData=null,mkSub='offers',mkSort='new',mkOwn='all',mkRar=-1;
 function mkLeft(ms){var m=Math.max(0,Math.round((ms-Date.now())/60000)),h=Math.floor(m/60);return h>0?h+' h '+(m%60<10?'0':'')+(m%60)+' min':m+' min'}

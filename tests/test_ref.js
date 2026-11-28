@@ -63,5 +63,9 @@ const call = (t, b, ip) => h(t, b, { ip: ip || '' });
   r = await hz('t', { action: 'refcode', code, dv: 'devZ' }, {});
   assert.ok(r.status === 400 && /pseudo/.test(r.json.error), JSON.stringify(r.json)); ok('pseudo proche du parrain (Alice / alice_2) : refusé');
 
+  const st = (await call('tokA', { action: 'aref' })).json;
+  assert.ok(st.counts.ok >= 2 && st.counts.no >= 2 && st.top[0].id === 'A' && st.top[0].n >= 2 && st.ok[0].t > 0 && st.players >= 5, JSON.stringify(st.counts));
+  assert.strictEqual((await call('tokB', { action: 'aref' })).status, 403);
+  ok('admin : stats de parrainage (filleuls, parrains, refus, objectif)');
   console.log(n + ' tests parrainage OK');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });
