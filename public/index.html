@@ -699,7 +699,7 @@ body.light .nban,body.light .nban *{color:#fff}
 .over{overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
 .over #ok{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30}
 </style>
-<link rel="stylesheet" href="v2.css?v=20261126l">
+<link rel="stylesheet" href="v2.css?v=20261128b">
 <script>try{if(localStorage.getItem('elv1')!=='1')document.documentElement.classList.add('v2')}catch(e){document.documentElement.classList.add('v2')}</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});try{var c=JSON.parse(localStorage.getItem('el_consent')||'null');if(c&&c.a&&Date.now()-c.t<34e9)gtag('consent','update',{analytics_storage:'granted'})}catch(e){}gtag('js',new Date());gtag('config','G-8D50N5DHNX');</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8D50N5DHNX"></script>
@@ -776,9 +776,10 @@ function homeTop(NW){var lc=function(i){return String(CARDS[i][0]).toLowerCase()
  HPIN.forEach(function(nm){var l=nm.toLowerCase();for(var i=CARDS.length-1;i>=0;i--){var c=CARDS[i];if(c&&!c[5]&&lc(i)===l){out.push(i);break}}});
  NW.slice().sort(function(a,b){return CARDS[b][2]-CARDS[a][2]||a-b}).forEach(function(i){if(out.length<3&&out.indexOf(i)<0&&sk.indexOf(lc(i))<0)out.push(i)});return out}
 function TOT(col){var n=0;CARDS.forEach(function(c,i){if(c&&(!c[5]||(col&&col[i]>0)))n++});return n}
-function api(action,body){body=Object.assign({action:action,nc:CARDS.length},body||{});
+function devId(){try{var d=localStorage.getItem('el_dv');if(!d){d=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('el_dv',d)}return d}catch(e){return ''}}
+function api(action,body){body=Object.assign({action:action,nc:CARDS.length},body||{});if(action==='me'||action==='refcode')body.dv=devId();
  return fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(SESSION?SESSION.access_token:'')},body:JSON.stringify(body)})
- .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;throw e}if(j.catalog&&action!=='me'){CARDS.length=0;j.catalog.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
+ .then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(j.error||'Erreur réseau');e.status=r.status;e.done=!!j.done;throw e}if(j.catalog&&action!=='me'){CARDS.length=0;j.catalog.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']})}return j})})}
 function act(body){if(netBusy)return Promise.reject(new Error('busy'));netBusy=true;
  return api(body.action,body).then(function(r){netBusy=false;return r},function(e){netBusy=false;if(e.status===401){toast('Session expirée, reconnecte-toi');setTimeout(function(){location.reload()},1500)}else toast(e.message||'Erreur');throw e})}
 var qsMode=false,qsSel={};
@@ -2313,7 +2314,7 @@ function adActs(){
  $('acg').onclick=go;$('acall').onclick=function(){$('acq').value='';go()};$('acq').onkeydown=function(e){if(e.key==='Enter')go()};go()}
 function adLog(){
  api('alog').then(function(d){if(!adAlive('log'))return;
-  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Joueur remis à zéro (nouveau joueur)',gift:'🎁 Cadeau à '+(v.who||'tous')+' ('+(v.players||0)+' joueurs) : '+(v.coins?fmt(v.coins)+' '+CUR:'')+(v.n?' + '+v.n+' pack'+(v.n>1?'s':''):''),'offre-retiree':'Offre du marché retirée','echange-retire':'Échange retiré',resetall:'RESET GÉNÉRAL de tous les joueurs','admin+':'Nommé admin',actdel:'🗑️ Activité des joueurs supprimée'+(v.all?' (tout)':v.days?' (plus de '+v.days+' jours)':v.name?' ('+v.name+')':v.n?' ('+v.n+' ligne'+(v.n>1?'s':'')+')':''),'admin-':'Droits admin retirés'}[a]||a};
+  var lab=function(l){var v=l.detail||{},a=l.action;return {m:(v.v>0?'+':'')+fmt(v.v||0)+' '+CUR,mset:CUR+' fixés à '+fmt(v.v||0),s:(v.v>0?'+':'')+v.v+' pack gratuit',wp:(v.v>0?'+':'')+v.v+' '+((WPT.filter(function(x){return x.g===+v.i})[0]||{n:'pack '+v.i}).n+' en attente'),c:(v.v>0?'+':'')+v.v+' '+(CARDS[v.i]?CARDS[v.i][0]:'carte'),cclear:'Collection vidée',rst:'Joueur remis à zéro (nouveau joueur)',gift:'🎁 Cadeau à '+(v.who||'tous')+' ('+(v.players||0)+' joueurs) : '+(v.coins?fmt(v.coins)+' '+CUR:'')+(v.n?' + '+v.n+' pack'+(v.n>1?'s':''):''),'offre-retiree':'Offre du marché retirée',parrainage:'🤝 Parrainage validé (code '+esc(v.code||'')+') → +1 Pack Épique+ au parrain','parrainage-refuse':'⛔ Parrainage refusé ('+esc({'meme-connexion':'même connexion ou appareil','deja-parraine':'déjà parrainé','discord-recent':'compte Discord trop récent'}[v.raison]||v.raison||'')+')','echange-retire':'Échange retiré',resetall:'RESET GÉNÉRAL de tous les joueurs','admin+':'Nommé admin',actdel:'🗑️ Activité des joueurs supprimée'+(v.all?' (tout)':v.days?' (plus de '+v.days+' jours)':v.name?' ('+v.name+')':v.n?' ('+v.n+' ligne'+(v.n>1?'s':'')+')':''),'admin-':'Droits admin retirés'}[a]||a};
   var cd=d.canDelete;
   $('abody').innerHTML='<div class="panel"><h3>Dernières actions d\'administration</h3>'+(cd&&d.rows.length?'<div class="bar"><button class="btn sm ghost" id="lgall">Tout cocher</button><button class="btn sm" id="lgdel" disabled>Supprimer la sélection</button><button class="btn sm ghost" id="lg7">Garder 7 jours</button><button class="btn sm ghost" id="lgclr">Tout vider</button></div>':(d.rows.length?'':''))+(d.rows.length?'<div class="tw"><table class="at"><tr>'+(cd?'<th></th>':'')+'<th>Quand</th><th>Admin</th><th>Joueur</th><th>Action</th></tr>'+d.rows.map(function(l){return '<tr>'+(cd?'<td><input type="checkbox" class="lgc" data-lg="'+l.id+'"></td>':'')+'<td>'+ago(l.at)+'</td><td>'+esc(l.admin)+'</td><td>'+esc(l.target)+'</td><td>'+esc(lab(l))+'</td></tr>'}).join('')+'</table></div>':'<p class="mut">Rien pour l\'instant.</p>')+(cd?'':'<p class="mut sm">Seul le propriétaire peut supprimer des lignes du journal.</p>')+'</div>';
   if(cd&&d.rows.length){
@@ -2469,7 +2470,18 @@ function showLogin(m){$('login').hidden=false;if(m)$('lmsg').textContent=m;lpSta
 var SUPPORT_URL='';
 var HOLOC={p:[4,5,6,12,25,40],MARKET_MULT:4,SELL_MULT:2};
 function applyConfig(cfg){if(cfg.RELEASES)RELS=cfg.RELEASES;if(cfg.HOME_PIN)HPIN=cfg.HOME_PIN;if(cfg.HOME_SKIP)HSKIP=cfg.HOME_SKIP;if(cfg.HOLO)HOLOC=cfg.HOLO;if(cfg.SUPPORT_URL)SUPPORT_URL=cfg.SUPPORT_URL;if(cfg.BOARD_REWARDS)BR=cfg.BOARD_REWARDS;if(cfg.MARKET)MKC=cfg.MARKET;if(cfg.SCORE)SCORE=cfg.SCORE;if(cfg.CASINO)CASC=cfg.CASINO;if(cfg.SPIN_PRICE)SPIN_PRICE=cfg.SPIN_PRICE;RAR.forEach(function(r,i){if(cfg.RAR[i]){r.p=cfg.RAR[i].p;r.v=cfg.RAR[i].v}});PACKS.forEach(function(p){var q=cfg.PACKS.filter(function(x){return x.g===p.g})[0];if(q)p.price=q.price});WH.forEach(function(w,i){var q=cfg.WH[i];if(!q)return;w.p=q.p;if(q.v!=null)w.v=q.v;if(q.g!=null)w.g=q.g;if(w.t==='coins'){w.n=fmt(w.v)+' '+CUR;w.l=[''+w.v,CUR]}})}
-function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PERMS=Array.isArray(r.perms)?r.perms:null;ISJURY=!!r.isJury;MYCARD=r.mycard||null;PROFILE=r.profile;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing()})}
+function loadMe(){return api('me').then(function(r){CARDS.length=0;r.cards.forEach(function(c,i){CARDS[i]=c||['?',0,0,'','']});applyConfig(r.config);setState(r.state);ISADMIN=!!r.isAdmin;ISOWNER=!!r.isOwner;PERMS=Array.isArray(r.perms)?r.perms:null;ISJURY=!!r.isJury;MYCARD=r.mycard||null;PROFILE=r.profile;REF=r.ref||null;shown=S.money;lpStop();$('login').hidden=true;$('acct').hidden=false;$('bell').hidden=false;$('logout').hidden=false;render();doPing();if(S.refAsk)refAsk()})}
+var REF=null;
+function refAsk(){closePick();var d=document.createElement('div');d.id='pk';d.className='pickov';
+ d.innerHTML='<div class="pickbox acct refbox"><div class="refhd"><span class="refic">🤝</span><h2>Bienvenue sur Edit Legends !</h2><p class="mut">Un ami t\'a invité ? Mets son <b>code de parrainage</b> : il recevra un <b>Pack Épique+</b> 🎁</p></div>'+
+  '<div class="setf"><input id="rfc" class="inp" maxlength="8" placeholder="Code (ex. K7QP2M)" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn sm gold" id="rfok">Valider</button></div>'+
+  '<p class="mut sm reftx" id="rfm"></p><button class="btn ghost refno" id="rfno">Je n\'ai pas de code</button></div>';
+ document.body.appendChild(d);
+ var done=function(){closePick();S.refAsk=0};
+ $('rfno').onclick=function(){api('refskip').catch(function(){});done()};
+ var go=function(){var c=$('rfc').value.trim();if(!c){$('rfc').focus();return}$('rfok').disabled=true;$('rfm').textContent='';
+  api('refcode',{code:c}).then(function(r){done();toast('Code validé ! '+(r.parrain?r.parrain+' reçoit':'Ton parrain reçoit')+' un Pack Épique+ 🎁')}).catch(function(e){$('rfok').disabled=false;$('rfm').textContent=e.message;$('rfm').className='sm reftx err';if(e.done){$('rfno').textContent='Continuer';$('rfok').disabled=true}})};
+ $('rfok').onclick=go;$('rfc').onkeydown=function(e){if(e.key==='Enter')go()};setTimeout(function(){try{$('rfc').focus()}catch(e){}},50)}
 function doLogout(){var done=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('sb-')===0)localStorage.removeItem(k)})}catch(e){}location.href='/'};try{SB.auth.signOut().then(done,done)}catch(e){done()}}
 function boot(){var cfg=window.EL_CONFIG||{},started=false;
  SB=supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_KEY);
@@ -2490,6 +2502,7 @@ function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.
   '<section class="acs"><h3>Profil</h3><div class="setf"><input id="anm" class="inp" maxlength="20" placeholder="Pseudo dans le jeu" value="'+esc(PROFILE&&PROFILE.custom||'')+'"><button class="btn sm gold" id="ansv">Enregistrer</button></div>'+
   '<p class="mut sm ahint">2 à 20 caractères. Vide = ton pseudo Discord'+(PROFILE&&PROFILE.discordName?' ('+esc(PROFILE.discordName)+')':'')+'.'+(PROFILE&&PROFILE.custom?' <button class="lnk" id="ards">Revenir au pseudo Discord</button>':'')+'</p>'+
   sw('aav',!(PROFILE&&PROFILE.noAvatar),'Afficher mon avatar Discord','Décoché, une lettre est affichée à la place.')+'</section>'+
+  (REF?'<section class="acs"><h3>Parrainage</h3><div class="setrow"><span class="atx"><b>Ton code de parrainage</b><span class="mut sm">Un nouveau joueur le met à son inscription : tu gagnes <b>1 Pack Épique+</b> à chaque fois.'+(REF.n?' Déjà <b>'+REF.n+'</b> ami'+(REF.n>1?'s':'')+' parrainé'+(REF.n>1?'s':'')+'.':'')+'</span></span><button class="btn sm gold refcd" id="arf" title="Copier">'+esc(REF.code)+' 📋</button></div></section>':'')+
   '<section class="acs"><h3>Confidentialité</h3>'+
   sw('ahide',!(S&&S.hide),'Apparaître dans le classement','Décoché, seuls tes amis voient ton profil et tu n\'es plus trouvable dans la recherche.')+
   sw('apres',!(S&&S.hidep),'Montrer quand je suis en ligne','Décoché, tes amis ne voient ni la pastille ni ta dernière connexion.')+'</section>'+
@@ -2501,6 +2514,7 @@ function openAcct(){closePick();var d=document.createElement('div');d.id='pk';d.
   '<p class="mut sm alinks"><a href="/confidentialite.html">Confidentialité</a> · <a href="/mentions.html">Mentions légales</a> · <a href="/cgu.html">CGU</a></p></div>';
  document.body.appendChild(d);d.onclick=function(e){if(e.target===d)closePick()};$('pkx').onclick=closePick;
  $('alo').onclick=doLogout;
+ if($('arf'))$('arf').onclick=function(){var tx=REF.code;var ok=function(){toast('Code copié : '+tx)};try{navigator.clipboard.writeText(tx).then(ok,function(){toast('Ton code : '+tx)})}catch(e){toast('Ton code : '+tx)}};
  var identSave=function(body){api('setident',body).then(function(r){PROFILE=Object.assign(PROFILE||{},r.profile);boardData=null;friendsData=null;toast('Profil mis à jour');openAcct()}).catch(function(e){toast(e.message)})};
  $('ansv').onclick=function(){identSave({name:$('anm').value})};
  if($('ards'))$('ards').onclick=function(){identSave({name:''})};

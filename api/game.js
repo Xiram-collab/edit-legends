@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
     const auth = req.headers.authorization || '';
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    const out = await getHandler()(token, body);
+    const ip = String(req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+    const out = await getHandler()(token, body, { ip });
     res.status(out.status).json(out.json);
   } catch (e) {
     console.error(e);

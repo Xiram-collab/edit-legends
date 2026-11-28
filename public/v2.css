@@ -1631,3 +1631,16 @@ html.v2 .acrs{display:inline-flex;gap:3px;vertical-align:middle}html.v2 .acr{dis
 .casx .pc.clv .pco~div b{font-size:13px;white-space:nowrap}.casx .pc.clv .pco~div{min-width:0}
 .casx .sess:empty,.casx .hist:empty{display:none}.casx .floor>.adsb{margin-top:-4px}
 .casx .bigw{background:none}.casx .bigw div{filter:drop-shadow(0 4px 14px #000c)}
+
+/* parrainage */
+.refbox{max-width:440px;text-align:center}
+.refbox .refhd h2{margin:6px 0 6px;font-size:24px}
+.refbox .refhd p{margin:0 0 16px;line-height:1.45}
+.refbox .refic{font-size:44px;display:block}
+.refbox .setf{display:flex;gap:8px}
+.refbox .setf .inp{flex:1;min-width:0;text-transform:uppercase;letter-spacing:.12em;font-weight:800;text-align:center;font-size:18px}
+.refbox .reftx{min-height:18px;margin:10px 0 4px}
+.refbox .reftx.err{color:#ff7a8a}
+.refbox .refno{width:100%;margin-top:6px}
+.refcd{letter-spacing:.1em;font-weight:800;white-space:nowrap}
+html.v2 .refbox>.bkr{display:none}
