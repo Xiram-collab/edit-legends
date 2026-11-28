@@ -20,11 +20,11 @@ const call = (t, b, ip) => h(t, b, { ip: ip || '' });
   assert.ok(!(await call('tokA', { action: 'me' }, '1.1.1.1')).json.state.refAsk); ok('« je n\'ai pas de code » : la question ne revient plus');
   const code = A.ref.code;
 
-  // même connexion que le parrain : refusé
-  let B = (await call('tokB', { action: 'me', dv: 'devB' }, '1.1.1.1')).json;
+  // même connexion (frères, même box) mais autre appareil : accepté
+  await call('tokB', { action: 'me', dv: 'devB' }, '1.1.1.1');
   let r = await call('tokB', { action: 'refcode', code, dv: 'devB' }, '1.1.1.1');
-  assert.strictEqual(r.status, 400); assert.ok(r.json.done && /même connexion/.test(r.json.error));
-  assert.ok(!(await call('tokA', { action: 'me' }, '1.1.1.1')).json.state.wp[3]); ok('double compte (même connexion) : refusé, pas de pack');
+  assert.strictEqual(r.status, 200, JSON.stringify(r.json));
+  assert.strictEqual((await call('tokA', { action: 'me' }, '1.1.1.1')).json.state.wp[3], 1); ok('même connexion internet (frères) : accepté');
 
   // même appareil, autre connexion : refusé
   await call('tokD', { action: 'me', dv: 'devA' }, '4.4.4.4');
@@ -37,7 +37,7 @@ const call = (t, b, ip) => h(t, b, { ip: ip || '' });
   r = await call('tokE', { action: 'refcode', code: code.toLowerCase(), dv: 'devE' }, '5.5.5.5');
   assert.strictEqual(r.status, 200, JSON.stringify(r.json));
   const A2 = (await call('tokA', { action: 'me' }, '1.1.1.1')).json;
-  assert.strictEqual(A2.state.wp[3], 1); assert.strictEqual(A2.ref.n, 1);
+  assert.strictEqual(A2.state.wp[3], 2); assert.strictEqual(A2.ref.n, 2);
   assert.ok(db.logs.some((l) => l.action === 'parrainage'));
   ok('vrai filleul : le parrain reçoit 1 Pack Épique+ et une notification');
   r = await call('tokE', { action: 'refcode', code }, '5.5.5.5'); assert.strictEqual(r.status, 400); ok('un seul code par compte');
@@ -51,8 +51,7 @@ const call = (t, b, ip) => h(t, b, { ip: ip || '' });
 
   // compte Discord trop récent
   const recent = String((BigInt(clock - 1420070400000 - 2 * 86400000) << 22n));
-  db.saves.delete('B'); db.profiles.delete('B');
-  const u = { id: 'B', discordId: recent, name: 'Neuf', avatar: '' };
+  const u = { id: 'N', discordId: recent, name: 'Neuf', avatar: '' };
   const dbx = Object.assign({}, db, { getUser: async (t) => (t === 'tokN' ? u : null) });
   const hx = createHandler(dbx, { adminIds: '111', now: () => clock });
   await hx('tokN', { action: 'me', dv: 'devN' }, { ip: '7.7.7.7' });
