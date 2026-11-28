@@ -56,7 +56,12 @@ const call = (t, b, ip) => h(t, b, { ip: ip || '' });
   const hx = createHandler(dbx, { adminIds: '111', now: () => clock });
   await hx('tokN', { action: 'me', dv: 'devN' }, { ip: '7.7.7.7' });
   r = await hx('tokN', { action: 'refcode', code, dv: 'devN' }, { ip: '7.7.7.7' });
-  assert.ok(r.status === 400 && /trop récent/.test(r.json.error)); ok('compte Discord de moins de 30 jours : refusé');
+  assert.strictEqual(r.status, 200, JSON.stringify(r.json)); ok('compte Discord tout neuf : accepté (noté dans le journal admin)');
+  const ua = { id: 'Z', discordId: '999', name: 'alice_2', avatar: '' };
+  const hz = createHandler(Object.assign({}, db, { getUser: async () => ua }), { adminIds: '111', now: () => clock });
+  await hz('t', { action: 'me', dv: 'devZ' }, {});
+  r = await hz('t', { action: 'refcode', code, dv: 'devZ' }, {});
+  assert.ok(r.status === 400 && /pseudo/.test(r.json.error), JSON.stringify(r.json)); ok('pseudo proche du parrain (Alice / alice_2) : refusé');
 
   console.log(n + ' tests parrainage OK');
 })().catch((e) => { console.error('ECHEC', e); process.exit(1); });
